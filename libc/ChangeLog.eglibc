@@ -1,6 +1,15 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:
+	2005-11-18  Andreas Schwab  <schwab@suse.de>
+	* sysdeps/powerpc/powerpc32/fpu/s_lround.S: Remove useless alias.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S: Handle
+	NO_WEAK_ALIAS.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/socket.S: Likewise.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
 	2005-11-08  H.J. Lu  <hongjiu.lu@intel.com>
 	* sysdeps/wordsize-32/Makefile (CPPFLAGS-divdi3.c): Set to
 	-Din_divdi3_c.

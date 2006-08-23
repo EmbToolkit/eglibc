@@ -1,5 +1,12 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	* math/atest-exp.c (main): Cast hex value to mp_limb_t before
+	shifting.
+	* math/atest-exp2.c (read_mpn_hex): Likewise.
+	* math/atest-sincos.c (main): Likewise.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/generic/e_exp2l.c: Update from mainline glibc.
 	* sysdeps/mips/mips64/n32/Implies: Add mips/mips64/soft-fp.
 	* sysdeps/mips/mips64/n64/Implies: Likewise.

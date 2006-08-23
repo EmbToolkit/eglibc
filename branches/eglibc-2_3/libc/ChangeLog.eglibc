@@ -1,6 +1,13 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:
+	2005-03-15  Jakub Jelinek  <jakub@redhat.com>
+	* sysdeps/generic/wordexp.c (exec_comm_child): Add inline keyword.
+	Patch by Dan Kegel <dank@kegel.com>.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
 	2005-10-10  Daniel Jacobowitz  <dan@codesourcery.com>
 	* sysdeps/generic/bits/byteswap.h (__bswap_constant_16): New macro.
 	(__bswap_16): Use it.

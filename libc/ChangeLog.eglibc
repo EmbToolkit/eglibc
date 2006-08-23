@@ -1,5 +1,12 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	* math/gen-libm-test.pl (clean_up_number): Do not remove trailing
+	0s from integers.
+	* sysdeps/mips/mips64/n32/libm-test-ulps,
+	sysdeps/mips/mips64/n64/libm-test-ulps: New.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	Backport:
 	2006-03-02  Daniel Jacobowitz  <dan@codesourcery.com>
 	* sysdeps/unix/sysv/linux/mips/mips64/syscalls.list: Remove

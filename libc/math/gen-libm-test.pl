@@ -558,8 +558,10 @@ sub clean_up_number {
   my ($number) = @_;
 
   # Remove trailing zeros
-  $number =~ s/0+$//;
-  $number =~ s/\.$//;
+  if ($number =~ /\./) {
+    $number =~ s/0+$//;
+    $number =~ s/\.$//;
+  }
   return $number;
 }
 

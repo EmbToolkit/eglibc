@@ -23,7 +23,13 @@
 int
 __fegetenv (fenv_t *envp)
 {
+#ifdef __mcoldfire__
+  __asm__ ("fmove%.l %/fpcr,%0" : "=dm" (envp->__control_register));
+  __asm__ ("fmove%.l %/fpsr,%0" : "=dm" (envp->__status_register));
+  __asm__ ("fmove%.l %/fpiar,%0" : "=dm" (envp->__instruction_address));
+#else
   __asm__ ("fmovem%.l %/fpcr/%/fpsr/%/fpiar,%0" : "=m" (*envp));
+#endif
 
   /* Success.  */
   return 0;

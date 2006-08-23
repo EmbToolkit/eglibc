@@ -470,7 +470,12 @@ UDItype __umulsidi3 (USItype, USItype);
 	     "dmi" ((USItype) (d)))
 
 #else /* not mc68020 */
-#if !defined(__mcf5200__)
+#ifdef __mcoldfire__
+#define SHR16(REG) "lsr%.l %#8," REG "\n\tlsr%.l %#8," REG
+#else
+#define SHR16(REG) "eor%.w " REG "," REG "\n\tswap " REG
+#endif
+
 /* %/ inserts REGISTER_PREFIX, %# inserts IMMEDIATE_PREFIX.  */
 #define umul_ppmm(xh, xl, a, b) \
   __asm__ ("| Inlined umul_ppmm\n"					\
@@ -486,8 +491,7 @@ UDItype __umulsidi3 (USItype, USItype);
 	   "	mulu	%/d0,%/d3\n"					\
 	   "	mulu	%/d0,%/d1\n"					\
 	   "	move%.l	%/d4,%/d0\n"					\
-	   "	eor%.w	%/d0,%/d0\n"					\
-	   "	swap	%/d0\n"						\
+	   "	" SHR16 ("%/d0") "\n"					\
 	   "	add%.l	%/d0,%/d2\n"					\
 	   "	add%.l	%/d3,%/d2\n"					\
 	   "	jcc	1f\n"						\
@@ -506,7 +510,6 @@ UDItype __umulsidi3 (USItype, USItype);
 	   : "d0", "d1", "d2", "d3", "d4")
 #define UMUL_TIME 100
 #define UDIV_TIME 400
-#endif /* not mcf5200 */
 #endif /* not mc68020 */
 
 /* The '020, '030, '040 and '060 have bitfield insns.  */

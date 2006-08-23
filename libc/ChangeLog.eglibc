@@ -1,5 +1,10 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/unix/sysv/linux/mips/brk.c (__brk): Use
+	__SYSCALL_CLOBBERS.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	* nptl/Makefile ($(objpfx)$(multidir)): Use mkdir -p.
 
 2006-06-23  Richard Sandiford  <richard@codesourcery.com>

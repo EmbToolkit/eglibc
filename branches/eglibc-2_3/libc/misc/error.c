@@ -124,11 +124,11 @@ char *strerror ();
 static char *
 private_strerror (int errnum)
 {
-  extern char *sys_errlist[];
+  extern const char *const sys_errlist[];
   extern int sys_nerr;
 
   if (errnum > 0 && errnum <= sys_nerr)
-    return _(sys_errlist[errnum]);
+    return (char *) _(sys_errlist[errnum]);
   return _("Unknown system error");
 }
 #   define strerror private_strerror

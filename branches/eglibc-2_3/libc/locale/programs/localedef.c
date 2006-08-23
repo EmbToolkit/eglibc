@@ -114,6 +114,9 @@ void (*argp_program_version_hook) (FILE *, struct argp_state *) = print_version;
 #define OPT_REPLACE 307
 #define OPT_DELETE_FROM_ARCHIVE 308
 #define OPT_LIST_ARCHIVE 309
+#define OPT_LITTLE_ENDIAN 400
+#define OPT_BIG_ENDIAN 401
+#define OPT_UINT32_ALIGN 402
 
 /* Definitions of arguments for argp functions.  */
 static const struct argp_option options[] =
@@ -145,6 +148,11 @@ static const struct argp_option options[] =
   { "list-archive", OPT_LIST_ARCHIVE, NULL, 0, N_("List content of archive") },
   { "alias-file", 'A', "FILE", 0,
     N_("locale.alias file to consult when making archive")},
+  { "little-endian", OPT_LITTLE_ENDIAN, NULL, 0,
+    N_("Generate little-endian output") },
+  { "big-endian", OPT_BIG_ENDIAN, NULL, 0, N_("Generate big-endian output") },
+  { "uint32-align", OPT_UINT32_ALIGN, "ALIGNMENT", 0,
+    N_("Set the target's uint32_t alignment in bytes (default 4)") },
   { NULL, 0, NULL, 0, NULL }
 };
 
@@ -237,12 +245,14 @@ main (int argc, char *argv[])
      ctype locale.  (P1003.2 4.35.5.2)  */
   setlocale (LC_CTYPE, "POSIX");
 
+#ifndef NO_SYSCONF
   /* Look whether the system really allows locale definitions.  POSIX
      defines error code 3 for this situation so I think it must be
      a fatal error (see P1003.2 4.35.8).  */
   if (sysconf (_SC_2_LOCALEDEF) < 0)
     WITH_CUR_LOCALE (error (3, 0, _("\
 FATAL: system does not define `_POSIX2_LOCALEDEF'")));
+#endif
 
   /* Process charmap file.  */
   charmap = charmap_read (charmap_file, verbose, be_quiet, 1);
@@ -329,6 +339,15 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case OPT_LIST_ARCHIVE:
       list_archive = true;
+      break;
+    case OPT_LITTLE_ENDIAN:
+      set_big_endian (0);
+      break;
+    case OPT_BIG_ENDIAN:
+      set_big_endian (1);
+      break;
+    case OPT_UINT32_ALIGN:
+      uint32_align_mask = strtol (arg, NULL, 0) - 1;
       break;
     case 'c':
       force_output = 1;

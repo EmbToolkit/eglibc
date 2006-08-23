@@ -1,6 +1,21 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:
+	2005-03-28  Roland McGrath  <roland@redhat.com>
+	* sysdeps/generic/w_exp2.c [NO_LONG_DOUBLE]: Fix typos in alias names.
+	Reported by Mark Mitchell <mark@codesourcery.com>.
+	* Versions.def (libm): Define GLIBC_2.4 set.
+	* math/Versions (libm: GLIBC_2.4): Add this set, with exp2l.
+	* sysdeps/i386/Versions (libm: GLIBC_2.1): Add this set, with exp2l.
+	* sysdeps/ia64/Versions: Likewise.
+	* sysdeps/m68k/Versions: Likewise.
+	* sysdeps/sparc/sparc64/Versions: Likewise.
+	* sysdeps/x86_64/Versions: New file.
+	* sysdeps/mips/mips64/Versions: New file.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
 	2005-11-18  Andreas Schwab  <schwab@suse.de>
 	* sysdeps/powerpc/powerpc32/fpu/s_lround.S: Remove useless alias.
 	* sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S: Handle

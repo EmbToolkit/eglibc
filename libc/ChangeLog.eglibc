@@ -1,5 +1,10 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	[BZ #2980]
+	* posix/Makefile (CFLAGS-waitid.c): Add -fasynchronous-unwind-tables.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	Backport:
 	2004-11-23  Richard Sandiford  <rsandifo@redhat.com>
 	* configure.in (libc_cv_gcc_dwarf2_unwind_info): Delete.

@@ -1,3 +1,11 @@
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+	2005-11-08  H.J. Lu  <hongjiu.lu@intel.com>
+	* sysdeps/wordsize-32/Makefile (CPPFLAGS-divdi3.c): Set to
+	-Din_divdi3_c.
+	* sysdeps/wordsize-32/symbol-hacks.h: Skip if in_divdi3_c is defined.
+
 2006-05-11  Richard Sandiford  <richard@codesourcery.com>
 
 	* locale/programs/ld-collate.c (obstack_int32_grow): Only use

@@ -1,5 +1,13 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	Backport:
+	2006-03-02  Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/unix/sysv/linux/mips/mips64/syscalls.list: Remove
+	recvfrom and sendto.  Mark lseek, msgrcv, and msgsnd as cancellation
+	points.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	* math/atest-exp.c (main): Cast hex value to mp_limb_t before
 	shifting.
 	* math/atest-exp2.c (read_mpn_hex): Likewise.

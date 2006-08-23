@@ -1,3 +1,7 @@
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* nptl/Makefile ($(objpfx)$(multidir)): Use mkdir -p.
+
 2006-06-23  Richard Sandiford  <richard@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/m68k/register-dump.h (catch_segfault): Don't

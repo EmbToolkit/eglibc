@@ -1,0 +1,7 @@
+# This file is generated from configure.in by Autoconf.  DO NOT EDIT!
+
+# HACK: Skip this test.  At present, GCC does not provide forced unwinding
+# for ARM.
+libc_cv_forced_unwind=yes
+libc_cv_gcc_exceptions=yes
+exceptions=-fexceptions

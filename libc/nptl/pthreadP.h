@@ -305,17 +305,17 @@ extern int __pthread_mutex_destroy (pthread_mutex_t *__mutex);
 extern int __pthread_mutex_destroy_internal (pthread_mutex_t *__mutex)
      attribute_hidden;
 extern int __pthread_mutex_trylock (pthread_mutex_t *_mutex);
-extern int __pthread_mutex_lock (pthread_mutex_t *__mutex);
+extern int __pthread_mutex_lock (pthread_mutex_t *__mutex) __THROW;
 extern int __pthread_mutex_lock_internal (pthread_mutex_t *__mutex)
-     attribute_hidden;
+     attribute_hidden __THROW;
 extern int __pthread_mutex_cond_lock (pthread_mutex_t *__mutex)
      attribute_hidden internal_function;
-extern int __pthread_mutex_unlock (pthread_mutex_t *__mutex);
+extern int __pthread_mutex_unlock (pthread_mutex_t *__mutex) __THROW;
 extern int __pthread_mutex_unlock_internal (pthread_mutex_t *__mutex)
-     attribute_hidden;
+     attribute_hidden __THROW;
 extern int __pthread_mutex_unlock_usercnt (pthread_mutex_t *__mutex,
 					   int __decr)
-     attribute_hidden internal_function;
+     attribute_hidden internal_function __THROW;
 extern int __pthread_mutexattr_init (pthread_mutexattr_t *attr);
 extern int __pthread_mutexattr_destroy (pthread_mutexattr_t *attr);
 extern int __pthread_mutexattr_settype (pthread_mutexattr_t *attr, int kind);

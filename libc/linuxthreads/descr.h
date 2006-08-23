@@ -109,7 +109,7 @@ union dtv;
 
 struct _pthread_descr_struct
 {
-#if !defined USE_TLS || !TLS_DTV_AT_TP
+#if !defined USE_TLS || !TLS_DTV_AT_TP || INCLUDE_TLS_PADDING
   /* This overlaps tcbhead_t (see tls.h), as used for TLS without threads.  */
   union
   {

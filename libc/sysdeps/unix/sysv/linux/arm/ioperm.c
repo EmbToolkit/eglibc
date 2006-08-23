@@ -80,7 +80,7 @@ static struct platform {
  * Initialize I/O system.  There are several ways to get the information
  * we need.  Each is tried in turn until one succeeds.
  *
- * 1. Sysctl (CTL_BUS, BUS_ISA, ISA_*).  This is the preferred method
+ * 1. Sysctl (CTL_BUS, CTL_BUS_ISA, ISA_*).  This is the preferred method
  *    but not all kernels support it.
  *
  * 2. Read the value (not the contents) of symlink PATH_ARM_SYSTYPE.
@@ -95,13 +95,19 @@ static struct platform {
  *    values.
  */
 
+#ifndef CTL_BUS_ISA
+/* Older versions of the Linux kernel (such as 2.4.x) used BUS_ISA,
+   rather than CTL_BUS_ISA.  */
+#define BUS_ISA CTL_BUS_ISA
+#endif
+
 static int
 init_iosys (void)
 {
   char systype[256];
   int i, n;
-  static int iobase_name[] = { CTL_BUS, BUS_ISA, BUS_ISA_PORT_BASE };
-  static int ioshift_name[] = { CTL_BUS, BUS_ISA, BUS_ISA_PORT_SHIFT };
+  static int iobase_name[] = { CTL_BUS, CTL_BUS_ISA, BUS_ISA_PORT_BASE };
+  static int ioshift_name[] = { CTL_BUS, CTL_BUS_ISA, BUS_ISA_PORT_SHIFT };
   size_t len = sizeof(io.base);
 
   if (! sysctl (iobase_name, 3, &io.io_base, &len, NULL, 0)

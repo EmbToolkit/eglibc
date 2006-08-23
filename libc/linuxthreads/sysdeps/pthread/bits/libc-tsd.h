@@ -33,9 +33,9 @@
 # include <bits/libc-lock.h>
 
 # ifndef SHARED
-extern void ** __pthread_internal_tsd_address (int);
-extern void *__pthread_internal_tsd_get (int);
-extern int __pthread_internal_tsd_set (int, const void *);
+extern void ** __pthread_internal_tsd_address (int) __THROW;
+extern void *__pthread_internal_tsd_get (int) __THROW;
+extern int __pthread_internal_tsd_set (int, const void *) __THROW;
 
 weak_extern (__pthread_internal_tsd_address)
 weak_extern (__pthread_internal_tsd_get)

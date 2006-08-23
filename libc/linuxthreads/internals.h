@@ -362,8 +362,8 @@ extern int __pthread_cond_signal (pthread_cond_t *cond);
 extern int __pthread_cond_broadcast (pthread_cond_t *cond);
 extern int __pthread_condattr_init (pthread_condattr_t *attr);
 extern int __pthread_condattr_destroy (pthread_condattr_t *attr);
-extern pthread_t __pthread_self (void);
-extern pthread_descr __pthread_thread_self (void);
+extern pthread_t __pthread_self (void) __THROW;
+extern pthread_descr __pthread_thread_self (void) __THROW;
 extern pthread_descr __pthread_self_stack (void) attribute_hidden;
 extern int __pthread_equal (pthread_t thread1, pthread_t thread2);
 extern void __pthread_exit (void *retval);
@@ -446,10 +446,11 @@ extern void __linuxthreads_reap_event (void);
 extern void __pthread_initialize (void);
 
 /* TSD.  */
-extern int __pthread_internal_tsd_set (int key, const void * pointer);
-extern void * __pthread_internal_tsd_get (int key);
+extern int __pthread_internal_tsd_set (int key, const void * pointer)
+     __THROW;
+extern void * __pthread_internal_tsd_get (int key) __THROW;
 extern void ** __attribute__ ((__const__))
-  __pthread_internal_tsd_address (int key);
+  __pthread_internal_tsd_address (int key) __THROW;
 
 /* Sighandler wrappers.  */
 extern void __pthread_sighandler(int signo, SIGCONTEXT ctx);

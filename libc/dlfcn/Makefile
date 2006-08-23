@@ -68,7 +68,8 @@ include ../Rules
 LDFLAGS-dl.so = -Wl,-dynamic-linker,$(slibdir)/$(rtld-installed-name)
 
 test-modules = $(addprefix $(objpfx),$(addsuffix .so,$(modules-names)))
-$(test-modules): $(objpfx)%.so: $(objpfx)%.os $(common-objpfx)shlib.lds
+$(test-modules): $(objpfx)%.so: $(objpfx)%.os $(common-objpfx)shlib.lds \
+		 $(common-objpfx)libc.so $(common-objpfx)libc_nonshared.a
 	$(build-module)
 
 ifeq ($(build-shared),yes)

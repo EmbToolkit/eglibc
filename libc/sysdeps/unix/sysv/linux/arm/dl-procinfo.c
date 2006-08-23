@@ -47,11 +47,12 @@
 #if !defined PROCINFO_DECL && defined SHARED
   ._dl_arm_cap_flags
 #else
-PROCINFO_CLASS const char _dl_arm_cap_flags[8][10]
+PROCINFO_CLASS const char _dl_arm_cap_flags[10][10]
 #endif
 #ifndef PROCINFO_DECL
 = {
     "swp", "half", "thumb", "26bit", "fast-mult", "fpa", "vfp", "edsp",
+    "java", "iwmmxt",
   }
 #endif
 #if !defined SHARED || defined PROCINFO_DECL

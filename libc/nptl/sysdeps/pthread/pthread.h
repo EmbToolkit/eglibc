@@ -473,7 +473,9 @@ struct __pthread_cleanup_frame
   int __cancel_type;
 };
 
-#if defined __GNUC__ && defined __EXCEPTIONS
+/* FIXME: The ARM EABI check should be removed ASAP, but the current ARM EABI
+   has no forced unwinding support.  */
+#if defined __GNUC__ && defined __EXCEPTIONS && !defined (__ARM_EABI__)
 # ifdef __cplusplus
 /* Class to handle cancellation handler invocation.  */
 class __pthread_cleanup_class

@@ -1,5 +1,10 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	Backport MIPS NPTL support.  By Daniel Jacobowitz
+	<dan@codesourcery.com>.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	Backport:
 	2006-03-02  Daniel Jacobowitz  <dan@codesourcery.com>
 	* sysdeps/unix/sysv/linux/mips/ptrace.c: Delete file.

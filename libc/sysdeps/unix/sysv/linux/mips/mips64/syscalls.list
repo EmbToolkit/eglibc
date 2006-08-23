@@ -1,6 +1,6 @@
 # File name	Caller	Syscall name	Args	Strong name	Weak names
 
-lseek		-	lseek		i:iii	__libc_lseek	__lseek lseek __llseek llseek __libc_lseek64 __lseek64 lseek64
+lseek		-	lseek		Ci:iii	__libc_lseek	__lseek lseek __llseek llseek __libc_lseek64 __lseek64 lseek64
 
 # proper socket implementations:
 recvfrom	-	recvfrom	i:ibniBN __libc_recvfrom __recvfrom recvfrom

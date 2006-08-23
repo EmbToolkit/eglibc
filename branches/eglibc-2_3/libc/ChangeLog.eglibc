@@ -1,3 +1,15 @@
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+	2005-10-10  Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/generic/bits/byteswap.h (__bswap_constant_16): New macro.
+	(__bswap_16): Use it.
+	(__bswap_constant_32): New macro.
+	(__bswap_32): Use it.
+	2005-02-15  Ulrich Drepper  <drepper@redhat.com>
+	* sysdeps/generic/bits/byteswap.h: Make sure result of all the
+	functions and macros is unsigned.
+
 2006-08-23  Joseph S. Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/bits/mman.h (POSIX_MADV_NORMAL,

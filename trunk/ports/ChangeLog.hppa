@@ -1,0 +1,193 @@
+2006-08-13  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.h (FUTEX_LOCK_PI,
+	FUTEX_UNLOCK_PI, FUTEX_TRYLOCK_PI): Define.
+
+2006-07-24  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/nptl/bits/pthreadtypes.h: 
+	__SIZEOF_PTHREAD_COND_T is 64 bytes. Remove __PAD_ATOMIC_LOCK_T.
+
+2006-07-18  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/nptl/pthread_spin_lock.c (pthread_spin_lock): Swap
+	newval and oldval.
+	* sysdeps/hppa/nptl/pthread_spin_trylock.c (pthread_spin_trylock):
+	Likewise.
+
+2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
+
+	* sysdeps/hppa/tst-audit.h: New file.
+
+2006-07-16  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/tls-macros.h: Cleanup formatting.
+
+2006-07-15  Jeff Bailey  <jbailey@ubuntu.com>
+
+	* sysdeps/hppa/nptl/tls.h (TLS_INIT_TP): Return NULL.
+
+2006-07-13  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/xstat.c: New file.
+	* sysdeps/unix/sysv/linux/hppa/lxstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/fxstat.c: Likewise. 
+	* sysdeps/unix/sysv/linux/hppa/fxstatat.c: Likewise.
+
+2006-07-13  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/nptl/Makefile: New file
+	* sysdeps/hppa/nptl/jmpbuf-unwind.h: Likewise
+	* sysdeps/hppa/nptl/pthread_spin_lock.c: Likewise
+	* sysdeps/hppa/nptl/pthread_spin_trylock.c: Likewise
+	* sysdeps/hppa/nptl/pthread_spin_unlock.c: Likewise
+	* sysdeps/hppa/nptl/pthreaddef.h: Likewise
+	* sysdeps/hppa/nptl/tcb-offsets.sym: Likewise
+	* sysdeps/hppa/nptl/tls.h: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/bits: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/createthread.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/fork.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/internaltypes.h: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/libc-lowlevellock.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.h: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/pt-initfini.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/pthread_once.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/sysdep-cancel.h: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/unwind-forcedunwind.c: Likewise
+	* sysdeps/unix/sysv/linux/hppa/nptl/unwind-resume.c: Likewise
+
+2006-06-08  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/Versions: new errlist compat entry 
+	for up to 256 errnos
+
+2006-06-08  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/hppa1.1/Implies: Remove ieee754/ldbl-128. 
+	* sysdeps/unix/sysv/linux/hppa/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020609]: Define __ASSUME_LWS_CAS.
+	* sysdeps/unix/sysv/linux/hppa/bits/atomic.h: New file.
+
+2006-06-08  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h: Reformat
+	(SPLICE_F_MOVE, SPLICE_F_NONBLOCK, SPLICE_F_MORE, SPLICE_F_GIFT):
+	Define.
+
+2006-05-24  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/clone.S: .LerrorRest
+	is a label.
+
+2006-05-24  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/ldsodefs.h: New file.
+	* sysdeps/unix/sysv/linux/hppa/bits/mman.h:
+	Only define MADV_* macros when __USE_BSD is present.
+	(MADV_REMOVE, MADV_DONTFORK, MADV_DOFORK): Define.
+
+2006-05-15  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/clone.S: Accept extra arguments
+	required for NPTL.
+	* sysdeps/unix/sysv/linux/hppa/sysdep.c: Use var args for 6 arg
+	syscall.
+	* sysdeps/unix/sysv/linux/hppa/sysdep.h: Move DOARGS and UNDOARGS
+	into PSEUDO_*'s.
+	(ENTRY_LEAF): Define.
+	(PSEUDO_NOERRNO, PSEUDO_ERRVAL): Use ENTRY_LEAF.
+	(DO_CALL): Create frame.
+
+2006-05-15  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/dl-machine.h: Include tls.h
+	(elf_machine_fixup_plt): Returns fdesc.
+	(elf_machine_profile_fixup_plt): Remove.
+	(elf_machine_plt_value): Returns fdesc.
+	(elf_machine_runtime_setup): Check that dl_profile != NULL.
+	(ARCH_LA_PLTENT, ARCH_LA_PLTEXIT): Define.
+	(RTLD_START): Use iitlbp with sr0.
+	(elf_machine_type_class): Include TLS relocs.
+	(reassemble_21, reassemble_14): Define.
+	(elf_machine_rela): Add DIR21L, DIR14R, PLABEL21L, PLABEL14R,
+	TLS_DTPMOD32, TLS_TPREL32, TLS_DTPOFF32 support.
+	(TRAMPOLINE_TEMPLATE): Move to ...
+	* sysdeps/hppa/dl-trampoline.S: ... here.
+	* sysdeps/hppa/abort-instr.h: Use iitlbp with sr0.
+	* sysdeps/hppa/dl-lookupcfg.h: Inlcude dl-fptr.h.
+	(DL_FIXUP_VALUE_TYPE, DL_FIXUP_MAKE_VALUE, DL_FIXUP_VALUE_CODE_ADDR,
+	DL_FIXUP_VALUE_ADD, DL_FIXUP_ADDR_VALUE): Define.
+	* sysdeps/hppa/sysdep.h: Use "!" as a separator. Cleanup comments.
+	* sysdeps/hppa/bits/link.h (La_hppa_regs, La_hppa_retval): Define.
+	Define prototypes for la_hppa_gnu_pltenter and la_hppa_gnu_pltexit.
+
+2006-04-27  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h: Include uio.h, and
+	define vmsplice.
+
+2006-04-21  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/dl-tls.h: New file
+	* sysdeps/hppa/libc-tls.c: Likewise.
+	* sysdeps/hppa/tls-macros.h: Likewise.
+	* sysdeps/hppa/elf/configure: Likewise.
+	* sysdeps/hppa/elf/configure.in: Likewise.
+
+2006-04-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/fpu/fclrexcpt.c (feclearexcept): Use union to
+	align parameters. Specify memory clobbers.
+	* sysdeps/hppa/fpu/fedisblxcpt.c (fedisableexcept): Likewise.
+	* sysdeps/hppa/fpu/feenablxcpt.c (feenableexcept): Likewise.
+	* sysdeps/hppa/fpu/fegetenv.c (fegetenv): Do not save exception
+	register. Use memcpy to align buffer.
+	* sysdeps/hppa/fpu/fegetexcept.c (fegetexcept): Store and reload
+	fr0. Use union to align parameters.
+	* sysdeps/hppa/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/hppa/fpu/feholdexcpt.c (feholdexcept): Do not save
+	exception registers. Define libm_hidden_def.
+	* sysdeps/hppa/fpu/fesetenv.c (fesetenv): Do not save exception
+	registers.
+	* sysdeps/hppa/fpu/fesetround.c (fesetround): Use union to
+	align parameters, speficy memory clobbers. Define libm_hidde_def
+	* sysdeps/hppa/fpu/feupdateenv.c (feupdateenv): Use union to align
+	parameters. Use memcpy to align buffer.
+	* sysdeps/hppa/fpu/fgetexcptflg.c (fegetexceptflag): Likewise.
+	* sysdeps/hppa/fpu/fsetexcptflg.c (fesetexceptflag): Likewise.
+	* sysdeps/hppa/fpu/ftestexcept.c (fetestexcept): Likewise.
+	* sysdeps/hppa/fpu/libm-test-ulps: Update.
+	* sysdeps/hppa/fpu/bits/fenv.h: Add ABI comments.
+
+2006-04-19  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/mman.h [__USE_GNU]: 
+	Define MMAP_FIXED.
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h [__USE_GNU]: 
+	Define SYNC_FILE_RANGE_WAIT_BEFORE, SYNC_FILE_RANGE_WRITE,
+	SYNC_FILE_RANGE_WAIT_AFTER, sync_file_range, splice, tee.
+
+2006-04-19  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/kernel-features.h: New file.
+
+2006-04-19  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/linuxthreads/pspinlock.c: New file.
+	* sysdeps/hppa/linuxthreads/pt-machine.h: Likewise.
+	* sysdeps/hppa/linuxthreads/tls.h: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/aio_cancel.c: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/malloc-machine.h:
+	Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/pt-initfini.c: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/initspin.h: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/pthreadtypes.h:
+	Likewise.
+
+2006-02-28  Roland McGrath  <roland@redhat.com>
+
+	* sysdeps/hppa/shlib-versions: New file.
+	* sysdeps/hppa/preconfigure: New file.

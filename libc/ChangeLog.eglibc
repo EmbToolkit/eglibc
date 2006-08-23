@@ -1,5 +1,18 @@
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/generic/e_exp2l.c: Update from mainline glibc.
+	* sysdeps/mips/mips64/n32/Implies: Add mips/mips64/soft-fp.
+	* sysdeps/mips/mips64/n64/Implies: Likewise.
+	* sysdeps/mips/mips64/soft-fp/Makefile: New.
+	* sysdeps/mips/mips64/soft-fp/e_sqrtl.c: New.
+	* sysdeps/mips/mips64/soft-fp/sfp-machine.h: Include <fenv.h> and
+	<fpu_control.h>.  Use hardware exception and rounding mode
+	settings.
+	* soft-fp/quad.h (_FP_UNION_Q): Use _FP_W_TYPE for frac
+	bit-fields.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/unix/sysv/linux/mips/bits/resource.h (RLIM_INFINITY,
 	RLIM64_INFINITY): Define appropriately for N64.  Use unsigned
 	types.

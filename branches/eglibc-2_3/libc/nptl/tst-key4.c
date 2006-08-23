@@ -24,10 +24,18 @@
 #include <unistd.h>
 
 
-#ifdef PTHREAD_KEYS_MAX
-const int max = PTHREAD_KEYS_MAX;
+#ifdef __USING_SJLJ_EXCEPTIONS__
+/* GCC's setjmp/longjmp unwinder creates one thread-specific key to
+   hold the unwind data.  */
+#define SYSTEM_KEYS_USED 1
 #else
-const int max = _POSIX_THREAD_KEYS_MAX;
+#define SYSTEM_KEYS_USED 0
+#endif
+
+#ifdef PTHREAD_KEYS_MAX
+const int max = PTHREAD_KEYS_MAX - SYSTEM_KEYS_USED;
+#else
+const int max = _POSIX_THREAD_KEYS_MAX - SYSTEM_KEYS_USED;
 #endif
 static pthread_key_t *keys;
 

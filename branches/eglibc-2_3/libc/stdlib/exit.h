@@ -60,4 +60,6 @@ extern struct exit_function_list *__exit_funcs attribute_hidden;
 
 extern struct exit_function *__new_exitfn (void);
 
+extern int __cxa_atexit (void (*) (void*), void *, void *);
+ 
 #endif	/* exit.h  */

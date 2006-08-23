@@ -481,7 +481,8 @@ unload3mod4.so-no-z-defs = yes
 unload4mod1.so-no-z-defs = yes
 
 # filtmod1.so has a special rule
-$(filter-out $(objpfx)filtmod1.so, $(test-modules)): $(objpfx)%.so: $(objpfx)%.os
+$(filter-out $(objpfx)filtmod1.so, $(test-modules)): $(objpfx)%.so: $(objpfx)%.os \
+						     $(common-objpfx)libc_nonshared.a
 	$(build-module)
 
 ifeq ($(build-shared),yes)

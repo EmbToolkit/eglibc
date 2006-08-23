@@ -24,6 +24,7 @@
 #define ELF_MACHINE_NAME "ARM"
 
 #include <sys/param.h>
+#include <tls.h>
 
 #define VALID_ELF_ABIVERSION(ver)	(ver == 0)
 #define VALID_ELF_OSABI(osabi) \
@@ -34,15 +35,7 @@
   && VALID_ELF_ABIVERSION (hdr[EI_ABIVERSION])
 
 #define CLEAR_CACHE(BEG,END)						\
-{									\
-  register unsigned long _beg __asm ("a1") = (unsigned long)(BEG);	\
-  register unsigned long _end __asm ("a2") = (unsigned long)(END);	\
-  register unsigned long _flg __asm ("a3") = 0;				\
-  __asm __volatile ("swi 0x9f0002		@ sys_cacheflush"	\
-		    : /* no outputs */					\
-		    : /* no inputs */					\
-		    : "a1");						\
-}
+  INTERNAL_SYSCALL_ARM (cacheflush, , 3, (BEG), (END), 0)
 
 /* Return nonzero iff ELF header is compatible with the running host.  */
 static inline int __attribute__ ((unused))
@@ -268,22 +261,19 @@ _dl_start_user:\n\
 	add	sl, pc, sl\n\
 .L_GOT_GOT:\n\
 	ldr	r4, [sl, r4]\n\
-	@ get the original arg count\n\
-	ldr	r1, [sp]\n\
 	@ save the entry point in another register\n\
 	mov	r6, r0\n\
-	@ adjust the stack pointer to skip the extra args\n\
-	add	sp, sp, r4, lsl #2\n\
-	@ subtract _dl_skip_args from original arg count\n\
-	sub	r1, r1, r4\n\
+	@ get the original arg count\n\
+	ldr	r1, [sp]\n\
 	@ get the argv address\n\
 	add	r2, sp, #4\n\
-	@ store the new argc in the new stack location\n\
-	str	r1, [sp]\n\
+	@ Fix up the stack if necessary.\n\
+	cmp	r4, #0\n\
+	bne	.L_fixup_stack\n\
+.L_done_fixup:\n\
 	@ compute envp\n\
 	add	r3, r2, r1, lsl #2\n\
 	add	r3, r3, #4\n\
-\n\
 	@ now we call _dl_init\n\
 	ldr	r0, .L_LOADED\n\
 	ldr	r0, [sl, r0]\n\
@@ -294,24 +284,66 @@ _dl_start_user:\n\
 	add	r0, sl, r0\n\
 	@ jump to the user_s entry point\n\
 	" BX(r6) "\n\
+\n\
+	@ iWMMXt and EABI targets require the stack to be eight byte\n\
+	@ aligned - shuffle arguments etc.\n\
+.L_fixup_stack:\n\
+	@ subtract _dl_skip_args from original arg count\n\
+	sub	r1, r1, r4\n\
+	@ store the new argc in the new stack location\n\
+	str	r1, [sp]\n\
+	@ find the first unskipped argument\n\
+	mov	r3, r2\n\
+	add	r4, r2, r4, lsl #2\n\
+	@ shuffle argv down\n\
+1:	ldr	r5, [r4], #4\n\
+	str	r5, [r3], #4\n\
+	cmp	r5, #0\n\
+	bne	1b\n\
+	@ shuffle envp down\n\
+1:	ldr	r5, [r4], #4\n\
+	str	r5, [r3], #4\n\
+	cmp	r5, #0\n\
+	bne	1b\n\
+	@ shuffle auxv down\n\
+1:	ldmia	r4!, {r0, r5}\n\
+	stmia	r3!, {r0, r5}\n\
+	cmp	r0, #0\n\
+	bne	1b\n\
+	@ Update _dl_argv\n\
+	ldr	r3, .L_ARGV\n\
+	str	r2, [sl, r3]\n\
+	b	.L_done_fixup\n\
+\n\
 .L_GET_GOT:\n\
 	.word	_GLOBAL_OFFSET_TABLE_ - .L_GOT_GOT - 4\n\
 .L_SKIP_ARGS:\n\
 	.word	_dl_skip_args(GOTOFF)\n\
 .L_FINI_PROC:\n\
 	.word	_dl_fini(GOTOFF)\n\
+.L_ARGV:\n\
+	.word	_dl_argv(GOTOFF)\n\
 .L_LOADED:\n\
 	.word	_rtld_local(GOTOFF)\n\
 .previous\n\
 ");
 
-/* ELF_RTYPE_CLASS_PLT iff TYPE describes relocation of a PLT entry, so
-   PLT entries should not be allowed to define the value.
+/* ELF_RTYPE_CLASS_PLT iff TYPE describes relocation of a PLT entry or
+   TLS variable, so undefined references should not be allowed to
+   define the value.
    ELF_RTYPE_CLASS_NOCOPY iff TYPE should not be allowed to resolve to one
    of the main executable's symbols, as for a COPY reloc.  */
+#if defined USE_TLS && (!defined RTLD_BOOTSTRAP || USE___THREAD)
+# define elf_machine_type_class(type) \
+  ((((type) == R_ARM_JUMP_SLOT || (type) == R_ARM_TLS_DTPMOD32		      \
+     || (type) == R_ARM_TLS_DTPOFF32 || (type) == R_ARM_TLS_TPOFF32)	      \
+    * ELF_RTYPE_CLASS_PLT)						      \
+   | (((type) == R_ARM_COPY) * ELF_RTYPE_CLASS_COPY))
+#else
 #define elf_machine_type_class(type) \
   ((((type) == R_ARM_JUMP_SLOT) * ELF_RTYPE_CLASS_PLT)	\
    | (((type) == R_ARM_COPY) * ELF_RTYPE_CLASS_COPY))
+#endif
 
 /* A reloc type used for ld.so cmdline arg lookups to reject PLT entries.  */
 #define ELF_MACHINE_JMP_SLOT	R_ARM_JUMP_SLOT
@@ -354,10 +386,10 @@ elf_machine_plt_value (struct link_map *map, const Elf32_Rel *reloc,
    Prelinked libraries may use Elf32_Rela though.  */
 #define ELF_MACHINE_NO_RELA defined RTLD_BOOTSTRAP
 
-#ifdef RESOLVE
+#ifdef RESOLVE_MAP
 
 /* Deal with an out-of-range PC24 reloc.  */
-static Elf32_Addr
+auto Elf32_Addr
 fix_bad_pc24 (Elf32_Addr *const reloc_addr, Elf32_Addr value)
 {
   static void *fix_page;
@@ -424,9 +456,8 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 #endif
     {
       const Elf32_Sym *const refsym = sym;
-      Elf32_Addr value = RESOLVE (&sym, version, r_type);
-      if (sym)
-	value += sym->st_value;
+      struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
+      Elf32_Addr value = sym_map == NULL ? 0 : sym_map->l_addr + sym->st_value;
 
       switch (r_type)
 	{
@@ -508,6 +539,23 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	     *reloc_addr = value;
 	  }
 	break;
+#if defined USE_TLS && !defined RTLD_BOOTSTRAP
+	case R_ARM_TLS_DTPMOD32:
+	  /* Get the information from the link map returned by the
+	     resolv function.  */
+	  if (sym_map != NULL)
+	    *reloc_addr = sym_map->l_tls_modid;
+	  break;
+
+	case R_ARM_TLS_DTPOFF32:
+	  *reloc_addr += sym->st_value;
+	  break;
+
+	case R_ARM_TLS_TPOFF32:
+	  CHECK_STATIC_TLS (map, sym_map);
+	  *reloc_addr += sym->st_value + sym_map->l_tls_offset;
+	  break;
+#endif
 	default:
 	  _dl_reloc_bad_type (map, r_type, 0);
 	  break;
@@ -534,9 +582,8 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 # ifndef RESOLVE_CONFLICT_FIND_MAP
       const Elf32_Sym *const refsym = sym;
 # endif
-      Elf32_Addr value = RESOLVE (&sym, version, r_type);
-      if (sym)
-	value += sym->st_value;
+      struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
+      Elf32_Addr value = sym_map == NULL ? 0 : sym_map->l_addr + sym->st_value;
 
       switch (r_type)
 	{
@@ -567,6 +614,23 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 	case R_ARM_ABS32:
 	  *reloc_addr = value + reloc->r_addend;
 	  break;
+#if defined USE_TLS && !defined RTLD_BOOTSTRAP
+	case R_ARM_TLS_DTPMOD32:
+	  /* Get the information from the link map returned by the
+	     resolv function.  */
+	  if (sym_map != NULL)
+	    *reloc_addr = sym_map->l_tls_modid;
+	  break;
+
+	case R_ARM_TLS_DTPOFF32:
+	  *reloc_addr = sym->st_value + reloc->r_addend;
+	  break;
+
+	case R_ARM_TLS_TPOFF32:
+	  CHECK_STATIC_TLS (map, sym_map);
+	  *reloc_addr = sym->st_value + sym_map->l_tls_offset + reloc->r_addend;
+	  break;
+#endif
 	case R_ARM_PC24:
 	  {
 	     Elf32_Addr newvalue, topbits;
@@ -636,4 +700,4 @@ elf_machine_lazy_rel (struct link_map *map,
     _dl_reloc_bad_type (map, r_type, 1);
 }
 
-#endif /* RESOLVE */
+#endif /* RESOLVE_MAP */

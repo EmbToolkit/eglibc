@@ -23,15 +23,22 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifdef __USING_SJLJ_EXCEPTIONS__
+/* GCC's setjmp/longjmp unwinder creates one thread-specific key to
+   hold the unwind data.  */
+#define SYSTEM_KEYS_USED 1
+#else
+#define SYSTEM_KEYS_USED 0
+#endif
 
 int
 do_test (void)
 {
   int max;
 #ifdef PTHREAD_KEYS_MAX
-  max = PTHREAD_KEYS_MAX;
+  max = PTHREAD_KEYS_MAX - SYSTEM_KEYS_USED;
 #else
-  max = _POSIX_THREAD_KEYS_MAX;
+  max = _POSIX_THREAD_KEYS_MAX - SYSTEM_KEYS_USED;
 #endif
   pthread_key_t *keys = alloca (max * sizeof (pthread_key_t));
 

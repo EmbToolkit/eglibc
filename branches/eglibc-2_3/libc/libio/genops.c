@@ -914,7 +914,7 @@ INTDEF(_IO_flush_all_linebuffered)
 weak_alias (_IO_flush_all_linebuffered, _flushlbf)
 #endif
 
-static void _IO_unbuffer_write (void);
+static void _IO_unbuffer_write (void) __THROW;
 
 static void
 _IO_unbuffer_write ()

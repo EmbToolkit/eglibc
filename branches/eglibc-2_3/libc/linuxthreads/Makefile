@@ -142,7 +142,8 @@ tst-tls1modd.so-no-z-defs = yes
 tst-tls1mode.so-no-z-defs = yes
 tst-tls1modf.so-no-z-defs = yes
 
-$(test-modules): $(objpfx)%.so: $(objpfx)%.os $(common-objpfx)shlib.lds
+$(test-modules): $(objpfx)%.so: $(objpfx)%.os $(common-objpfx)shlib.lds \
+		 $(common-objpfx)libc.so $(common-objpfx)libc_nonshared.a
 	$(build-module)
 
 ifeq ($(build-shared),yes)

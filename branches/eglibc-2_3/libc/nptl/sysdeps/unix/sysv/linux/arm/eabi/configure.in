@@ -1,0 +1,10 @@
+dnl configure fragment for NPTL and ARM/Linux EABI.
+GLIBC_PROVIDES dnl See aclocal.m4 in the top level source directory.
+
+# HACK: Skip this test.  At present, GCC does not provide forced unwinding
+# for ARM.
+libc_cv_forced_unwind=yes
+dnl The normal configure check for gcc -fexecptions fails because it can't
+dnl find __aeabi_unwind_cpp_pr0.  Hack round this here.
+libc_cv_gcc_exceptions=yes
+exceptions=-fexceptions

@@ -23,7 +23,7 @@ __libc_tsd_define (extern, CTYPE_TOUPPER)
 __libc_tsd_define (extern, CTYPE_TOLOWER)
 
 CTYPE_EXTERN_INLINE const uint16_t ** __attribute__ ((const))
-__ctype_b_loc (void)
+__NTH (__ctype_b_loc (void))
 {
   union
     {
@@ -37,7 +37,7 @@ __ctype_b_loc (void)
 }
 
 CTYPE_EXTERN_INLINE const int32_t ** __attribute__ ((const))
-__ctype_toupper_loc (void)
+__NTH (__ctype_toupper_loc (void))
 {
   union
     {
@@ -51,7 +51,7 @@ __ctype_toupper_loc (void)
 }
 
 CTYPE_EXTERN_INLINE const int32_t ** __attribute__ ((const))
-__ctype_tolower_loc (void)
+__NTH (__ctype_tolower_loc (void))
 {
   union
     {

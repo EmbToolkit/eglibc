@@ -95,6 +95,10 @@ unwind_stop (int version, _Unwind_Action actions,
   if (do_longjump)
     __libc_unwind_longjmp ((struct __jmp_buf_tag *) buf->cancel_jmp_buf, 1);
 
+#ifdef ARCH_UNWIND_CLEANUP
+  ARCH_UNWIND_CLEANUP (context);
+#endif
+
   return _URC_NO_REASON;
 }
 

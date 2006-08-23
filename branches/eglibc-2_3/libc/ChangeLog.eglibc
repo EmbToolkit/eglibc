@@ -1,3 +1,634 @@
+2006-08-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/syscalls.list: Remove msgctl,
+	shmctl, and semctl.
+	* sysdeps/unix/sysv/linux/arm/eabi/semctl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/shmctl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/msgctl.c: New files.
+
+2006-08-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.c (_dl_arm_cap_flags):
+	Add "java" and "iwmmxt".
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.h: Use <sysdep.h> for
+	HWCAP values.
+	(_DL_HWCAP_COUNT): Increase to 10.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h (HWCAP_ARM_SWP,
+	HWCAP_ARM_HALF, HWCAP_ARM_THUMB, HWCAP_ARM_26BIT,
+	HWCAP_ARM_FAST_MULT, HWCAP_ARM_FPA, HWCAP_ARM_VFP, HWCAP_ARM_EDSP,
+	HWCAP_ARM_JAVA, HWCAP_ARM_IWMMXT): Define.
+	* sysdeps/arm/eabi/setjmp.S (__sigsetjmp): Save iWMMXt registers
+	if HWCAP_ARM_IWMMXT set.  Don't include <asm/procinfo.h>.  Use
+	HWCAP_ARM_VFP instead of HWCAP_VFP.
+	* sysdeps/arm/eabi/__longjmp.S (__longjmp): Restore iWMMXt
+	registers if HWCAP_ARM_IWMMXT set.  Don't include
+	<asm/procinfo.h>.  Use HWCAP_ARM_VFP instead of HWCAP_VFP.
+
+2006-06-01  Mark Shinwell  <shinwell@codesourcery.com>
+
+	* nptl/sysdeps/arm/pthreaddef.h: Add -12 offset to
+	CURRENT_STACK_FRAME macro.
+
+2006-05-02  Paul Brook  <paul@codesourcery.com>
+
+	* nptl/sysdeps/unix/sysv/linux/arm/lowlevellock.h (lll_mutex_trylock,
+	lll_mutex_cond_trylock): Use atomic_compare_and_exchange_val_acq.
+	* nptl/sysdeps/unix/sysv/linux/arm/bits/atomic.h (atomic_exchange_acq):
+	Disable on SMP.
+	(atomic_full_barrier): Define.
+
+2006-03-24  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/socket.S: Delete.
+	* sysdeps/unix/sysv/linux/arm/eabi/syscalls.list,
+	sysdeps/unix/sysv/linux/arm/kernel-features.h,
+	sysdeps/unix/sysv/linux/arm/eabi/umount.c: New files.
+	* linuxthreads/sysdeps/unix/sysv/linux/arm/eabi/sysdep-cancel.h
+	(DOCARGS_6, UNDOCARGS_6, RESTORE_LR_6): Define.
+	* nptl/sysdeps/unix/sysv/linux/arm/eabi/sysdep-cancel.h
+	(DOCARGS_6, UNDOCARGS_6, RESTORE_LR_6): Define.
+	* sysdeps/unix/sysv/linux/arm/eabi/sysdep.h: Undefine
+	__NR_stime and __NR_alarm.
+
+2006-01-06  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (CLEAR_CACHE): Use INTERNAL_SYSCALL_ARM.
+	* sysdeps/unix/sysv/linux/arm/brk.c (__brk): Use INLINE_SYSCALL.
+	* sysdeps/unix/sysv/linux/arm/clone.S (__clone): Adjust for EABI
+	syscalls.
+	* sysdeps/unix/sysv/linux/arm/eabi/configure.in: Bump
+	arch_minimum_kernel.
+	* sysdeps/unix/sysv/linux/arm/eabi/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/arm/eabi/epoll_ctl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/epoll_wait.c,
+	sysdeps/unix/sysv/linux/arm/eabi/fcntl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/fstatfs64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/ftruncate64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/fxstat64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/kernel_epoll.h,
+	sysdeps/unix/sysv/linux/arm/eabi/kernel_stat.h,
+	sysdeps/unix/sysv/linux/arm/eabi/lockf64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/lxstat64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/semop.c,
+	sysdeps/unix/sysv/linux/arm/eabi/semtimedop.c,
+	sysdeps/unix/sysv/linux/arm/eabi/statfs64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/syscalls.list,
+	sysdeps/unix/sysv/linux/arm/eabi/uname.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstat64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstatconv.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstatconv.h: Removed.
+	* sysdeps/unix/sysv/linux/arm/eabi/mmap64.S,
+	sysdeps/unix/sysv/linux/arm/eabi/pread.c,
+	sysdeps/unix/sysv/linux/arm/eabi/pread64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/pwrite.c,
+	sysdeps/unix/sysv/linux/arm/eabi/pwrite64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/readahead.c,
+	sysdeps/unix/sysv/linux/arm/eabi/sigrestorer.S,
+	sysdeps/unix/sysv/linux/arm/eabi/socket.S,
+	sysdeps/unix/sysv/linux/arm/eabi/syscall.S,
+	sysdeps/unix/sysv/linux/arm/eabi/sysdep.h,
+	sysdeps/unix/sysv/linux/arm/eabi/truncate64.c: New files.
+	* sysdeps/unix/sysv/linux/arm/mmap.S (__mmap): Use DO_CALL.
+	* sysdeps/unix/sysv/linux/arm/mmap64.S (__mmap64): Use DO_CALL.
+	Don't handle EABI here.
+	* sysdeps/unix/sysv/linux/arm/socket.S (__socket): Use
+	SINGLE_THREAD_P.
+	* sysdeps/unix/sysv/linux/arm/vfork.S (__vfork): Use DO_CALL.
+
+	* linuxthreads/sysdeps/unix/sysv/linux/arm/eabi/sysdep-cancel.h: New
+	file.
+	* linuxthreads/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h
+	(SINGLE_THREAD_P_INT, SINGLE_THREAD_P_PIC): Removed.
+	(SINGLE_THREAD_P): Rewritten to use only ip.
+	* linuxthreads/sysdeps/unix/sysv/linux/arm/vfork.S (__vfork): Use
+	DO_CALL.
+
+	* sysdeps/arm/bits/setjmp.h, sysdeps/arm/fpu/bits/setjmp.h,
+	sysdeps/unix/arm/sysdep.S: Update
+	copyright years.
+
+	* sysdeps/unix/sysv/linux/arm/sigaction.c
+	(__libc_sigaction): Remove never-valid handling for SA_ONSTACK.
+
+	* sysdeps/unix/sysv/linux/arm/socket.S: Whitespace cleanup.
+
+	* nptl/sysdeps/unix/sysv/linux/arm/socket.S: Delete.
+
+	* sysdeps/unix/sysv/linux/arm/sysdep.h: Doc fix.
+
+	* nptl/sysdeps/unix/sysv/linux/arm/Versions,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/sysdep-cancel.h: New files.
+
+2005-11-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (fix_bad_pc24): Change static to auto.
+
+2005-11-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* nptl/sysdeps/arm/tcb-offsets.sym: Fix to work with GCC 4.1.
+
+2005-11-03  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S: Add LGPL exception.
+
+2005-10-31  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/eabi/aeabi_lcsts.c, sysdeps/arm/eabi/aeabi_math.c,
+	sysdeps/arm/eabi/aeabi_sighandlers.S: Add LGPL exception.
+
+2005-10-31  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile (static-only-routines): Remove
+	$(aeabi_routines).
+	* sysdeps/arm/eabi/Versions (GLIBC_2.4): Add ARM EABI portability
+	routines.
+	* sysdeps/arm/eabi/aeabi_assert.c, sysdeps/arm/eabi/aeabi_atexit.c,
+	sysdeps/arm/eabi/aeabi_errno_addr.c,
+	sysdeps/arm/eabi/aeabi_localeconv.c,
+	sysdeps/arm/eabi/aeabi_mb_cur_max.c, sysdeps/arm/eabi/aeabi_memclr.c,
+	sysdeps/arm/eabi/aeabi_memcpy.c, sysdeps/arm/eabi/aeabi_memmove.c,
+	sysdeps/arm/eabi/aeabi_memset.c: Remove attribute_hidden.
+
+2005-10-20  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/socket.S: Conditionalize weak alias on
+	NO_WEAK_ALIAS.
+	* nptl/sysdeps/unix/sysv/linux/arm/socket.S: Conditionalize weak alias
+	on NO_WEAK_ALIAS.
+
+2005-10-09  Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/eabi/setjmp.S (__sigsetjmp): Use caller-saved registers
+	in VFP detection code.
+
+2005-10-07  Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/eabi/setfpucw.c: New file.
+	(__setfpucw): New function. Set VFP status word if a VFP unit is
+	present.
+
+2005-10-07  Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/eabi/bits/predefs.h (__STDC_IEC_559__): Don't define when
+	run-time VFP detection is being used.
+	(__STDC_IEC_559_COMPLEX__): Likewise.
+	* sysdeps/arm/eabi/fpu/bits/predefs.h: New file.
+	(__STDC_IEC_559__): Define when compiling with VFP enabled.
+	(__STDC_IEC_559_COMPLEX__): Likewise.
+
+2005-10-06  Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/Makefile: New file. Generate rtld-global-offsets.h
+	header.
+	* sysdeps/arm/eabi/Makefile: Add dependency of libm.so on ld.so for
+	rtld_global_ro.
+	* sysdeps/arm/eabi/__longjmp.S: Restore VFP registers if a VFP unit is
+	present.
+	* sysdeps/arm/eabi/fclrexcpt.c: New file.
+	(__feclearexcept): New function. Clear exception flags.
+	* sysdeps/arm/eabi/fedisblxcpt.c: New file.
+	(fedisableexcept): New function. Disable exceptions.
+	* sysdeps/arm/eabi/feenablxcpt.c: New file.
+	(feenableexcept): New function. Enable exceptions.
+	* sysdeps/arm/eabi/fegetenv.c: New file.
+	(__fegetenv): New function. Get FP environment.
+	* sysdeps/arm/eabi/fegetexcept.c: New file.
+	(fegetexcept): New function. Get enabled FP exceptions.
+	* sysdeps/arm/eabi/fegetround.c: New file.
+	(fegetround): Get current rounding mode.
+	* sysdeps/arm/eabi/feholdexcpt.c: New file.
+	(feholdexcept): Store floating-point environment and set to continue on
+	exceptions.
+	* sysdeps/arm/eabi/fesetenv.c: New file.
+	(__fesetenv): Restore floating-point environment.
+	* sysdeps/arm/eabi/fesetround.c: New file.
+	(fesetround): Set floating-point rounding mode.
+	* sysdeps/arm/eabi/fpu_control.h: New file. FPU control word
+	definitions.
+	* sysdeps/arm/eabi/fraiseexcept.c: New file.
+	(feraiseexcept): Raise FP exceptions.
+	* sysdeps/arm/eabi/fsetexcptflg.c: New file.
+	(__fesetexceptflag): New function. Set exception mask.
+	* sysdeps/arm/eabi/ftestexcept.c: New file.
+	(fetestexcept): New function. Test exception in current environment.
+	* sysdeps/arm/eabi/setjmp.S: Preserve VFP registers if a VFP unit is
+	present.
+	* sysdeps/arm/eabi/bits/fenv.h: New file.
+	* sysdeps/arm/eabi/bits/predefs.h: New file.
+	* sysdeps/arm/eabi/fpu/__longjmp.S: Remove file.
+	* sysdeps/arm/eabi/fpu/fclrexcpt.c: Remove file.
+	* sysdeps/arm/eabi/fpu/fegetround.c: Remove file.
+	* sysdeps/arm/eabi/fpu/feholdexcpt.c: Remove file.
+	* sysdeps/arm/eabi/fpu/fesetenv.c: Remove file.
+	* sysdeps/arm/eabi/fpu/fesetround.c: Remove file.
+	* sysdeps/arm/eabi/fpu/fpu_control.h: Remove file.
+	* sysdeps/arm/eabi/fpu/fraiseexcpt.c: Remove file.
+	* sysdeps/arm/eabi/fpu/setjmp.S: Remove file.
+	* sysdeps/arm/eabi/fpu/bits/fenv.h: Remove file.
+	* sysdeps/arm/eabi/fpu/bits/predefs.h: Remove file.
+	* sysdeps/arm/elf/rtld-global-offsets.sym: New file. Find offset of
+	hwcap in rtld_global_ro structure.
+
+2005-10-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (elf_machine_rela): Handle TLS.
+
+2005-10-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/posix_fadvise.c,
+	sysdeps/unix/sysv/linux/arm/posix_fadvise64.c: New files.
+
+2005-10-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* stdlib/longlong.h (add_ssaaaa): Clobber condition code register
+	in ARM version.
+	(sub_ddmmss): Likewise.
+	(umul_ppmm): Likewise.
+
+2005-08-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/aeabi_memclr.c,
+	sysdeps/arm/eabi/aeabi_memcpy.c, sysdeps/arm/eabi/aeabi_memmove.c,
+	sysdeps/arm/eabi/aeabi_memset.c: New files.
+	* sysdeps/arm/eabi/Makefile (aeabi_routines): Add these files.
+
+2005-06-06  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/sysdep.h: Fix get_tls syscall number.
+
+2005-05-04  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/arm/sysdep.S (syscall_error): Reverse base and
+	index register in store.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h (__local_syscall_error):
+	Likewise.
+
+2005-04-27  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* nptl/sysdeps/unix/sysv/linux/arm/pt-vfork.S (SAVE_PID): Update
+	TLS access sequence.
+	* nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h (SINGLE_THREAD_P):
+	Likewise.
+	* nptl/sysdeps/unix/sysv/linux/arm/vfork.S (SAVE_PID): Likewise.
+	* nptl/sysdeps/unix/sysv/linux/arm/bits/atomic.h: Use kernel cmpxchg
+	helper.
+
+	* sysdeps/unix/arm/sysdep.S (syscall_error) [USE___THREAD]: Update
+	TLS access sequence.
+	* sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S (__aeabi_read_tp):
+	Likewise.
+	* sysdeps/unix/sysv/linux/arm/clone.S (__clone) [RESET_PID]:
+	Likewise.
+	* sysdeps/unix/sysv/linux/arm/libc-aeabi_read_tp.S: New file.
+	* sysdeps/unix/sysv/linux/arm/Makefile: Include aeabi_read_tp in
+	libc_nonshared.a and internally in libc.so and ld.so.
+
+2005-04-27  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* elf/Makefile, linuxthreads/Makefile, nptl/Makefile,
+	dlfcn/Makefile: Add libc_nonshared.a dependency for modules.
+
+2005-04-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/fcntl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/lockf64.c: New files.
+
+2005-04-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/dl-lookupcfg.h: New file.
+
+2005-04-06  Mark Mitchell  <mark@codesourcery.com>
+
+	* Makefile (headers): Add bits/predefs.h.
+	* include/features.h (__STDC_IEC_559__): Do not define.
+	(__STDC_IEC_559_COMPLEX__): Likewise.
+	(<bits/predefs.h>): Include.
+	* sysdeps/arm/bits/predefs.h: New file.
+	* sysdeps/arm/eabi/fpu/bits/predefs.h: Likewise.
+	* sysdeps/generic/bits/predefs.h: Likewise.
+	
+2005-03-30  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/tls.h (TLS_INIT_TP): Fix typo.
+	
+2005-03-29  Paul Brook  <paul@codesourcery.com>
+
+	* nptl/sysdeps/unix/sysv/linux/arm/eabi/configure.in: Override
+	libc_cv_gcc_exceptions and exceptions.
+	* nptl/sysdeps/unix/sysv/linux/arm/eabi/configure: Regenerate.
+
+2005-03-28  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ctype/ctype.h (__ctype_b_loc, __ctype_tolower_loc,
+	__ctype_toupper_loc): Add __THROW.
+	* include/ctype.h (__ctype_b_loc, __ctype_tolower_loc,
+	__ctype_toupper_loc): Add __NTH.
+	* include/stdlib.h (__strtol_l, __strtoul_l, __strtoll_l,
+	__strtoull_l, __strtod_l, __strtof_l, __strtold_l,
+	____strtod_l_internal, ____strtof_l_internal,
+	____strtold_l_internal, ____strtol_l_internal,
+	____strtoul_l_internal, ____strtoll_l_internal,
+	____strtoull_l_internal): Add __THROW and __NTH.
+	* libio/genops.c (_IO_unbuffer_write): Add __THROW.
+
+	* linuxthreads/internals.h (__pthread_self, __pthread_thread_self,
+	__pthread_internal_tsd_set, __pthread_internal_tsd_get,
+	__pthread_internal_tsd_address): Add __THROW.
+	* linuxthreads/sysdeps/pthread/bits/libc-tsd.h
+	(__pthread_internal_tsd_address, __pthread_internal_tsd_get,
+	__pthread_internal_tsd_set): Add __THROW.
+
+	* nptl/pthreadP.h (__pthread_mutex_lock, __pthread_mutex_unlock,
+	__pthread_mutex_lock_internal, __pthread_mutex_unlock_internal,
+	__pthread_mutex_unlock_usercnt): Add __THROW.
+
+
+	* elf/elf.h: Define ARM TLS relocations.
+
+	* linuxthreads/descr.h (struct _pthread_descr_struct): Check
+	INCLUDE_TLS_PADDING.
+
+	* linuxthreads/sysdeps/arm/tls.h: New file.
+
+	* nptl/tst-key1.c (do_test): Check __USING_SJLJ_EXCEPTIONS__.
+	* nptl/tst-key4.c (max): Check __USING_SJLJ_EXCEPTIONS__.
+
+	* nptl/unwind.c (unwind_stop): Call ARCH_UNWIND_CLEANUP.
+
+	* nptl/sysdeps/pthread/pthread.h: Disable EH-based cancellation
+	for ARM EABI.
+
+	* nptl/sysdeps/arm/Makefile, nptl/sysdeps/arm/jmpbuf-unwind.h,
+	nptl/sysdeps/arm/pthread_spin_lock.S,
+	nptl/sysdeps/arm/pthread_spin_trylock.S,
+	nptl/sysdeps/arm/pthreaddef.h, nptl/sysdeps/arm/tcb-offsets.sym,
+	nptl/sysdeps/arm/tls.h, nptl/sysdeps/unix/sysv/linux/arm/clone.S,
+	nptl/sysdeps/unix/sysv/linux/arm/createthread.c,
+	nptl/sysdeps/unix/sysv/linux/arm/fork.c,
+	nptl/sysdeps/unix/sysv/linux/arm/lowlevellock.c,
+	nptl/sysdeps/unix/sysv/linux/arm/lowlevellock.h,
+	nptl/sysdeps/unix/sysv/linux/arm/pt-vfork.S,
+	nptl/sysdeps/unix/sysv/linux/arm/pthread_once.c,
+	nptl/sysdeps/unix/sysv/linux/arm/socket.S,
+	nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h,
+	nptl/sysdeps/unix/sysv/linux/arm/unwind-forcedunwind.c,
+	nptl/sysdeps/unix/sysv/linux/arm/unwind-resume.c,
+	nptl/sysdeps/unix/sysv/linux/arm/unwind.h,
+	nptl/sysdeps/unix/sysv/linux/arm/vfork.S,
+	nptl/sysdeps/unix/sysv/linux/arm/bits/atomic.h,
+	nptl/sysdeps/unix/sysv/linux/arm/bits/pthreadtypes.h,
+	nptl/sysdeps/unix/sysv/linux/arm/bits/semaphore.h,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/Makefile,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/configure,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/configure.in,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/nptl-aeabi_unwind_cpp_pr1.c,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/rt-aeabi_unwind_cpp_pr1.c,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/unwind-forcedunwind.c,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/unwind-resume.c,
+	nptl/sysdeps/unix/sysv/linux/arm/eabi/unwind.h: New files.
+
+	* sysdeps/arm/dl-machine.h: Check RESOLVE_MAP instead of RESOLVE.
+	(elf_machine_type_class): Handle TLS.
+	(elf_machine_rel): Change static inline to auto inline.  Use
+	RESOLVE_MAP.  Handle TLS.
+	(elf_machine_rela): Change static inline to auto inline.  Use
+	RESOLVE_MAP.
+	(elf_machine_rel_relative, elf_machine_rela_relative,
+	elf_machine_lazy_rel): Change static inline to auto inline.
+	* sysdeps/arm/dl-tls.h, sysdeps/arm/libc-tls.c,
+	sysdeps/arm/tls-macros.h, sysdeps/arm/elf/configure,
+	sysdeps/arm/elf/configure.in: New files.
+	* sysdeps/unix/sysv/linux/arm/Makefile: Include aeabi_read_tp.
+	* sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S: New file.
+
+	* sysdeps/arm/unwind-dw2-fde-glibc.c, sysdeps/arm/unwind-pe.c: New
+	files.
+
+	* sysdeps/arm/bits/atomic.h: New file.
+
+	* sysdeps/arm/bits/setjmp.h: Protect against multiple inclusion.
+	* sysdeps/arm/fpu/bits/setjmp.h: Likewise.
+	* sysdeps/unix/sysv/linux/arm/Versions: Export
+	__default_sa_restorer and __default_rt_sa_restorer.
+
+	* sysdeps/arm/eabi/aeabi_unwind_cpp_pr1.c (__aeabi_unwind_cpp_pr0,
+	__aeabi_unwind_cpp_pr2): New functions.
+	(__aeabi_unwind_cpp_pr1): Call abort.
+
+	* sysdeps/unix/arm/sysdep.S: Handle TLS and RTLD_PRIVATE_ERRNO.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h (SYSCALL_ERROR_HANDLER): Handle
+	RTLD_PRIVATE_ERRNO.
+	(__NR_set_tid_address, __ARM_NR_set_tls, __ARM_NR_cmpxchg): Define.
+	(INTERNAL_SYSCALL_RAW): New macro, based on INTERNAL_SYSCALL.
+	(INTERNAL_SYSCALL): Use it.
+	(INTERNAL_SYSCALL_ARM): New.
+	(INTERNAL_SYSCALL_NCS, INTERNAL_SYSCALL_NCS_0,
+	INTERNAL_SYSCALL_NCS_1, INTERNAL_SYSCALL_NCS_2,
+	INTERNAL_SYSCALL_NCS_3, INTERNAL_SYSCALL_NCS_4,
+	INTERNAL_SYSCALL_NCS_5): New.
+	* sysdeps/unix/sysv/linux/arm/clone.S: Handle NPTL.
+	* sysdeps/unix/sysv/linux/arm/vfork.S: Handle NPTL.
+
+2005-03-25  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/semop.c (semop): Correct typo.
+	* sysdeps/unix/sysv/linux/arm/eabi/semtimedop.c (semtimedop):
+	Likewise.
+
+2005-03-25  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* elf/tls-macros.h: Fix typo in TLS_GD test.
+
+	Backport:
+	2005-03-13  Roland McGrath  <roland@redhat.com>
+	* elf/tls-macros.h: #include_next <tls-macros.h> to get a sysdeps
+	version if there is one.  Only #error if macros are then undefined.
+	* sysdeps/generic/tls-macros.h: New file.
+
+2005-03-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Versions.def: Update.
+	* shlib-versions: Use GLIBC_2.4 for ARM EABI.
+	* configure.in: Use %function to test for CFI.
+	* configure: Regenerated.
+	* sysdeps/arm/eabi/Makefile: Include more portability symbols only
+	in static libraries.
+	* sysdeps/arm/eabi/Versions: Trim.  Use GLIBC_2.4.
+	* sysdeps/arm/eabi/aeabi_assert.c (__aeabi_assert): Mark as hidden.
+	* sysdeps/arm/eabi/aeabi_atexit.c (__aeabi_atexit): Likewise.
+	* sysdeps/arm/eabi/aeabi_errno_addr.c (__aeabi_errno_addr): Likewise.
+	* sysdeps/arm/eabi/aeabi_localeconv.c (__aeabi_localeconv): Likewise.
+	* sysdeps/arm/eabi/aeabi_math.c (__aeabi_HUGE_VAL, __aeabi_HUGE_VALL,
+	__aeabi_HUGE_VALF, __aeabi_INFINITY, __aeabi_NAN): Likewise.
+	* sysdeps/arm/eabi/aeabi_mb_cur_max.c (__aeabi_MB_CUR_MAX): Likewise.
+	Use MB_CUR_MAX.
+	* sysdeps/arm/eabi/aeabi_lcsts.S: Remove.
+	* sysdeps/arm/eabi/aeabi_lcsts.c,
+	sysdeps/arm/eabi/aeabi_sighandlers.S: New files.
+	* sysdeps/arm/eabi/find_exidx.c: Update.  Add license notice.
+	* sysdeps/unix/sysv/linux/arm/eabi/epoll_ctl.c,
+	sysdeps/unix/sysv/linux/arm/eabi/epoll_wait.c,
+	sysdeps/unix/sysv/linux/arm/eabi/fstatfs64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/kernel_epoll.h,
+	sysdeps/unix/sysv/linux/arm/eabi/kernel_stat.h,
+	sysdeps/unix/sysv/linux/arm/eabi/semop.c,
+	sysdeps/unix/sysv/linux/arm/eabi/semtimedop.c,
+	sysdeps/unix/sysv/linux/arm/eabi/statfs64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/syscalls.list,
+	sysdeps/unix/sysv/linux/arm/eabi/uname.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstatconv.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstatconv.h: New files.
+	* sysdeps/unix/sysv/linux/arm/eabi/fxstat.c,
+	sysdeps/unix/sysv/linux/arm/eabi/lxstat.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstat.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstat64conv.h: Remove.
+	* sysdeps/unix/sysv/linux/arm/eabi/fxstat64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/lxstat64.c,
+	sysdeps/unix/sysv/linux/arm/eabi/xstat64.c: Rewrite.
+
+2005-03-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/eabi/fpu/feholdexcpt.c,
+	sysdeps/arm/eabi/fpu/fraiseexcpt.c: New files.
+	* sysdeps/arm/eabi/fpu/fesetenv.c: Rewrite.
+	* sysdeps/arm/eabi/fpu/fpu_control.h (_FPU_MASK_DM): Remove.
+	(_FPU_GETCW, _FPU_SETCW): Make volatile.
+	* sysdeps/arm/eabi/fpu/bits/fenv.h (FE_ALL_EXCEPT): Correct typo.
+
+2005-03-18  Mark Mitchell  <mark@codesourcery.com>
+
+	* elf/elf.h (PT_ARM_GNU_EXIDX): Rename to PT_ARM_EXIDX.
+	* sysdeps/arm/eabi/find_exidx.c (find_exidx_callback): Adjust
+	accordingly.
+
+2005-03-17  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/fxstat.c: New file.
+	* sysdeps/unix/sysv/linux/arm/eabi/lxstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/arm/eabi/xstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/arm/eabi/fxstat64.c: Likewise.
+	* sysdeps/unix/sysv/linux/arm/eabi/lxstat64.c: Likewise.
+	* sysdeps/unix/sysv/linux/arm/eabi/xstat64.c: Likewise.
+	* sysdeps/unix/sysv/linux/arm/eabi/xstat64conv.h: Likewise.
+
+2005-03-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/gmp-mparam.h: Add support for VFP.
+	* sysdeps/arm/ieee754.h: Remove.
+	* sysdeps/arm/bits/endian.h (__FLOAT_WORD_ORDER): Define correctly
+	for VFP.
+
+2005-02-15  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile: Add __aeabi_unwind_cpp_pr1 to ld.so
+	and libc.so.
+	* sysdeps/arm/eabi/aeabi_unwind_cpp_pr1.c: New file.
+
+2005-01-20  Daniel Jacobowitz  <dan@codesourcery.com>
+	    Paul Brook  <paul@codesourcery.com>
+
+	* elf/elf.h (PT_GNU_ARM_EXIDX): Define.
+	* sysdeps/arm/eabi/find_exidx.c: New file.
+	* sysdeps/arm/elf/start.S: Protect against unhandled exceptions.
+
+2005-01-19  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (RTLD_START): Define .L_ARGV.
+
+2005-01-19  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/ioperm.c (init_iosys): Use
+	CTL_BUS_ISA in lieu of BUS_ISA.
+
+2004-12-15  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* shlib-versions: Set the default for ARM EABI to GLIBC_2.3.4.
+	* nptl/sysdeps/unix/sysv/linux/arm/bits/atomic.h: New file.
+	* sysdeps/arm/Versions: Don't export libgcc functions for ARM EABI.
+	* sysdeps/arm/atomicity.h: Remove.
+	* sysdeps/arm/dl-machine.h (INIT_STACK_REALIGN): Remove.
+	(_dl_start_user): Rewrite stack alignment code.
+	* sysdeps/arm/dl-sysdep.h: New file.
+	* sysdeps/arm/bits/atomic.h: New file.
+	* sysdeps/arm/eabi/Versions: Don't export link-time constants.
+	* sysdeps/arm/eabi/aeabi_lcsts.S: Add .hidden directives.
+	* sysdeps/arm/eabi/bits/huge_val.h: New file.
+	* sysdeps/arm/eabi/bits/setjmp.h: New file.
+	* sysdeps/arm/eabi/fpu/__longjmp.S: Update copyright date.  Store
+	integer registers before floating point registers.
+	* sysdeps/arm/eabi/fpu/fclrexcpt.c,
+	sysdeps/arm/eabi/fpu/fegetround.c,
+	sysdeps/arm/eabi/fpu/fesetenv.c,
+	sysdeps/arm/eabi/fpu/fesetround.c: New files.
+	* sysdeps/arm/eabi/fpu/fpu_control.h: Update bit masks for VFP.
+	* sysdeps/arm/eabi/fpu/setjmp.S: Store integer registers
+	before floating point registers.
+	* sysdeps/arm/eabi/fpu/bits/fenv.h: New file.
+	* sysdeps/arm/eabi/fpu/bits/setjmp.h: Remove.
+	* sysdeps/arm/elf/configure.in: Disable PI_STATIC_AND_HIDDEN.
+	* sysdeps/arm/elf/configure: Regenerate.
+	* sysdeps/unix/sysv/linux/arm/mmap64.S: Update for big endian and
+	EABI.
+	* sysdeps/unix/sysv/linux/arm/bits/atomic.h: Remove.
+	* sysdeps/unix/sysv/linux/arm/eabi/configure: New file.
+	* sysdeps/unix/sysv/linux/arm/eabi/configure.in: New file.
+	* sysdeps/unix/sysv/linux/arm/eabi/oldgetrlimit.c: New file.
+	* sysdeps/unix/sysv/linux/arm/eabi/oldsetrlimit.c: New file.
+
+2004-12-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile: Add aeabi_localeconv, aeabi_math, and
+	aeabi_mb_cur_max. 
+	* sysdeps/arm/eabi/Versions: Add __aeabi_localeconv,
+	__aeabi_MB_CUR_MAX, __aeabi_HUGE_VAL, __aeabi_HUGE_VALL,
+	__aeabi_HUGE_VALF, __aeabi_INFINIT, __aeabi_NAN.
+	* sysdeps/arm/eabi/aeabi_localeconv.c: New file.
+	* sysdeps/arm/eabi/aeabi_math.c: Likewise.
+	* sysdeps/arm/eabi/aeabi_mb_cur_max.c: Likewise.
+
+2004-12-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile: Add aeabi_assert and aeabi_errno_addr.
+	* sysdeps/arm/eabi/Versions: Likewise.
+	* sysdeps/arm/eabi/aeabi_assert.c: New file.
+	* sysdeps/arm/eabi/aeabi_errno_addr.c: Likewise.
+
+2004-12-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile: Add aeabi_lcsts.
+	* sysdeps/arm/eabi/Versions: Add EABI link-time constants.
+	* sysdeps/arm/eabi/aeabi_lcsts.S: New file. 
+
+2004-12-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* sysdeps/arm/Makefile: Remove aeabi_atexit.c.
+	* sysdeps/arm/Versions: Remove __aeabi_atexit.
+	* sysdeps/arm/aeabi_atexit.c: Remove.
+	* sysdeps/arm/eabi/Makfefile: New file.
+	* sysdeps/arm/eabi/Versions: Likewise.
+	* sysdeps/arm/eabi/aeabi_atexit.c: Likewise.
+
+2004-12-03  Mark Mitchell  <mark@codesourcery.com>
+
+	* configure.in (arm*-*-linux-gnueabi): Add arm/eabi sysdep directory.
+	* configure: Regenerated.
+	* sysdeps/arm/eabi/fpu/__longjmp.S: New file.
+	* sysdeps/arm/eabi/fpu/fpu_control.h: Likewise.
+	* sysdeps/arm/eabi/fpu/setjmp.S: Likewise.
+	* sysdeps/arm/eabi/fpu/bits/setjmp.h: Likewise.
+
+2004-11-19  Mark Mitchell  <mark@codesourcery.com>
+
+	* shlib-versions (arm.*-.*-linux.*-gnueabi): Set dynamic loader.
+	* stdlib/exit.h (__cxa_atexit): Declare.
+	* sysdeps/arm/Makefile (stdlib): Add aeabi_exit.
+	* sysdeps/arm/Versions (__aeabi_atexit): Add it.
+
+2004-11-19  Mark Mitchell  <mark@codesourcery.com>
+
+	* nss/nss_files/files-netgrp.c (_nss_files_endnetgrent): Correct
+	return type.
+
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:

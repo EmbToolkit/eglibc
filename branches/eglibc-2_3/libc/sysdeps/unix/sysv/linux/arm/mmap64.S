@@ -23,13 +23,22 @@
 
 #include "kernel-features.h"
 
+#ifdef __ARMEB__
+# define LOW_OFFSET      4 + 4
+/* The initial + 4 is for the stack postdecrement.  */
+# define HIGH_OFFSET 4 + 4 + 0
+#else
+# define LOW_OFFSET      4 + 0
+# define HIGH_OFFSET 4 + 4 + 4
+#endif
+
 	/* The mmap2 system call takes six arguments, all in registers.  */
 	.text
 ENTRY (__mmap64)
 #ifdef __NR_mmap2
-	ldr	ip, [sp, $4]		@ offset low part
+	ldr	ip, [sp, $LOW_OFFSET]	@ offset low part
 	str	r5, [sp, #-4]!
-	ldr	r5, [sp, $12]		@ offset high part
+	ldr	r5, [sp, $HIGH_OFFSET]	@ offset high part
 	str	r4, [sp, #-4]!
 	movs	r4, ip, lsl $20		@ check that offset is page-aligned
 	mov	ip, ip, lsr $12
@@ -38,7 +47,7 @@ ENTRY (__mmap64)
 	ldr	r4, [sp, $8]		@ load fd
 	orr	r5, ip, r5, lsl $20	@ compose page offset
 	mov	ip, r0
-	swi	SYS_ify (mmap2)
+	DO_CALL (mmap2, 0)
 	cmn	r0, $4096
 # ifdef __ASSUME_MMAP2_SYSCALL
 	ldr	r4, [sp], #4

@@ -1,0 +1,10 @@
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/mips64/n32/Implies: Add mips/mips64/soft-fp.
+	* sysdeps/mips/mips64/n64/Implies: Likewise.
+	* sysdeps/mips/mips64/soft-fp/Makefile: New.
+	* sysdeps/mips/mips64/soft-fp/e_sqrtl.c: New.
+	* sysdeps/mips/mips64/soft-fp/sfp-machine.h: Include <fenv.h> and
+	<fpu_control.h>.  Use hardware exception and rounding mode
+	settings.
+

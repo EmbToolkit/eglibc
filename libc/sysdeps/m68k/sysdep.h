@@ -97,4 +97,35 @@
 #  define JUMPTARGET(name)	name
 # endif
 
+/* Perform operation OP with PC-relative SRC as the first operand and
+   DST as the second.  TMP is available as a temporary if needed.  */
+#ifdef __mcoldfire__
+#define PCREL_OP(OP, SRC, DST, TMP) \
+  move.l &SRC - ., TMP; OP (-8, %pc, TMP), DST
+#else
+#define PCREL_OP(OP, SRC, DST, TMP) \
+  OP SRC(%pc), DST
+#endif
+
+#else
+
+/* As above, but PC is the spelling of the PC register.  We need this
+   so that the macro can be used in both normal and extended asms.  */
+#ifdef __mcoldfire__
+#define PCREL_OP(OP, SRC, DST, TMP, PC) \
+  "move.l #" SRC " - ., " TMP "\n\t" OP " (-8, " PC ", " TMP "), " DST
+#else
+#define PCREL_OP(OP, SRC, DST, PC) \
+  OP " " SRC "(" PC "), " DST
+#endif
+
+/* Jump to the address in register REG.  */
+#ifdef __mcoldfire__
+#define JUMP_TO_REG(REG) \
+  "move.l " REG ", -(%sp)\n\trts"
+#else
+#define JUMP_TO_REG(REG) \
+  "jmp (" REG ")"
+#endif
+
 #endif	/* __ASSEMBLER__ */

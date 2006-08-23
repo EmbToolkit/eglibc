@@ -28,7 +28,7 @@
 # define PSEUDO(name, syscall_name, args)				      \
   .text;								      \
   ENTRY (name)								      \
-    SINGLE_THREAD_P;							      \
+    SINGLE_THREAD_P (%d0);						      \
     jne .Lpseudo_cancel;						      \
     DO_CALL (syscall_name, args);					      \
     cmp.l &-4095, %d0;							      \
@@ -115,9 +115,13 @@ extern int __local_multiple_threads attribute_hidden;
 #  define SINGLE_THREAD_P __builtin_expect (__local_multiple_threads == 0, 1)
 # else
 #  if !defined PIC
-#   define SINGLE_THREAD_P tst.l __local_multiple_threads
+#   define SINGLE_THREAD_P(TMP) tst.l __local_multiple_threads
+#  elif defined __mcoldfire__
+#   define SINGLE_THREAD_P(TMP) \
+     move.l &__local_multiple_threads-., TMP; \
+     tst.l (-8, %pc, TMP)
 #  else
-#   define SINGLE_THREAD_P tst.l (__local_multiple_threads, %pc)
+#   define SINGLE_THREAD_P(TMP) tst.l (__local_multiple_threads, %pc)
 #  endif
 # endif
 

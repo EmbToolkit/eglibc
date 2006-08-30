@@ -1,3 +1,8 @@
+2006-08-30  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/mips32/sysdep.h: Update from glibc
+	ports mainline.
+
 2006-08-26  Joseph Myers  <joseph@codesourcery.com>
 
 	* io/test-lfs.c (do_prepare): Give name_len type size_t.

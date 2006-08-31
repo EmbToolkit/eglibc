@@ -37,6 +37,10 @@ typedef uintmax_t uatomic_max_t;
 
 void __arm_link_error (void);
 
+#ifdef UP
+
+/* We require kernel assisted barriers for SMP safety, so it is only worth
+   defining this on UP.  */
 #define atomic_exchange_acq(mem, newvalue)				      \
   ({ __typeof (*mem) result;						      \
      if (sizeof (*mem) == 1)						      \
@@ -53,6 +57,17 @@ void __arm_link_error (void);
 	 abort ();							      \
        }								      \
      result; })
+
+#else
+
+#define atomic_full_barrier() \
+     __asm__ __volatile__						      \
+	     ("mov\tip, #0xffff0fff\n\t"				      \
+	      "mov\tlr, pc\n\t"						      \
+	      "add\tpc, ip, #(0xffff0fa0 - 0xffff0fff)"			      \
+	      : : : "ip", "lr", "cc", "memory");
+
+#endif
 
 /* Atomic compare and exchange.  This sequence relies on the kernel to
    provide a compare and exchange operation which is atomic on the

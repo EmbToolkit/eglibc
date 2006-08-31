@@ -1,3 +1,11 @@
+2006-08-31  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/nptl/lowlevellock.h (lll_mutex_trylock,
+	lll_mutex_cond_trylock): Use atomic_compare_and_exchange_val_acq.
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h (atomic_exchange_acq):
+	Disable on SMP.
+	(atomic_full_barrier): Define.
+
 2006-08-23  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/dl-procinfo.c (_dl_arm_cap_flags):

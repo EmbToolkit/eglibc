@@ -1,3 +1,10 @@
+2006-08-31  Mark Mitchell  <mark@codesourcery.com>
+            Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/bits/predefs.h: New file.
+	* sysdeps/arm/eabi/bits/predefs.h: Likewise.
+	* sysdeps/arm/eabi/fpu/bits/predefs.h: Likewise.
+
 2006-08-31  Paul Brook  <paul@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/nptl/lowlevellock.h (lll_mutex_trylock,

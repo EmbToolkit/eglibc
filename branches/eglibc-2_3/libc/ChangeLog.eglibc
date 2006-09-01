@@ -1,5 +1,10 @@
 2006-09-01  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Update from glibc
+	ports mainline.
+
+2006-09-01  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/mips/fpu_control.h: If soft-float, don't use
 	floating-point registers.
 	* sysdeps/mips/__longjmp.c, sysdeps/mips/setjmp_aux.c,

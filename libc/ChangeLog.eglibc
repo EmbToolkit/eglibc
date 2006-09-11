@@ -1,3 +1,9 @@
+2006-09-11  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	Backport:
+	2005-12-05  Daniel Jacobowitz  <dan@codesourcery.com>
+	* stdlib/longlong.h: Update from GCC.
+
 2006-09-01  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Update from glibc

@@ -1,3 +1,12 @@
+2006-09-22  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/pthread/gai_misc.h: New file.
+
+2006-09-21  Richard Sandiford  <richard@codesourcery.com>
+
+	* linuxthreads.texi (pthread_mutex_lock): Fix double close bracket.
+	Fix markup.
+
 2006-07-24  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* pthread.c: Check PTHREAD_SIGBASE before #error.

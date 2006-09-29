@@ -123,12 +123,13 @@ elf_machine_fixup_plt (struct link_map *map, lookup_t t,
 		       const Elf32_Rela *reloc,
 		       Elf32_Addr *reloc_addr, struct fdesc value)
 {
+  volatile Elf32_Addr *rfdesc = reloc_addr;
   /* map is the link_map for the caller, t is the link_map for the object
      being called */
-  reloc_addr[1] = value.gp;
+  rfdesc[1] = value.gp;
   /* Need to ensure that the gp is visible before the code
      entry point is updated */
-  ((volatile Elf32_Addr *) reloc_addr)[0] = value.ip;
+  rfdesc[0] = value.ip;
   return value;
 }
 
@@ -446,8 +447,10 @@ asm (									\
 "	ldw	-40(%sp),%r25\n"					\
 "	ldw	-44(%sp),%r24\n"					\
 									\
-	/* _dl_fini does have a PLT slot now.  I don't know how to get	\
-	   to it though, so this hack will remain. */			\
+	/* _dl_fini is a local function in the loader, so we construct	\
+           a false OPD here and pass this to the application.  */	\
+	/* FIXME: Should be able to use P%, and LR RR to have the	\
+	   the linker construct a proper OPD.  */			\
 "	.section .data\n"						\
 "__dl_fini_plabel:\n"							\
 "	.word	_dl_fini\n"						\

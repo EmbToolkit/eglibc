@@ -614,7 +614,7 @@ recursive mutexes), @code{PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP}
 
 @comment pthread.h
 @comment POSIX
-@deftypefun int pthread_mutex_lock (pthread_mutex_t *mutex))
+@deftypefun int pthread_mutex_lock (pthread_mutex_t *@var{mutex})
 @code{pthread_mutex_lock} locks the given mutex. If the mutex is
 currently unlocked, it becomes locked and owned by the calling thread,
 and @code{pthread_mutex_lock} returns immediately. If the mutex is

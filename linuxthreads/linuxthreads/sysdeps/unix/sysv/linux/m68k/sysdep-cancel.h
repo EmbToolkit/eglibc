@@ -28,7 +28,7 @@
 # define PSEUDO(name, syscall_name, args)				      \
   .text;								      \
   ENTRY (name)								      \
-    SINGLE_THREAD_P;							      \
+    SINGLE_THREAD_P (%a0);						      \
     jne .Lpseudo_cancel;						      \
     DO_CALL (syscall_name, args);					      \
     cmp.l &-4095, %d0;							      \
@@ -111,13 +111,34 @@
 # endif
 
 # ifndef __ASSEMBLER__
+#  if !defined NOT_IN_libc || defined IS_IN_libpthread
 extern int __local_multiple_threads attribute_hidden;
+#  else
+extern int __local_multiple_threads;
+#  endif
 #  define SINGLE_THREAD_P __builtin_expect (__local_multiple_threads == 0, 1)
 # else
 #  if !defined PIC
-#   define SINGLE_THREAD_P tst.l __local_multiple_threads
+#   define SINGLE_THREAD_P(ATMP) tst.l __local_multiple_threads
+#  elif !defined NOT_IN_libc || defined IS_IN_libpthread
+#   if defined __mcoldfire__
+#    define SINGLE_THREAD_P(ATMP) \
+       move.l &__local_multiple_threads-., ATMP; \
+       tst.l (-8, %pc, ATMP)
+#   else
+#    define SINGLE_THREAD_P(ATMP) tst.l (__local_multiple_threads, %pc)
+#   endif
 #  else
-#   define SINGLE_THREAD_P tst.l (__local_multiple_threads, %pc)
+#   if defined __mcoldfire__
+#    define SINGLE_THREAD_P(ATMP) \
+       move.l &__local_multiple_threads@GOTPC, ATMP; \
+       move.l (-6, %pc, ATMP), ATMP; \
+       tst.l (ATMP)
+#   else
+#    define SINGLE_THREAD_P(ATMP) \
+#      move.l (__local_multiple_threads@GOTPC, %pc), ATMP; \
+#      tst.l (ATMP)
+#   endif
 #  endif
 # endif
 

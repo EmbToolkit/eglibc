@@ -30,7 +30,12 @@
 ENTRY (__vfork)
 
 #ifdef SHARED
+#ifdef __mcoldfire__
+	movel	#__libc_pthread_functions@GOTPC, %d0
+	tstl	(-6, %pc, %d0)
+#else
 	tstl	(__libc_pthread_functions@GOTPC, %pc)
+#endif
 #else
 	.weak	pthread_create
 	movel	#pthread_create, %d0

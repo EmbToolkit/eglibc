@@ -1,3 +1,30 @@
+2H2006-10-03  Richard Sandiford  <richard@codesourcery.com>
+
+	* sysdeps/m68k/pt-machine.h (__compare_and_swap): Don't define for
+	Coldfire.
+	(HAS_COMPARE_AND_SWAP): Likewise.
+	* sysdeps/unix/sysv/linux/m68k/sysdep-cancel.h (PSEUDO): Pass a
+	temporary register to SINGLE_THREAD_P.
+	(__local_multiple_threads): Do not mark hidden in librt.
+	(SINGLE_THREAD_P): Make the assembler version take a temporary
+	register argument.  Load __local_multiple_threads from the GOT
+	when generating PIC for librt.  Use separate PIC implementations
+	for m680x0 and Coldfire.
+	* sysdeps/unix/sysv/linux/m68k/vfork.S (__vfork): On Coldfire targets,
+	load the GOTPC offset into a temporary register first.
+
+2006-10-02  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/pthread/gai_misc.h (__gai_start_notify_thread): Use
+	sigprocmask instead.
+	(__gai_create_helper_thread): Likewise.
+
+2006-10-01  Petr Salinger  <Petr.Salinger@seznam..cz>
+
+	* sysdeps/pthread/gai_misc.h (__gai_start_notify_thread): Use
+	__sigprocmask.
+	(__gai_create_helper_thread): Likewise.
+
 2006-09-22  Carlos O'Donell  <carlos@systemhalted.org>
 
 	* sysdeps/pthread/gai_misc.h: New file.

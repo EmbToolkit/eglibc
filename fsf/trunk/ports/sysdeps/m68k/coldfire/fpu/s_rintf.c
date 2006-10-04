@@ -1,4 +1,4 @@
-/* Copyright (C) 1996, 2006 Free Software Foundation, Inc.
+/* Copyright (C) 2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,14 +16,11 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
-
-/* The mremap system call is special because it needs to return
-   its value in register %a0.  */
-
-	.text
-PSEUDO (__mremap, mremap, 5)
-	move.l %d0, %a0
-	rts
-PSEUDO_END (__mremap)
-weak_alias (__mremap, mremap)
+float
+__rintf (float x)
+{
+  double result;
+  asm ("fint.s %1,%0" : "=f" (result) : "dm" (x));
+  return (float) result;
+}
+weak_alias (__rintf, rintf)

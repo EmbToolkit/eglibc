@@ -27,9 +27,7 @@
 #endif
 
 extern long int testandset (int *spinlock);
-#ifndef __mcoldfire__
 extern int __compare_and_swap (long int *p, long int oldval, long int newval);
-#endif
 
 /* Spinlock implementation; required.  */
 PT_EI long int
@@ -52,7 +50,6 @@ testandset (int *spinlock)
 register char * stack_pointer __asm__ ("%sp");
 
 
-#ifndef __mcoldfire__
 /* Compare-and-swap for semaphores. */
 
 #define HAS_COMPARE_AND_SWAP
@@ -68,6 +65,5 @@ __compare_and_swap (long int *p, long int oldval, long int newval)
 
   return ret;
 }
-#endif
 
 #endif /* pt-machine.h */

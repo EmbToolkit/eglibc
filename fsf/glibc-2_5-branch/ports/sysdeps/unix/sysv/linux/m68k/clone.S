@@ -42,21 +42,11 @@ ENTRY (__clone)
 	movel	16(%sp), -(%a1)
 
 	/* Do the system call */
-	movel	12(%sp), %d1		/* get flags */
-#ifdef __mcoldfire__
-	movel	%d2, -(%a1)
-	movel	%d2, -(%sp)
-	movel	%a1, %d2
-#else
 	exg	%d2, %a1		/* save %d2 and get stack pointer */
-#endif
+	movel	12(%sp), %d1		/* get flags */
 	movel	#SYS_ify (clone), %d0
 	trap	#0
-#ifdef __mcoldfire__
-	movel	(%sp)+, %d2
-#else
 	exg	%d2, %a1		/* restore %d2 */
-#endif
 
 	tstl	%d0
 	jmi	SYSCALL_ERROR_LABEL

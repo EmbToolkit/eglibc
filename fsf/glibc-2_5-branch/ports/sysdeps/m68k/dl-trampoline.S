@@ -34,12 +34,7 @@ _dl_runtime_resolve:
 	| Pop parameters
 	addq.l #8, %sp
 	| Call real function.
-#ifdef __mcoldfire__
-	move.l %d0,-(%sp)
-	rts
-#else
 	jmp (%d0)
-#endif
 	.size _dl_runtime_resolve, . - _dl_runtime_resolve
 
 	.text
@@ -69,12 +64,7 @@ _dl_runtime_profile:
 	move.l (%sp)+, %a1
 	lea 12(%sp), %sp
 	| Call real function.
-#ifdef __mcoldfire__
-	move.l %d0,-(%sp)
-	rts
-#else
 	jmp (%d0)
-#endif
 
 	/*
 	    +24     return address
@@ -89,24 +79,15 @@ _dl_runtime_profile:
 	move.l %sp, %a2
 	move.l %sp, %a0
 	lea 28(%sp), %a1
-	| Round framesize up to longword alignment
-	addq.l #3, %d1
-	and.l #-3, %d1
+	| Round framesize up to even
+	addq.l #1, %d1
+	lsr #1, %d1
+	sub.l %d1, %a0
 	sub.l %d1, %a0
 	move.l %a0, %sp
-#ifdef __mcoldfire__
-	tst.l %d1
-	beq 2f
-1:	move.l (%a0)+, (%a1)+
-	subq.l #4,%d1
-	bne 1b
-2:
-#else
-	lsr.l #2,%d1
 	jra 2f
-1:	move.l (%a1)+, (%a0)+
+1:	move.w (%a1)+, (%a0)+
 2:	dbra %d1,1b
-#endif
 	/*
 	   %a2+24  return address
 	   %a2+20  PLT1
@@ -120,14 +101,7 @@ _dl_runtime_profile:
 
 	move.l 4(%a2), %a0
 	move.l 8(%a2), %a1
-#ifdef __mcoldfire__
-	pea 2f(%pc)
-	move.l %d0,-(%sp)
-	rts
-2:
-#else
 	jsr (%d0)
-#endif
 	move.l %a2, %sp
 	move.l (%sp)+, %a2
 	/*
@@ -138,34 +112,18 @@ _dl_runtime_profile:
 	    +4      %a1
 	   %sp      %a0
 	*/
-#ifdef __mcoldfire__
-	fmove.l %fp0, -(%sp)
-#else
 	fmove.x %fp0, -(%sp)
-#endif
-	move.l %a0, -(%sp)
 	move.l %d1, -(%sp)
 	move.l %d0, -(%sp)
 	pea (%sp)
-#ifdef __mcoldfire__
-	pea 24(%sp)
+	pea 20(%sp)
 	move.l 40(%sp), -(%sp)
 	move.l 40(%sp), -(%sp)
-#else
-	pea 28(%sp)
-	move.l 44(%sp), -(%sp)
-	move.l 44(%sp), -(%sp)
-#endif
 	jbsr _dl_call_pltexit
 	lea 16(%sp), %sp
 	move.l (%sp)+, %d0
 	move.l (%sp)+, %d1
-	move.l (%sp)+, %a0
-#ifdef __mcoldfire__
-	fmove.d (%sp)+, %fp0
-#else
 	fmove.x (%sp)+, %fp0
-#endif
 	lea 20(%sp), %sp
 	rts
 	.size _dl_runtime_profile, . - _dl_runtime_profile

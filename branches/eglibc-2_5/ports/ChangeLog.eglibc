@@ -1,0 +1,51 @@
+2006-09-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/fpu_control.h: If soft-float, don't use
+	floating-point registers.
+	* sysdeps/mips/__longjmp.c, sysdeps/mips/setjmp_aux.c,
+	sysdeps/mips/mips64/__longjmp.c, sysdeps/mips/mips64/setjmp_aux.c:
+	Likewise.
+
+2006-08-31  Mark Mitchell  <mark@codesourcery.com>
+            Julian Brown  <julian@codesourcery.com>
+
+	* sysdeps/arm/bits/predefs.h: New file.
+	* sysdeps/arm/eabi/bits/predefs.h: Likewise.
+	* sysdeps/arm/eabi/fpu/bits/predefs.h: Likewise.
+
+2006-08-31  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/nptl/lowlevellock.h (lll_mutex_trylock,
+	lll_mutex_cond_trylock): Use atomic_compare_and_exchange_val_acq.
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h (atomic_exchange_acq):
+	Disable on SMP.
+	(atomic_full_barrier): Define.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.c (_dl_arm_cap_flags):
+	Add "java" and "iwmmxt".
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.h: Use <sysdep.h> for
+	HWCAP values.
+	(_DL_HWCAP_COUNT): Increase to 10.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h (HWCAP_ARM_SWP,
+	HWCAP_ARM_HALF, HWCAP_ARM_THUMB, HWCAP_ARM_26BIT,
+	HWCAP_ARM_FAST_MULT, HWCAP_ARM_FPA, HWCAP_ARM_VFP, HWCAP_ARM_EDSP,
+	HWCAP_ARM_JAVA, HWCAP_ARM_IWMMXT): Define.
+	* sysdeps/arm/eabi/setjmp.S (__sigsetjmp): Save iWMMXt registers
+	if HWCAP_ARM_IWMMXT set.  Don't include <asm/procinfo.h>.  Use
+	HWCAP_ARM_VFP instead of HWCAP_VFP.
+	* sysdeps/arm/eabi/__longjmp.S (__longjmp): Restore iWMMXt
+	registers if HWCAP_ARM_IWMMXT set.  Don't include
+	<asm/procinfo.h>.  Use HWCAP_ARM_VFP instead of HWCAP_VFP.
+
+2006-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/mips64/n32/Implies: Add mips/mips64/soft-fp.
+	* sysdeps/mips/mips64/n64/Implies: Likewise.
+	* sysdeps/mips/mips64/soft-fp/Makefile: New.
+	* sysdeps/mips/mips64/soft-fp/e_sqrtl.c: New.
+	* sysdeps/mips/mips64/soft-fp/sfp-machine.h: Include <fenv.h> and
+	<fpu_control.h>.  Use hardware exception and rounding mode
+	settings.
+

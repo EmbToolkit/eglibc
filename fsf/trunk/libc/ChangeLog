@@ -1,3 +1,53 @@
+2006-11-12  Andreas Jaeger  <aj@suse.de>
+
+	[BZ #2510]
+	* manual/search.texi (Hash Search Function): Clarify.
+	(Array Search Function): Clarify.
+
+2006-11-12  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #2830]
+	* math/atest-exp.c (main): Cast hex value to mp_limb_t before
+	shifting.
+	* math/atest-exp2.c (read_mpn_hex): Likewise.
+	* math/atest-sincos.c (main): Likewise.
+
+2006-10-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/syscalls.list: Add epoll_pwait.
+	* sysdeps/unix/sysv/linux/sys/epoll.h: Declare epoll_pwait.
+	* sysdeps/unix/sysv/linux/Versions (libc): Add epoll_pwait for
+	version GLIBC_2.6.
+	* Versions.def: Add GLIBC_2.6 for libc.
+
+	* sysdeps/unix/sysv/linux/i386/sysdep.h (DOARGS_6): Fix offset.
+
+	* sysdeps/i386/i486/bits/atomic.h: Add catomic_* support.
+
+2006-10-11  Jakub Jelinek  <jakub@redhat.com>
+
+	* malloc/malloc.c (_int_malloc): Remove unused any_larger variable.
+
+	* nis/nis_defaults.c (__nis_default_access): Don't call getenv twice.
+
+	* nis/nis_subr.c (nis_getnames): Use __secure_getenv instead of getenv.
+	* sysdeps/generic/unsecvars.h: Add NIS_PATH.
+
+2006-10-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* include/atomic.c: Define catomic_* operations.
+	* sysdeps/x86_64/bits/atomic.h: Likewise.  Fix a few minor problems.
+	* stdlib/cxa_finalize.c: Use catomic_* operations instead of atomic_*.
+	* malloc/memusage.c: Likewise.
+	* gmon/mcount.c: Likewise.
+	* elf/dl-close.c: Likewise.
+	* elf/dl-open.c: Likewise.
+	* elf/dl-profile.c: Likewise.
+	* elf/dl-sym.c: Likewise.
+	* elf/dl-runtime.c: Likewise.
+	* elf/dl-fptr.c: Likewise.
+	* resolv/res_libc.c: Likewise.
+
 2006-10-10  Ulrich Drepper  <drepper@redhat.com>
 
 	* nis/nis_subr.c (nis_getnames): Add trailing dot to NIS_PATH
@@ -719,7 +769,7 @@
 	* nis/nis_xdr.c: Avoid some function calls.
 
 2006-08-07  Jakub Jelinek  <jakub@redhat.com>
-            Ulrich Drepper  <drepper@redhat.com>
+	    Ulrich Drepper  <drepper@redhat.com>
 
 	* nis/nis_call.c (rec_dirsearch) [case LOWER_NAME]: Don't take
 	short cut if only one name component is stripped away.

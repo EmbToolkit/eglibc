@@ -1,5 +1,12 @@
 2006-10-19  Joseph S. Myers  <joseph@codesourcery.com>
 
+	* sysdeps/unix/sysv/linux/arm/bits/fcntl.h (splice): Update
+	prototype.
+	* sysdeps/unix/sysv/linux/mips/bits/fcntl.h (splice): Update
+	prototype.
+
+2006-10-19  Joseph S. Myers  <joseph@codesourcery.com>
+
 	* sysdeps/unix/sysv/linux/arm/kernel-features.h: Remove __i386__
 	conditional.
 

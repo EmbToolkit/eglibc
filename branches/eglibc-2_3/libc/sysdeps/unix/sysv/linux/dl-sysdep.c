@@ -22,7 +22,7 @@
 
 #include <unistd.h>
 #include <ldsodefs.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #define DL_SYSDEP_INIT frob_brk ()
 

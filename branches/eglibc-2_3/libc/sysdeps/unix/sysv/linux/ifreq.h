@@ -23,7 +23,7 @@
 #include <net/if.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 
 extern void __ifreq (struct ifreq **ifreqs, int *num_ifs, int sockfd);

@@ -26,7 +26,7 @@
 #include <sys/syscall.h>
 #include <bp-checks.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __NR_getresgid
 

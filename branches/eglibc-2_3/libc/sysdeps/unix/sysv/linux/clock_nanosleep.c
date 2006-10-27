@@ -19,7 +19,7 @@
 #include <time.h>
 
 #include <sysdep-cancel.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 
 #ifdef __ASSUME_POSIX_TIMERS

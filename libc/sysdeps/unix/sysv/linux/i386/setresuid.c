@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <setxid.h>
 #include <linux/posix_types.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 
 #if defined __NR_setresuid || defined __NR_setresuid32

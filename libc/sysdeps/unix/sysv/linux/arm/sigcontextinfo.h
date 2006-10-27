@@ -18,7 +18,7 @@
    02111-1307 USA.  */
 
 #include <bits/armsigctx.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #define SIGCONTEXT int _a2, int _a3, int _a4, union k_sigcontext
 #define SIGCONTEXT_EXTRA_ARGS _a2, _a3, _a4,

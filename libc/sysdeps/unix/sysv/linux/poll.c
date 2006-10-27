@@ -24,7 +24,7 @@
 #include <sys/syscall.h>
 #include <bp-checks.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #if defined __NR_poll || __ASSUME_POLL_SYSCALL > 0
 

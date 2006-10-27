@@ -24,7 +24,7 @@
 #include <bp-checks.h>
 
 #include <linux/posix_types.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __NR_lchown
 # ifdef __NR_lchown32

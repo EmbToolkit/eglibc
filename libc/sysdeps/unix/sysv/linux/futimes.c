@@ -25,7 +25,7 @@
 #include <stdio-common/_itoa.h>
 #include <fcntl.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 /* Change the access time of FILE to TVP[0] and
    the modification time of FILE to TVP[1], but do not follow symlinks.

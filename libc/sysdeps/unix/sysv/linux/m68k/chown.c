@@ -24,7 +24,7 @@
 #include <bp-checks.h>
 
 #include <linux/posix_types.h>
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __NR_chown32
 # if __ASSUME_32BITUIDS == 0

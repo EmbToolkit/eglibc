@@ -26,7 +26,7 @@
 #include <caller.h>
 #include <sysdep.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 
 extern int __stack_prot attribute_relro attribute_hidden;

@@ -18,7 +18,7 @@
 
 #include <sysdep.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #define EINVAL	22
 

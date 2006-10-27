@@ -25,7 +25,7 @@
 #include <sys/syscall.h>
 #include <bp-checks.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __NR_truncate64
 #ifndef __ASSUME_TRUNCATE64_SYSCALL

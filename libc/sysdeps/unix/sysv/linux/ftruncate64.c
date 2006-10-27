@@ -24,7 +24,7 @@
 #include <sysdep.h>
 #include <sys/syscall.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __NR_ftruncate64
 #ifndef __ASSUME_TRUNCATE64_SYSCALL

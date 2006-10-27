@@ -21,7 +21,7 @@
 #define	EINVAL		22
 #define	ENOSYS		38
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #ifdef __ARMEB__
 # define LOW_OFFSET      4 + 4

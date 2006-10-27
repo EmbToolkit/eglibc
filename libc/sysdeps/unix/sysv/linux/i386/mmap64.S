@@ -20,7 +20,7 @@
 #include <bp-sym.h>
 #include <bp-asm.h>
 
-#include "kernel-features.h"
+#include <kernel-features.h>
 
 #define EINVAL	22
 #define ENOSYS	38

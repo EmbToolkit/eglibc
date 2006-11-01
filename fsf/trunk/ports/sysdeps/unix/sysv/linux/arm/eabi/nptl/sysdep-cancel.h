@@ -94,7 +94,7 @@
 # define UNDOCARGS_5	ldmfd sp!, {r0, r1, r2, r3}; .fnend; .fnstart; .save {r4}; .save {r7, lr}; .pad #4
 # define RESTORE_LR_5	ldmfd sp!, {r4, r7, lr}
 
-# define DOCARGS_6	.save {r4, r5}; stmfd sp!, {r0, r1, r2, r3, r7, lr}; .save {r7, lr}; .pad #20
+# define DOCARGS_6	.save {r4, r5}; stmfd sp!, {r0, r1, r2, r3, r7, lr}; .save {r7, lr}; .pad #16
 # define UNDOCARGS_6	ldmfd sp!, {r0, r1, r2, r3}; .fnend; .fnstart; .save {r4, r5}; .save {r7, lr}
 # define RESTORE_LR_6	RESTORE_LR_0
 
@@ -150,4 +150,10 @@ extern int __local_multiple_threads attribute_hidden;
 # define SINGLE_THREAD_P 1
 # define NO_CANCELLATION 1
 
+#endif
+
+#ifndef __ASSEMBLER__
+# define RTLD_SINGLE_THREAD_P \
+  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
+				   header.multiple_threads) == 0, 1)
 #endif

@@ -1,4 +1,14 @@
-2H2006-10-03  Richard Sandiford  <richard@codesourcery.com>
+2006-10-31  Ian Lance Taylor  <ian@airs.com>
+
+	* specific.c (__pthread_destroy_specifics): Clear pointer before
+	freeing.
+
+2006-10-31  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/tcb-offsets.sym (MULTIPLE_THREADS_OFFSET): Fix typo
+	TLS_PRE_TCB_SIZE.
+
+2006-10-03  Richard Sandiford  <richard@codesourcery.com>
 
 	* sysdeps/m68k/pt-machine.h (__compare_and_swap): Don't define for
 	Coldfire.

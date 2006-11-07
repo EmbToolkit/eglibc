@@ -204,8 +204,9 @@ void __pthread_destroy_specifics()
   __pthread_lock(THREAD_GETMEM(self, p_lock), self);
   for (i = 0; i < PTHREAD_KEY_1STLEVEL_SIZE; i++) {
     if (THREAD_GETMEM_NC(self, p_specific[i]) != NULL) {
-      free(THREAD_GETMEM_NC(self, p_specific[i]));
+      void *p = THREAD_GETMEM_NC(self, p_specific[i]);
       THREAD_SETMEM_NC(self, p_specific[i], NULL);
+      free(p);
     }
   }
   __pthread_unlock(THREAD_GETMEM(self, p_lock));

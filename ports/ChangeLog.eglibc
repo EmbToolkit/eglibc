@@ -1,3 +1,23 @@
+2006-11-09  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	[BZ #2749]
+	* sysdeps/powerpc/nofpu/Makefile
+	[subdirs-soft-fp] (sysdep_routines): Remove gcc-quad-routines.
+	[subdirs-math] (CPPFLAGS): Add -I../soft-fp.
+	* sysdeps/powerpc/nofpu/Versions: Removed __fixtfdi, __fixtfsi,
+	__trunctfsf2, __floatunditf, __floatunsitf, and __unordtf2.
+	(GLIBC_2.4) 
+	* sysdeps/powerpc/nofpu/libm-test-ulps: Update for soft-fp.
+	* sysdeps/powerpc/soft-fp/sfp-machine.h: New file.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/Implies: New file.
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/getcontext.S:
+	New file.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/setcontext.S:
+	New file.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/swapcontext.S:
+	New file.
+
 2006-11-09  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/fpu/bits/mathdef.h: Move to

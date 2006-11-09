@@ -2,9 +2,10 @@
 
 ifeq ($(subdir),soft-fp)
 sysdep_routines += $(gcc-single-routines) $(gcc-double-routines) \
-		   $(gcc-quad-routines) sim-full
+		   sim-full
 endif
 
 ifeq ($(subdir),math)
 libm-support += fenv_const fe_nomask
+CPPFLAGS += -I../soft-fp/
 endif

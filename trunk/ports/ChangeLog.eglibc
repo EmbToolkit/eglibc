@@ -1,3 +1,10 @@
+2006-11-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/bits/predefs.h (__STDC_IEC_559__,
+	__STDC_IEC_559_COMPLEX__): Define if defined (__VFP_FP__) &&
+	!defined(__SOFTFP__).
+	* sysdeps/arm/eabi/fpu: Remove.
+
 2006-10-26  Joseph S. Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/eabi/nptl/sysdep-cancel.h

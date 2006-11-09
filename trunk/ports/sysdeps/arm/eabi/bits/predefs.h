@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 Free Software Foundation, Inc.
+/* Copyright (C) 2005, 2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,7 +27,7 @@
    if a VFP coprocessor is present. If we don't have one, we fall back to
    software emulation and the functions won't work properly. So in general,
    we don't claim to support this functionality.  */
-#if 0
+#if defined (__VFP_FP__) && !defined(__SOFTFP__)
 #define __STDC_IEC_559__		1
 #define __STDC_IEC_559_COMPLEX__	1
 #endif

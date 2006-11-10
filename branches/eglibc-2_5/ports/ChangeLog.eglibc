@@ -1,6 +1,18 @@
 2006-11-09  Steven Munroe  <sjmunroe@us.ibm.com>
 
 	[BZ #2749]
+	* sysdeps/powerpc/nofpu/Makefile (CFLAGS-e_powl.c): Set. 
+	(CFLAGS-s_ccoshl.c): Likewise.
+	(CFLAGS-s_csinhl.c): Likewise.
+	(CFLAGS-s_clogl.c): Likewise.
+	(CFLAGS-s_clog10l.c): Likewise.
+	(CFLAGS-s_csinl.c): Likewise.
+	(CFLAGS-s_csqrtl.c): Likewise.
+	* sysdeps/powerpc/nofpu/libm-test-ulps: Update.
+
+2006-11-09  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	[BZ #2749]
 	* sysdeps/powerpc/nofpu/Makefile
 	[subdirs-soft-fp] (sysdep_routines): Remove gcc-quad-routines.
 	[subdirs-math] (CPPFLAGS): Add -I../soft-fp.

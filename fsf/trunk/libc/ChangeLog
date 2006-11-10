@@ -1,3 +1,56 @@
+2006-11-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sysconf.c (intel_check_word): Add
+	noinline attribute.
+
+2006-11-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/i386/sysconf.c (intel_check_word): Add
+	noinline attribute.
+
+	* sysdeps/gnu/siglist.c (__old_sys_siglist, __old_sys_sigabbrev):
+	Use __new_sys_siglist instead of _sys_siglist_internal as
+	second macro argument.
+	(_old_sys_siglist): Use declare_symbol_alias macro instead of
+	strong_alias.
+
+2006-11-09  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3493]
+	* posix/unistd.h (sysconf): Remove const attribute.
+
+	* sysdeps/posix/getaddrinfo.c (getaddrinfo): Fix test for
+	temporary or deprecated addresses.
+	Patch by Sridhar Samudrala <sri@us.ibm.com>.
+
+	* string/Makefile (tests): Add tst-strxfrm2.
+	* string/tst-strxfrm2.c: New file.
+
+2006-10-09  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-debug.c (_dl_debug_initialize): Check r->r_map for 0
+	rather than r->r_brk.
+
+2006-11-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* string/strxfrm_l.c (STRXFRM): Do the trailing \1 removal
+	optimization even if needed > n.
+
+	* elf/dl-load.c (decompose_rpath): Return bool rather than void.
+	If l->l_name is on inhibit_rpath list, set sps->dirs to -1 and
+	return false, otherwise return true.
+	(cache_rpath): Return decompose_rpath return value.
+
+2006-11-07  Jakub Jelinek  <jakub@redhat.com>
+
+	* include/libc-symbols.h (declare_symbol): Rename to...
+	(declare_symbol_alias): ... this.  Add ORIGINAL argument, imply
+	strong_alias (ORIGINAL, SYMBOL) in asm to make sure it preceedes
+	.size directive.
+	* sysdeps/gnu/errlist-compat.awk: Adjust for declare_symbol_alias
+	changes.
+	* sysdeps/gnu/siglist.c: Likewise.
+
 2006-11-03  Steven Munroe  <sjmunroe@us.ibm.com>
 
 	* sysdeps/powerpc/fpu/bits/mathinline.h

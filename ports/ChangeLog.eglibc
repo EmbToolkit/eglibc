@@ -1,3 +1,7 @@
+2006-11-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/nofpu/libm-test-ulps: Add more ULPs.
+
 2006-11-09  Steven Munroe  <sjmunroe@us.ibm.com>
 
 	[BZ #2749]

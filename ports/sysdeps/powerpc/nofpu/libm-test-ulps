@@ -374,6 +374,9 @@ ifloat: 1
 Test "Real part of: ctan (-2 - 3 i) == 0.376402564150424829275122113032269084e-2 - 1.00323862735360980144635859782192726 i":
 double: 1
 idouble: 1
+Test "Imaginary part of: ctan (-2 - 3 i) == 0.376402564150424829275122113032269084e-2 - 1.00323862735360980144635859782192726 i":
+ildouble: 1
+ldouble: 1
 Test "Imaginary part of: ctan (0.75 + 1.25 i) == 0.160807785916206426725166058173438663 + 0.975363285031235646193581759755216379 i":
 double: 1
 idouble: 1
@@ -487,6 +490,8 @@ double: 1
 float: 1
 idouble: 1
 ifloat: 1
+ildouble: 1
+ldouble: 1
 Test "j0 (0.75) == 0.864242275166648623555731103820923211":
 float: 1
 ifloat: 1
@@ -503,6 +508,8 @@ double: 1
 float: 1
 idouble: 1
 ifloat: 1
+ildouble: 1
+ldouble: 1
 Test "j0 (8.0) == 0.171650807137553906090869407851972001":
 float: 1
 ifloat: 1

@@ -1,7 +1,5 @@
-/* copy sign, double version.
-   Copyright (C) 2002, 2006 Free Software Foundation, Inc.
+/* Copyright (C) 2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Andreas Jaeger <aj@suse.de>, 2002.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -18,33 +16,25 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <machine/asm.h>
-
-#ifdef __ELF__
-	.section .rodata
-#else
-	.text
+#if !defined _MATH_H && !defined _COMPLEX_H
+# error "Never use <bits/mathdef.h> directly; include <math.h> instead"
 #endif
 
-	.align ALIGNARG(4)
-	ASM_TYPE_DIRECTIVE(mask,@object)
-mask:
-	.byte 0xff, 0xff, 0xff, 0x7f
-	ASM_SIZE_DIRECTIVE(mask)
+#if defined  __USE_ISOC99 && defined _MATH_H && !defined _MATH_H_MATHDEF
+# define _MATH_H_MATHDEF	1
 
-#ifdef PIC
-#define MO(op) op##(%rip)
-#else
-#define MO(op) op
-#endif
+/* GCC does not promote `float' values to `double'.  */
+typedef float float_t;		/* `float' expressions are evaluated as
+				   `float'.  */
+typedef double double_t;	/* `double' expressions are evaluated as
+				   `double'.  */
 
-	.text
-ENTRY(__copysignf)
-	movss	MO(mask),%xmm3
-	andps	%xmm3,%xmm0
-	andnps	%xmm1,%xmm3
-	orps	%xmm3,%xmm0
-	retq
-END (__copysignf)
+/* The values returned by `ilogb' for 0 and NaN respectively.  */
+# define FP_ILOGB0	(-2147483647)
+# define FP_ILOGBNAN	(2147483647)
 
-weak_alias (__copysignf, copysignf)
+#endif	/* ISO C99 */
+
+/* On hppa `long double' is 64-bits. */
+#undef __NO_LONG_DOUBLE_MATH
+

@@ -1,3 +1,9 @@
+2006-12-05  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/nofpu/Makefile, sysdeps/powerpc/nofpu/Versions,
+	sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/Implies: Resync
+	with FSF glibc ports mainline.
+
 2006-11-14  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/nofpu/libm-test-ulps: Add more ULPs.

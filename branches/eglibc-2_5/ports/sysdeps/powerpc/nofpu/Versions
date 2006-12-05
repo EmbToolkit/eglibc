@@ -13,5 +13,8 @@ libc {
     __floatundidf; __floatundisf;
     __floatunsidf; __floatunsisf;
     __unorddf2; __unordsf2;
+    __nedf2; __nesf2;
+    __gtdf2; __gtsf2;
+    __ltdf2; __ltsf2;
   }
 }

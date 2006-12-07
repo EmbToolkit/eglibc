@@ -28,7 +28,7 @@
 # define __MATH_INLINE extern __inline
 #endif  /* __cplusplus */
 
-#if defined __GNUC__ && !defined _SOFT_FLOAT
+#if defined __GNUC__ && !defined __NO_FPRS__
 
 #ifdef __USE_ISOC99
 # if !__GNUC_PREREQ (2,97)
@@ -179,4 +179,4 @@ __NTH (__ieee754_sqrtf (float __x))
   return __z;
 }
 #endif /* __LIBC_INTERNAL_MATH_INLINES */
-#endif /* __GNUC__ && !_SOFT_FLOAT */
+#endif /* __GNUC__ && !__NO_FPRS__ */

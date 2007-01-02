@@ -118,7 +118,21 @@ vasprintf.o: $(srcdir)/vasprintf.c
 #----------------------------------------------------------------------------
 # Based on localedata/Makefile
 #----------------------------------------------------------------------------
+.. = glibc/
+
+# Get EGLIBC's option group variable definitions.  By default, this
+# will look for an 'option-groups.config' file in localedef's top
+# build directory.  If you are using a single localedef build tree
+# with several different option group configurations, set
+# option_group_config_file on the make command line to the name of the
+# option group config file to use.
+include glibc/option-groups.mak
 include glibc/localedata/SUPPORTED
+
+# Only install locale data if OPTION_EGLIBC_LOCALES is selected.
+ifneq ($(OPTION_EGLIBC_LOCALES),y)
+SUPPORTED-LOCALES :=
+endif
 
 INSTALL-SUPPORTED-LOCALES=$(addprefix install-, $(SUPPORTED-LOCALES))
 

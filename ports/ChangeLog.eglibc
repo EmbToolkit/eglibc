@@ -1,3 +1,14 @@
+2007-01-09  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport from trunk:
+	2007-01-08  Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/mips/ldsodefs.h: Merge sysdeps/mips/elf/ldsodefs.h.
+	Correct multiple inclusion guard.
+	* sysdeps/mips/elf/ldsodefs.h: Delete file.
+	2007-01-04  Thiemo Seufer  <ths@networkno.de>
+	* sysdeps/unix/sysv/linux/mips/bits/msq.h (struct msqid_ds):
+	Update to match the kernel.
+
 2007-01-02  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/nofpu/fesetenv.c (__sim_exceptions,

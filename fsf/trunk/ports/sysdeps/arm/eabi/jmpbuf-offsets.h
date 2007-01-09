@@ -1,6 +1,5 @@
-/* Set floating point environment (soft-float edition).
-   Copyright (C) 2002, 2007 Free Software Foundation, Inc.
-   Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
+/* Private macros for accessing __jmp_buf contents.  ARM EABI version.
+   Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,27 +17,4 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include "soft-fp.h"
-#include "soft-supp.h"
-#include <bp-sym.h>
-
-int
-__fesetenv (const fenv_t *envp)
-{
-  fenv_union_t u;
-
-  u.fenv = *envp;
-  __sim_exceptions = u.l[0] & FE_ALL_EXCEPT;
-  __sim_round_mode = u.l[0] & 0x3;
-  __sim_disabled_exceptions = u.l[1];
-  return 0;
-}
-
-#include <shlib-compat.h>
-#if SHLIB_COMPAT (libm, GLIBC_2_1, GLIBC_2_2)
-strong_alias (__fesetenv, __old_fesetenv)
-compat_symbol (libm, BP_SYM (__old_fesetenv), BP_SYM (fesetenv), GLIBC_2_1);
-#endif
-
-libm_hidden_ver (__fesetenv, fesetenv)
-versioned_symbol (libm, BP_SYM (__fesetenv), BP_SYM (fesetenv), GLIBC_2_2);
+#define __JMP_BUF_SP		8

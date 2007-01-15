@@ -1,6 +1,5 @@
-/* Copyright (C) 1995, 1997, 1998, 2001, 2006 Free Software Foundation, Inc.
+/* Copyright (C) 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, August 1995.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,21 +16,52 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#include <errno.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <ucontext.h>
+
+ucontext_t ucp;
+char st1[8192];
+__thread int thr;
+
+void
+cf (int i)
+{
+  if (i != 78 || thr != 94)
+    {
+      printf ("i %d thr %d\n", i, thr);
+      exit (1);
+    }
+  exit (0);
+}
 
 int
-__jrand48_r (xsubi, buffer, result)
-     unsigned short int xsubi[3];
-     struct drand48_data *buffer;
-     long int *result;
+do_test (void)
 {
-  /* Compute next state.  */
-  if (__drand48_iterate (xsubi, buffer) < 0)
-    return -1;
+  if (getcontext (&ucp) != 0)
+    {
+      if (errno == ENOSYS)
+	{
+	  puts ("context handling not supported");
+	  return 0;
+	}
 
-  /* Store the result.  */
-  *result = (int32_t) ((xsubi[2] << 16) | xsubi[1]);
-
-  return 0;
+      puts ("getcontext failed");
+      return 1;
+    }
+  thr = 94;
+  ucp.uc_link = NULL;
+  ucp.uc_stack.ss_sp = st1;
+  ucp.uc_stack.ss_size = sizeof st1;
+  makecontext (&ucp, (void (*) (void)) cf, 1, 78);
+  if (setcontext (&ucp) != 0)
+    {
+      puts ("setcontext failed");
+      return 1;
+    }
+  return 2;
 }
-weak_alias (__jrand48_r, jrand48_r)
+
+#define TEST_FUNCTION do_test ()
+#include "../test-skeleton.c"

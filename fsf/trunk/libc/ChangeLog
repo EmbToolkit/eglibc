@@ -1,3 +1,60 @@
+2007-01-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/connections.c (servinfo): Renamed to reqinfo.  Change all
+	users.
+	(handle_request): Remove unnecessary tests.
+
+	* nscd/cache.c (cache_add): Record the failure to add to the cache.
+
+2007-01-15  Jakub Jelinek  <jakub@redhat.com>
+
+	* soft-fp/op-common.h (FP_TRUNC): When truncating a NaN, clear
+	workbits in semi-raw fraction.
+
+	* math/test-misc.c: Add new tests.
+
+2007-01-14  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* math/basic-test.c: Include test-skeleton.c.
+	(TEST_TRUNC): Define.
+	(truncdfsf_test, trunctfsf_test, trunctfdf_test): New.
+	(main): Rename to ...
+	(do_test): ...this.  Run new tests.
+	(TEST_FUNCTION): Define.
+
+2006-10-05  Steven Munroe  <sjmunroe@us.ibm.com>
+	    Joe Kerian  <jkerian@us.us.ibm.com>
+
+	[BZ #2749]
+	* soft-fp/op-4.h (__FP_FRAC_SUB_3, __FP_FRAC_SUB_4): Correct borrow
+	handling for high words.
+	* soft-fp/op-common.h (_FP_OVERFLOW_SEMIRAW): Always set inexact
+	and overflow for infinity.
+
+2007-01-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/connections.c (handle_request): Add a __builtin_expect.
+
+	* nscd/connections.c (serv2db): Change type into structure which
+	also says whether this is a request for data.  Renamed to
+	servinfo.  All users changed.
+	(handle_request): Much simpler test whether we should search the cache.
+
+	* nscd/connections.c (handle_request): Fix thinko in selinux test
+	invocation.
+
+	* sysdeps/generic/ldsodefs.h: Define DL_LOOKUP_SCOPE_LOCK.
+	* elf/dl-lookup.c (add_dependency): If scope map is locked, unlock
+	it before getting dl_load_lock and then relock.
+	(_dl_lookup_symbol_x): Pass flags to add_dependency.
+	When rerunning _dl_lookup_symbol_x, compute symbol_scope again in
+	case we unlocked the scope.
+	* elf/dl-runtime.c (_dl_fixup): Pass DL_LOOKUP_SCOPE_LOCK to
+	_dl_lookup_symbol_x in case we locked the scope.
+	(_dl_profile_fixup): Likewise.
+	* elf/dl-sym.c (do_sym): In flags passed to call_dl_lookup, also
+	set DL_LOOKUP_SCOPE_LOCK.
+
 2007-01-13  Ulrich Drepper  <drepper@redhat.com>
 
 	* inet/Makefile: Define CFLAGS-getsrvbynm_r.c and

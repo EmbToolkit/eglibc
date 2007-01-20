@@ -1,3 +1,20 @@
+2007-01-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* iconvdata/brf.c: New file.
+	* iconvdata/testdata/BRF: New file.
+	* iconvdata/testdata/BRF..UTF8: New file.
+	Contributed by Samuel Thibault <samuel.thibault@ens-lyon.org>.
+	* iconvdata/Makefile: Add rules to build BRF.
+	* iconvdata/TESTS: Add BRF entry.
+	* iconvdata/gconv-modules: Likewise.
+	* iconvdata/tst-tables.sh: Likewise.
+
+2007-01-18  Anton Nikishaev  <anton.nik@gmail.com>
+
+	* wcsmbs/wchar.h (wcstoll): Fix comment, function returns value of
+	type `long long int', not `long int'.
+	(wcstoq): Likewise.
+
 2007-01-18  Ulrich Drepper  <drepper@redhat.com>
 
 	* scripts/gen-as-const.awk: Add cast to long to avoid int promotion

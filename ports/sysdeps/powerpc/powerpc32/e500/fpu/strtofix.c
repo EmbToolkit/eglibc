@@ -409,6 +409,12 @@ STRTOFIX (const char *nptr, char **endptr)
 	}
     }
 
+  /* For numbers like "0x." with no hex digits, only the "0" is valid.  */
+  if (base == 16
+      && startp == start_of_digits
+      && dig_no == 0)
+    RETURN (0, start_of_digits - 1);
+
   /* Remember start of exponent (if any).  */
   expp = cp;
 
@@ -562,7 +568,7 @@ STRTOFIX (const char *nptr, char **endptr)
 
   /* Normalize the exponent so that all digits can be considered to
      start just after the point.  */
-  exponent += int_no;
+  exponent += base == 16 ? 4 * int_no : int_no;
 
   if (exponent > (base == 16 ? 4 : 1))
     {
@@ -647,7 +653,7 @@ STRTOFIX (const char *nptr, char **endptr)
 	  shift = RETURN_FRAC_BITS - 4 + exponent - 4 * i;
 	  if (shift >= 0)
 	    r |= val << shift;
-	  else if (shift <= -4)
+	  else if (shift < -4)
 	    extra |= (val != 0);
 	  else
 	    {

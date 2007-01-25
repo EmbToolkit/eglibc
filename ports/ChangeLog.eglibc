@@ -1,3 +1,12 @@
+2007-01-24  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/powerpc32/e500/fpu/tst-spepim.c: New.
+	* sysdeps/powerpc/powerpc32/e500/fpu/Makefile: Enable new test.
+	* sysdeps/powerpc/powerpc32/e500/fpu/strtofix.c (STRTOFIX): Check
+	for invalid numbers starting "0x" with no following digits.
+	Correct exponent normalization for hex numbers.  Correct handling
+	of low digits in hex numbers.
+
 2007-01-02  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/nofpu/fesetenv.c (__sim_exceptions,

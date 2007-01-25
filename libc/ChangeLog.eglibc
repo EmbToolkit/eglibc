@@ -1,3 +1,7 @@
+2007-01-25  Jim Blandy  <jimb@codesourcery.com>
+
+	* Makerules: Allow option groups to control xtests as well.
+
 2007-01-09  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport from trunk:

@@ -1,3 +1,7 @@
+2007-01-31  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/bits/mathdef.h (float_t): Change to float.
+
 2007-01-24  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/powerpc32/e500/fpu/tst-spepim.c: New.

@@ -1,5 +1,5 @@
-/* Clean up stack frames unwound by longjmp.  Linux/s390 version.
-   Copyright (C) 2003, 2004, 2007 Free Software Foundation, Inc.
+/* Internal libc stuff for floating point environment routines.
+   Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,24 +17,13 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <setjmp.h>
-#include <stddef.h>
-#include <pthreadP.h>
+#ifndef _FENV_LIBC_H
+#define _FENV_LIBC_H	1
 
-extern void __pthread_cleanup_upto (__jmp_buf env, char *targetframe);
-#pragma weak __pthread_cleanup_upto
+/* fenv_libc.h is used in libm implementations of ldbl-128ibm.  So we
+   need this version in the soft-fp to at minimum include fenv.h to
+   get the fegetround definition.  */
 
-
-void
-_longjmp_unwind (jmp_buf env, int val)
-{
-  unsigned char local_var;
-
-#ifdef SHARED
-  if (__libc_pthread_functions_init)
-    PTHFCT_CALL (ptr___pthread_cleanup_upto, (env->__jmpbuf, &local_var));
-#else
-  if (__pthread_cleanup_upto != NULL)
-    __pthread_cleanup_upto (env->__jmpbuf, &local_var);
-#endif
-}
+#include <fenv.h>
+ 
+#endif /* fenv_libc.h */

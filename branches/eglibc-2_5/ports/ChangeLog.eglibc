@@ -1,3 +1,20 @@
+2007-02-05  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport from trunk:
+	2007-01-25  Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+	            Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/unix/sysv/linux/mips/mips64/syscalls.list: Remove msgctl,
+	shmctl, and semctl.
+	* sysdeps/unix/sysv/linux/mips/misp64/semctl.c,
+	sysdeps/unix/sysv/linux/mips/mips64/shmctl.c,
+	sysdeps/unix/sysv/linux/mips/mips64/msgctl.c: New files.
+	2007-01-23  Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/unix/sysv/linux/mips/mips64/nptl/sysdep-cancel.h
+	(cfi_same_value): Delete definition.
+	2007-01-23  Steven Munroe  <sjmunroe@us.ibm.com>
+	[BZ #2749]
+	* sysdeps/powerpc/nofpu/fenv_libc.h: New file.
+
 2007-01-31  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/mips/bits/mathdef.h (float_t): Change to float.

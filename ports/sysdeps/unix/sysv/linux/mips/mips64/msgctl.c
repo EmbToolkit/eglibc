@@ -1,5 +1,4 @@
-/* Internal libc stuff for floating point environment routines.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+/* Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,13 +16,20 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef _FENV_LIBC_H
-#define _FENV_LIBC_H	1
+#include <errno.h>
+#include <sys/msg.h>
+#include <ipc_priv.h>
+#include <sysdep.h>
 
-/* fenv_libc.h is used in libm implementations of ldbl-128ibm.  So we
-   need this version in the soft-fp to at minimum include fenv.h to
-   get the fegetround definition.  */
+#include <bp-checks.h>
 
-#include <fenv.h>
- 
-#endif /* fenv_libc.h */
+int __msgctl (int msqid, int cmd, struct msqid_ds *buf);
+
+int
+__msgctl (int msqid, int cmd, struct msqid_ds *buf)
+{
+  return INLINE_SYSCALL (msgctl, 3, msqid, cmd | __IPC_64, CHECK_1 (buf));
+}
+
+#include <shlib-compat.h>
+versioned_symbol (libc, __msgctl, msgctl, GLIBC_2_0);

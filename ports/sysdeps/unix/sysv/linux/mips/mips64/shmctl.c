@@ -1,5 +1,4 @@
-/* Clean up stack frames unwound by longjmp.  Linux/s390 version.
-   Copyright (C) 2003, 2004, 2007 Free Software Foundation, Inc.
+/* Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,24 +16,20 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <setjmp.h>
-#include <stddef.h>
-#include <pthreadP.h>
+#include <errno.h>
+#include <sys/shm.h>
+#include <ipc_priv.h>
+#include <sysdep.h>
 
-extern void __pthread_cleanup_upto (__jmp_buf env, char *targetframe);
-#pragma weak __pthread_cleanup_upto
+#include <bp-checks.h>
 
+int __shmctl (int shmid, int cmd, struct shmid_ds *buf);
 
-void
-_longjmp_unwind (jmp_buf env, int val)
+int
+__shmctl (int shmid, int cmd, struct shmid_ds *buf)
 {
-  unsigned char local_var;
-
-#ifdef SHARED
-  if (__libc_pthread_functions_init)
-    PTHFCT_CALL (ptr___pthread_cleanup_upto, (env->__jmpbuf, &local_var));
-#else
-  if (__pthread_cleanup_upto != NULL)
-    __pthread_cleanup_upto (env->__jmpbuf, &local_var);
-#endif
+  return INLINE_SYSCALL (shmctl, 3, shmid, cmd | __IPC_64, CHECK_1 (buf));
 }
+
+#include <shlib-compat.h>
+versioned_symbol (libc, __shmctl, shmctl, GLIBC_2_0);

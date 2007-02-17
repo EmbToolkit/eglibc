@@ -1,3 +1,30 @@
+2007-02-16  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3322]
+	* SUPPORTED (SUPPORTED-LOCALES): Add sr_RS and sr_RS@latin.
+	* locales/sr_RS: New file.
+	* locales/sr_RS@latin: New file.
+
+	[BZ #3995]
+	* locales/ru_RU (LC_TIME): Set first_weekday and first_workday.
+
+	[BZ #3885]
+	* locales/i18n: Updates for Unicode 5.0.
+	* charmaps/UTF-8: Likewise.
+	Patch by Pablo Saratxaga <pablo@walon.org>
+
+2007-01-12  Gwenole Beauchesne  <gbeauchesne@mandriva.com>
+
+	[BZ #3884]
+	* locales/sl_SI: Slovenia joined the Euro zone.
+	Fix negative number format.
+
+2007-02-16  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3851]
+	* locales/bn_BD: Fix full name of January and February.
+	Patch by Jamil Ahmed <jamil@bengalinux.org>.
+
 2007-02-02  Bruno Haible  <bruno@clisp.org>
 
 	* charmaps/EUC-KR: Add mapping for 0xA2 0xE8.

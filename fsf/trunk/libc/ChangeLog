@@ -1,4 +1,30 @@
+2007-02-17  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #2633]
+	* libio/stdio.h: Define struct _IO_FILE in global namespace.
+	* setjmp/setjmp.h: Define __jmp_buf_tag in global namespace.
+	Remove using for __jmp_buf_tag.
+	* locale/locale.h (struct lconv): Also define in std namespace.
+	* wcsmbs/wchar.h: Move using declaration for tm out of namespace.
+
+	[BZ #3842]
+	* sysdeps/posix/euidaccess.c [_LIBC] (euidaccess): Remove shortcut
+	using __libc_enable_secure.
+
+	[BZ #3818]
+	* sysdeps/unix/sysv/linux/sys/acct.h (struct acct_v3): Define.
+
+	[BZ #3745]
+	* locale/programs/ld-collate.c (handle_ellipsis): Fix generation
+	of names for ellipsises.
+
+	[BZ #3348]
+	* malloc/memusage.sh: Cleanups.
+	* debug/xtrace.sh: Quoting and trap changes.
+
 2007-02-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale/iso-3166.def: Add Jersey, Guernsey, and Isle Of Man entries.
 
 	* locale/iso-3166.def: Update entry for Serbia.
 	* locale/iso-4217.def: Define RSD, remove CSD.

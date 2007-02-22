@@ -79,8 +79,3 @@
      This normally is done using the the thread register which points
      to the dtv or the TCB (from which the DTV can found).
   */
-
-#ifndef __ASSEMBLER__
-/* All non-dummy versions of tls.h include this file.  */
-#include <time.h>
-#endif

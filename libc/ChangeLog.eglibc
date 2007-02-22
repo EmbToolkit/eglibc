@@ -7,26 +7,6 @@
 	* elf/elf.h (R_MIPS_GLOB_DAT): Define.
 	(R_MIPS_NUM): Bump by 1.
 
-2007-02-22  Richard Sandiford  <richard@codesourcery.com>
-
-	* sysdeps/generic/tls.h: Include <time.h>.
-
-2007-02-22  Richard Sandiford  <richard@codesourcery.com>
-
-	From Debian:
-
-	2007-02-09  Aurelien Jarno  <aurelien@aurel32.net>
-
-	* resolv/gai_misc.h: Include <pthread.h>.
-
-	2007-02-06  Petr Salinger  <petr.salinger@seznam.cz>
-
-	* inet/inet_ntoa.c: Only use __thread if USE___THREAD.
-
-	2005-08-28  Thomas Schwinge  <schwinge@nic-nac-project.de>
-
-	* malloc/memusage.c: Only use __thread if USE___THREAD.
-
 2007-02-20  Jim Blandy  <jimb@codesourcery.com>
 
 	* Makefile (install-headers): Preserve old behavior: depend on

@@ -22,7 +22,6 @@
 
 #include <netdb.h>
 #include <signal.h>
-#include <pthread.h>
 
 
 /* Used to synchronize.  */

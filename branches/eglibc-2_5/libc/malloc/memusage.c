@@ -84,7 +84,11 @@ static memusage_cntr_t inplace_mremap;
 static memusage_cntr_t decreasing_mremap;
 static memusage_size_t current_heap;
 static memusage_size_t peak_use[3];
+#if USE___THREAD
 static __thread uintptr_t start_sp;
+#else
+static uintptr_t start_sp;
+#endif
 
 /* A few macros to make the source more readable.  */
 #define peak_heap	peak_use[0]

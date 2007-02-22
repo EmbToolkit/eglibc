@@ -1,3 +1,39 @@
+2007-02-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Add branch predictions
+	and fix some typos.
+	Optimize use of TOLOWER.
+
+	[BZ #3325]
+	* sysdeps/i386/fpu/e_fmodf.S: Revert last changes, keep using fprem.
+	* sysdeps/i386/fpu/e_fmodl.c: Likewise.
+	* sysdeps/i386/fpu/e_fmod.S: Likewise.
+
+	[BZ #3458]
+	* sysdeps/unix/sysv/linux/posix_madvise.c: New file.
+	* sysdeps/unix/sysv/linux/syscalls.list: Remove posix_madvise entry.
+
+	[BZ #4076]
+	* io/ftw.c (ftw_startup): Handle special case of FTW_CHDIR in /.
+	(open_dir_stream): Likewise.
+	* io/Makefile (tests): Add bug-ftw5.
+	io/bug-ftw5.c: New file.
+
+	* nscd/hstcache.c (cache_addhst): Remove unnecessary conditional.
+	* nscd/servicescache.c (cache_addserv): Likewise.
+
+	* nscd/grpcache.c (cache_addgr): In case a record changed on
+	refresh, adjust key_copy.
+
+	[BZ #4074]
+	* nscd/pwdcache.c (cache_addpw): In case a record changed on
+	refresh, adjust key_copy.
+
+	[BZ #4070]
+	* stdio-common/printf_fp.c (___printf_fp): Handle a few more
+	special cases.
+	* stdio-common/tfformat.c (sprint_doubles): Some more tests.
+
 2007-02-19  Ulrich Drepper  <drepper@redhat.com>
 
 	* stdio-common/printf_fp.c (___printf_fp): Cleanups and minor

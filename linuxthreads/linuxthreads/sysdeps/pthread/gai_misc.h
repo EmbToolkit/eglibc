@@ -23,6 +23,7 @@
 
 #include <assert.h>
 #include <signal.h>
+#include <pthread.h>
 
 #undef DONT_NEED_GAI_MISC_COND
 

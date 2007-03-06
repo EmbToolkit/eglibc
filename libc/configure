@@ -5349,7 +5349,7 @@ if test "${libc_cv_have_sdata_section+set}" = set; then
 else
   echo "int i;" > conftest.c
 		  libc_cv_have_sdata_section=no
-		  if ${CC-cc} $LDFLAGS -shared -Wl,--verbose conftest.c -o conftest.so 2>&1 \
+		  if ${CC-cc} $LDFLAGS -fPIC -shared -Wl,--verbose conftest.c -o conftest.so 2>&1 \
 		     | grep '\.sdata' >/dev/null; then
 		    libc_cv_have_sdata_section=yes
 		  fi
@@ -5441,7 +5441,7 @@ else
 int _start (void) { return 42; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-		     -shared -o conftest.so conftest.c
+		     -fPIC -shared -o conftest.so conftest.c
 		     -nostartfiles -nostdlib
 		     -Wl,--enable-new-dtags,-z,nodelete 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
@@ -5469,7 +5469,7 @@ else
 int _start (void) { return 42; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			-shared -o conftest.so conftest.c
+			-fPIC -shared -o conftest.so conftest.c
 			-nostartfiles -nostdlib
 			-Wl,--enable-new-dtags,-z,nodlopen 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
@@ -5497,7 +5497,7 @@ else
 int _start (void) { return 42; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			-shared -o conftest.so conftest.c
+			-fPIC -shared -o conftest.so conftest.c
 			-nostartfiles -nostdlib
 			-Wl,--enable-new-dtags,-z,initfirst 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
@@ -5559,7 +5559,7 @@ else
 int _start (void) { return 42; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			      -shared -o conftest.so conftest.c
+			      -fPIC -shared -o conftest.so conftest.c
 			      -Wl,-Bgroup -nostdlib 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
@@ -5586,7 +5586,7 @@ else
 int main (void) { return 0; }
 EOF
   libc_cv_libgcc_s_suffix=`${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS \
-			   -shared -shared-libgcc -o conftest.so \
+			   -fPIC -shared -shared-libgcc -o conftest.so \
 			   conftest.c -v 2>&1 >/dev/null \
 			   | sed -n 's/^.* -lgcc_s\([^ ]*\) .*$/\1/p'`
   rm -f conftest*
@@ -5604,7 +5604,7 @@ else
 int main (void) { return 0; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			      -shared -o conftest.so conftest.c
+			      -fPIC -shared -o conftest.so conftest.c
 			      -lgcc_s$libc_cv_libgcc_s_suffix -Wl,--as-needed
 			      -nostdlib 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
@@ -5672,7 +5672,7 @@ extern int mumble;
 int foo (void) { return bar (mumble); }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			-shared -o conftest.so conftest.c
+			-fPIC -shared -o conftest.so conftest.c
 			-nostdlib -nostartfiles
 			-Wl,-z,combreloc 1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
@@ -5710,7 +5710,7 @@ else
 int _start (void) { return 42; }
 EOF
   if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
-			      -shared -o conftest.so conftest.c
+			      -fPIC -shared -o conftest.so conftest.c
 			      -Wl,-z,execstack -nostdlib
 			      1>&5'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5

@@ -1,3 +1,11 @@
+2007-03-06  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport from mainline.
+	2005-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* configure.in: Compile source test file with -fPIC for -shared.
+	* configure: Regenerate.
+
 2007-03-05  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport from mainline.

@@ -1,3 +1,12 @@
+2007-03-05  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport from mainline.
+	2006-09-24  Jakub Jelinek  <jakub@redhat.com>
+	* sysdeps/ieee754/ldbl-128/s_lrintl.c (__lrintl): Fix 2 typos.
+
+	2006-09-20  Andreas Jaeger  <aj@suse.de>
+	* math/libm-test.inc (lrint_test_upward): Fix typo.
+
 2007-02-27  Joseph Myers  <joseph@codesourcery.com>
 
 	* configure.in: Also pass -isystem option for GCC's include-fixed

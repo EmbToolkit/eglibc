@@ -1,3 +1,29 @@
+2007-03-13  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/alpha/Makefile (sysdep-CFLAGS): Force dynamic rounding.
+	* sysdeps/alpha/fpu/bits/mathinline.h (__signbitl): New.
+	* sysdeps/alpha/fpu/libm-test-ulps: Regenerate.
+	* sysdeps/unix/sysv/linux/alpha/alphaev6/fpu/Implies: New file.
+	* sysdeps/unix/sysv/linux/alpha/alphaev67/fpu/Implies: New file.
+	* sysdeps/unix/sysv/linux/alpha/fpu/Implies: New file.
+
+2007-03-13  Richard Henderson  <rth@redhat.com>
+
+        * elf/dl-support.c (_dl_aux_init): Honor DL_PLATFORM_AUXV.
+	* sysdeps/unix/sysv/linux/alpha/dl-auxv.h: New file.
+	* sysdeps/unix/sysv/linux/alpha/dl-support.c: New file.
+	* sysdeps/unix/sysv/linux/alpha/dl-sysdep.c (__libc_alpha_cache_shape):
+	Move to dl-auxv.h; initialize instead of extern weak.
+	(DL_PLATFORM_AUXV): Move to dl-auxv.h; don't test for undef
+	weak symbol.
+	* sysdeps/unix/sysv/linux/alpha/sysconf.c (__libc_alpha_cache_shape):
+	Extern instead of initialized.
+
+2007-03-13  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/sigsuspend.S: Add support for
+	__sigsuspend_nocancel.
+
 2007-03-06  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/posix/getaddrinfo.c (get_scope): Correct test for

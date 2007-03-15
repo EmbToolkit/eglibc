@@ -1,6 +1,6 @@
-/* Copyright (C) 1998, 2000, 2006, 2007 Free Software Foundation, Inc.
+/* Return 1 if argument is a NaN, else 0.
+   Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Richard Henderson.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,37 +17,42 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+/* Ugly kludge to avoid declarations.  */
+#define __isnanf	not___isnanf
+#define isnanf		not_isnanf
+#define __GI___isnanf	not__GI___isnanf
+
 #include <math.h>
 #include <math_ldbl_opt.h>
 
-/* Use the -inf rounding mode conversion instructions to implement
-   ceil, via something akin to -floor(-x).  This is much faster than
-   playing with the fpcr to achieve +inf rounding mode.  */
+#undef __isnanf
+#undef isnanf
+#undef __GI___isnanf
 
-double
-__ceil (double x)
+/* The hidden_proto in include/math.h was obscured by the macro hackery.  */
+__typeof (__isnan) __isnanf;
+hidden_proto (__isnanf)
+
+
+int
+__isnan (double x)
 {
-  double two52 = copysign (0x1.0p52, x);
-  double r, tmp;
-  
-  __asm (
-#ifdef _IEEE_FP_INEXACT
-	 "addt/suim %2, %3, %1\n\tsubt/suim %1, %3, %0"
-#else
-	 "addt/sum %2, %3, %1\n\tsubt/sum %1, %3, %0"
-#endif
-	 : "=&f"(r), "=&f"(tmp)
-	 : "f"(-x), "f"(-two52));
-
-  /* Fix up the negation we did above, as well as handling -0 properly. */
-  return copysign (r, x);
+  return isunordered (x, x);
 }
 
-weak_alias (__ceil, ceil)
+hidden_def (__isnan)
+weak_alias (__isnan, isnan)
+
+/* It turns out that the 'double' version will also always work for
+   single-precision.  */
+strong_alias (__isnan, __isnanf)
+hidden_def (__isnanf)
+weak_alias (__isnanf, isnanf)
+
 #ifdef NO_LONG_DOUBLE
-strong_alias (__ceil, __ceill)
-weak_alias (__ceil, ceill)
+strong_alias (__isnan, __isnanl)
+weak_alias (__isnan, isnanl)
 #endif
 #if LONG_DOUBLE_COMPAT(libm, GLIBC_2_0)
-compat_symbol (libm, __ceil, ceill, GLIBC_2_0);
+compat_symbol (libm, __isnan, isnanl, GLIBC_2_0);
 #endif

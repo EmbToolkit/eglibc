@@ -80,6 +80,7 @@ asm (
 "4:	bl	pthread_cancel_init\n"
 "	ldr	r3, [r4, r5]\n"
 "	b	5b\n"
+"	.align 2\n"
 "1:	.word	_GLOBAL_OFFSET_TABLE_ - 3b - 8\n"
 "2:	.word	libgcc_s_resume(GOTOFF)\n"
 "	.size	_Unwind_Resume, .-_Unwind_Resume\n"

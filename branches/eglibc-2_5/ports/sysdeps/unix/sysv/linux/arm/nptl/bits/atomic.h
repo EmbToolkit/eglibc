@@ -60,12 +60,21 @@ void __arm_link_error (void);
 
 #else
 
+#ifdef __thumb2__
+#define atomic_full_barrier() \
+     __asm__ __volatile__						      \
+	     ("movw\tip, #0x0fa0\n\t"					      \
+	      "movt\tip, #0xffff\n\t"					      \
+	      "blx\tip"							      \
+	      : : : "ip", "lr", "cc", "memory");
+#else
 #define atomic_full_barrier() \
      __asm__ __volatile__						      \
 	     ("mov\tip, #0xffff0fff\n\t"				      \
 	      "mov\tlr, pc\n\t"						      \
 	      "add\tpc, ip, #(0xffff0fa0 - 0xffff0fff)"			      \
 	      : : : "ip", "lr", "cc", "memory");
+#endif
 
 #endif
 
@@ -84,6 +93,9 @@ void __arm_link_error (void);
    specify one to work around GCC PR rtl-optimization/21223.  Otherwise
    it may cause a_oldval or a_tmp to be moved to a different register.  */
 
+#ifdef __thumb2__
+/* Thumb-2 has ldrex/strex.  However it does not have barrier instructions,
+   so we still need to use the kernel helper.  */
 #define __arch_compare_and_exchange_val_32_acq(mem, newval, oldval) \
   ({ register __typeof (oldval) a_oldval asm ("r0");			      \
      register __typeof (oldval) a_newval asm ("r1") = (newval);		      \
@@ -91,20 +103,45 @@ void __arm_link_error (void);
      register __typeof (oldval) a_tmp asm ("r3");			      \
      register __typeof (oldval) a_oldval2 asm ("r4") = (oldval);	      \
      __asm__ __volatile__						      \
-	     ("0:\tldr\t%1,[%3]\n\t"					      \
-	      "cmp\t%1, %4\n\t"						      \
+	     ("0:\tldr\t%[tmp],[%[ptr]]\n\t"				      \
+	      "cmp\t%[tmp], %[old2]\n\t"				      \
 	      "bne\t1f\n\t"						      \
-	      "mov\t%0, %4\n\t"						      \
-	      "mov\t%1, #0xffff0fff\n\t"				      \
-	      "mov\tlr, pc\n\t"						      \
-	      "add\tpc, %1, #(0xffff0fc0 - 0xffff0fff)\n\t"		      \
+	      "mov\t%[old], %[old2]\n\t"				      \
+	      "movw\t%[tmp], #0x0fc0\n\t"				      \
+	      "movt\t%[tmp], #0xffff\n\t"				      \
+	      "blx\t%[tmp]\n\t"						      \
 	      "bcc\t0b\n\t"						      \
-	      "mov\t%1, %4\n\t"						      \
+	      "mov\t%[tmp], %[old2]\n\t"				      \
 	      "1:"							      \
-	      : "=&r" (a_oldval), "=&r" (a_tmp)				      \
-	      : "r" (a_newval), "r" (a_ptr), "r" (a_oldval2)		      \
+	      : [old] "=&r" (a_oldval), [tmp] "=&r" (a_tmp)		      \
+	      : [new] "r" (a_newval), [ptr] "r" (a_ptr),		      \
+		[old2] "r" (a_oldval2)					      \
 	      : "ip", "lr", "cc", "memory");				      \
      a_tmp; })
+#else
+#define __arch_compare_and_exchange_val_32_acq(mem, newval, oldval) \
+  ({ register __typeof (oldval) a_oldval asm ("r0");			      \
+     register __typeof (oldval) a_newval asm ("r1") = (newval);		      \
+     register __typeof (mem) a_ptr asm ("r2") = (mem);			      \
+     register __typeof (oldval) a_tmp asm ("r3");			      \
+     register __typeof (oldval) a_oldval2 asm ("r4") = (oldval);	      \
+     __asm__ __volatile__						      \
+	     ("0:\tldr\t%[tmp],[%[ptr]]\n\t"				      \
+	      "cmp\t%[tmp], %[old2]\n\t"				      \
+	      "bne\t1f\n\t"						      \
+	      "mov\t%[old], %[old2]\n\t"				      \
+	      "mov\t%[tmp], #0xffff0fff\n\t"				      \
+	      "mov\tlr, pc\n\t"						      \
+	      "add\tpc, %[tmp], #(0xffff0fc0 - 0xffff0fff)\n\t"		      \
+	      "bcc\t0b\n\t"						      \
+	      "mov\t%[tmp], %[old2]\n\t"				      \
+	      "1:"							      \
+	      : [old] "=&r" (a_oldval), [tmp] "=&r" (a_tmp)		      \
+	      : [new] "r" (a_newval), [ptr] "r" (a_ptr),		      \
+		[old2] "r" (a_oldval2)					      \
+	      : "ip", "lr", "cc", "memory");				      \
+     a_tmp; })
+#endif
 
 #define __arch_compare_and_exchange_val_64_acq(mem, newval, oldval) \
   ({ __arm_link_error (); oldval; })

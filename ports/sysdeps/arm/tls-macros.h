@@ -4,6 +4,7 @@
      asm ("ldr %0, 1f; "				\
 	  "add %0, %1, %0; "				\
 	  "b 2f; "					\
+	  ".align 2; "					\
 	  "1: .word " #x "(tpoff); "			\
 	  "2: "						\
 	  : "=&r" (__result) : "r" (tp));		\
@@ -16,6 +17,7 @@
 	  "3: ldr %0, [pc, %0];"			\
 	  "add %0, %1, %0; "				\
 	  "b 2f; "					\
+	  ".align 2; "					\
 	  "1: .word " #x "(gottpoff) + (. - 3b - 8); "	\
 	  "2: "						\
 	  : "=&r" (__result) : "r" (tp));		\
@@ -28,12 +30,14 @@
      asm ("ldr %0, 2f; "				\
 	  "1: add %0, pc, %0; "				\
 	  "b 3f; "					\
+	  ".align 2; "					\
 	  "2: .word " #x "(tlsldm) + (. - 1b - 8); "	\
 	  "3: "						\
 	  : "=r" (__result));				\
      __result = (char *)__tls_get_addr (__result);	\
      asm ("ldr %0, 1f; "				\
 	  "b 2f; "					\
+	  ".align 2; "					\
 	  "1: .word " #x "(tlsldo); "			\
 	  "2: "						\
 	  : "=r" (__offset));				\
@@ -45,6 +49,7 @@
      asm ("ldr %0, 2f; "				\
 	  "1: add %0, pc, %0; "				\
 	  "b 3f; "					\
+	  ".align 2; "					\
 	  "2: .word " #x "(tlsgd) + (. - 1b - 8); "	\
 	  "3: "						\
 	  : "=r" (__result));				\

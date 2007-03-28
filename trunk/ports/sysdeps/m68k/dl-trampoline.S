@@ -138,10 +138,13 @@ _dl_runtime_profile:
 	    +4      %a1
 	   %sp      %a0
 	*/
-#ifdef __mcoldfire__
+#if !defined (__mcoldfire__)
+	fmove.x %fp0, -(%sp)
+#elif defined (__mcffpu__)
 	fmove.l %fp0, -(%sp)
 #else
-	fmove.x %fp0, -(%sp)
+	clr.l -(%sp)
+	clr.l -(%sp)
 #endif
 	move.l %a0, -(%sp)
 	move.l %d1, -(%sp)
@@ -161,11 +164,14 @@ _dl_runtime_profile:
 	move.l (%sp)+, %d0
 	move.l (%sp)+, %d1
 	move.l (%sp)+, %a0
-#ifdef __mcoldfire__
-	fmove.d (%sp)+, %fp0
-#else
+#if !defined (__mcoldfire__)
 	fmove.x (%sp)+, %fp0
-#endif
 	lea 20(%sp), %sp
+#elif defined (__mcffpu__)
+	fmove.l (%sp)+, %fp0
+	lea 20(%sp), %sp
+#else
+	lea 28(%sp), %sp
+#endif
 	rts
 	.size _dl_runtime_profile, . - _dl_runtime_profile

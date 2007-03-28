@@ -25,3 +25,14 @@
 #ifndef __flexarr
 #define __flexarr [0]
 #endif
+
+#ifndef __extern_inline
+#ifdef __GNUC_STDC_INLINE__
+# define __extern_inline extern __inline __attribute__ ((__gnu_inline__))
+# define __extern_always_inline \
+  extern __always_inline __attribute__ ((__gnu_inline__))
+#else
+# define __extern_inline extern __inline
+# define __extern_always_inline extern __always_inline
+#endif
+#endif

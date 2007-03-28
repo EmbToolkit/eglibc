@@ -1,7 +1,12 @@
+2007-03-27  Khem Raj  <kraj@mvista.com>
+
+	* include/sys/cdefs.h: (__extern_inline, __extern_always_inline):
+	Define.
+
 2006-12-26  Jim Blandy  <jimb@codesourcery.com>
 
-        * Makefile.in: Include option-groups.mak from glibc.  Trim
-        locale list if OPTION_EGLIBC_LOCALES is not enabled.
+	* Makefile.in: Include option-groups.mak from glibc.  Trim
+	locale list if OPTION_EGLIBC_LOCALES is not enabled.
 
 2006-09-07  Richard Sandiford  <richard@codesourcery.com>
 

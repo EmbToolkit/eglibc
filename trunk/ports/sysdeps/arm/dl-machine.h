@@ -53,11 +53,22 @@ static inline Elf32_Addr __attribute__ ((unused))
 elf_machine_dynamic (void)
 {
   Elf32_Addr dynamic;
+#ifdef __thumb2__
+  long tmp;
+  asm ("ldr\t%0, 1f\n\t"
+       "adr\t%1, 1f\n\t"
+       "add\t%0, %1\n\t"
+       "b 2f\n"
+       ".align 2\n"
+       "1: .word _GLOBAL_OFFSET_TABLE_ - 1b\n"
+       "2:" : "=r" (dynamic), "=r"(tmp));
+#else
   asm ("ldr %0, 2f\n"
        "1: ldr %0, [pc, %0]\n"
        "b 3f\n"
        "2: .word _GLOBAL_OFFSET_TABLE_ - (1b+8)\n"
        "3:" : "=r" (dynamic));
+#endif
   return dynamic;
 }
 

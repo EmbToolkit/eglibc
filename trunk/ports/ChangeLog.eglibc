@@ -1,3 +1,17 @@
+2006-03-28  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/arm/machine-gmon.h (MCOUNT): Add Thumb-2 implementation.
+	* sysdeps/arm/dl-machine.h (elf_machine_dynamic): Ditto.
+	* sysdeps/arm/tls-macros.h: Add alignment for Thumb-2.
+	* sysdeps/arm/elf/start.S: Switch to thumb mode for Thumb-2.
+	* sysdeps/unix/sysv/linux/arm/eabi/sysdep.h (INTERNAL_SYSCALL_RAW):
+	Add Thumb implementation.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c: Enforce
+	alignment for Thumb-2.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c: Ditto.
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h (atomic_full_barrier,
+	__arch_compare_and_exchange_val_32_acq): Add Thumb-2 implementation.
+
 2007-03-28  Nathan Sidwell  <nathan@codesourcery.com>
 
 	* sysdeps/m68k/dl-trampoline.S: Do not save float regs on

@@ -1,3 +1,7 @@
+2007-04-13  Jim Blandy  <jimb@codesourcery.com>
+
+	* EGLIBC.option-groups: Doc fixes.
+
 2007-04-11  Jim Blandy  <jimb@codesourcery.com>
 
 	* option-groups.mak: Use '../' if $(..) is unset.

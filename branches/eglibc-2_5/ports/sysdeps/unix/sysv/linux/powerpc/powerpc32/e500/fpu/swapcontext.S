@@ -1,5 +1,5 @@
 /* Save current context and jump to a new context.
-   Copyright (C) 2002, 2004, 2005, 2006 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -28,7 +28,8 @@
 #define __CONTEXT_FUNC_NAME __swapcontext
 #undef __CONTEXT_ENABLE_FPRS
 #undef __CONTEXT_ENABLE_VRS
-#define __CONTEXT_EXTRA
+#include "getcontext-extra.S"
+#include "setcontext-extra.S"
 
 # include "swapcontext-common.S"
 

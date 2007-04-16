@@ -1,3 +1,16 @@
+2007-04-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/fpu/getcontext-extra.S:
+	Put contents in a gas macro.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/fpu/setcontext-extra.S:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/fpu/getcontext.S:
+	Update.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/fpu/setcontext.S:
+	Update.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/fpu/swapcontext.S:
+	Update.
+
 2006-03-28  Paul Brook  <paul@codesourcery.com>
 
 	* sysdeps/arm/machine-gmon.h (MCOUNT): Add Thumb-2 implementation.

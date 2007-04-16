@@ -1,5 +1,5 @@
 /* Save current context.  Support for saving high parts of registers.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Joseph Myers <joseph@codesourcery.com>, 2006.
 
@@ -21,6 +21,7 @@
 /* We follow the kernel's layout, which saves the high parts of the
    SPE registers in the vregs area, immediately followed by the
    SPEFSCR value.  */
+.macro getcontext_extra
 	la	r10,(_UC_VREGS)(r3)
 	evstwwe	r0,(0*4)(r10)
 	evstwwe	r1,(1*4)(r10)
@@ -56,3 +57,5 @@
 	evstwwe	r31,(31*4)(r10)
 	mfspefscr	r9
 	stw	r9,(32*4)(r10)
+.endm
+#define __GETCONTEXT_EXTRA getcontext_extra

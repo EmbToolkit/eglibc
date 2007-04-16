@@ -1,5 +1,5 @@
 /* Jump to a new context.  Support for restoring high parts of registers.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Joseph Myers <joseph@codesourcery.com>, 2006.
 
@@ -18,6 +18,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+.macro setcontext_extra
 	lwz	r3,_UC_VREGS+(0*4)(r31)
 	evmergelo	r0,r3,r0
 	lwz	r3,_UC_VREGS+(1*4)(r31)
@@ -88,3 +89,5 @@
 	evmergelo	r31,r3,r31
 	lwz	r3,_UC_VREGS+(32*4)(r31)
 	mtspefscr	r3
+.endm
+#define __SETCONTEXT_EXTRA setcontext_extra

@@ -1,3 +1,29 @@
+2007-04-25  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/sched.h: Declare sched_getcpu.
+	* sysdeps/unix/sysv/linux/sched_getcpu.c: New file.
+	* sysdeps/unix/sysv/linux/x86_64/sched_getcpu.S: New file.
+	* sysdeps/unix/sysv/linux/Versions: Export sched_getcpu for
+	GLIBC_2.6.
+	* sysdeps/unix/sysv/linux/Makefile [subdir=posix] (sysdep_routines):
+	Add sched_getcpu.
+
+2007-04-25  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/check_pf.c (make_request): Return -1 instead
+	of 0 after the out_fail label.
+
+2007-04-25  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4406]
+	* iconv/gconv_charset.h (strip): Allow ':'
+	* iconv/iconv_open.c (iconv_open): Adjust comment.
+
+2007-04-25  Jakub Jelinek  <jakub@redhat.com>
+
+	* libio/bits/stdio.h (fgetc_unlocked): Add extern inline optimized
+	version.
+
 2007-04-23  Jakub Jelinek  <jakub@redhat.com>
 
 	[BZ #4381]

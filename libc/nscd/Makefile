@@ -20,10 +20,13 @@
 #
 #	Sub-makefile for nscd portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= nscd
 
-routines := nscd_getpw_r nscd_getgr_r nscd_gethst_r nscd_getai nscd_initgroups
-aux	:= nscd_helper
+routines-$(OPTION_EGLIBC_INET) += \
+	   nscd_getpw_r nscd_getgr_r nscd_gethst_r nscd_getai nscd_initgroups
+aux-$(OPTION_EGLIBC_INET) += nscd_helper
 
 include ../Makeconfig
 
@@ -38,11 +41,11 @@ nscd-modules := nscd connections pwdcache getpwnam_r getpwuid_r grpcache \
 ifeq ($(have-thread-library),yes)
 
 ifneq (yesyes,$(have-fpie)$(build-shared))
-others += nscd
+others-$(OPTION_EGLIBC_INET) += nscd
 endif
-install-sbin := nscd
+install-sbin-$(OPTION_EGLIBC_INET) += nscd
 
-extra-objs := $(nscd-modules:=.o)
+extra-objs-$(OPTION_EGLIBC_INET) += $(nscd-modules:=.o)
 
 endif
 

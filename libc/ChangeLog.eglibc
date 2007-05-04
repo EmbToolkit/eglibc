@@ -1,3 +1,10 @@
+2007-05-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/double.h, soft-fp/extended.h, soft-fp/floatundidf.c,
+	soft-fp/floatundisf.c, soft-fp/floatunsidf.c,
+	soft-fp/floatunsisf.c, soft-fp/op-2.h, soft-fp/op-4.h,
+	soft-fp/op-common.h, soft-fp/quad.h: Update from trunk.
+
 2007-05-01  Daniel Jacobowitz  <dan@debian.org>
 
 	* sysdeps/unix/sysv/linux/dl-osinfo.h (_dl_discover_osversion):

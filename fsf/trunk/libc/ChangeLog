@@ -1,3 +1,11 @@
+2007-05-04  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfprintf.c (process_string_arg): Adjust call to
+	__mbsnrtowcs after last change.
+
+	* locale/programs/linereader.c (get_symname): Fix adding final NUL.
+	(get_ident): Likewise.
+
 2007-05-03  Jakub Jelinek  <jakub@redhat.com>
 
 	* soft-fp/op-common.h (FP_TRUNC): Replace raising of FP_EX_INEXACT
@@ -27,8 +35,10 @@
 	(FP_PACK_SEMIRAW_EP): Use FP_PACK_RAW_EP instead of
 	undefined _FP_PACK_RAW_EP.
 
-	* op-2.h (_FP_FRAC_COPY_2_2): Define as alias to _FP_FRAC_COPY_2.
-	* op-4.h (_FP_FRAC_COPY_2_2): Define as alias to _FP_FRAC_COPY_4.
+	* soft-fp/op-2.h (_FP_FRAC_COPY_2_2): Define as alias to
+	_FP_FRAC_COPY_2.
+	* soft-fp/op-4.h (_FP_FRAC_COPY_2_2): Define as alias to
+	_FP_FRAC_COPY_4.
 
 2007-04-16  Uros Bizjak  <ubizjak@gmail.com>
 	    Jakub Jelinek  <jakub@redhat.com>

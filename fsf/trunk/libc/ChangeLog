@@ -1,9 +1,60 @@
+2007-05-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/x86_64/cacheinfo.c (init_cacheinfo): Pass correct value
+	as second parameter to handle_intel.
+
+	* nscd/aicache.c (addhstaiX): If reported TTL is zero don't cache
+	the entry.
+
+	* sysdeps/unix/sysv/linux/x86_64/sysconf.c: Move cache information
+	handling to ...
+	* sysdeps/x86_64/cacheinfo.c: ... here.  New file.
+	* sysdeps/x86_64/Makefile [subdir=string] (sysdep_routines): Add
+	cacheinfo.
+	* sysdeps/x86_64/memcpy.S: Complete rewrite.
+	* sysdeps/x86_64/mempcpy.S: Adjust appropriately.
+	Patch by Evandro Menezes <evandro.menezes@amd.com>.
+
+	* sysdeps/unix/sysv/linux/i386/epoll_pwait.S: New file.
+
+2007-05-21  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4525]
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_routines): Add epoll_pwait.
+	* sysdeps/unix/sysv/linux/epoll_pwait.c: New file.
+	* sysdeps/unix/sysv/linux/syscalls.list (epoll_pwait): Remove.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/epoll.h (epoll_pwait): Declare.
+
+	[BZ #4514]
+	* stdio-common/vfprintf.c (vfprintf): Don't shadow workstart variable,
+	reinitialize workend at the start of each do_positional format spec
+	loop, free workstart before do_positional loops.
+	(printf_unknown): Fix size of work_buffer.
+	* stdio-common/tst-sprintf.c (main): Add 3 new testcases.
+
+	* malloc/hooks.c (MALLOC_STATE_VERSION): Bump.
+	(public_sET_STATe): If ms->version < 3, put all chunks into
+	unsorted chunks and clear {fd,bk}_nextsize fields of largebin
+	chunks.
+
+	* malloc/malloc.c [MALLOC_DEBUG]: Revert 2007-05-13 changes.
+	* malloc/hooks.c: Likewise.
+	* malloc/arena.c: Likewise.
+	* malloc/malloc.c (do_check_malloc_state): Don't assert
+	n_mmaps is not greater than n_mmaps_max.  This removes the need
+	for the previous change.
+
+	* malloc/Makefile (CFLAGS-malloc.c): Revert accidental
+	2007-05-07 commit.
+
 2007-05-19  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/kernel-features.h (__ASSUME_PRIVATE_FUTEX):
 	Define for kernel >= 2.6.22.
 
 2007-05-18  Ulrich Drepper  <drepper@redhat.com>
+
 	* elf/dl-close.c (_dl_close_worker): When removing object from
 	global scope, wait for all lookups to finish afterwards.
 	* elf/dl-open.c (add_to_global): When global scope array must

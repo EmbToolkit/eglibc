@@ -1,8 +1,8 @@
-/* Store current floating-point environment and clear exceptions
-   (soft-float edition).
-   Copyright (C) 2002, 2007 Free Software Foundation, Inc.
-   Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
+/* long double square root in software floating-point emulation.
+   Copyright (C) 1997, 1999, 2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Richard Henderson (rth@cygnus.com) and
+		  Jakub Jelinek (jj@ultra.linux.cz).
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -19,26 +19,21 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include "soft-fp.h"
-#include "soft-supp.h"
+#include <stdlib.h>
+#include <soft-fp.h>
+#include <quad.h>
 
-int
-feholdexcept (fenv_t *envp)
+long double
+__ieee754_sqrtl (const long double a)
 {
-  fenv_union_t u;
+  FP_DECL_EX;
+  FP_DECL_Q(A); FP_DECL_Q(C);
+  long double c;
 
-  /* Get the current state.  */
-  fegetenv (envp);
-
-  u.fenv = *envp;
-  /* Clear everything except the rounding mode.  */
-  u.l[0] &= 0x3;
-  /* Disable exceptions */
-  u.l[1] = FE_ALL_EXCEPT;
-
-  /* Put the new state in effect.  */
-  fesetenv (&u.fenv);
-
-  return 0;
+  FP_INIT_ROUNDMODE;
+  FP_UNPACK_Q(A, a);
+  FP_SQRT_Q(C, A);
+  FP_PACK_Q(c, C);
+  FP_HANDLE_EXCEPTIONS;
+  return c;
 }
-libm_hidden_def (feholdexcept)

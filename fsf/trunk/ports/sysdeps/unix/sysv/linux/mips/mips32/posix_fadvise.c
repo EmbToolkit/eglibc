@@ -1,7 +1,4 @@
-/* Store current floating-point environment and clear exceptions
-   (soft-float edition).
-   Copyright (C) 2002, 2007 Free Software Foundation, Inc.
-   Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
+/* Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,26 +16,27 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include "soft-fp.h"
-#include "soft-supp.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <sysdep.h>
+
+/* Advice the system about the expected behaviour of the application with
+   respect to the file associated with FD.  */
 
 int
-feholdexcept (fenv_t *envp)
+posix_fadvise (int fd, off_t offset, off_t len, int advise)
 {
-  fenv_union_t u;
-
-  /* Get the current state.  */
-  fegetenv (envp);
-
-  u.fenv = *envp;
-  /* Clear everything except the rounding mode.  */
-  u.l[0] &= 0x3;
-  /* Disable exceptions */
-  u.l[1] = FE_ALL_EXCEPT;
-
-  /* Put the new state in effect.  */
-  fesetenv (&u.fenv);
-
+/* MIPS kernel only has NR_fadvise64 which acts as NR_fadvise64_64 */
+#ifdef __NR_fadvise64
+  INTERNAL_SYSCALL_DECL (err);
+  int ret = INTERNAL_SYSCALL (fadvise64, err, 7, fd, 0,
+			      __LONG_LONG_PAIR (offset >> 31, offset),
+			      __LONG_LONG_PAIR (offset >> 31, len),
+			      advise);
+  if (INTERNAL_SYSCALL_ERROR_P (ret, err))
+    return INTERNAL_SYSCALL_ERRNO (ret, err);
   return 0;
+#else
+  return ENOSYS;
+#endif
 }
-libm_hidden_def (feholdexcept)

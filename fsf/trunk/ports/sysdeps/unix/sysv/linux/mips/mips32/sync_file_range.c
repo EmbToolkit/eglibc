@@ -1,7 +1,5 @@
-/* Store current floating-point environment and clear exceptions
-   (soft-float edition).
-   Copyright (C) 2002, 2007 Free Software Foundation, Inc.
-   Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
+/* Selective file content synch'ing.
+   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,26 +17,31 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include "soft-fp.h"
-#include "soft-supp.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/types.h>
 
+#include <sysdep.h>
+#include <sys/syscall.h>
+
+
+#ifdef __NR_sync_file_range
 int
-feholdexcept (fenv_t *envp)
+sync_file_range (int fd, __off64_t from, __off64_t to, unsigned int flags)
 {
-  fenv_union_t u;
-
-  /* Get the current state.  */
-  fegetenv (envp);
-
-  u.fenv = *envp;
-  /* Clear everything except the rounding mode.  */
-  u.l[0] &= 0x3;
-  /* Disable exceptions */
-  u.l[1] = FE_ALL_EXCEPT;
-
-  /* Put the new state in effect.  */
-  fesetenv (&u.fenv);
-
-  return 0;
+  return INLINE_SYSCALL (sync_file_range, 7, fd, 0,
+			 __LONG_LONG_PAIR ((long) (from >> 32), (long) from),
+			 __LONG_LONG_PAIR ((long) (to >> 32), (long) to),
+			 flags);
 }
-libm_hidden_def (feholdexcept)
+#else
+int
+sync_file_range (int fd, __off64_t from, __off64_t to, unsigned int flags)
+{
+  __set_errno (ENOSYS);
+  return -1;
+}
+stub_warning (sync_file_range)
+
+# include <stub-tag.h>
+#endif

@@ -1,5 +1,5 @@
-/* Get file-specific information about a file.  Linux version.
-   Copyright (C) 2003, 2004, 2006, 2007 Free Software Foundation, Inc.
+/* Selective file content synch'ing.
+   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,27 +17,31 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <assert.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/types.h>
+
+#include <sysdep.h>
+#include <sys/syscall.h>
 
 
-static long int linux_sysconf (int name);
-extern long int __cache_sysconf (int) attribute_hidden;
-
-
-/* Get the value of the system variable NAME.  */
-long int
-__sysconf (int name)
+#ifdef __NR_sync_file_range
+int
+sync_file_range (int fd, __off64_t from, __off64_t to, unsigned int flags)
 {
-  if (name >= _SC_LEVEL1_ICACHE_SIZE && name <= _SC_LEVEL4_CACHE_LINESIZE)
-    return __cache_sysconf (name);
-
-  return linux_sysconf (name);
+  return INLINE_SYSCALL (sync_file_range, 7, fd, 0,
+			 __LONG_LONG_PAIR ((long) (from >> 32), (long) from),
+			 __LONG_LONG_PAIR ((long) (to >> 32), (long) to),
+			 flags);
 }
+#else
+int
+sync_file_range (int fd, __off64_t from, __off64_t to, unsigned int flags)
+{
+  __set_errno (ENOSYS);
+  return -1;
+}
+stub_warning (sync_file_range)
 
-/* Now the generic Linux version.  */
-#undef __sysconf
-#define __sysconf static linux_sysconf
-#include "../sysconf.c"
+# include <stub-tag.h>
+#endif

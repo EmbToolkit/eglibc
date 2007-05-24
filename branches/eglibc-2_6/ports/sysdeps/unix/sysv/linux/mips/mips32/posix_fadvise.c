@@ -1,4 +1,4 @@
-/* Copyright (C) 2002, 2005 Free Software Foundation, Inc.
+/* Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,18 +16,27 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef _SEMAPHORE_H
-# error "Never use <bits/semaphore.h> directly; include <semaphore.h> instead."
-#endif
+#include <errno.h>
+#include <fcntl.h>
+#include <sysdep.h>
 
-#define __SIZEOF_SEM_T	16
+/* Advice the system about the expected behaviour of the application with
+   respect to the file associated with FD.  */
 
-/* Value returned if `sem_open' failed.  */
-#define SEM_FAILED      ((sem_t *) 0)
-
-typedef union
+int
+posix_fadvise (int fd, off_t offset, off_t len, int advise)
 {
-  char __size[__SIZEOF_SEM_T];
-  long int __align;
-} sem_t;
-
+/* MIPS kernel only has NR_fadvise64 which acts as NR_fadvise64_64 */
+#ifdef __NR_fadvise64
+  INTERNAL_SYSCALL_DECL (err);
+  int ret = INTERNAL_SYSCALL (fadvise64, err, 7, fd, 0,
+			      __LONG_LONG_PAIR (offset >> 31, offset),
+			      __LONG_LONG_PAIR (len >> 31, len),
+			      advise);
+  if (INTERNAL_SYSCALL_ERROR_P (ret, err))
+    return INTERNAL_SYSCALL_ERRNO (ret, err);
+  return 0;
+#else
+  return ENOSYS;
+#endif
+}

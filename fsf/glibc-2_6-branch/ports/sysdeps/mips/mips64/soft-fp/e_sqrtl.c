@@ -1,5 +1,8 @@
-/* Copyright (C) 2002, 2005 Free Software Foundation, Inc.
+/* long double square root in software floating-point emulation.
+   Copyright (C) 1997, 1999, 2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Richard Henderson (rth@cygnus.com) and
+		  Jakub Jelinek (jj@ultra.linux.cz).
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +19,21 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef _SEMAPHORE_H
-# error "Never use <bits/semaphore.h> directly; include <semaphore.h> instead."
-#endif
+#include <stdlib.h>
+#include <soft-fp.h>
+#include <quad.h>
 
-#define __SIZEOF_SEM_T	16
-
-/* Value returned if `sem_open' failed.  */
-#define SEM_FAILED      ((sem_t *) 0)
-
-typedef union
+long double
+__ieee754_sqrtl (const long double a)
 {
-  char __size[__SIZEOF_SEM_T];
-  long int __align;
-} sem_t;
+  FP_DECL_EX;
+  FP_DECL_Q(A); FP_DECL_Q(C);
+  long double c;
 
+  FP_INIT_ROUNDMODE;
+  FP_UNPACK_Q(A, a);
+  FP_SQRT_Q(C, A);
+  FP_PACK_Q(c, C);
+  FP_HANDLE_EXCEPTIONS;
+  return c;
+}

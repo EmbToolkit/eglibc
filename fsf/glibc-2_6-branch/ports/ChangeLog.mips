@@ -1,3 +1,32 @@
+2007-05-24  Atsushi Nemoto  <anemo@mba.ocn.ne.jp>
+
+	* sysdeps/unix/sysv/linux/mips/mips32/posix_fadvise.c
+	(posix_fadvise): Fix high word of len argument.
+
+2007-05-23  Atsushi Nemoto  <anemo@mba.ocn.ne.jp>
+
+	* sysdeps/unix/sysv/linux/mips/mips32/posix_fadvise.c: New file.
+	* sysdeps/unix/sysv/linux/mips/mips32/posix_fadvise64.c: New file.
+	* sysdeps/unix/sysv/linux/mips/mips32/readahead.c: New file.
+	* sysdeps/unix/sysv/linux/mips/mips32/sync_file_range.c: New file.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/posix_fadvise64.c: New file.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/syscalls.list: New file.
+
+2007-05-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/mips64/n32/Implies: Add mips/mips64/soft-fp.
+	* sysdeps/mips/mips64/n64/Implies: Likewise.
+	* sysdeps/mips/mips64/soft-fp/Makefile: New.
+	* sysdeps/mips/mips64/soft-fp/e_sqrtl.c: New.
+	* sysdeps/mips/mips64/soft-fp/sfp-machine.h: Include <fenv.h> and
+	<fpu_control.h>.  Use hardware exception and rounding mode
+	settings.
+
+2007-05-23  Richard Sandiford  <rsandifo@nildram.co.uk>
+
+	* sysdeps/mips/dl-machine.h (elf_machine_reloc): Change type of
+	r_info argument to ElfW(Addr).
+
 2007-02-01  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/mips/bits/mathdef.h (float_t): Change to float.

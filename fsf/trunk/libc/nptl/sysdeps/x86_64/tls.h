@@ -360,9 +360,17 @@ typedef struct
   while (0)
 #define THREAD_GSCOPE_SET_FLAG() \
   THREAD_SETMEM (THREAD_SELF, header.gscope_flag, THREAD_GSCOPE_FLAG_USED)
+#define THREAD_GSCOPE_GET_FLAG(descr) (descr)->header.gscope_flag
 #define THREAD_GSCOPE_WAIT() \
   GL(dl_wait_lookup_done) ()
 
+#ifndef __ASSUME_PRIVATE_FUTEX
+# define THREAD_SET_PRIVATE_FUTEX(value) \
+  THREAD_SETMEM (THREAD_SELF, header.private_futex, value)
+# define THREAD_COPY_PRIVATE_FUTEX(descr) \
+  ((descr)->header.private_futex					      \
+   = THREAD_GETMEM (THREAD_SELF, header.private_futex))
+#endif
 
 #endif /* __ASSEMBLER__ */
 

@@ -1,3 +1,34 @@
+2007-05-26  Ulrich Drepper  <drepper@redhat.com>
+
+	* pthreadP.h (PTHREAD_RWLOCK_PREFER_READER_P): Define.
+	* pthread_rwlock_rdlock.c: Use PTHREAD_RWLOCK_PREFER_READER_P.
+	* pthread_rwlock_timedrdlock.c: Likewise.
+	* pthread_rwlock_tryrdlock.c: Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/sem_trywait.S (sem_trywait): Tiny
+	optimization.
+
+	* sysdeps/unix/sysv/linux/sem_wait.c: Add missing break.
+	* sysdeps/unix/sysv/linux/sem_timedwait.c: Removed left-over
+	duplication of __sem_wait_cleanup.
+
+	* allocatestack.c: Revert last change.
+	* init.c: Likewise.
+	* sysdeps/i386/tls.h: Likewise.
+	* sysdeps/x86_64/tls.h: Likewise.
+	* descr.h [TLS_DTV_AT_TP] (struct pthread): Add private_futex field to
+	header structure.
+	* sysdeps/powerpc/tcb-offsets.sym: Add PRIVATE_FUTEX_OFFSET.
+
+	* sysdeps/unix/sysv/linux/internaltypes.h (struct pthread_barrier):
+	Add private field.
+	* sysdeps/unix/sysv/linux/lowlevelbarrier.sym: Add PRIVATE definition.
+	* pthread_barrier_init.c: Set private flag if pshared and private
+	futexes are supported.
+	* sysdeps/unix/sysv/linux/i386/i486/pthread_barrier_wait.S: Use
+	private field in futex command setup.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_barrier_wait.S: Likewise.
+
 2007-05-25  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/i386/i486/sem_post.S: Add private futex

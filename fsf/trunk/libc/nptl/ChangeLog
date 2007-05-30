@@ -1,3 +1,45 @@
+2007-05-29  Ulrich Drepper  <drepper@redhat.com>
+
+	* pthread_getattr_np.c: No need to install a cancellation handler,
+	this is no cancellation point.
+	* pthread_getschedparam.c: Likewise.
+	* pthread_setschedparam.c: Likewise.
+	* pthread_setschedprio.c: Likewise.
+	* sysdeps/unix/sysv/linux/lowlevellock.c: Remove all traces of
+	lll_unlock_wake_cb.
+	* sysdeps/unix/sysv/linux/alpha/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/i386/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/i386/i486/lowlevellock.S: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/sh/lowlevellock.S: Likewise.
+	* sysdeps/unix/sysv/linux/sh/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/lowlevellock.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/lowlevellock.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/lowlevellock.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/lowlevellock.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/i386/i486/libc-lowlevellock.S: Checking
+	whether there are more than one thread makes no sense here since
+	we only call the slow path if the locks are taken.
+	* sysdeps/unix/sysv/linux/x86_64/libc-lowlevellock.S: Likewise.
+
+	* sysdeps/unix/sysv/linux/internaltypes.h: Introduce
+	COND_NWAITERS_SHIFT.
+	* pthread_cond_destroy.c: Use COND_NWAITERS_SHIFT instead of
+	COND_CLOCK_BITS.
+	* pthread_cond_init.c: Likewise.
+	* pthread_cond_timedwait.c: Likewise.
+	* pthread_cond_wait.c: Likewise.
+	* pthread_condattr_getclock.c: Likewise.
+	* pthread_condattr_setclock.c: Likewise.
+	* sysdeps/unix/sysv/linux/lowlevelcond.sym: Likewise.
+	* sysdeps/unix/sysv/linux/i386/i486/pthread_cond_timedwait.S: Likewise.
+	* sysdeps/unix/sysv/linux/i386/i486/pthread_cond_wait.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S: Likewise.
+
 2007-05-28  Jakub Jelinek  <jakub@redhat.com>
 
 	* sysdeps/unix/sysv/linux/powerpc/pthread_attr_setstacksize.c: Include

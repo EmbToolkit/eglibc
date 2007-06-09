@@ -1,3 +1,23 @@
+2007-06-08  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-lookup.c (_dl_lookup_symbol_x): Remove use of r_nlist.
+
+2007-06-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): Remove all to be removed
+	libraries from the global scope at once and call THREAD_GSCOPE_WAIT
+	at most once per _dl_close_worker.
+
+2007-06-08  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/sched.h: Make second parameter of
+	__sched_cpucount as const.
+	* posix/sched_cpucount.c: Adjust.
+
+	* posix/sched_cpucount.c (__sched_cpucount): Allow using special
+	instruction for counting bits.
+	* sysdeps/x86_64/sched_cpucount.c: New file.
+
 2007-06-07  Ulrich Drepper  <drepper@redhat.com>
 
 	* configure.in: Avoid variable named BASH.
@@ -5,7 +25,8 @@
 	Patch in part by Mike Frysinger.
 
 2007-06-06  Jakub Jelinek  <jakub@redhat.com>
-	BZ #4586
+
+	[BZ #4586]
 	* sysdeps/i386/ldbl2mpn.c (__mpn_extract_long_double): Treat
 	pseudo-zeros as zero.
 	* sysdeps/x86_64/ldbl2mpn.c: New file.

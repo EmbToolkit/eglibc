@@ -1,3 +1,24 @@
+2007-06-30  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/socket.h: Add PF_RXRPC and AF_RXRPC.
+
+2007-06-29  Martin Schwidefsky  <schwidefsky@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/bits/socket.h: Add PF_IUCV and AF_IUCV.
+
+
+2007-06-29  Martin Schwidefsky  <schwidefsky@de.ibm.com>
+
+	* sysdeps/s390/dl-procinfo.c: New file.
+	* sysdeps/s390/dl-procinfo.h: New file.
+	* sysdeps/unix/sysv/linux/s390/dl-procinfo.h: New file.
+
+2007-06-29  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-load.c (open_verify): Find .note.ABI-tag notes even
+	in PT_NOTE segments with multiple notes.
+	* elf/readelflib.c (process_elf_file): Likewise.
+
 2007-06-22  Ulrich Drepper  <drepper@redhat.com>
 
 	* nis/nis_domain_of.c (__nis_domain_of): Make the code a bit more

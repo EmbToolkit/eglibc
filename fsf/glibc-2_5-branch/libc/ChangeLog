@@ -1,3 +1,868 @@
+2007-07-03  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4702]
+	* nis/nss-default.c: Include errno.h.
+	(init): Preserve errno.
+
+2007-07-01  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-sysdep.c (_dl_important_hwcaps): Add integer overflow check.
+	* elf/dl-minimal.c (__libc_memalign): Likewise.  Handle malloc (0).
+	Return NULL if mmap failed instead of asserting it does not.
+	(calloc): Check for integer overflow.
+
+	* elf/dl-minimal.c (__strtoul_internal): Fix parsing of numbers bigger
+	than LONG_MAX / 10.
+
+2007-06-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/generic/ldsodefs.h (rtld_global): Reorder some elements
+	to fill in holes
+	(rtld_global_ro): Likewise.
+
+2007-06-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-addr.c (_dl_addr): Skip PT_LOAD checking if l_contiguous.
+	Move PT_LOAD checking to...
+	(_dl_addr_inside_object): ... here, new function.
+	* elf/dl-sym.c (do_sym): If not l_contiguous,
+	call _dl_addr_inside_object.
+	* elf/dl-iteratephdr.c (__dl_iterate_phdr): Likewise.
+	* dlfcn/dlinfo.c (dlinfo_doit): Likewise.
+	* elf/dl-open.c (dl_open_worker): Likewise.
+	(_dl_addr_inside_object): New function if IS_IN_rtld.
+	* elf/dl-load.c (_dl_map_object_from_fd): Set l_contiguous if no
+	holes are present or are PROT_NONE protected.
+	* include/link.h (struct link_map): Add l_contiguous field.
+	* sysdeps/generic/ldsodefs.h (_dl_addr_inside_object): New prototype.
+
+2007-06-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/rtld.c (dl_main): Don't call init_tls more than once.
+
+2007-06-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-close.c (free_mem): Free _dl_scope_free_list.
+
+2007-06-13  Jakub Jelinek  <jakub@redhat.com>
+
+	* include/link.h: Don't include rtld-lowlevel.h.
+	(struct link_map): Remove l_scope_lock.
+	* sysdeps/generic/ldsodefs.h: Don't include rtld-lowlevel.h.
+	(_dl_scope_free_list): New field (variable) in _rtld_global.
+	(DL_LOOKUP_SCOPE_LOCK): Remove.
+	(_dl_scope_free): New prototype.
+	* elf/dl-runtime.c (_dl_fixup): Don't use __rtld_mrlock_*lock.
+	Don't pass DL_LOOKUP_SCOPE_LOCK to _dl_lookup_symbol_x.
+	(_dl_profile_fixup): Likewise.
+	* elf/dl-sym.c (do_sym): Likewise.  Use wrapped _dl_lookup_symbol_x
+	whenever !RTLD_SINGLE_THREAD_P, use THREAD_GSCOPE_SET_FLAG and
+	THREAD_GSCOPE_RESET_FLAG around it.
+	* elf/dl-close.c (_dl_close_worker): Don't use
+	__rtld_mrlock_{change,done}.  Call _dl_scope_free on the old
+	scope.  Make sure THREAD_GSCOPE_WAIT () happens if any old
+	scopes were queued or if l_scope_mem has been abandoned.
+	* elf/dl-open.c (_dl_scope_free): New function.
+	(dl_open_worker): Use it.  Don't use __rtld_mrlock_{change,done}.
+	* elf/dl-support.c (_dl_scope_free_list): New variable.
+	* elf/dl-lookup.c (add_dependency): Remove flags argument.
+	Remove DL_LOOKUP_SCOPE_LOCK handling.
+	(_dl_lookup_symbol_x): Adjust caller.  Remove DL_LOOKUP_SCOPE_LOCK
+	handling.
+	* elf/dl-object.c (_dl_new_object): Don't use
+	__rtld_mrlock_initialize.
+
+2007-06-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/do-lookup.h (do_lookup_x): Read r_nlist before r_list and
+	make sure gcc doesn't mess around with this.
+
+2007-06-08  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-lookup.c (_dl_lookup_symbol_x): Remove use of r_nlist.
+
+2007-06-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): Remove all to be removed
+	libraries from the global scope at once and call THREAD_GSCOPE_WAIT
+	at most once per _dl_close_worker.
+
+2007-05-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): When removing object from
+	global scope, wait for all lookups to finish afterwards.
+	* elf/dl-open.c (add_to_global): When global scope array must
+	grow, allocate a new one and free old array only after all
+	lookups finish.
+	* elf/dl-runtime.c (_dl_fixup): Protect using global scope.
+	(_dl_lookup_symbol_x): Likewise.
+	* elf/dl-support.c: Define _dl_wait_lookup_done.
+	* sysdeps/generic/ldsodefs.h (struct rtld_global): Add
+	_dl_wait_lookup_done.
+
+2007-05-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): Help gcc to optimize by
+	adding new variables.
+
+	* elf/dl-open.c (add_to_global): Introduce variable ns to help gcc
+	optimize.  Completely extend global scope array before making the
+	new entries visible.
+
+2007-01-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/generic/ldsodefs.h: Define DL_LOOKUP_SCOPE_LOCK.
+	* elf/dl-lookup.c (add_dependency): If scope map is locked, unlock
+	it before getting dl_load_lock and then relock.
+	(_dl_lookup_symbol_x): Pass flags to add_dependency.
+	When rerunning _dl_lookup_symbol_x, compute symbol_scope again in
+	case we unlocked the scope.
+	* elf/dl-runtime.c (_dl_fixup): Pass DL_LOOKUP_SCOPE_LOCK to
+	_dl_lookup_symbol_x in case we locked the scope.
+	(_dl_profile_fixup): Likewise.
+	* elf/dl-sym.c (do_sym): In flags passed to call_dl_lookup, also
+	set DL_LOOKUP_SCOPE_LOCK.
+
+2006-10-29  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-sym.c (do_sym): Use RTLD_SINGLE_THREAD_P.
+	* elf/dl-runtime.c (_dl_fixup, _dl_profile_fixup): Likewise.
+	* elf/dl-close.c (_dl_close_worker): Likewise.
+	* elf/dl-open.c (_dl_open_worker): Likewise.
+	* sysdeps/generic/sysdep-cancel.h (RTLD_SINGLE_THREAD_P): Define.
+
+2006-10-27  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-lookup.c (_dl_debug_bindings): Remove unused symbol_scope
+	argument.
+	(_dl_lookup_symbol_x): Adjust caller.
+
+	* sysdeps/generic/ldsodefs.h (struct link_namespaces): Remove
+	_ns_global_scope.
+	* elf/rtld.c (dl_main): Don't initialize _ns_global_scope.
+
+	* elf/dl-libc.c: Revert l_scope name changes.
+	* elf/dl-load.c: Likewise.
+	* elf/dl-object.c: Likewise.
+	* elf/rtld.c: Likewise.
+	* elf/dl-close.c (_dl_close): Likewise.
+	* elf/dl-open.c (dl_open_worker): Likewise.  If not SINGLE_THREAD_P,
+	always use __rtld_mrlock_{change,done}.  Always free old scope list
+	here if not l_scope_mem.
+	* elf/dl-runtime.c (_dl_fixup, _dl_profile_fixup): Revert l_scope name
+	change.  Never free scope list here.  Just __rtld_mrlock_lock before
+	the lookup and __rtld_mrlock_unlock it after the lookup.
+	* elf/dl-sym.c: Likewise.
+	* include/link.h (struct r_scoperec): Remove.
+	(struct link_map): Replace l_scoperec with l_scope, l_scoperec_mem
+	with l_scope_mem and l_scoperec_lock with l_scope_lock.
+
+2006-10-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-lookup.c (_dl_lookup_symbol_x): Add warning to
+	_dl_lookup_symbol_x code.
+
+2006-10-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-runtime.c: Include sysdep-cancel.h.
+	(_dl_fixup, _dl_profile_fixup): Use __rtld_mrlock_* and
+	scoperec->nusers only if !SINGLE_THREAD_P.
+	* elf/dl-sym.c: Include sysdep-cancel.h.
+	(do_sym): Use __rtld_mrlock_* and scoperec->nusers only
+	if !SINGLE_THREAD_P.
+	* elf/dl-close.c: Include sysdep-cancel.h.
+	(_dl_close): Use __rtld_mrlock_* and scoperec->nusers only
+	if !SINGLE_THREAD_P.
+	* elf/dl-open.c: Include sysdep-cancel.h.
+	(dl_open_worker): Use __rtld_mrlock_* and scoperec->nusers only
+	if !SINGLE_THREAD_P.
+
+2006-10-09  Ulrich Drepper  <drepper@redhat.com>
+	    Jakub Jelinek  <jakub@redhat.com>
+
+	Implement reference counting of scope records.
+	* elf/dl-close.c (_dl_close): Remove all scopes from removed objects
+	from the list in objects which remain.  Always allocate new scope
+	record.
+	* elf/dl-open.c (dl_open_worker): When growing array for scopes,
+	don't resize, allocate a new one.
+	* elf/dl-runtime.c: Update reference counters before using a scope
+	array.
+	* elf/dl-sym.c: Likewise.
+	* elf/dl-libc.c: Adjust for l_scope name change.
+	* elf/dl-load.c: Likewise.
+	* elf/dl-object.c: Likewise.
+	* elf/rtld.c: Likewise.
+	* include/link.h: Include <rtld-lowlevel.h>.  Define struct
+	r_scoperec.  Replace r_scope with pointer to r_scoperec structure.
+	Add l_scoperec_lock.
+	* sysdeps/generic/ldsodefs.h: Include <rtld-lowlevel.h>.
+	* sysdeps/generic/rtld-lowlevel.h: New file.
+
+2007-06-06  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4586]
+	* sysdeps/i386/ldbl2mpn.c (__mpn_extract_long_double): Treat
+	pseudo-zeros as zero.
+	* sysdeps/x86_64/ldbl2mpn.c: New file.
+	* sysdeps/ia64/ldbl2mpn.c: New file.
+
+2007-06-05  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c
+	(__mpn_construct_long_double): Fix conversion where result ought
+	to be smaller than __LDBL_MIN__, or the low double should be
+	denormal.  Fix decision where to negate low double - honor round
+	to even rules.
+	* stdio-common/tst-sprintf2.c: Include string.h.
+	(COMPARE_LDBL): Define.
+	(TEST): Also test whether a string hexadecimal float representation
+	can be parsed back to the number.
+	(main): Add a couple of further tests.
+
+2007-06-04  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c
+	(PRINT_FPHEX_LONG_DOUBLE): Fix printing numbers where lower double
+	is non-zero, but smaller than 2 * __DBL_MIN__.
+	* stdio-common/tst-sprintf2.c: New test.
+	* stdio-common/Makefile (tests): Add tst-sprintf2.
+
+2007-06-04  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (nextafterl): Remove
+	unused ily variable.  Fix nextafterl on +-__LDBL_MAX__ and +-Inf.
+	Remove unreachable code at the end.
+
+2007-06-01  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_fpclassifyl.c: Correct description of
+	ldbl-128ibm in comment.
+	(fpclassifyl): Correct classification of denormals.
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (nextafterl): Correct
+	return value for MIN denormal. Rewrite using long double math too
+	correctly handle denormals and canonicalize the results.
+
+2007-05-29  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/nscd_helper.c (get_mapping): Handle short replies instead
+	of crashing.  When this is the case or if the reply is malformed,
+	don't try to close the new file descriptor since it does not
+	exist.
+	Patch in part by Guillaume Chazarain <guichaz@yahoo.fr>.
+
+2007-05-21  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4514]
+	* stdio-common/vfprintf.c (vfprintf): Don't shadow workstart variable,
+	reinitialize workend at the start of each do_positional format spec
+	loop, free workstart before do_positional loops.
+	(printf_unknown): Fix size of work_buffer.
+	* stdio-common/tst-sprintf.c (main): Add 3 new testcases.
+
+2007-05-10  Ulrich Drepper  <drepper@redhat.com>
+
+	* include/sys/cdefs.h: Redefine __nonnull so that test for
+	incorrect parameters in the libc code itself are not omitted.
+
+2007-05-07  Ulrich Drepper  <drepper@redhat.com>
+	    Jakub Jelinek  <jakub@redhat.com>
+
+	* malloc/arena.c (heap_info): Add mprotect_size field, adjust pad.
+	(new_heap): Initialize mprotect_size.
+	(grow_heap): When growing, only mprotect from mprotect_size till
+	new_size if mprotect_size is smaller.  When shrinking, use PROT_NONE
+	MMAP for __libc_enable_secure only, otherwise use MADV_DONTNEED.
+
+2007-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfprintf.c (process_string_arg): Optimize
+	ridiculous precision in wide char code printing multi-byte string.
+	Reported by Jim Meyering <jim@meyering.net>.
+
+2007-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4465]
+	* posix/unistd.h: Remove __THROW from fdatasync.
+
+2007-05-06  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #4465]
+	* sysdeps/unix/sysv/linux/syscalls.list (fdatasync): Add "C" to args.
+
+2007-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4131]
+	* elf/dl-addr.c (_dl_addr): Compare address with actual segment
+	boundaries to work around systems with overlapping binary loading.
+	Based on a patch by Suzuki <suzuki@in.ibm.com>.
+
+2007-05-04  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfprintf.c (process_string_arg): Adjust call to
+	__mbsnrtowcs after last change.
+
+2007-05-02  Jakub Jelinek  <jakub@redhat.com>
+
+	* stdio-common/vfprintf.c (process_string_arg): Use a VLA rather than
+	fixed length array for ignore.
+
+2007-04-30  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4438]
+	* stdio-common/vfprintf.c (process_string_arg): Don't overflow the
+	stack for large precisions.
+	* stdio-common/test-vfprintf.c (main): Add test for large
+	precision.
+
+2007-04-30  Jakub Jelinek  <jakub@redhat.com>
+
+	* stdio-common/printf_fp.c (___printf_fp): Don't print negative sign
+	for exponent 0.
+	* stdio-common/tfformat.c (sprint_doubles): Add a new test.
+
+2007-04-30  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4439]
+	* resolv/inet_ntop.c (inet_ntop4): Take terminating '\0' into
+	account in the size check.
+	* resolv/tst-inet_ntop.c: New test.
+	* resolv/Makefile (tests): Add tst-inet_ntop.
+
+2007-04-28  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4102]
+	* sysdeps/posix/getaddrinfo.c (default_labels): Assign separate
+	label to Teredo tunnel addresses 2001://32.
+
+2007-04-27  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4342]
+	* stdio-common/vfscanf.c (_IO_vfscanf_internal): Allow
+	hexa-decimal floats without exponent.
+	* stdio-common/tstscanf.c (main): Adjust Test 8 test for success.
+
+2007-04-27  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3213]
+	* locale/C-translit.h.in: Add entry for U2044.
+
+2007-04-25  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/check_pf.c (make_request): Return -1 instead
+	of 0 after the out_fail label.
+
+2007-03-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* nscd/gai.c: Include alloca.h.
+	(__libc_use_alloca): Define.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/ifaddrs.c (__netlink_request): Never
+	reallocate the buffer, instead fail for MSG_TRUNC or for EBUSY
+	NLMSG_ERR.  Instead use a page sized buffer.
+	* sysdeps/unix/sysv/linux/check_pf.c (make_request): Use page sized
+	buffer.
+
+2007-03-02  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/ifaddrs.c (__netlink_request): Retry with
+	a new netlink socket if NLMSG_ERR -EBUSY is seen after some MSG_TRUNC
+	message.
+
+2007-02-27  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/ifaddrs.c (__netlink_request): Fix
+	memory reallocation.
+
+2007-04-25  Jakub Jelinek  <jakub@redhat.com>
+
+	* libio/bits/stdio.h (fgetc_unlocked): Add extern inline optimized
+	version.
+
+2007-04-25  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4406]
+	* iconv/gconv_charset.h (strip): Allow ':'
+	* iconv/iconv_open.c (iconv_open): Adjust comment.
+
+2007-04-23  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4405]
+	* iconvdata/gconv-modules (E13B): Add a missing slash to the alias
+	name.  Patch by Aurelien Jarno <aurelien@aurel32.net>.
+
+2007-04-23  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4381]
+	* nss/nss_files/files-hosts.c (HOST_DB_LOOKUP): Ensure sufficient
+	alignment of buffer and tmp_buffer.
+	* nis/nss_nis/nis-hosts.c (internal_nis_gethostent_r,
+	internal_gethostbyname2_r, _nss_nis_gethostbyaddr_r): Ensure sufficient
+	alignment of buffer.
+	* resolv/nss_dns/dns-hosts.c (getanswer_r): Likewise.  Handle buflen
+	bigger than INT_MAX.
+	* resolv/nss_dns/dns-network.c (getanswer_r): Likewise.  Add errnop and
+	h_errnop arguments.  Fail if buflen is too small.
+	(_nss_dns_getnetbyname_r, _nss_dns_getnetbyaddr_r): Adjust callers.
+
+2007-04-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* include/sys/mman.h: Mark madvise hidden.
+	* misc/madvise.c: Add libc_hidden_def.
+
+2007-04-17  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4368]
+	* stdlib/stdlib.h: Remove obsolete part of comment for realpath.
+
+2007-04-16  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4364]
+	* posix/unistd.h (_XOPEN_VERSION): Define appropriately for SUSv3.
+
+2007-04-13  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4344]
+	* elf/ldconfig.c (search_dir): Fix 2 off-by-2 errors.
+	Reported by David Anderson <davea42@earthlink.net>.
+
+2007-04-13  Jakub Jelinek  <jakub@redhat.com>
+
+	* stdio-common/printf_fp.c (___printf_fp): Fix exponent -4
+	special case handling when wcp == wstartp + 1.  Fix a comment typo.
+	* stdio-common/tfformat.c (sprint_doubles): Add a new testcase.
+
+2007-02-21  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4070]
+	* stdio-common/printf_fp.c (___printf_fp): Handle a few more
+	special cases.
+	* stdio-common/tfformat.c (sprint_doubles): Some more tests.
+
+2007-02-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/printf_fp.c (___printf_fp): Cleanups and minor
+	optimization.
+
+2007-04-06  Jakub Jelinek  <jakub@redhat.com>
+
+	* nis/nis_domain_of.c (__nis_domain_of): New function.
+	* include/rpcsvc/nislib.h (__nis_domain_of): New prototype.
+	* nis/nis_lookup.c (nis_lookup): Use __nis_domain_of.
+	* nis/nis_call.c (rec_dirsearch): Likewise.
+	(first_shoot): Likewise.  Remove search_parent_first argument.
+	(struct nis_server_cache): Rename search_parent_first field
+	to search_parent.
+	(nis_server_cache_search, nis_server_cache_add): Rename
+	search_parent_first argument to search_parent.
+	(__nisfind_server): Likewise.  If search_parent, call
+	__nis_domain_of.
+
+2007-04-05  Jakub Jelinek  <jakub@redhat.com>
+
+	* nis/nis_call.c (__nisfind_server): Replace (*dir)->do_servers
+	with obj->do_servers after first_shoot.
+
+2007-03-21  Jakub Jelinek  <jakub@redhat.com>
+
+	* nis/nis_call.c: Include bits/libc-lock.h, sys/stat.h, unistd.h.
+	(nis_server_cache, nis_server_cache_lock, nis_cold_start_mtime): New
+	variables.
+	(nis_server_cache_search, nis_server_cache_add): New functions.
+	(__nisfind_server): Use them.  Add dbp and flags argument, if
+	call __nisbind_create.
+	(__nisbind_create): Add server_used and current_ep arguments,
+	only call __nis_findfastest if server_used is ~0.
+	(__do_niscall2, __prepare_niscall): Adjust callers.
+	(ckey_cache, ckey_cache_size, ckey_cache_allocated, ckey_cache_pid,
+	ckey_cache_euid, ckey_cache_lock): New variables.
+	(get_ckey): New function.
+	(__nisbind_connect): If not dbp->use_udp, pass IPPROTO_TCP to
+	__pmap_getnisport.  Save __pmap_getnisport result in
+	dbp->addr.sin_port if non-zero.  Use get_ckey to create conversation
+	key.
+	* nis/nis_lookup.c (nis_lookup): Likewise.
+	* nis/nis_table.c (nis_list): Likewise.
+	* nis/rpcsvc/nislib.h (__nisbind_create, __nisfind_server): Adjust
+	prototypes.
+
+	* nis/nss_nisplus/nisplus-pwd.c (_nss_nisplus_getpwnam_r,
+	_nss_nisplus_getpwuid_r): Pass USE_DGRAM flag to nis_list.
+	* nis/nss_nisplus/nisplus-service.c (_nss_nisplus_getservbyname_r,
+	_nss_nisplus_getservbyport_r): Likewise.
+	* nis/nss_nisplus/nisplus-network.c (_nss_nisplus_getnetbyname_r,
+	_nss_nisplus_getnetbyaddr_r): Likewise.
+	* nis/nss_nisplus/nisplus-spwd.c (_nss_nisplus_getspnam_r): Likewise.
+	* nis/nss_nisplus/nisplus-ethers.c (_nss_nisplus_gethostton_r,
+	_nss_nisplus_getntohost_r): Likewise.
+	* nis/nss_nisplus/nisplus-rpc.c (_nss_nisplus_getrpcbyname_r,
+	_nss_nisplus_getrpcbynumber_r): Likewise.
+
+2007-04-01  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ia64/fpu/fesetround.c (fesetround): Return 0 on success
+	and 1 on failure.
+
+2007-04-01  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (__nextafterl): Use
+	math_opt_barrier and math_force_eval macros.
+
+2007-03-27  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #3306]
+	* math/math_private.h (math_opt_barrier, math_force_eval): Define.
+	* sysdeps/i386/fpu/math_private.h: New file.
+	* sysdeps/x86_64/fpu/math_private.h: New file.
+	* math/s_nexttowardf.c (__nexttowardf): Use math_opt_barrier and
+	math_force_eval macros.  Use "+m" constraint on asm rather than
+	"=m" and "m".
+	* math/s_nextafter.c (__nextafter): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttoward.c (__nexttoward):
+	Likewise.
+	* sysdeps/ieee754/flt-32/s_nextafterf.c (__nextafterf): Likewise.
+	* sysdeps/ieee754/ldbl-128/s_nexttoward.c (__nexttoward): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_nexttoward.c (__nexttoward): Likewise.
+	* sysdeps/i386/fpu/s_nextafterl.c (__nextafterl): Use
+	math_opt_barrier and math_force_eval macros.
+	* sysdeps/ieee754/ldbl-128/s_nextafterl.c (__nextafterl): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_nextafterl.c (__nextafterl): Likewise.
+	* sysdeps/i386/fpu/s_nexttoward.c: Include float.h.
+	(__nexttoward): Use math_opt_barrier and
+	math_force_eval macros.  Use "+m" constraint on asm rather than
+	"=m" and "m".  Only use asm to force double result if
+	FLT_EVAL_METHOD is 2.
+	* sysdeps/i386/fpu/s_nexttowardf.c: Include float.h.
+	(__nexttowardf): Use math_opt_barrier and
+	math_force_eval macros.  Use "+m" constraint on asm rather than
+	"=m" and "m".  Only use asm to force double result if
+	FLT_EVAL_METHOD is not 0.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttowardf.c: Include float.h.
+	(__nexttowardf): Use math_opt_barrier and
+	math_force_eval macros.  If FLT_EVAL_METHOD is not 0, force
+	x to float using asm.
+	* sysdeps/ieee754/ldbl-opt/s_nexttowardfd.c: Include float.h.
+	(__nldbl_nexttowardf): Use math_opt_barrier and
+	math_force_eval macros.  If FLT_EVAL_METHOD is not 0, force
+	x to float using asm.
+	* sysdeps/ieee754/ldbl-96/s_nexttowardf.c: Include float.h.
+	(__nexttowardf): Use math_opt_barrier and math_force_eval
+	macros.  If FLT_EVAL_METHOD is not 0, force x to float using asm.
+	* math/bug-nextafter.c (zero, inf): New variables.
+	(main): Add new tests.
+	* math/bug-nexttoward.c (zero, inf): New variables.
+	(main): Add new tests.
+
+2007-03-30  Jakub Jelinek  <jakub@redhat.com>
+
+	* libio/libio.h (__underflow, __uflow, __overflow, __wunderflow,
+	__wuflow, __woverflow, _IO_getc, _IO_putc, _IO_peekc_locked, _IO_padn,
+	_IO_sgetn, _IO_seekoff, _IO_seekpos, _IO_getwc, _IO_putwc, _IO_wpadn):
+	Remove __THROW.
+	* libio/fileops.c (new_do_write, _IO_file_xsgetn_mmap,
+	_IO_file_xsgetn_maybe_mmap): Likewise.
+	* libio/oldfileops.c (old_do_write): Likewise.
+	* libio/libioP.h (_IO_switch_to_get_mode, _IO_switch_to_wget_mode,
+	_IO_init_marker, _IO_init_wmarker, _IO_default_uflow,
+	_IO_wdefault_uflow, _IO_default_setbuf, _IO_default_seekpos,
+	_IO_do_write, _IO_new_do_write, _IO_old_do_write, _IO_wdo_write,
+	_IO_flush_all_lockp, _IO_flush_all, _IO_cleanup,
+	_IO_flush_all_linebuffered, _IO_new_fgetpos, _IO_old_fgetpos,
+	_IO_new_fsetpos, _IO_old_fsetpos, _IO_new_fgetpos64,
+	_IO_old_fgetpos64, _IO_new_fsetpos64, _IO_old_fsetpos64,
+	_IO_file_setbuf, _IO_file_seekoff, _IO_file_xsputn, _IO_file_xsgetn,
+	_IO_file_underflow, _IO_file_underflow_mmap,
+	_IO_file_underflow_maybe_mmap, _IO_file_overflow, _IO_file_attach,
+	_IO_file_open, _IO_file_fopen, _IO_file_write, _IO_file_read,
+	_IO_file_sync, _IO_file_close_it, _IO_file_finish,
+	_IO_new_file_attach, _IO_new_file_close_it, _IO_new_file_finish,
+	_IO_new_file_fopen, _IO_new_file_setbuf, _IO_file_setbuf_mmap,
+	_IO_new_file_sync, _IO_new_file_underflow, _IO_new_file_overflow,
+	_IO_new_file_seekoff, _IO_new_file_write, _IO_new_file_xsputn,
+	_IO_old_file_setbuf, _IO_old_file_seekoff, _IO_old_file_xsputn,
+	_IO_old_file_underflow, _IO_old_file_overflow, _IO_old_file_attach,
+	_IO_old_file_fopen, _IO_old_file_write, _IO_old_file_sync,
+	_IO_old_file_close_it, _IO_old_file_finish, _IO_wfile_xsputn,
+	_IO_wfile_setbuf, _IO_wfile_sync, _IO_wfile_underflow,
+	_IO_wfile_overflow, _IO_wfile_seekoff, _IO_old_proc_open,
+	_IO_old_proc_close, _IO_getdelim, _IO_flush_all_internal,
+	_IO_adjust_column_internal, _IO_default_uflow_internal,
+	_IO_default_xsgetn_internal, _IO_wdefault_xsputn_internal,
+	_IO_wdefault_xsgetn_internal, _IO_wdefault_uflow_internal,
+	_IO_file_setbuf_internal, _IO_file_seekoff_internal,
+	_IO_file_xsputn_internal, _IO_file_xsgetn_internal,
+	_IO_file_close_it_internal, _IO_file_underflow_internal,
+	_IO_file_overflow_internal, _IO_file_attach_internal,
+	_IO_file_fopen_internal, _IO_file_sync_internal,
+	_IO_file_finish_internal, _IO_wfile_xsputn_internal,
+	_IO_wfile_seekoff_internal, _IO_wfile_sync_internal,
+	_IO_switch_to_wget_mode_internal, _IO_padn_internal,
+	_IO_switch_to_get_mode_internal, _IO_seekoff_unlocked,
+	_IO_seekpos_unlocked): Likewise.
+	(_IO_strtod, _IO_dtoa, _IO_outfloat, _IO_read, _IO_write,
+	_IO_lseek, _IO_close, _IO_fstat): Remove unused prototypes.
+
+2007-03-23  Jakub Jelinek  <jakub@redhat.com>
+
+	* scripts/check-local-headers.sh: Filter out sys/capability.h.
+
+2007-03-22  Jakub Jelinek  <jakub@redhat.com>
+
+	* config.h.in (HAVE_LIBCAP): Add.
+	* nscd/selinux.h: Include sys/capability.h rather than non-existent
+	sys/capabilities.h.
+	* nscd/selinux.c (preserve_capabilities): Use cap_free instead of
+	free_caps.  Cast away const from 4th cap_set_flag argument.
+
+2007-03-16  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-open.c (dl_open_worker): Declare l in 2 different
+	smaller scopes.
+	* elf/dl-dst.h (DL_DST_REQ_STATIC): Add l as macro argument.
+	(DL_DST_REQUIRED): Adjust user.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	* locale/programs/ld-ctype.c (find_translit): Return NULL if ctype is
+	NULL.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4181]
+	* inet/inet6_opt.c (add_padding): Only insert padding if npad > 0.
+	(inet6_opt_append): Don't check extlen is big enough if extbuf
+	is NULL.
+	(inet6_opt_finish): Likewise.
+	* inet/Makefile (tests): Add test-inet6_opt.
+	* inet/test-inet6_opt.c: New test.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4130]
+	* login/utmp_file.c (setutent_file): Use O_LARGEFILE for
+	open_not_cancel_2.
+	(updwtmp_file): Likewise.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4101]
+	* argp/argp-help.c (hol_cluster_cmp): Fix comparisons used to find
+	ancestors with the same depths.
+	Patch by Niels Moeller <nisse@lysator.liu.se>.
+	(filter_doc): Don't crash if argp is NULL.
+	* argp/Makefile (tests): Add tst-argp2.
+	* argp/tst-argp2.c: New test.
+
+2007-03-15  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #3919]
+	* math/libm-test.inc (log_test): Test -Inf and NaN.
+	(log10_test, log1p_test, log2_test): Test -Inf.
+	* sysdeps/i386/fpu/e_log.S (__ieee754_log): Don't raise
+	FE_INVALID when argument is qNaN.
+	* sysdeps/i386/fpu/e_logl.S (__ieee754_logl): Likewise.
+	* sysdeps/i386/fpu/e_logf.S (__ieee754_logf): Likewise.
+	* sysdeps/x86_64/fpu/e_logl.S (__ieee754_logl): Likewise.
+	* sysdeps/x86_64/fpu/e_log10l.S (__ieee754_log10l): Replace
+	andb $1, %ah with testb $1, %ah, don't test for parity, instead
+	testb $4, %ah and jump if non-zero.
+	* sysdeps/x86_64/fpu/e_log2l.S (__ieee754_log2l): Likewise.
+	* sysdeps/x86_64/fpu/s_log1pl.S (__log1pl): Likewise.
+
+2007-03-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/posix/getaddrinfo.c (get_scope): Correct test for
+	172.16/12 address range.
+
+2007-03-01  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4069]
+	* sysdeps/ieee754/dbl-64/e_pow.c (__ieee754_pow): Check for NaN
+	earlier.
+	* math/libm-test.inc (pow_test): Add more tests involving NaNs.
+
+	* sysdeps/i386/fpu/e_powf.S (__ieee754_powf): Avoid invalid exception
+	for x qNaN and y either +-inf or non-integer value.
+	* sysdeps/i386/fpu/e_pow.S (__ieee754_pow): Likewise.
+	* sysdeps/i386/fpu/e_powl.S (__ieee754_powl): Likewise.
+	* sysdeps/x86_64/fpu/e_powl.S (__ieee754_powl): Likewise.
+
+2007-02-21  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4076]
+	* io/ftw.c (ftw_startup): Handle special case of FTW_CHDIR in /.
+	(open_dir_stream): Likewise.
+	* io/Makefile (tests): Add bug-ftw5.
+	* io/bug-ftw5.c: New file.
+
+2007-02-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/grpcache.c (cache_addgr): In case a record changed on
+	refresh, adjust key_copy.
+
+	[BZ #4074]
+	* nscd/pwdcache.c (cache_addpw): In case a record changed on
+	refresh, adjust key_copy.
+
+2007-02-21  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3458]
+	* sysdeps/unix/sysv/linux/posix_madvise.c: New file.
+	* sysdeps/unix/sysv/linux/syscalls.list: Remove posix_madvise entry.
+
+2007-02-17  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3842]
+	* sysdeps/posix/euidaccess.c [_LIBC] (euidaccess): Remove shortcut
+	using __libc_enable_secure.
+
+2007-02-17  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3348]
+	* malloc/memusage.sh: Cleanups.
+	* debug/xtrace.sh: Quoting and trap changes.
+
+2007-02-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale/iso-3166.def: Add entry for Serbia.
+	* locale/iso-4217.def: Define RSD.
+
+2007-02-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/nscd_helper.c (open_socket): Don't send padding bytes from
+	reqdata.
+
+2007-02-13  Ulrich Drepper  <drepper@redhat.com>
+
+	* po/ru.po: Update from translation team.
+
+2007-02-03  Ulrich Drepper  <drepper@redhat.com>
+
+	* po/sv.po: Update from translation team. 
+
+2007-02-12  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/i386/bits/byteswap.h (__bswap_32): Add __amdfam10__
+	to the list of i486+ CPUs.
+	* sysdeps/x86_64/bits/byteswap.h (__bswap_32): Likewise.
+
+2007-01-24  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/i386/bits/byteswap.h (__bswap_32): Add __nocona__, __core2__
+	and __geode__ to the list of i486+ CPUs.
+	* sysdeps/x86_64/bits/byteswap.h (__bswap_32): Likewise.
+
+2007-02-08  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #3944]
+	* time/strptime_l.c (__strptime_internal): Set have_mon for
+	%b/%B/%h.  Set have_mon and have_mday if tm_mon and tm_mday
+	have been computed from tm_yday and tm_year.  Don't crash
+	in day_of_the_week or day_of_the_year if not have_mon
+	and tm_mon contains bogus value.
+	* time/Makefile (tests): Add tst-strptime3.
+	* time/tst-strptime3.c: New test.
+
+2007-02-05  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #3957]
+	* posix/regcomp.c (parse_bracket_exp): Set '\n' bit rather than '\0'
+	bit for RE_HAT_LISTS_NOT_NEWLINE.
+	(build_charclass_op): Remove bogus comment.
+	* posix/Makefile (tests): Add bug-regex27 and bug-regex28.
+	* posix/bug-regex27.c: New test.
+	* posix/bug-regex28.c: New test.
+
+2007-02-02  Bruno Haible  <bruno@clisp.org>
+
+	[BZ #3954]
+	* iconvdata/ksc5601.c (__ksc5601_sym_to_ucs, __ksc5601_sym_from_ucs):
+	Add mapping for U+327E.
+	* iconvdata/ksc5601.h (KSC5601_SYMBOL): Increment.
+	* iconvdata/johab.c (BODY for FROM_LOOP, BODY for TO_LOOP): Enable
+	mapping of 0xD9 0xE8.
+	* iconvdata/uhc.c (BODY for FROM_LOOP, BODY for TO_LOOP): Disable
+	mapping of U+327E.
+	Reported by Jungshik Shin <jungshik@google.com>.
+
+	[BZ #3955]
+	* iconvdata/johab.c (BODY for FROM_LOOP, BODY for TO_LOOP): Enable
+	mapping of 0xD9 0xE6 and of 0xD9 0xE7.
+	Reported by Jungshik Shin <jungshik@google.com>.
+
+2007-01-31  Jakub Jelinek  <jakub@redhat.com>
+
+	* nscd/nscd-client.h (__nscd_cache_search): Remove const qualifier
+	from return value.
+	* nscd/nscd_helper.c: Include string.h.
+	(__nscd_cache_search): Remove const qualifier from return value.
+	On strict alignment architectures check hash entry and data head
+	alignment.
+	* nscd/nscd_getpw_r.c (nscd_getpw_r): Don't crash or fail because
+	mmapped data during GC cycle contains garbage.  If
+	__nscd_drop_map_ref fails, decrement mapped->counter when returning
+	error or if retrying with NO_MAPPING, only __nscd_unmap if counter
+	dropped to 0.
+	* nscd/nscd_getgr_r.c (nscd_getgr_r): Likewise.
+	* nscd/nscd_initgroups.c (__nscd_getgrouplist): Likewise.
+	* nscd/nscd_gethst_r.c (nscd_gethst_r): Likewise.
+	* nscd/nscd_getai.c (__nscd_getai): Likewise.
+
+2007-01-22  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #3902]
+	* stdio-common/_itoa.c (_itoa): Make sure at least a zero is emitted.
+	* stdio-common/Makefile (tests): Add bug17.
+	* stdio-common/bug17.c: New file.
+
+2007-01-15  Jakub Jelinek  <jakub@redhat.com>
+
+	* soft-fp/op-common.h (FP_TRUNC): When truncating a NaN, clear
+	workbits in semi-raw fraction.
+
+	* math/test-misc.c: Add new tests.
+
+2007-01-14  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* math/basic-test.c: Include test-skeleton.c.
+	(TEST_TRUNC): Define.
+	(truncdfsf_test, trunctfsf_test, trunctfdf_test): New.
+	(main): Rename to ...
+	(do_test): ...this.  Run new tests.
+	(TEST_FUNCTION): Define.
+
+2006-10-05  Steven Munroe  <sjmunroe@us.ibm.com>
+	    Joe Kerian  <jkerian@us.us.ibm.com>
+
+	[BZ #2749]
+	* soft-fp/op-4.h (__FP_FRAC_SUB_3, __FP_FRAC_SUB_4): Correct borrow
+	handling for high words.
+	* soft-fp/op-common.h (_FP_OVERFLOW_SEMIRAW): Always set inexact
+	and overflow for infinity.
+
+2007-01-13  Ulrich Drepper  <drepper@redhat.com>
+
+	* nis/nss_nis/nis-service.c (_nss_nis_getservbyname_r): Correct
+	computation of keylen.
+
+2007-01-10  Ulrich Drepper  <drepper@redhat.com>
+
+	* io/fts.c: Make sure fts_cur is always valid after return from
+	fts_read.
+	Patch by Miloslav Trmac <mitr@redhat.com>.
+
+2007-01-03  Jakub Jelinek  <jakub@redhat.com>
+
+	* posix/execvp.c: Include alloca.h.
+	(allocate_scripts_argv): Renamed to...
+	(scripts_argv): ... this.  Don't allocate buffer here nor count
+	arguments.
+	(execvp): Use alloca if possible.
+	* posix/Makefile: Add rules to build and run tst-vfork3 test.
+	* posix/tst-vfork3.c: New test.
+
 2007-01-05  Steven Munroe  <sjmunroe@us.ibm.com>
 
 	* stdlib/tst-makecontext.c: Include errno.h.  Change main()
@@ -999,7 +1864,7 @@
 	* nis/nis_xdr.c: Avoid some function calls.
 
 2006-08-07  Jakub Jelinek  <jakub@redhat.com>
-            Ulrich Drepper  <drepper@redhat.com>
+	    Ulrich Drepper  <drepper@redhat.com>
 
 	* nis/nis_call.c (rec_dirsearch) [case LOWER_NAME]: Don't take
 	short cut if only one name component is stripped away.

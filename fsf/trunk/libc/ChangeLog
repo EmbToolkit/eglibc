@@ -1,3 +1,62 @@
+2007-07-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* include/features.h (__USE_ISOC95): New define.
+	* wcsmbs/wchar.h (fwprintf, fwscanf, wprintf, wscanf, swprintf,
+	swscanf, vfwprintf, vwprintf, vswprintf, fwide): Define even
+	for -std=iso9899:199409.
+	* CONFORMANCE: Remove comments about unsupported AMD1.
+
+2007-07-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ia64/sched_cpucount.c: New file.
+	* sysdeps/powerpc/sched_cpucount.c: New file.
+
+2007-07-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/sched.h (__sched_cpucount): Add
+	__BEGIN_DECLS/__END_DECLS around the prototype.
+	* bits/sched.h (__sched_cpucount): Likewise.  Make second argument
+	pointer to const cpu_set_t.
+
+	* bits/types.h: Don't include stddef.h, don't define __need_size_t.
+	* signal/signal.h <__USE_BSD || __USE_XOPEN_EXTENDED>: Define
+	__need_size_t and include stddef.h.
+	* sysvipc/sys/msg.h: Likewise.
+	* posix/sched.h: Likewise.
+	* hurd/hurd/signal.h (__need_size_t): Define.
+
+	* CONFORMANCE: ctype.h and wctype.h no longer define size_t,
+	neither does signal.h in pedantic ISO C namespaces.  stdio.h
+	no longer defines wint_t or wchar_t.
+
+	* libio/libioP.h (_IO_acquire_lock_clear_flags2_fct): New function.
+	* debug/vfwprintf_chk.c (__vfwprintf_chk): Use
+	_IO_acquire_lock_clear_flags2 instead of _IO_acquire_lock.
+	* debug/vprintf_chk.c (__vprintf_chk): Likewise.
+	* debug/vwprintf_chk.c (__vwprintf_chk): Likewise.
+	* debug/vfprintf_chk.c (__vfprintf_chk): Likewise.
+	* debug/fwprintf_chk.c (__fwprintf_chk): Likewise.
+	* debug/printf_chk.c (__printf_chk): Likewise.
+	* debug/fprintf_chk.c (__fprintf_chk): Likewise.
+	* debug/wprintf_chk.c (__wprintf_chk): Likewise.
+
+	* sysdeps/pthread/bits/stdio-lock.h (_IO_acquire_lock_clear_flags2):
+	Define.
+
+	* bits/confname.h (_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS): Define.
+	* posix/getconf.c (vars): Add POSIX_V6_WIDTH_RESTRICTED_ENVS.
+
+2007-07-16  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4792]
+	* stdlib/stdlib.h (realloc): Remove __attribute_malloc__.
+	* malloc/malloc.h (realloc): Likewise.
+
+	* libio/iopopen.c (_IO_new_proc_open): Don't close child_std_end
+	if one of proc_file_chain streams has that fileno.
+	* stdio-common/Makefile (tests): Add tst-popen2.
+	* stdio-common/tst-popen2.c: New test.
+
 2007-07-14  Jakub Jelinek  <jakub@redhat.com>
 
 	* elf/ldconfig.c: Allow GPLv2 or any later version.

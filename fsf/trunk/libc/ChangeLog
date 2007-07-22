@@ -1,3 +1,37 @@
+2007-07-21  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	* manual/errno.texi: Change ECANCELED value to 119.
+
+	* mach/lock-intern.h: Include <sys/cdefs.h>.
+
+	* sysdeps/mach/hurd/sigaction.c (__sigaction): Check ACT != NULL before
+	reading A.
+
+        * sysdeps/mach/hurd/sigsuspend.c (sigsuspend_not_cancel): Define alias
+        to __sigsuspend.
+
+	* sysdeps/mach/i386/sysdep.h: Include <dl-sysdep.h> and <tls.h>.
+
+2006-06-13  Thomas Schwinge  <tschwinge@gnu.org>
+
+	* sysdeps/mach/hurd/tls.h: Change `ASSEMBLER' conditional to
+	`__ASSEMBLER__'.
+	* sysdeps/mach/hurd/i386/tls.h: Likewise.
+
+2007-07-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/nscd_helper.c (get_mapping): Use MSG_CMSG_CLOEXEC for
+	descriptor received from nscd.
+
+	* sysdeps/unix/sysv/linux/bits/socket.h: Define MSG_CMSG_CLOEXEC.
+
+	* sysdeps/unix/sysv/linux/i386/bits/fcntl.h: Define O_CLOEXEC.
+	* sysdeps/unix/sysv/linux/ia64/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/linux/sh/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/fcntl.h: Likewise.
+
 2007-07-20  Jakub Jelinek  <jakub@redhat.com>
 
 	[BZ #4816]

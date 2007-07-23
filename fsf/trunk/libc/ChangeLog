@@ -1,14 +1,37 @@
+2007-07-22  Roland McGrath  <roland@frob.com>
+
+	* hurd/getdport.c: Add missing copyright year update.
+
+	* sysdeps/mach/hurd/bits/fcntl.h [__USE_GNU] (O_CLOEXEC): New macro.
+	* hurd/port2fd.c (_hurd_port2fd): Implement O_CLOEXEC.
+
+2007-07-22  Ulrich Drepper  <drepper@redhat.com>
+
+	* login/utmp_file.c (setutent_file): Use O_CLOEXEC if possible.
+
+	* libio/fileops.c (_IO_new_file_fopen): Recognize 'e' flag and set
+	O_CLOEXEC is needed.
+	* nis/nss_compat/compat-grp.c: Use 'e' flag when opening file.
+	Avoid additional fcntl to set O_CLOEXEC if not needed.
+	* nis/nss_compat/compat-initgroups.c: Likewise.
+	* nis/nss_compat/compat-pwd.c: Likewise.
+	* nis/nss_compat/compat-spwd.c: Likewise.
+
 2007-07-21  Samuel Thibault  <samuel.thibault@ens-lyon.org>
 
+	[BZ #3665]
 	* manual/errno.texi: Change ECANCELED value to 119.
 
+	[BZ #4610]
 	* mach/lock-intern.h: Include <sys/cdefs.h>.
 
+	[BZ #4178]
 	* sysdeps/mach/hurd/sigaction.c (__sigaction): Check ACT != NULL before
 	reading A.
 
-        * sysdeps/mach/hurd/sigsuspend.c (sigsuspend_not_cancel): Define alias
-        to __sigsuspend.
+	[BZ #4126]
+	* sysdeps/mach/hurd/sigsuspend.c (sigsuspend_not_cancel): Define alias
+	to __sigsuspend.
 
 	* sysdeps/mach/i386/sysdep.h: Include <dl-sysdep.h> and <tls.h>.
 

@@ -1,3 +1,61 @@
+2007-07-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedrdlock.S: Fix
+	code used when private futexes are assumed.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedwrlock.S:
+	Likewise.
+
+2007-07-23  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/lowlevellock.h
+	(__lll_private_flag): Define.
+	(lll_futex_wait): Define as a wrapper around lll_futex_timed_wait.
+	(lll_futex_timed_wait, lll_futex_wake, lll_futex_wake_unlock): Use
+	__lll_private_flag.
+	(lll_private_futex_wait, lll_private_futex_timedwait,
+	lll_private_futex_wake): Define as wrapper around non-_private
+	macros.
+	* sysdeps/unix/sysv/linux/x86_64/lowlevellock.h
+	(__lll_private_flag): Define.
+	(lll_futex_timed_wait, lll_futex_wake): Use __lll_private_flag.
+	(lll_private_futex_wait, lll_private_futex_timedwait,
+	lll_private_futex_wake): Define as wrapper around non-_private
+	macros.
+
+2007-07-10  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* pthread_rwlock_rdlock.c (__pthread_rwlock_rdlock): Add LLL_SHARED
+	parameter to lll_futex_wait call.
+	* pthread_rwlock_wrlock.c (__pthread_rwlock_wrlock): Likewise.
+
+	* sysdeps/unix/sysv/linux/powerpc/pthread_once.c (__pthread_once):
+	Replace lll_futex_wait with lll_private_futex_wait.
+	* sysdeps/unix/sysv/linux/powerpc/sem_post.c (__new_sem_post):
+	Add LLL_SHARED parameter to lll_futex_wake().
+
+	* sysdeps/unix/sysv/linux/powerpc/lowlevellock.h: Define LLL_PRIVATE
+	LLL_SHARED, lll_private_futex_wait, lll_private_futex_timed_wait and
+	lll_private_futex_wake.
+	(lll_futex_wait): Add private parameter. Adjust FUTEX_PRIVATE_FLAG
+	bit from private parm before syscall.
+	(lll_futex_timed_wait): Likewise.
+	(lll_futex_wake): Likewise.
+	(lll_futex_wake_unlock): Likewise.
+	(lll_mutex_unlock): Add LLL_SHARED parm to lll_futex_wake call.
+	(lll_robust_mutex_unlock): Likewise.
+	(lll_mutex_unlock_force): Likewise.
+	(lll_wait_tid): Add LLL_SHARED parm to lll_futex_wait call.
+
+2007-07-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedrdlock.S: Fix
+	compilation when unconditionally using private futexes.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_rdlock.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedwrlock.S:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_unlock.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_wrlock.S: Likewise.
+
 2007-07-17  Jakub Jelinek  <jakub@redhat.com>
 
 	* sysdeps/pthread/bits/stdio-lock.h (_IO_acquire_lock_clear_flags2):

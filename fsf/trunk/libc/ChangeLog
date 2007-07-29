@@ -1,3 +1,200 @@
+2007-07-28  Ulrich Drepper  <drepper@redhat.com>
+
+	* posix/getconf.c (vars): Add missing _SC_LEVEL4_CACHE_LINESIZE
+	entry.
+
+	[BZ 4858]
+	* stdio-common/printf_fp.c (___printf_fp): Fix special case of
+	#.0g and value rounded to 1.0.
+	* stdio-common/tfformat.c (sprint_doubles): Add two new tests.
+
+2007-07-26  Jakub Jelinek  <jakub@redhat.com>
+
+	* locale/programs/ld-monetary.c (monetary_finish): Avoid range check
+	for int_frac_digits and frac_digits.
+
+	* login/logout.c (logout): Avoid aliasing violation.
+	* login/logwtmp.c (logwtmp): Likewise.
+
+	* libio/genops.c (_IO_un_link): Avoid aliasing violation.
+
+	* nscd/selinux.c (preserve_capabilities): Initialize new_caps
+	to avoid warning.
+	* iconv/gconv_open.c (__gconv_open): Initialize ptr to avoid
+	warning.
+	* nis/nis_subr.c (nis_getnames): Initialize saveptr to avoid
+	warning.
+	* resolv/inet_ntop.c (inet_ntop6): Initialize best.len and cur.len
+	to avoid warnings.
+
+	* nss/nsswitch.c (__nss_lookup_function): Don't cast &ni->known to
+	void **.
+	* nss/nsswitch.h (service_user): Use void * type for KNOWN field.
+
+	* nss/nss_files/files-hosts.c (LINE_PARSER): Cast host_addr to
+	char * to avoid warning.
+	* nis/nss_nis/nis-hosts.c (LINE_PARSER): Likewise.
+
+	* timezone/Makefile (CFLAGS-zdump.c): Add -fwrapv.
+
+	* locale/programs/ld-ctype.c (ctype_finish, set_class_defaults,
+	allocate_arrays): Cast second argument to charmap_find_symbol
+	to char * to avoid warnings.
+
+	* locale/programs/repertoire.c (repertoire_new_char): Change
+	from_nr, to_nr and cnt to unsigned long, adjust printf format
+	string.
+
+	* locale/programs/ld-collate.c (insert_value, handle_ellipsis):
+	Cast second argument to new_element to char * to avoid warnings.
+
+	* locale/weightwc.h (findidx): Cast &extra[-i] to const int32_t *.
+
+	* intl/gettextP.h (struct loaded_domain): Change plural to const
+	struct expression *.
+	* intl/plural-eval.c (plural_eval): Change first argument to
+	const struct expression *.
+	* intl/plural-exp.c (EXTRACT_PLURAL_EXPRESSION): Change first
+	argument to const struct expression **.
+	* intl/plural-exp.h (EXTRACT_PLURAL_EXPRESSION, plural_eval): Adjust
+	prototypes.
+	* intl/loadmsgcat (_nl_unload_domain): Cast away const
+	in call to __gettext_free_exp.
+
+	* posix/fnmatch.c (fnmatch): Rearrange code to avoid maybe
+	unitialized wstring/wpattern var warnings.
+
+	* posix/runtests.c (struct a_test): Make data field const char *.
+
+	* stdio-common/tst-sprintf2.c (main): Don't declere u, v and buf
+	vars if not LDBL_MANT_DIG >= 106.
+
+	* stdio-common/Makefile (CFLAGS-vfwprintf.c): Add -Wno-unitialized.
+
+	* stdio-common/vfprintf.c (vfprintf): Cast first arugment to
+	__find_specmb to avoid warning.
+
+	* rt/tst-mqueue1.c (do_one_test): Add casts to avoid warnings.
+
+	* debug/test-strcpy_chk.c (do_tests, do_random_tests): Add casts
+	to avoid warnings.
+
+	* sysdeps/ieee754/ldbl-96/s_roundl.c (huge): Add L suffix to
+	initializer.
+
+	* sysdeps/unix/clock_gettime.c (clock_gettime): Only define
+	tv var when it will be actually used.
+
+	* sunrpc/rpc_cmsg.c (xdr_callmsg): Cast IXDR_PUT_* to void
+	to avoid warnings.
+
+	* iconvdata/gbk.c (BODY): Make buf and cp char instead of unsigned
+	char array resp. pointer.
+	* iconvdata/iso-2022-kr.c (BODY): Make buf unsigned char instead of
+	char array.
+	* iconvdata/cns11643.h (cns11643_to_ucs4): Change first argument
+	to const unsigned char **.
+	(ucs4_to_cns11643): Change second argument to unsigned char *.
+	* iconvdata/euc-tw.c (BODY): Change endp type to
+	const unsigned char *.
+	* iconvdata/iso-ir-165.h (ucs4_to_isoir165): Change second argument
+	to unsigned char *.
+	* iconvdata/ibm1008_420.c (LOOP_NEED_FLAGS): Don't define.
+	* iconvdata/iso-2022-cn.c (BODY): Change buf to unsigned char array.
+	* iconvdata/iso-2022-cn-ext.c (BODY): Change buf, tmpbuf, tmp
+	types to unsigned char pointers/arrays instead of char.
+	* iconvdata/jis0201.h (ucs4_to_jisx0201): Change second argument
+	to unsigned char *.
+	* iconvdata/jis0208.h (ucs4_to_jisx0208): Likewise.
+	* iconvdata/jis0212.h: Include assert.h.
+	(ucs4_to_jisx0212): Change second argument to unsigned char *.
+	assert that if cp[0] is not '\0', cp[1] is not '\0' either instead
+	of trying to handle that.
+	* iconvdata/euc-kr.c (euckr_from_ucs4): Initialize also cp[1] to
+	shut up a warning.
+	* iconvdata/euc-jp-ms.c (from_ucs4_lat1, from_ucs4_greek,
+	from_ucs4_cjk, from_ucs4_cjkcpt, from_ucs4_extra): Change type to
+	two dimensional const unsigned char arrays.
+	(BODY): Cast "" to (const unsigned char *) for assignment to cp.
+	Initialize endp to inptr to shut up a warning.
+
+2007-07-20  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4772]
+	* time/strptime_l.c (__strptime_internal): Silently ignore
+	strftime modifiers and field width in recursive calls.
+
+	* include/time.h (enum ptime_locale_status): Remove.
+	(__strptime_internal): Remove decided and era_cnt arguments,
+	add statep argument.
+	* time/strptime_l.c (__strptime_internal): Remove decided
+	and era_cnt arguments, add statep argument.  Don't recompute
+	any fields in recursive calls, only update caller's tm
+	and state, if recursive call fails, don't change tm nor
+	any state.
+	(get_alt_number): Adjust.
+	(recursive): Adjust caller.
+	(strptime): Likewise.
+	* time/strptime.c (strptime): Likewise.
+
+2007-07-19  Jakub Jelinek  <jakub@redhat.com>
+
+	* iconv/gconv_int.h (__GCONV_NULCONV): New internal only error code.
+	* iconv/gconv_cache.c (__gconv_lookup_cache): Return __GCONV_NULCONV
+	if from and to charsets are the same.
+	* iconv/gconv_db.c (__gconv_find_transform): Likewise.
+	* intl/dcigettext.c (_nl_find_msg): Return NULL even if __gconv_open
+	returns __GCONV_NOCONV, but not for __GCONV_NULCONV.
+
+2007-07-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* wcsmbs/wchar.h: Only define wint_t if __need_wint_t.
+	Don't define wint_t when __need_mbstate_t unless it
+	is necessary.
+	(__mbstate_t): Use __WINT_TYPE__ rather than wint_t
+	in the typedef if possible.
+	* wctype/wctype.h (wint_t): Define by including
+	wchar.h with __need_wint_t instead of including stddef.h
+	with __need_wint_t and as fallback definining it ourselves.
+	* iconv/gconv.h (__need_wint_t): Define before including
+	wchar.h.
+	* sysdeps/gnu/_G_config.h: Don't include gconv.h if not _LIBC
+	or _GLIBCPP_USE_WCHAR_T.
+	(__need_wchar_t): Don't define
+	if not _LIBC or _GLIBCPP_USE_WCHAR_T.
+	(__need_wint_t): Don't define before including stddef.h,
+	define before including wchar.h only if _LIBC or
+	_GLIBCPP_USE_WCHAR_T.
+	(_G_iconv_t): Don't define if not _LIBC or _GLIBCPP_USE_WCHAR_T.
+	* sysdeps/mach/hurd/_G_config.h: Likewise.
+	* sysdeps/generic/_G_config.h: Likewise.
+	* libio/libio.h (__wunderflow, __wuflow, __woverflow): Only
+	prototype if _LIBC or _GLIBCPP_USE_WCHAR_T.
+	(_IO_getwc_unlocked, _IO_putwc_unlocked): Only define
+	if _LIBC or _GLIBCPP_USE_WCHAR_T.
+
+2007-07-28  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/posix/posix_fallocate64.c: Undefine
+	__posix_fallocate64_l64 before alias handling.
+	* sysdeps/unix/sysv/linux/posix_fallocate.c: New file.
+	* sysdeps/unix/sysv/linux/posix_fallocate64.c: New file.
+	* sysdeps/unix/sysv/linux/wordsize-64/posix_fallocate.c: New file.
+	* sysdeps/unix/sysv/linux/wordsize-64/posix_fallocate64.c: New file.
+
+	* io/tst-posix_fallocate.c: Include <fcntl.h>.
+
+2007-07-23  Jakub Jelinek  <jakub@redhat.com>
+
+	* locale/programs/ld-collate.c (atwc): New variable.
+	(add_to_tablewc): New toplevel function, moved from collate_output.
+	(collate_output): Remove add_to_tablewc nested function.
+
+	* iconv/iconvconfig.c (hash_table, hash_size): New toplevel vars.
+	(name_insert): New function.
+	(write_output): Remove hash_table and hash_size vars and name_insert
+	nested function.
+
 2007-07-24  Roland McGrath  <roland@redhat.com>
 
 	* Makerules (install-others-programs-nosubdir): New target.

@@ -1,3 +1,19 @@
+2007-07-31  Jakub Jelinek  <jakub@redhat.com>
+
+	* NEWS, version.h (VERSION): 2.6.1.
+
+	* sysdeps/unix/sysv/linux/i386/clone.S: Revert 2006-11-30 changes.
+	* sysdeps/unix/sysv/linux/x86_64/clone.S: Likewise.
+
+	* stdio-common/tfformat.c (sprint_doubles): Add 12 new tests.
+
+2007-07-28  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4858]
+	* stdio-common/printf_fp.c (___printf_fp): Fix special case of
+	#.0g and value rounded to 1.0.
+	* stdio-common/tfformat.c (sprint_doubles): Add two new tests.
+
 2007-06-04  Jakub Jelinek  <jakub@redhat.com>
 
 	* math/test-misc.c (main): Don't run last batch of tests with

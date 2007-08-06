@@ -1,3 +1,9 @@
+2007-08-06  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	Backport:
+	2007-07-13  Steven Munroe  <sjmunroe@us.ibm.com>
+        * sysdeps/powerpc/nofpu/Makefile: Remove fe_nomask from libm-support.
+
 2007-08-06  Zack Weinberg  <zack@codesourcery.com>
 
 	* sysdeps/arm/nptl/pthread_spin_lock.S

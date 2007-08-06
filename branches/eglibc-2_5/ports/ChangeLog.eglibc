@@ -1,3 +1,11 @@
+2007-08-06  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (elf_machine_dynamic): Add missing
+	indirection in Thumb assembly code.
+	(elf_machine_load_address): Clear T bit of PLT entry contents.
+	(RTLD_START): Mark function symbols as such.  Tweak pc-relative
+	addressing to avoid depending on pc read pipeline offset.
+
 2007-06-12  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/nptl/bits/local_lim.h: Copy from

@@ -1,3 +1,13 @@
+2007-08-06  Zack Weinberg  <zack@codesourcery.com>
+
+	* sysdeps/arm/nptl/pthread_spin_lock.S
+	* sysdeps/arm/nptl/pthread_spin_trylock.S: Delete.
+	* sysdeps/arm/nptl/pthread_spin_lock.c
+	* sysdeps/arm/nptl/pthread_spin_trylock.c: New files using <atomic.h>
+	primitives to take spinlocks.
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h: Use kernel helpers
+	unconditionally.
+
 2007-08-06  Paul Brook  <paul@codesourcery.com>
 
 	* sysdeps/arm/dl-machine.h (elf_machine_dynamic): Add missing

@@ -1,3 +1,12 @@
+2007-08-06  Aurelien Jarno <aurelien@aurel32.net>
+
+	Backport:
+	2007-06-06  Daniel Jacobowitz  <dan@codesourcery.com>
+        * sysdeps/mips/nptl/tls.h (THREAD_GSCOPE_FLAG_UNUSED,
+        THREAD_GSCOPE_FLAG_USED, THREAD_GSCOPE_FLAG_WAIT): Define.
+        (THREAD_GSCOPE_RESET_FLAG, THREAD_GSCOPE_SET_FLAG,
+        THREAD_GSCOPE_WAIT): Define.
+
 2007-05-24  Atsushi Nemoto  <anemo@mba.ocn.ne.jp>
 
 	* sysdeps/unix/sysv/linux/mips/mips32/posix_fadvise.c

@@ -1,5 +1,5 @@
-/* Resolve function pointers to VDSO functions.
-   Copyright (C) 2005 Free Software Foundation, Inc.
+/* pthread_spin_unlock -- unlock a spin lock.  PowerPC version.
+   Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,20 +17,13 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#include "pthreadP.h"
+#include <lowlevellock.h>
 
-#ifndef _LIBC_VDSO_H
-#define _LIBC_VDSO_H
-
-#ifdef SHARED
-
-extern void *__vdso_gettimeofday attribute_hidden;
-
-extern void *__vdso_clock_gettime;
-
-extern void *__vdso_clock_getres;
-
-extern void *__vdso_get_tbfreq;
-
-#endif
-
-#endif /* _LIBC_VDSO_H */
+int
+pthread_spin_unlock (pthread_spinlock_t *lock)
+{
+  __asm __volatile (__lll_rel_instr ::: "memory");
+  *lock = 0;
+  return 0;
+}

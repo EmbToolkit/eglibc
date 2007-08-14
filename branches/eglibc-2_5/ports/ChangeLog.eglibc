@@ -1,3 +1,10 @@
+2007-08-14  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+	2007-07-13  Carlos O'Donell  <carlos@codesourcery.com>
+	* sysdeps/mips/bits/wordsize.h [_MIPS_SIM == _ABI64]:
+	Define __WORDSIZE_COMPAT32 as 1.
+
 2007-08-06  Zack Weinberg  <zack@codesourcery.com>
 
 	* sysdeps/arm/nptl/pthread_spin_lock.S

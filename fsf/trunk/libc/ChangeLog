@@ -1,3 +1,48 @@
+2007-08-13  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/kernel-features.h (__ASSUME_PSELECT,
+	__ASSUME_PPOLL, __ASSUME_ATFCTS, __ASSUME_SET_ROBUST_LIST,
+	__ASSUME_UTIMENSAT, __ASSUME_FALLOCATE): Update per-arch conditions
+	when each feature was introduced.
+
+	* sysdeps/unix/sysv/linux/dl-vdso.c: Don't include dl-hash.h.
+	* sysdeps/unix/sysv/linux/dl-vdso.h: Don't include dl-hash.h if NDEBUG.
+	(CHECK_HASH): New macro.
+	(PREPARE_VERSION): Use it.
+
+	* sysdeps/unix/sysv/linux/pselect.c (__generic_pselect): Only provide
+	prototype if not __ASSUME_PSELECT.
+	* sysdeps/unix/sysv/linux/ppoll.c (__generic_ppoll): Only provide
+	prototype if not __ASSUME_PPOLL.
+
+	* sysdeps/unix/sysv/linux/dl-osinfo.h (ROUND): #undef after use.
+
+	* sysdeps/unix/clock_settime.c (freq, __pthread_clock_settime,
+	hp_timing_settime): Don't define or declare if HANDLED_CPUTIME
+	is defined.
+
+2007-08-13  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/libc-start.c
+	(_libc_vdso_platform_setup): If vDSO is not available point
+	__vdso_gettimeofday to the vsyscall.
+	* sysdeps/unix/sysv/linux/x86_64/gettimeofday.S [SHARED]: Use
+	__vdso_gettimeofday instead of vsyscall.
+
+2007-08-13  Jakub Jelinek  <jakub@redhat.com>
+
+	* nscd/servicescache.c: Include kernel-features.h.
+	* nscd/gai.c: Likewise.
+	* sysdeps/unix/sysv/linux/statfs64.c: Likewise.
+	* sysdeps/unix/sysv/linux/fstatfs64.c: Likewise.
+	* sysdeps/unix/sysv/linux/fxstatat.c: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/mmap.S: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/mmap64.S: Likewise.
+	* sysdeps/unix/sysv/linux/xstatconv.c: Likewise.
+	* sysdeps/unix/sysv/linux/if_index.c: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/xstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/ifaddrs.c: Likewise.
+
 2007-08-12  Ulrich Drepper  <drepper@redhat.com>
 
 	* elf/dl-dst.h: No need for _dl_dst_count, _dl_dst_substitute,

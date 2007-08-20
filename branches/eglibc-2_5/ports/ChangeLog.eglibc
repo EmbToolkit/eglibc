@@ -1,3 +1,11 @@
+2007-08-20  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	Backport:
+	2007-05-23  Steven Munroe  <sjmunroe@us.ibm.com>
+        * sysdeps/powerpc/nofpu/feholdexcpt.c (feholdexcept): Disable
+        exceptions.  Use the updated env in fesetenv().
+        Add libm_hidden_def.
+
 2007-08-14  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:

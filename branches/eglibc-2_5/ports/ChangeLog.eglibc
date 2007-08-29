@@ -1,3 +1,19 @@
+2007-08-29  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/powerpc/powerpc32/e500/fpu/fsetexcptflg.c
+	(__fesetexceptflag): Do not clobber other exceptions.  Do not raise
+	exceptions.
+
+	Backport:
+	2007-08-29  Daniel Jacobowitz  <dan@codesourcery.com>
+	* sysdeps/powerpc/nofpu/fsetexcptflg.c (__fesetexceptflag): Do not
+	clobber other exceptions.
+	* sysdeps/powerpc/nofpu/feupdateenv.c (__feupdateenv): Raise new
+	exceptions.
+	* sysdeps/powerpc/nofpu/fraiseexcpt.c (__feraiseexcept): Handle
+	multiple new exceptions if some are disabled.
+	* sysdeps/powerpc/nofpu/sim-full.c (__simulate_exceptions): Likewise.
+
 2007-08-20  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	Backport:

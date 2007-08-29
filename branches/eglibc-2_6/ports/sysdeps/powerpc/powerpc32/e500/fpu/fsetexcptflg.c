@@ -33,13 +33,10 @@ __fesetexceptflag (const fexcept_t *flagp, int excepts)
   flag = *flagp & excepts;
 
   /* Replace the exception status */
-  spefscr = (spefscr & ~FE_ALL_EXCEPT) | flag;
+  spefscr = (spefscr & ~(FE_ALL_EXCEPT & excepts)) | flag;
 
-  /* Store the new status word (along with the rest of the environment).
-     This may cause floating-point exceptions if the restored state
-     requests it.  */
+  /* Store the new status word (along with the rest of the environment).  */
   fesetenv_register (spefscr);
-  feraiseexcept (spefscr & FE_ALL_EXCEPT);
 
   /* Success.  */
   return 0;

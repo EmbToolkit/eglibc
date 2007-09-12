@@ -1,3 +1,258 @@
+2007-07-31  Jakub Jelinek  <jakub@redhat.com>
+
+	* NEWS, version.h (VERSION): 2.6.1.
+
+	* sysdeps/unix/sysv/linux/i386/clone.S: Revert 2006-11-30 changes.
+	* sysdeps/unix/sysv/linux/x86_64/clone.S: Likewise.
+
+	* stdio-common/tfformat.c (sprint_doubles): Add 12 new tests.
+
+2007-07-28  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4858]
+	* stdio-common/printf_fp.c (___printf_fp): Fix special case of
+	#.0g and value rounded to 1.0.
+	* stdio-common/tfformat.c (sprint_doubles): Add two new tests.
+
+2007-06-04  Jakub Jelinek  <jakub@redhat.com>
+
+	* math/test-misc.c (main): Don't run last batch of tests with
+	IBM long double format.
+
+2007-07-07  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #4745]
+	* stdio-common/vfscanf.c (_IO_vfscanf): Add additional test for EOF
+	in loop to look for conversion specifier to avoid testing of
+	wrong errno value.
+	* stdio-common/Makefile (tests): Add bug18, bug18a, bug19, bug19a.
+	* stdio-common/bug18.c: New file.
+	* stdio-common/bug18a.c: New file.
+	* stdio-common/bug19.c: New file.
+	* stdio-common/bug19a.c: New file.
+
+2007-06-06  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4586]
+	* sysdeps/i386/ldbl2mpn.c (__mpn_extract_long_double): Treat
+	pseudo-zeros as zero.
+	* sysdeps/x86_64/ldbl2mpn.c: New file.
+	* sysdeps/ia64/ldbl2mpn.c: New file.
+
+2007-07-01  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-sysdep.c (_dl_important_hwcaps): Add integer overflow check.
+	* elf/dl-minimal.c (__libc_memalign): Likewise.  Handle malloc (0).
+	Return NULL if mmap failed instead of asserting it does not.
+	(calloc): Check for integer overflow.
+
+	* elf/dl-minimal.c (__strtoul_internal): Fix parsing of numbers bigger
+	than LONG_MAX / 10.
+
+2007-07-03  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4702]
+	* nis/nss-default.c: Include errno.h.
+	(init): Preserve errno.
+
+2007-06-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/generic/ldsodefs.h (rtld_global): Reorder some elements
+	to fill in holes
+	(rtld_global_ro): Likewise.
+
+2007-06-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-addr.c (_dl_addr): Skip PT_LOAD checking if l_contiguous.
+	Move PT_LOAD checking to...
+	(_dl_addr_inside_object): ... here, new function.
+	* elf/dl-sym.c (do_sym): If not l_contiguous,
+	call _dl_addr_inside_object.
+	* elf/dl-iteratephdr.c (__dl_iterate_phdr): Likewise.
+	* dlfcn/dlinfo.c (dlinfo_doit): Likewise.
+	* elf/dl-open.c (dl_open_worker): Likewise.
+	(_dl_addr_inside_object): New function if IS_IN_rtld.
+	* elf/dl-load.c (_dl_map_object_from_fd): Set l_contiguous if no
+	holes are present or are PROT_NONE protected.
+	* include/link.h (struct link_map): Add l_contiguous field.
+	* sysdeps/generic/ldsodefs.h (_dl_addr_inside_object): New prototype.
+
+2007-06-18  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/rtld.c (dl_main): Don't call init_tls more than once.
+
+2007-06-19  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-close.c (free_mem): Free _dl_scope_free_list.
+
+2007-06-13  Jakub Jelinek  <jakub@redhat.com>
+
+	* include/link.h: Don't include rtld-lowlevel.h.
+	(struct link_map): Remove l_scope_lock.
+	* sysdeps/generic/ldsodefs.h: Don't include rtld-lowlevel.h.
+	(_dl_scope_free_list): New field (variable) in _rtld_global.
+	(DL_LOOKUP_SCOPE_LOCK): Remove.
+	(_dl_scope_free): New prototype.
+	* elf/dl-runtime.c (_dl_fixup): Don't use __rtld_mrlock_*lock.
+	Don't pass DL_LOOKUP_SCOPE_LOCK to _dl_lookup_symbol_x.
+	(_dl_profile_fixup): Likewise.
+	* elf/dl-sym.c (do_sym): Likewise.  Use wrapped _dl_lookup_symbol_x
+	whenever !RTLD_SINGLE_THREAD_P, use THREAD_GSCOPE_SET_FLAG and
+	THREAD_GSCOPE_RESET_FLAG around it.
+	* elf/dl-close.c (_dl_close_worker): Don't use
+	__rtld_mrlock_{change,done}.  Call _dl_scope_free on the old
+	scope.  Make sure THREAD_GSCOPE_WAIT () happens if any old
+	scopes were queued or if l_scope_mem has been abandoned.
+	* elf/dl-open.c (_dl_scope_free): New function.
+	(dl_open_worker): Use it.  Don't use __rtld_mrlock_{change,done}.
+	* elf/dl-support.c (_dl_scope_free_list): New variable.
+	* elf/dl-lookup.c (add_dependency): Remove flags argument.
+	Remove DL_LOOKUP_SCOPE_LOCK handling.
+	(_dl_lookup_symbol_x): Adjust caller.  Remove DL_LOOKUP_SCOPE_LOCK
+	handling.
+	* elf/dl-object.c (_dl_new_object): Don't use
+	__rtld_mrlock_initialize.
+
+2007-06-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/do-lookup.h (do_lookup_x): Read r_nlist before r_list and
+	make sure gcc doesn't mess around with this.
+
+2007-06-08  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-lookup.c (_dl_lookup_symbol_x): Remove use of r_nlist.
+
+2007-06-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): Remove all to be removed
+	libraries from the global scope at once and call THREAD_GSCOPE_WAIT
+
+2007-05-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): When removing object from
+	global scope, wait for all lookups to finish afterwards.
+	* elf/dl-open.c (add_to_global): When global scope array must
+	grow, allocate a new one and free old array only after all
+	lookups finish.
+	* elf/dl-runtime.c (_dl_fixup): Protect using global scope.
+	(_dl_lookup_symbol_x): Likewise.
+	* elf/dl-support.c: Define _dl_wait_lookup_done.
+	* sysdeps/generic/ldsodefs.h (struct rtld_global): Add
+	_dl_wait_lookup_done.
+
+2007-06-05  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c
+	(__mpn_construct_long_double): Fix conversion where result ought
+	to be smaller than __LDBL_MIN__, or the low double should be
+	denormal.  Fix decision where to negate low double - honor round
+	to even rules.
+	* stdio-common/tst-sprintf2.c: Include string.h.
+	(COMPARE_LDBL): Define.
+	(TEST): Also test whether a string hexadecimal float representation
+	can be parsed back to the number.
+	(main): Add a couple of further tests.
+
+2007-06-04  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c
+	(PRINT_FPHEX_LONG_DOUBLE): Fix printing numbers where lower double
+	is non-zero, but smaller than 2 * __DBL_MIN__.
+	* stdio-common/tst-sprintf2.c: New test.
+	* stdio-common/Makefile (tests): Add tst-sprintf2.
+
+2007-06-04  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (nextafterl): Remove
+	unused ily variable.  Fix nextafterl on +-__LDBL_MAX__ and +-Inf.
+	Remove unreachable code at the end.
+
+2007-06-01  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_fpclassifyl.c: Correct description of
+	ldbl-128ibm in comment.
+	(fpclassifyl): Correct classification of denormals.
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (nextafterl): Correct
+	return value for MIN denormal. Rewrite using long double math too
+	correctly handle denormals and canonicalize the results.
+
+2007-05-29  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/nscd_helper.c (get_mapping): Handle short replies instead
+	of crashing.  When this is the case or if the reply is malformed,
+	don't try to close the new file descriptor since it does not
+	exist.
+	Patch in part by Guillaume Chazarain <guichaz@yahoo.fr>.
+
+2007-05-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/x86_64/cacheinfo.c (init_cacheinfo): Pass correct value
+	as second parameter to handle_intel.
+
+	* sysdeps/unix/sysv/linux/x86_64/sysconf.c: Move cache information
+	handling to ...
+	* sysdeps/x86_64/cacheinfo.c: ... here.  New file.
+	* sysdeps/x86_64/Makefile [subdir=string] (sysdep_routines): Add
+	cacheinfo.
+	* sysdeps/x86_64/memcpy.S: Complete rewrite.
+	* sysdeps/x86_64/mempcpy.S: Adjust appropriately.
+	Patch by Evandro Menezes <evandro.menezes@amd.com>.
+
+2007-05-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/i386/epoll_pwait.S: New file.
+
+2007-05-21  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #4525]
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_routines): Add epoll_pwait.
+	* sysdeps/unix/sysv/linux/epoll_pwait.c: New file.
+	* sysdeps/unix/sysv/linux/syscalls.list (epoll_pwait): Remove.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/epoll.h (epoll_pwait): Declare.
+
+	[BZ #4514]
+	* stdio-common/vfprintf.c (vfprintf): Don't shadow workstart variable,
+	reinitialize workend at the start of each do_positional format spec
+	loop, free workstart before do_positional loops.
+	(printf_unknown): Fix size of work_buffer.
+	* stdio-common/tst-sprintf.c (main): Add 3 new testcases.
+
+	* malloc/hooks.c (MALLOC_STATE_VERSION): Bump.
+	(public_sET_STATe): If ms->version < 3, put all chunks into
+	unsorted chunks and clear {fd,bk}_nextsize fields of largebin
+	chunks.
+
+	* malloc/malloc.c [MALLOC_DEBUG]: Revert 2007-05-13 changes.
+	* malloc/hooks.c: Likewise.
+	* malloc/arena.c: Likewise.
+	* malloc/malloc.c (do_check_malloc_state): Don't assert
+	n_mmaps is not greater than n_mmaps_max.  This removes the need
+	for the previous change.
+
+	* malloc/Makefile (CFLAGS-malloc.c): Revert accidental
+	2007-05-07 commit.
+
+2007-05-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* malloc/malloc.c (do_check_chunk): Correct check for mmaped block
+	not overlapping with arena.
+
+	* malloc/mcheck.c (reallochook): If size==0, free the block.
+
+	* rt/tst-shm.c: Use fstat64 instead of fstat.
+
+	* sysdeps/unix/sysv/linux/i386/sync_file_range.S: Fix case where
+	__NR_sync_file_range is not defined.
+
+2007-05-17  Ulrich Drepper  <drepper@redhat.com>
+
+	Dummy files to prevent stub versions from being used.
+	* sysdeps/x86_64/fpu/k_cosl.c: New file.
+	* sysdeps/x86_64/fpu/k_rem_pio2l.c: New file.
+	* sysdeps/x86_64/fpu/k_sinl.c: New file.
+	* sysdeps/x86_64/fpu/k_tanl.c: New file.
+
 2007-05-14  Ulrich Drepper  <drepper@redhat.com>
 
 	* version.h (VERSION): Define to 6.

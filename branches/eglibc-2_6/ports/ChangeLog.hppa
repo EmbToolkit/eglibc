@@ -1,3 +1,12 @@
+2007-08-06  Aurelien Jarno <aurelien@aurel32.net>
+
+	Backport:
+	2007-07-28  Carlos O'Donell  <carlos@systemhalted.org>
+        * sysdeps/hppa/nptl/tls.h: Define THREAD_GSCOPE_FLAG_UNUSED,
+        THREAD_GSCOPE_FLAG_USED, THREAD_GSOPE_FLAG_WAIT,
+        THREAD_GSCOPE_RSEET_FLAG, THREAD_GSCOPE_SET_FLAG, THREAD_GSCOPE_WAIT.
+        Update copyright.
+
 2007-05-17  Carlos O'Donell  <carlos@systemhalted.org>
 
 	* sysdeps/unix/sysv/linux/hppa/nptl/bits/semaphore.h 

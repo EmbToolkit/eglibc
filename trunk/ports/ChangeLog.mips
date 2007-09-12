@@ -1,3 +1,87 @@
+2007-09-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/nptl/tls.h (THREAD_GSCOPE_RESET_FLAG): Pass
+	LLL_PRIVATE argument to lll_futex_wake.
+	* sysdeps/unix/sysv/linux/mips/bits/fcntl.h (O_CLOEXEC): Define.
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h (PF_UNIX): Update
+	comment.
+	(PF_IUCV, PF_RXRPC): Define.
+	(PF_MAX): Update.
+	(AF_IUCV, AF_RXRPC): Define.
+	(MSG_CMSG_CLOEXEC): Define.
+	(_EXTERN_INLINE): Define to __extern_inline.
+	* sysdeps/unix/sysv/linux/mips/bits/stat.h (UTIME_NOW,
+	UTIME_OMIT): Define.
+	* sysdeps/unix/sysv/linux/mips/mips32/sysdep.h: Include <tls.h>.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/n64/sysdep.h: Likewise.
+	* sysdeps/unix/sysv/linux/mips/nptl/lowlevellock.h: Renamed all
+	lll_mutex_* resp. lll_robust_mutex_* macros to lll_*
+	resp. lll_robust_*.  Renamed all LLL_MUTEX_LOCK_* macros to
+	LLL_LOCK_*.  Include <kernel-features.h>.
+	(LLL_LOCK_INITIALIZER): Remove duplicate definition.
+	(LLL_PRIVATE, LLL_SHARED, __lll_private_flag): Define.
+	* sysdeps/unix/sysv/linux/mips/nptl/pthread_once.c
+	(clear_once_control, __pthread_once): Pass LLL_PRIVATE argument to
+	lll_futex_wait.
+	(lll_futex_wait, lll_futex_timed_wait, lll_futex_wake,
+	lll_robust_dead, lll_futex_requeue, lll_futex_wake_unlock): Take
+	private arguments.
+	(__lll_robust_trylock): Convert to macro.
+	(__lll_robust_lock_wait): Add private argument.
+	(__lll_lock_wait_private, __lll_lock_wait): Declare.
+	(__lll_lock): Convert to macro.  Take private argument.
+	(__lll_cond_lock): Likewise.
+	(lll_lock, lll_cond_lock): Take private arguments.
+	(__lll_robust_lock): Take private argument.  Convert to macro.
+	(lll_robust_lock, __lll_cond_lock, lll_cond_lock,
+	lll_robust_cond_lock): Take private arguments.
+	(__lll_timedlock_wait, __lll_robust_timedlock_wait): Take private
+	arguments.
+	(__lll_timedlock, __lll_robust_timedlock): Take private arguments.
+	(lll_timedlock, lll_robust_timedlock): Take private arguments.
+	(__lll_unlock, __lll_robust_unlock): Convert to macros.  Take
+	private arguments.
+	(lll_unlock, lll_robust_unlock): Take private arguments.
+	(__lll_mutex_unlock_force, lll_mutex_unlock_force, lll_lock_t,
+	lll_trylock, lll_lock, lll_unlock, lll_islocked): Remove.
+	(lll_wait_tid): Pass LLL_SHARED to lll_futex_wait.
+	(__lll_cond_wait, __lll_cond_timedwait, __lll_cond_wake,
+	__lll_cond_broadcast, lll_cond_wait, lll_cond_timedwait,
+	lll_cond_wake, lll_cond_broadcast): Remove.
+	* sysdeps/unix/sysv/linux/mips/sys/tas.h (_EXTERN_INLINE): Define
+	to __extern_inline.
+
+2007-08-06  Maciej W. Rozycki  <macro@linux-mips.org>
+
+	* sysdeps/unix/sysv/linux/mips/dl-cache.h (_DL_CACHE_DEFAULT_ID):
+	New macros for the (n)64 and n32 ABIs.
+	(_dl_cache_check_flags): Define if _DL_CACHE_DEFAULT_ID has been.
+
+2007-07-13  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/mips/bits/wordsize.h [_MIPS_SIM == _ABI64]:
+	Define __WORDSIZE_COMPAT32 as 1.
+
+2007-07-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/nptl/bits/local_lim.h: Copy from
+	libc/nptl/sysdeps/unix/sysv/linux/bits/local_lim.h.  Increase
+	PTHREAD_STACK_MIN.
+
+2007-07-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/fcntl.h: Comment fix.
+
+	* sysdeps/unix/sysv/linux/mips/nptl/bits/semaphore.h (SEM_VALUE_MAX):
+	Delete.
+
+2007-06-07  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h (ARGIFY): New.
+	(internal_syscall1, internal_syscall2, internal_syscall3,
+	internal_syscall4, internal_syscall5, internal_syscall6): Use it.
+
 2007-06-06  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* sysdeps/mips/nptl/tls.h (THREAD_GSCOPE_FLAG_UNUSED,

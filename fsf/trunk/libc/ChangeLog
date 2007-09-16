@@ -1,3 +1,63 @@
+2003-11-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* sysdeps/unix/sysv/linux/dl-osinfo.h (_dl_discover_osversion): Don't
+	parse more than three parts of the version number.
+
+2007-09-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfscanf.c (_IO_vfwscanf): Add support for 'm'
+	modifier.  Patch by Jakub Jelinek.
+
+2007-08-26  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/i386/Makefile (sysdep_routines): Add
+	call_fallocate in misc subdir.
+	* sysdeps/unix/sysv/linux/i386/call_fallocate.S: New file.
+	* sysdeps/unix/sysv/linux/i386/syscalls.list (fallocate64): Remove.
+	* sysdeps/unix/sysv/linux/i386/posix_fallocate.c: Use __call_fallocate
+	instead of __fallocate64.
+	* sysdeps/unix/sysv/linux/i386/posix_fallocate64.c: Likewise.
+
+2007-09-15  Jakub Jelinek  <jakub@redhat.com>
+
+	* rt/Versions (librt): Export __mq_open_2@@GLIBC_2.7.
+	* rt/Makefile (headers): Add bits/mqueue2.h.
+	* rt/mqueue.h: Include bits/mqueue2.h if -D_FORTIFY_SOURCE=2,
+	optimizing with GCC and __va_arg_pack_len is defined.
+	* rt/bits/mqueue2.h: New file.
+	* rt/mq_open.c (__mq_open): Renamed from mq_open.
+	(mq_open): New strong_alias.
+	(__mq_open_2): New function.
+	* sysdeps/unix/sysv/linux/mq_open.c (__mq_open): Renamed from mq_open.
+	(mq_open): New strong_alias.
+	(__mq_open_2): New function.
+	* debug/Versions (libc): Export __fortify_fail@@GLIBC_PRIVATE.
+	* Versions.def (librt): Add GLIBC_2.7 version.
+	* debug/fortify_fail.c (__fortify_fail): Add libc_hidden_def.
+	* include/stdio.h (__fortify_fail): Add libc_hidden_proto.
+
+	* misc/sys/cdefs.h (__errordecl, __va_arg_pack_len): Define.
+	* io/fcntl.h: Include bits/fcntl2.h when __va_arg_pack_len
+	is defined rather than when not C++.
+	* io/bits/fcntl2.h (__open_alias, __open64_alias, __openat_alias,
+	__openat64_alias): New redirects.
+	(__open_too_many_args, __open_missing_mode, __open64_too_many_args,
+	__open64_missing_mode, __openat_too_many_args, __openat_missing_mode,
+	__openat64_too_many_args, __openat64_missing_mode): New __errordecls.
+	(open, open64, openat, openat64): Rewrite as __extern_always_inline
+	functions instead of function-like macros.
+
+2007-09-14  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/i386/i586/memcpy.S (__memcpy_chk): New definition.
+	* sysdeps/i386/i586/mempcpy.S (__memcpy_chk): New definition.
+	* sysdeps/i386/i586/memset.S (__memset_chk): New definition.
+
+2007-09-15  Mike Frysinger  <vapier@gentoo.org>
+
+	* inet/inet_net.c: Reset digit to 0 for inputs starting with "0x".
+	* inet/tst-network.c (tests): Add edge case tests for "0", "0x", "0x0".
+
 2007-09-14  Mike Frysinger  <vapier@gentoo.org>
 
 	* inet/tst-network.c: Increment ERRORS for failing tests.

@@ -132,6 +132,7 @@
 #define __bos(ptr) __builtin_object_size (ptr, __USE_FORTIFY_LEVEL > 1)
 #define __bos0(ptr) __builtin_object_size (ptr, 0)
 #define __warndecl(name, msg) extern void name (void)
+#define __errordecl(name, msg) extern void name (void)
 
 
 /* Support for flexible arrays.  */
@@ -296,6 +297,7 @@
    __extern_always_inline function to some other vararg function.  */
 #if __GNUC_PREREQ (4,3)
 # define __va_arg_pack() __builtin_va_arg_pack ()
+# define __va_arg_pack_len() __builtin_va_arg_pack_len ()
 #endif
 
 /* It is possible to compile containing GCC extensions even if GCC is

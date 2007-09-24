@@ -1,6 +1,7 @@
-/* Copyright (C) 1998, 1999, 2007 Free Software Foundation, Inc.
+/* Conversion from and to MAC-CENTRALEUROPE.
+   Copyright (C) 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1998.
+   Contributed by Ulrich Drepper <drepper@redhat.com>, 2007.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,32 +18,12 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <wchar.h>
+#include <stdint.h>
 
+/* Get the conversion table.  */
+#define TABLES <mac-centraleurope.h>
 
-/* Copy SRC to DEST.  */
-size_t
-__wcsnlen (s, maxlen)
-     const wchar_t *s;
-     size_t maxlen;
-{
-  size_t len = 0;
+#define CHARSET_NAME	"MAC-CENTRALEUROPE//"
+#define HAS_HOLES	0	/* All 256 character are defined.  */
 
-  while (maxlen > 0 && s[len] != L'\0')
-    {
-      ++len;
-      if (--maxlen == 0 || s[len] == L'\0')
-	return len;
-      ++len;
-      if (--maxlen == 0 || s[len] == L'\0')
-	return len;
-      ++len;
-      if (--maxlen == 0 || s[len] == L'\0')
-	return len;
-      ++len;
-      --maxlen;
-    }
-
-  return len;
-}
-weak_alias (__wcsnlen, wcsnlen)
+#include <8bit-gap.c>

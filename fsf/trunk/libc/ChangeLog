@@ -1,3 +1,32 @@
+2007-09-13  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #5028]
+	* posix/regcomp.c (lookup_collation_sequence_value): check that
+	nrules != 0 for multibyte chars.
+
+2007-09-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* resolv/ns_print.c (ns_sprintrrf): Handle ns_t_a6 and ns_t_opt.
+	Provide better error message in case the type is unknown.
+
+	[BZ #4963]
+	* wcsmbs/wcsnlen.c: Don't reference before checking the length.
+	* string/stratcliff.c: Make usable to test wide char functions.
+	* wcsmbs/wcsatcliff.c: New file.
+	* wcsmbs/Makefiel (tests): Add wcsatcliff.
+
+	[BZ #4972]
+	* iconvdata/Makefile (modules): Add MAC-CENTRALEUROPE.
+	(distribute): Add mac-centraleurope.c.
+	(gen-8bit-gap-modules): Add mac-centraleurope.
+	* iconvdata/mac-centraleurope.c: New file.
+	* iconvdata/gconv-modules: Add entries for MAC-CENTRALEUROPE.
+	* iconvdata/TESTS: Likewise.
+	* iconvdata/tst-tables.sh: Likewise.
+
+	[BZ #5043]
+	* iconv/iconv_open.c (iconv_open): For large codeset names use malloc.
+
 2007-09-21  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/x86_64/cacheinfo.c (__x86_64_data_cache_size_half): Renamed

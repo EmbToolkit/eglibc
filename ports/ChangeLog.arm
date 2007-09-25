@@ -1,3 +1,13 @@
+2007-09-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/bits/fcntl.h: Correct return value
+	type and __THROW marker of splice, vmsplice, and tee.
+
+2007-09-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h: Undefine
+	__ASSUME_PSELECT and __ASSUME_PPOLL.
+
 2007-09-12  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/nptl/tls.h (THREAD_GSCOPE_RESET_FLAG): Use

@@ -294,8 +294,13 @@
 #if !defined __cplusplus || __GNUC_PREREQ (4,3)
 # if defined __GNUC_STDC_INLINE__ || defined __cplusplus
 #  define __extern_inline extern __inline __attribute__ ((__gnu_inline__))
-#  define __extern_always_inline \
+#  if __GNUC_PREREQ (4,3)
+#   define __extern_always_inline \
+  extern __always_inline __attribute__ ((__gnu_inline__, __artificial__))
+#  else
+#   define __extern_always_inline \
   extern __always_inline __attribute__ ((__gnu_inline__))
+#  endif
 # else
 #  define __extern_inline extern __inline
 #  define __extern_always_inline extern __always_inline
@@ -355,6 +360,10 @@
   extern __typeof (name) name __asm (__ASMNAME (#alias));
 #  define __LDBL_REDIR_DECL(name) \
   extern __typeof (name) name __asm (__ASMNAME ("__nldbl_" #name));
+#  define __REDIRECT_LDBL(name, proto, alias) \
+  __LDBL_REDIR1 (name, proto, __nldbl_##alias)
+#  define __REDIRECT_NTH_LDBL(name, proto, alias) \
+  __LDBL_REDIR1_NTH (name, proto, __nldbl_##alias)
 # endif
 #endif
 #if !defined __LDBL_COMPAT || !defined __REDIRECT
@@ -363,6 +372,11 @@
 # define __LDBL_REDIR1_NTH(name, proto, alias) name proto __THROW
 # define __LDBL_REDIR_NTH(name, proto) name proto __THROW
 # define __LDBL_REDIR_DECL(name)
+# ifdef __REDIRECT
+#  define __REDIRECT_LDBL(name, proto, alias) __REDIRECT (name, proto, alias)
+#  define __REDIRECT_NTH_LDBL(name, proto, alias) \
+  __REDIRECT_NTH (name, proto, alias)
+# endif
 #endif
 
 #endif	 /* sys/cdefs.h */

@@ -1,3 +1,27 @@
+2007-10-04  Jakub Jelinek
+
+	* stdlib/msort.c: Include stdint.h.
+	(struct msort_param): New type.
+	(msort_with_tmp): Use struct msort_param pointer for unchanging
+	parameters.  Add optimized handling for several common sizes
+	and indirect sorting mode.
+	(qsort): Adjust msort_with_tmp callers.  For big S use indirect
+	sorting.
+	Suggested by Belazougui Djamel .
+
+	* stdlib/Makefile (tests): Add tst-qsort2.
+	* stdlib/tst-qsort2.c: New test.
+
+2007-10-04  Ulrich Drepper  <drepper@redhat.com>
+
+	* login/login_tty.c (login_tty): The Linux kernel can return EBUSY
+	for dup2 in case another thread races with the current one.  Retry
+	in this case.
+
+	* misc/error.h: Remove support for use outside of libc.  We have to
+	include <features.h> now.  Include <bits/error.h> if possible.
+	* misc/bits/error.h: New file.
+
 2007-10-03  Jakub Jelinek
 
 	* string/bits/string3.h (memcpy, memmove, mempcpy, memset, bcopy,

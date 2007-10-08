@@ -1,3 +1,27 @@
+2007-10-07  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #181]
+	* locale/C-time.c: Set week_1stday data to 19971201.
+	* locale/programs/ld-time.c (time_finish): Default for
+	first_workday is Monday.
+
+	[BZ #2633]
+	* wcsmbs/wchar.h: Move many C99 functions into std namespace.
+
+	[BZ #5103]
+	* posix/glob.c (glob): Recognize patterns starting \/.
+	* posix/tst-gnuglob.c (find_file): Handle absolute path names.
+	(main): Add test for pattern starting \/.
+
+	* misc/error.h: Use __const instead of const.
+	* misc/bits/error.h: Likewise.
+
+2007-10-07  Andreas Jaeger  <aj@suse.de>
+
+	* include/bits/error.h: New file.
+
+	* misc/bits/error.h (error_at_line): Fix prototype.
+
 2007-10-06  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #3924]

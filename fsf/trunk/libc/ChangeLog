@@ -1,3 +1,25 @@
+2007-10-12  Ulrich Drepper  <drepper@redhat.com>
+
+	* locale/programs/repertoire.c (repertoire_read): Always free
+	memory for repertoire file name [Coverity CID 270].
+
+	* elf/cache.c (save_aux_cache): Free memory allocated for
+	temporary file name [Coverity CID 267].
+
+2007-10-12  Jakub Jelinek  <jakub@redhat.com>
+
+	* misc/Makefile (headers): Add bits/error.h.
+
+2007-10-12  Ulrich Drepper  <drepper@redhat.com>
+
+	* posix/fnmatch_loop.c: Take rule index returned as part of
+	findidx return value into account when accessing weights.
+	* posix/regcomp.c: Likewise.
+	* posix/regexec.c: Likewise.
+
+	* locale/programs/ld-collate.c (collate_read): Optimize a bit.
+	(skip_to): Fix problems with parameter of elifdef/elifndef.
+
 2007-10-11  Ulrich Drepper  <drepper@redhat.com>
 
 	* iconv/gconv_simple.c: Add some branch prediction.

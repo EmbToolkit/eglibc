@@ -24,7 +24,7 @@
 ENTRY (bzero)
 	mov	%rsi,%rdx	/* Adjust parameter.  */
 	xorl	%esi,%esi	/* Fill with 0s.  */
-	jmp	HIDDEN_JUMPTARGET (memset)
+	jmp	L(memset_entry)
 END (bzero)
 
 #if defined PIC && !defined NOT_IN_libc
@@ -35,6 +35,7 @@ END (__memset_chk)
 #endif
 
 ENTRY (memset)
+L(memset_entry):
 	cmp    $0x1,%rdx
 	mov    %rdi,%rax	/* memset returns the dest address.  */
 	jne    L(ck2)
@@ -914,7 +915,7 @@ L(sse2_nt_move):
 #else
 	movslq (%r11,%r8,4),%rcx
 	lea   (%rcx,%r11,1),%r11
-	jmpq   *(%r11)
+	jmpq   *%r11
 #endif
 
 	.balign     16

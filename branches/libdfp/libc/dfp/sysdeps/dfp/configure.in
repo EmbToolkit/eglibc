@@ -1,0 +1,14 @@
+GLIBC_PROVIDES
+
+dnl does the compiler support decimal float
+AC_CACHE_CHECK(for decimal-float-support in compiler,
+	       libc_cv_cc_with_decimal_float, [
+  if ${CC-cc} -v 2>&1 >/dev/null | grep -q " --enable-decimal-float "; then
+    libc_cv_cc_with_decimal_float=yes
+  else
+    libc_cv_cc_with_decimal_float=no
+  fi ])
+AC_SUBST(libc_cv_cc_with_decimal_float)
+if test $libc_cv_cc_with_decimal_float = no; then
+  AC_MSG_ERROR([The dfp add-on requires a compiler with --enable-decimal-float configured.])
+fi

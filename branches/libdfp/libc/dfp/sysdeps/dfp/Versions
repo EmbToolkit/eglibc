@@ -1,0 +1,6 @@
+libc {
+  GLIBC_2.5 {
+    # functions used in other libraries
+    __printf_dfp;
+  };
+}

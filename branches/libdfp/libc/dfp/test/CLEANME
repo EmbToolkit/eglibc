@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for i in $( ls *.c);
+  do
+    if [ "$i" == "test-decimal.c" ]; then
+        continue;
+    fi
+    echo "rm `basename $i .c`"
+    echo "rm `basename $i .c`_64"
+    rm `basename $i .c`
+    rm "`basename $i .c`_64"
+  done

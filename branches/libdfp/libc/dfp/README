@@ -1,0 +1,10 @@
+The source (.c) files in this directory are modules which are included in both
+libdfp and lib.  The header files contain headers which may be contained in
+both libc and libdfp but may also define headers for modules only included in
+libdfp.
+
+For Soft-DFP the decimal rounding mode is stored in libc TLS and accessed via
+a pointer to the TLS using the __decrm_location() function.  The
+fe_dec_getround() and fe_dec_setround() functions live in libdfp and utilize
+the libc __decrm_location() function for soft-dfp to set/get the rounding
+mode.  On Power6[x] they operate directly against the extended FPCSR.

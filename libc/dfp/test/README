@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if test -z "$1"; then
+	cc="/opt/at05/bin/gcc"
+	export PATH=/opt/at05/bin:$PATH
+else
+	cc=$1/gcc
+	export PATH=$1:$PATH
+fi
+
+#for i in $( ls *.c); do ${cc} -ldfp  $i -o `basename $i .c`; done
+for i in $( ls *.c);
+  do
+    if [ "$i" == "test-decimal.c" ]; then
+        continue;
+    fi
+    echo "${cc} -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`"
+    ${cc} -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`;
+
+    echo "${cc} -m64 -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`_64"
+    ${cc} -ldfp -m64 -ldecnumber -std=gnu99  $i -o `basename $i .c`_64;
+  done

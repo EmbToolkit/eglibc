@@ -1,0 +1,21 @@
+libdfp {
+  GLIBC_2.5 {
+    __addsd3; __adddd3; __addtd3;
+    __subsd3; __subdd3; __subtd3;
+    __mulsd3; __muldd3; __multd3;
+    __divsd3; __divdd3; __divtd3;
+    __extendsddd2; __extendsdtd2; __extendddtd2;
+    __trunctdsd2; __truncddsd2; __trunctddd2;
+    __unordsd2; __unorddd2; __unordtd2;
+    __eqsd2; __eqdd2; __eqtd2; __nesd2; __nedd2; __netd2;
+    __gesd2; __gedd2; __getd2; __gtsd2; __gtdd2; __gttd2;
+    __ltsd2; __ltdd2; __lttd2; __lesd2; __ledd2; __letd2;
+    __fixsdsi; __fixddsi; __fixtdsi; __fixsddi; __fixdddi; __fixtddi;
+    __fixunssdsi; __fixunsddsi; __fixunstdsi;
+    __fixunssddi; __fixunsdddi; __fixunstddi;
+    __floatsisd; __floatsidd; __floatsitd;
+    __floatdisd; __floatdidd; __floatditd;
+    __floatunssisd; __floatunssidd; __floatunssitd;
+    __floatunsdisd; __floatunsdidd; __floatunsditd;
+  }
+}

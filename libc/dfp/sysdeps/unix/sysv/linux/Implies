@@ -1,0 +1,11 @@
+dfp
+dfp/math
+dfp/math/bits
+dfp/stdio-common
+dfp/stdlib
+dfp/wcsmbs
+ieee754r
+ieee754r/d32
+ieee754r/d64
+ieee754r/d128
+soft-dfp

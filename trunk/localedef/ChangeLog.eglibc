@@ -1,3 +1,7 @@
+2007-11-07  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* include/gnu/option-groups.h: New file.
+
 2007-03-27  Khem Raj  <kraj@mvista.com>
 
 	* include/sys/cdefs.h: (__extern_inline, __extern_always_inline):

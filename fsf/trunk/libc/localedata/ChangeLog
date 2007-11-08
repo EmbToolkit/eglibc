@@ -1,3 +1,11 @@
+2007-11-07  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #5238]
+	* locales/ug_CN: Fix typo in collating symbol definition.
+
+	[BZ #5237]
+	* locales/lo_LA: Fix typos in collation symbols.
+
 2007-11-06  Ulrich Drepper  <drepper@redhat.com>
 
 	* locales/dz_BT: Fix representation of data.

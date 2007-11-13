@@ -1,3 +1,21 @@
+2007-09-13  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/i386/i586/memcpy_chk.S: New file.
+	* sysdeps/i386/i586/mempcpy_chk.S: Likewise.
+	* sysdeps/i386/i586/memset_chk.S: Likewise.
+
+2007-11-12  Ulrich Drepper  <drepper@redhat.com>
+
+	* include/ifaddrs.c (struct in6addrinfo): Add prefixlen field.
+	* sysdeps/unix/sysv/linux/check_pf.c (make_request): Always return
+	list of interfaces.  Also store prefix length.
+	* sysdeps/posix/getaddrinfo.c (sort_result): Add prefixlen element.
+	(rfc3484_sort): In rule 9, for IPv4 addresses count only matching
+	prefix if source and destination address are in the same subnet.
+	(getaddrinfo): Always call __check_pf.  Fill in prefixlen field.
+	Always look for matching record in in6ai list.
+	Correct source_addr_len value for IPv6->IPv4 converted records.
+
 2007-11-11  Roland McGrath  <roland@frob.com>
 
 	* include/kernel-features.h: New file.

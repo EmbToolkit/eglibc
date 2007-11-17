@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2002, 2003, 2004, 2005, 2006
+/* Copyright (C) 1991-2002, 2003, 2004, 2005, 2006, 2007
    Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -100,6 +100,7 @@
 # define PUTC(C, F)	_IO_putwc_unlocked (C, F)
 # define ORIENT		if (_IO_fwide (s, 1) != 1) return -1
 
+# undef _itoa
 # define _itoa(Val, Buf, Base, Case) _itowa (Val, Buf, Base, Case)
 # define _itoa_word(Val, Buf, Base, Case) _itowa_word (Val, Buf, Base, Case)
 # undef EOF
@@ -210,11 +211,6 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
   CHAR_T *workstart = NULL;
   CHAR_T *workend;
 
-  /* State for restartable multibyte character handling functions.  */
-#ifndef COMPILE_WPRINTF
-  mbstate_t mbstate;
-#endif
-
   /* We have to save the original argument pointer.  */
   va_list ap_save;
 
@@ -320,11 +316,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_strerror),	/* for 'm' */				      \
       REF (form_wcharacter),	/* for 'C' */				      \
       REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (mod_ptrdiff_t),	/* for 't' */				      \
-      REF (mod_intmax_t),	/* for 'j' */				      \
-      REF (flag_i18n),		/* for 'I' */				      \
+      REF (mod_ptrdiff_t),      /* for 't' */				      \
+      REF (mod_intmax_t),       /* for 'j' */				      \
+      REF (flag_i18n),	        /* for 'I' */				      \
       REF (mod_decimal_half),	/* for 'H' */				      \
-      REF (mod_decimal),	/* for 'D' */				      \
+      REF (mod_decimal)		/* for 'D' */				      \
     };									      \
     /* Step 1: after processing width.  */				      \
     static JUMP_TABLE_TYPE step1_jumps[32] =				      \
@@ -356,11 +352,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_strerror),	/* for 'm' */				      \
       REF (form_wcharacter),	/* for 'C' */				      \
       REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (mod_ptrdiff_t),	/* for 't' */				      \
-      REF (mod_intmax_t),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (mod_decimal_half),	/* for 'H' */				      \
-      REF (mod_decimal)		/* for 'D' */				      \
+      REF (mod_ptrdiff_t),      /* for 't' */				      \
+      REF (mod_intmax_t),       /* for 'j' */				      \
+      REF (form_unknown),       /* for 'I' */				      \
+      REF (mod_decimal_half),   /* for 'H' */				      \
+      REF (mod_decimal)         /* for 'D' */				      \
     };									      \
     /* Step 2: after processing precision.  */				      \
     static JUMP_TABLE_TYPE step2_jumps[32] =				      \
@@ -392,11 +388,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_strerror),	/* for 'm' */				      \
       REF (form_wcharacter),	/* for 'C' */				      \
       REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (mod_ptrdiff_t),	/* for 't' */				      \
-      REF (mod_intmax_t),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (mod_decimal_half),	/* for 'H' */				      \
-      REF (mod_decimal)		/* for 'D' */				      \
+      REF (mod_ptrdiff_t),      /* for 't' */				      \
+      REF (mod_intmax_t),       /* for 'j' */				      \
+      REF (form_unknown),       /* for 'I' */				      \
+      REF (mod_decimal_half),   /* for 'H' */				      \
+      REF (mod_decimal)         /* for 'D' */				      \
     };									      \
     /* Step 3a: after processing first 'h' modifier.  */		      \
     static JUMP_TABLE_TYPE step3a_jumps[32] =				      \
@@ -428,11 +424,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_unknown),	/* for 'm' */				      \
       REF (form_unknown),	/* for 'C' */				      \
       REF (form_unknown),	/* for 'A', 'a' */			      \
-      REF (form_unknown),	/* for 't' */				      \
-      REF (form_unknown),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (form_unknown),	/* for 'H' */				      \
-      REF (form_unknown)	/* for 'D' */				      \
+      REF (form_unknown),       /* for 't' */				      \
+      REF (form_unknown),       /* for 'j' */				      \
+      REF (form_unknown),       /* for 'I' */				      \
+      REF (form_unknown),       /* for 'H' */				      \
+      REF (form_unknown)        /* for 'D' */				      \
     };									      \
     /* Step 3b: after processing first 'l' modifier.  */		      \
     static JUMP_TABLE_TYPE step3b_jumps[32] =				      \
@@ -464,50 +460,49 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_strerror),	/* for 'm' */				      \
       REF (form_wcharacter),	/* for 'C' */				      \
       REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (form_unknown),	/* for 't' */				      \
-      REF (form_unknown),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (form_unknown),	/* for 'H' */				      \
-      REF (form_unknown)	/* for 'D' */				      \
+      REF (form_unknown),       /* for 't' */				      \
+      REF (form_unknown),       /* for 'j' */				      \
+      REF (form_unknown),       /* for 'I' */				      \
+      REF (form_unknown),       /* for 'H' */				      \
+      REF (form_unknown)        /* for 'D' */				      \
     };									      \
-    /* Some format codes should not be allowed for decimal-float.  */	      \
-    /* Step 3c: after processing first 'D' modifier.  */		      \
-    static JUMP_TABLE_TYPE step3c_jumps[32] =				      \
-    {									      \
-      REF (form_unknown),						      \
-      REF (form_unknown),	/* for ' ' */				      \
-      REF (form_unknown),	/* for '+' */				      \
-      REF (form_unknown),	/* for '-' */				      \
-      REF (form_unknown),	/* for '<hash>' */			      \
-      REF (form_unknown),	/* for '0' */				      \
-      REF (form_unknown),	/* for '\'' */				      \
-      REF (form_unknown),	/* for '*' */				      \
-      REF (form_unknown),	/* for '1'...'9' */			      \
-      REF (form_unknown),	/* for '.' */				      \
-      REF (form_unknown),	/* for 'h' */				      \
-      REF (form_unknown),	/* for 'l' */				      \
-      REF (form_unknown),	/* for 'L', 'q' */			      \
-      REF (form_unknown),	/* for 'z', 'Z' */			      \
-      REF (form_percent),	/* for '%' */				      \
-      REF (form_integer),	/* for 'd', 'i' */			      \
-      REF (form_unsigned),	/* for 'u' */				      \
-      REF (form_octal),		/* for 'o' */				      \
-      REF (form_hexa),		/* for 'X', 'x' */			      \
-      REF (form_float),		/* for 'E', 'e', 'F', 'f', 'G', 'g' */	      \
-      REF (form_character),	/* for 'c' */				      \
-      REF (form_string),	/* for 's', 'S' */			      \
-      REF (form_pointer),	/* for 'p' */				      \
-      REF (form_number),	/* for 'n' */				      \
-      REF (form_strerror),	/* for 'm' */				      \
-      REF (form_wcharacter),	/* for 'C' */				      \
-      REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (form_unknown),	/* for 't' */				      \
-      REF (form_unknown),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (form_unknown),	/* for 'H' */				      \
-      REF (mod_decimal_long)	/* for 'D' */				      \
-    };
-
+    /* Some format codes should not be allowed for decimal-float.  */         \
+    /* Step 3c: after processing first 'D' modifier.  */                      \
+    static JUMP_TABLE_TYPE step3c_jumps[32] =                                 \
+    {                                                                         \
+      REF (form_unknown),                                                     \
+      REF (form_unknown),       /* for ' ' */                                 \
+      REF (form_unknown),       /* for '+' */                                 \
+      REF (form_unknown),       /* for '-' */                                 \
+      REF (form_unknown),       /* for '<hash>' */                            \
+      REF (form_unknown),       /* for '0' */                                 \
+      REF (form_unknown),       /* for '\'' */                                \
+      REF (form_unknown),       /* for '*' */                                 \
+      REF (form_unknown),       /* for '1'...'9' */                           \
+      REF (form_unknown),       /* for '.' */                                 \
+      REF (form_unknown),       /* for 'h' */                                 \
+      REF (form_unknown),       /* for 'l' */                                 \
+      REF (form_unknown),       /* for 'L', 'q' */                            \
+      REF (form_unknown),       /* for 'z', 'Z' */                            \
+      REF (form_percent),       /* for '%' */                                 \
+      REF (form_integer),       /* for 'd', 'i' */                            \
+      REF (form_unsigned),      /* for 'u' */                                 \
+      REF (form_octal),         /* for 'o' */                                 \
+      REF (form_hexa),          /* for 'X', 'x' */                            \
+      REF (form_float),         /* for 'E', 'e', 'F', 'f', 'G', 'g' */        \
+      REF (form_character),     /* for 'c' */                                 \
+      REF (form_string),        /* for 's', 'S' */                            \
+      REF (form_pointer),       /* for 'p' */                                 \
+      REF (form_number),        /* for 'n' */                                 \
+      REF (form_strerror),      /* for 'm' */                                 \
+      REF (form_wcharacter),    /* for 'C' */                                 \
+      REF (form_floathex),      /* for 'A', 'a' */                            \
+      REF (form_unknown),       /* for 't' */                                 \
+      REF (form_unknown),       /* for 'j' */                                 \
+      REF (form_unknown),       /* for 'I' */                                 \
+      REF (form_unknown),       /* for 'H' */                                 \
+      REF (mod_decimal_long)    /* for 'D' */                                 \
+    }
 
 #define STEP4_TABLE							      \
     /* Step 4: processing format specifier.  */				      \
@@ -540,12 +535,12 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_strerror),	/* for 'm' */				      \
       REF (form_wcharacter),	/* for 'C' */				      \
       REF (form_floathex),	/* for 'A', 'a' */			      \
-      REF (form_unknown),	/* for 't' */				      \
-      REF (form_unknown),	/* for 'j' */				      \
-      REF (form_unknown),	/* for 'I' */				      \
-      REF (form_unknown),	/* for 'H' */				      \
-      REF (form_unknown)	/* for 'D' */				      \
-    };									      \
+      REF (form_unknown),       /* for 't' */				      \
+      REF (form_unknown),       /* for 'j' */				      \
+      REF (form_unknown),       /* for 'I' */				      \
+      REF (form_unknown),       /* for 'H' */				      \
+      REF (form_unknown)        /* for 'D' */				      \
+    }
 
 
 #define process_arg(fspec)						      \
@@ -583,7 +578,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	      if (is_long_num)						      \
 		signed_number = va_arg (ap, long int);			      \
 	      else if (is_char)						      \
-		signed_number = (signed char) va_arg (ap, unsigned int);      \
+	        signed_number = (signed char) va_arg (ap, unsigned int);      \
 	      else if (!is_short)					      \
 		signed_number = va_arg (ap, int);			      \
 	      else							      \
@@ -870,11 +865,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		fspec->info.is_long_double = 0;				      \
 	      }								      \
 									      \
-	    if (is_decimal)						      \
-	      /* FIXME: The above flags are not being set for dfp */	      \
-	      function_done = __printf_dfp (s, &fspec->info, &ptr);	      \
-	    else							      \
-	      function_done = __printf_fp (s, &fspec->info, &ptr);	      \
+	    function_done = __printf_fp (s, &fspec->info, &ptr);	      \
 	  }								      \
 									      \
 	if (function_done < 0)						      \
@@ -938,7 +929,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	    if (__ldbl_is_dbl)						      \
 	      fspec->info.is_long_double = 0;				      \
 									      \
-	    /* FIX ME  */						      \
+	    /* FIX ME */						      \
 	    if (is_decimal)						      \
 	      function_done = __printf_dfphex (s, &fspec->info, &ptr);	      \
 	    else							      \
@@ -1108,10 +1099,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	    const char *mbs = (const char *) string;			      \
 	    mbstate_t mbstate;						      \
 									      \
-	    len = prec != -1 ? (size_t) prec : strlen (mbs);		      \
+	    len = prec != -1 ? __strnlen (mbs, (size_t) prec) : strlen (mbs); \
 									      \
 	    /* Allocate dynamically an array which definitely is long	      \
-	       enough for the wide character version.  */		      \
+	       enough for the wide character version.  Each byte in the	      \
+	       multi-byte string can produce at most one wide character.  */  \
 	    if (__libc_use_alloca (len * sizeof (wchar_t)))		      \
 	      string = (CHAR_T *) alloca (len * sizeof (wchar_t));	      \
 	    else if ((string = (CHAR_T *) malloc (len * sizeof (wchar_t)))    \
@@ -1242,19 +1234,26 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		else							      \
 		  {							      \
 		    /* In case we have a multibyte character set the	      \
-		       situation is more compilcated.  We must not copy	      \
+		       situation is more complicated.  We must not copy	      \
 		       bytes at the end which form an incomplete character. */\
-		    wchar_t ignore[prec];				      \
+		    size_t ignore_size = (unsigned) prec > 1024 ? 1024 : prec;\
+		    wchar_t ignore[ignore_size];			      \
 		    const char *str2 = string;				      \
-		    mbstate_t ps;					      \
+		    const char *strend = string + prec;			      \
+		    if (strend < string)				      \
+		      strend = (const char *) UINTPTR_MAX;		      \
 									      \
+		    mbstate_t ps;					      \
 		    memset (&ps, '\0', sizeof (ps));			      \
-		    if (__mbsnrtowcs (ignore, &str2, prec, prec, &ps)	      \
-			== (size_t) -1)					      \
-		      {							      \
-			done = -1;					      \
-			goto all_done;					      \
-		      }							      \
+									      \
+		    while (str2 != NULL && str2 < strend)		      \
+		      if (__mbsnrtowcs (ignore, &str2, strend - str2,	      \
+					ignore_size, &ps) == (size_t) -1)     \
+			{						      \
+			  done = -1;					      \
+			  goto all_done;				      \
+			}						      \
+									      \
 		    if (str2 == NULL)					      \
 		      len = strlen (string);				      \
 		    else						      \
@@ -1368,11 +1367,8 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
   /* Find the first format specifier.  */
   f = lead_str_end = __find_specwc ((const UCHAR_T *) format);
 #else
-  /* Put state for processing format string in initial state.  */
-  memset (&mbstate, '\0', sizeof (mbstate_t));
-
   /* Find the first format specifier.  */
-  f = lead_str_end = __find_specmb (format, &mbstate);
+  f = lead_str_end = __find_specmb ((const UCHAR_T *) format);
 #endif
 
   /* Lock stream.  */
@@ -1689,7 +1685,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 #ifdef COMPILE_WPRINTF
       f = __find_specwc ((end_of_spec = ++f));
 #else
-      f = __find_specmb ((end_of_spec = ++f), &mbstate);
+      f = __find_specmb ((end_of_spec = ++f));
 #endif
 
       /* Write the following constant string.  */
@@ -1725,6 +1721,8 @@ do_positional:
     /* Just a counter.  */
     size_t cnt;
 
+    free (workstart);
+    workstart = NULL;
 
     if (grouping == (const char *) -1)
       {
@@ -1770,8 +1768,7 @@ do_positional:
 #ifdef COMPILE_WPRINTF
 	nargs += __parse_one_specwc (f, nargs, &specs[nspecs], &max_ref_arg);
 #else
-	nargs += __parse_one_specmb (f, nargs, &specs[nspecs], &max_ref_arg,
-				     &mbstate);
+	nargs += __parse_one_specmb (f, nargs, &specs[nspecs], &max_ref_arg);
 #endif
       }
 
@@ -1903,7 +1900,9 @@ do_positional:
 	int is_decimal = specs[nspecs_done].info.is_decimal;
 	char pad = specs[nspecs_done].info.pad;
 	CHAR_T spec = specs[nspecs_done].info.spec;
-	CHAR_T *workstart = NULL;
+
+	workstart = NULL;
+	workend = &work_buffer[sizeof (work_buffer) / sizeof (CHAR_T)];
 
 	/* Fill in last information.  */
 	if (specs[nspecs_done].width_arg != -1)
@@ -1999,8 +1998,7 @@ do_positional:
 	    break;
 	  }
 
-	if (__builtin_expect (workstart != NULL, 0))
-	  free (workstart);
+	free (workstart);
 	workstart = NULL;
 
 	/* Write the following constant string.  */
@@ -2028,7 +2026,7 @@ printf_unknown (FILE *s, const struct printf_info *info,
 
 {
   int done = 0;
-  CHAR_T work_buffer[MAX (info->width, info->spec) + 32];
+  CHAR_T work_buffer[MAX (sizeof (info->width), sizeof (info->prec)) * 3];
   CHAR_T *const workend
     = &work_buffer[sizeof (work_buffer) / sizeof (CHAR_T)];
   register CHAR_T *w;

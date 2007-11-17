@@ -35,8 +35,8 @@
 
 extern DEC_TYPE
 FUNC_D (__lgamma_r) (DEC_TYPE, int *);
-extern int
-FUNC_D (__builtin_signbit) (DEC_TYPE);
+//extern int
+//FUNC_D (__builtin_signbit) (DEC_TYPE);
 
 
 DEC_TYPE
@@ -48,7 +48,8 @@ IEEE_FUNCTION_NAME (DEC_TYPE x)
   if (x == DFP_CONSTANT(0.0))	/*  Pole error if x== +-0 */
     {
       DFP_EXCEPT (FE_DIVBYZERO);
-      return FUNC_D (__builtin_signbit) (x) ? -DFP_HUGE_VAL : DFP_HUGE_VAL;
+//      return FUNC_D (__builtin_signbit) (x) ? -DFP_HUGE_VAL : DFP_HUGE_VAL;
+      return (x<0) ? -DFP_HUGE_VAL : DFP_HUGE_VAL;
     }
   if (x < DFP_CONSTANT(0.0) && (!FUNC_D (isinf) (x) && FUNC_D (rint) (x) == x) )
     {

@@ -95,12 +95,12 @@ extern unsigned long long int ____wcstoull_l_internal (const wchar_t *, wchar_t 
 #endif
 
 /* Constants we need from float.h; select the set for the FLOAT precision.  */
-#define MANT_DIG	PASTE(FLT,_MANT_DIG)
-#define DIG		PASTE(FLT,_DIG)
+#define MANT_DIG	PASTE(PASTE(__,FLT),_MANT_DIG__)
+#define DIG		PASTE(PASTE(__,FLT),_DIG__)
 //#define MAX_EXP		PASTE(FLT,_MAX_EXP)
 //#define MIN_EXP		PASTE(FLT,_MIN_EXP)
-#define MAX_10_EXP	PASTE(FLT,_MAX_EXP)
-#define MIN_10_EXP	PASTE(FLT,_MIN_EXP)
+#define MAX_10_EXP	PASTE(PASTE(__,FLT),_MAX_EXP__)
+#define MIN_10_EXP	PASTE(PASTE(__,FLT),_MIN_EXP__)
 #define FUNCTION_NAME	PASTE(PASTE(STRTO_PREFIX,d),FLOAT_SIZE)
 #define __FUNCTION_NAME	PASTE(__,FUNCTION_NAME)
 #define FUNCTION_INTERNAL	PASTE(__FUNCTION_NAME,_internal)

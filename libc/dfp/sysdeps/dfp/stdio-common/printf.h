@@ -48,7 +48,7 @@ struct printf_info
   unsigned int is_char:1;	/* hh flag.  */
   unsigned int wide:1;		/* Nonzero for wide character streams.  */
   unsigned int i18n:1;		/* I flag.  */
-  unsigned int is_decimal:1;	/* H/D/DD flags.  */
+  unsigned int is_decimal:1;    /* H/D/DD flags.  */
   wchar_t pad;			/* Padding character.  */
 };
 
@@ -113,7 +113,7 @@ enum
   PA_POINTER,			/* void * */
   PA_FLOAT,			/* float */
   PA_DOUBLE,			/* double */
-  PA_DECIMAL,			/* _Decimal* types */
+  PA_DECIMAL,                   /* _Decimal* types */
   PA_LAST
 };
 
@@ -124,6 +124,8 @@ enum
 #define	PA_FLAG_LONG		(1 << 9)
 #define	PA_FLAG_SHORT		(1 << 10)
 #define	PA_FLAG_PTR		(1 << 11)
+
+
 
 /* Function which can be registered as `printf'-handlers.  */
 

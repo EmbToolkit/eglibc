@@ -136,8 +136,8 @@ do {									\
 #define DEC_SUFFIX DL
 #endif
 #define DFP_CONSTANT(x)		PASTE(x,DEC_SUFFIX)
-#define DFP_MIN			PASTE(DEC,PASTE(_DECIMAL_SIZE,_MIN))
-#define DFP_EPSILON		PASTE(DEC,PASTE(_DECIMAL_SIZE,_EPSILON))
+#define DFP_MIN			PASTE(__DEC,PASTE(_DECIMAL_SIZE,_MIN__))
+#define DFP_EPSILON		PASTE(__DEC,PASTE(_DECIMAL_SIZE,_EPSILON__))
 /* Some useful (falsely generic) constants */
 #define DFP_HUGE_VAL		PASTE(HUGE_VAL_D,_DECIMAL_SIZE)
 #define DFP_NAN			(DEC_TYPE)DEC_NAN

@@ -38,7 +38,7 @@ IEEE_FUNCTION_NAME (DEC_TYPE x, long y)
 {
   decContext context;
   DEC_TYPE result;
-  decNumber dn_x;
+  decNumber dn_x, dn_y;
   long long int sum=0LL;
   uint32_t temp2 = 0;
   /* Otherwise this may pass a bad residue to decFinalize which can result in
@@ -52,14 +52,22 @@ IEEE_FUNCTION_NAME (DEC_TYPE x, long y)
     return x;
 
   ___decContextDefault(&context, DEFAULT_CONTEXT);
-  sum = dn_x.exponent + y;
-  if(sum >= 1000000000LL || sum <= -2000000000LL
-    || y >= 1000000000L || y <= -2000000000L)
-    ; /** definite overflow */
-  else
-    dn_x.exponent = sum;
+//  sum = dn_x.exponent + y;
+//  if(sum >= 1000000000LL || sum <= -2000000000LL
+//    || y >= 1000000000L || y <= -2000000000L)
+//    ; /** definite overflow */
+//  else
+//    dn_x.exponent = sum;
+//
+//  ___decFinalize(&dn_x, &context, &temp, &temp2);
 
-  ___decFinalize(&dn_x, &context, &temp, &temp2);
+  if (y >= 1000000000L || y <= -2000000000L)
+    context.status |= DEC_Overflow;
+  else 
+    {
+    ___decNumberFromInt32(&dn_y, (int)y);
+    ___decNumberScaleB(&dn_x, &dn_x, &dn_y, &context);
+    }
 
   FUNC_CONVERT_FROM_DN(&dn_x, &result, &context);
   if (context.status & DEC_Overflow)

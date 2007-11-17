@@ -372,7 +372,7 @@ decNumber* ___decNumberPow (decNumber *result, decNumber *x, decNumber *y,
     ___decAddOp(b, b, t, &workset, DECNEG, &ignore); // b = a - 0.5 ulp
     workset.round=DEC_ROUND_UP;
     ___decMultiplyOp(b, b, b, &workset, &ignore);  // b = mulru(b, b)
-    ___decCompareOp(b, f, b, &workset, COMPARE, &ignore); // b ? f, reversed
+    ___decNumberCompare(b, f, b, &workset); // b ? f, reversed
     if (___decNumberIsNegative(b)) {               // f < b [i.e., b > f]
       // this is the more common adjustment, though both are rare
       t->exponent++;                              // make 1.0 ulp
@@ -381,12 +381,12 @@ decNumber* ___decNumberPow (decNumber *result, decNumber *x, decNumber *y,
       // assign to approx [round to length]
       ___decAddOp(a, &dzero, a, &approxset, 0, &ignore);
       }
-     else {
+    else {
       ___decNumberCopy(b, a);
       ___decAddOp(b, b, t, &workset, 0, &ignore);  // b = a + 0.5 ulp
       workset.round=DEC_ROUND_DOWN;
       ___decMultiplyOp(b, b, b, &workset, &ignore);// b = mulrd(b, b)
-      ___decCompareOp(b, b, f, &workset, COMPARE, &ignore);   // b ? f
+      ___decNumberCompare(b, b, f, &workset); // b ? f
       if (___decNumberIsNegative(b)) {             // b < f
         t->exponent++;                            // make 1.0 ulp
         t->lsu[0]=1;                              // ..
@@ -422,7 +422,7 @@ decNumber* ___decNumberPow (decNumber *result, decNumber *x, decNumber *y,
         status|=DEC_Inexact|DEC_Rounded;
         }
        else {                                // plausible
-        ___decCompareOp(t, b, rhs, &workset, COMPARE, &mstatus); // b ? rhs
+        ___decNumberCompare(t, b, rhs, &workset); // b ? rhs
         if (!ISZERO(t)) {
           status|=DEC_Inexact|DEC_Rounded;
           }
@@ -507,7 +507,7 @@ decNumber* ___decNumberTanh (decNumber *result, decNumber *x, decContext *set)
 
 decNumber* ___decNumberSin (decNumber *result, decNumber *y, decContext *set)
 {
-  decNumber pi, pi2, zero, one, two, x, cnt, term;
+  decNumber pi, pi2, zero, one, two, x, cnt, term, cmp;
   int i;
   int negate = 0;
 
@@ -520,7 +520,7 @@ decNumber* ___decNumberSin (decNumber *result, decNumber *y, decContext *set)
   ___decNumberCopy (&x, y);
   // sin -x = - sin x
   /* if (___decCompare (&x, &zero) < 0) { */
-  if (___decCompare (&x, &zero, 0) < 0) {
+  if (___decNumberIsNegative (&x)) { // x < 0
     ___decNumberMinus (&x, &x, set);
     negate = 1;
   }
@@ -529,7 +529,8 @@ decNumber* ___decNumberSin (decNumber *result, decNumber *y, decContext *set)
   ___decNumberMod (&x, &x, &pi2, set);
   // We now have 0 <= x < 2*pi
   /*if (___decCompare (&x, &pi) >= 0) {*/
-  if (___decCompare (&x, &pi,0) >= 0) {
+  ___decNumberCompare (&cmp, &x, &pi, set);
+  if (!___decNumberIsNegative (&cmp)) {
     // x >= pi
     ___decNumberSubtract (&x, &x, &pi, set);
     negate = 1-negate;
@@ -537,7 +538,8 @@ decNumber* ___decNumberSin (decNumber *result, decNumber *y, decContext *set)
   // We now have 0 <= x < pi
   ___decNumberDivide (&pi2, &pi, &two, set); // pi2 = pi/2
   /*if (___decCompare (&x, &pi2) >= 0) {*/
-  if (___decCompare (&x, &pi2,0) >= 0) {
+  ___decNumberCompare (&cmp, &x, &pi2, set);
+  if (!___decNumberIsNegative (&cmp)) {
     // x >= pi/2, so let x = pi-x 
     ___decNumberSubtract (&x, &pi, &x, set);
   }
@@ -575,7 +577,7 @@ decNumber* ___decNumberSin (decNumber *result, decNumber *y, decContext *set)
 
 decNumber* ___decNumberCos (decNumber *result, decNumber *y, decContext *set)
 {
-  decNumber pi, pi2, zero, one, two, x, cnt, term;
+  decNumber pi, pi2, zero, one, two, x, cnt, term, cmp;
   int i;
   int negate = 0;
 
@@ -588,7 +590,7 @@ decNumber* ___decNumberCos (decNumber *result, decNumber *y, decContext *set)
   ___decNumberCopy (&x, y);
   // cos -y = cos y
   /*if (___decCompare (&x, &zero) < 0) {*/
-  if (___decCompare (&x, &zero,0) < 0) {
+  if (___decNumberIsNegative (&x)) {
     ___decNumberMinus (&x, &x, set);
   }
   // We now have x >= 0
@@ -596,14 +598,16 @@ decNumber* ___decNumberCos (decNumber *result, decNumber *y, decContext *set)
   ___decNumberMod (&x, &x, &pi2, set);
   // We now have 0 <= x < 2*pi
   /*if (___decCompare (&x, &pi) >= 0) {*/
-  if (___decCompare (&x, &pi,0) >= 0) {
+  ___decNumberCompare (&cmp, &x, &pi, set);
+  if (!___decNumberIsNegative (&cmp)) {
     // x >= pi
     ___decNumberSubtract (&x, &pi2, &x, set);
   }
   // We now have 0 <= x < pi
   ___decNumberDivide (&pi2, &pi, &two, set); // pi2 = pi/2
   /*if (___decCompare (&x, &pi2) >= 0) {*/
-  if (___decCompare (&x, &pi2,0) >= 0) {
+  ___decNumberCompare (&cmp, &x, &pi2, set);
+  if (!___decNumberIsNegative (&cmp)) {
     // x >= pi/2, so let x = pi-x 
     ___decNumberSubtract (&x, &pi, &x, set);
     negate = 1;

@@ -10,21 +10,21 @@ extra-libs-others := $(extra-libs)
 # install-lib-ldscripts := libdfp.so
 
 # The libdecnumber code is in the libdecnumber/ directory.
-#vpath %.c libdecnumber
-#vpath %.h libdecnumber
+vpath %.c libdecnumber:libdecnumber/dpd
+vpath %.h libdecnumber:libdecnumber/dpd
+
 
 # Some symbols need to be in libdfp.so as well as libc.
 libdfp-shared = fmt_d32 fmt_d64 fmt_d128 dfptypeconv decode-decimal
 
 # The libdecnumber printing functions need to be in libc.so as well as
 # libdecnumber.
-libdecnumber-shared = decNumber decimal32 decimal64 decimal128
+libdecnumber-shared = decNumber decimal32 decimal64 decimal128 decContext
 
 include ../Makeconfig
 
 # libDecNumber contains some functionality which isn't needed in libc.
-libdecnumber-routines := $(libdecnumber-shared) decContext \
-	decNumberMath
+libdecnumber-routines := $(libdecnumber-shared) decNumberMath
 
 # These get added to libdfp.  Anything in $(libdfp-shared) gets
 # added to libc.so as well because they're the printf helpers.
@@ -108,7 +108,8 @@ routines = $(libdecnumber-shared:%=libc_%) $(libdfp-shared:%=libc_%) \
 
 # Will only apply to those C files being built into libdfp
 ifeq ($(subdir), dfp)
-sysdep-CFLAGS += -D__STDC_WANT_DEC_FP__=1
+sysdep-CFLAGS += -D__STDC_WANT_DEC_FP__=1 -DIN_LIBDFP \
+	-I../dfp/libdecnumber -I../dfp/libdecnumber/dpd
 endif
 
 ifneq ($(subdir), dfp)

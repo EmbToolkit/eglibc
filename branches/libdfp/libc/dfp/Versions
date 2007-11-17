@@ -235,46 +235,135 @@ libc {
 }
 libdecnumber {
   GLIBC_2.5 {
-    ___decNumberFromString;
-    ___decNumberToString;
-    ___decNumberToEngString;
+#    ___decNumberFromString;
+#    ___decNumberToString;
+#    ___decNumberToEngString;
+#    ___decNumberAbs;
+#    ___decNumberAdd;
+#    ___decNumberCompare;
+#    ___decNumberCompareTotal;
+#    ___decNumberDivide;
+#    ___decNumberDivideInteger;
+#    ___decNumberExp;
+#    ___decNumberFromInt32;
+#    ___decNumberFromUInt32;
+#    ___decNumberLn;
+#    ___decNumberLog10;
+#    ___decNumberMax;
+#    ___decNumberMin;
+#    ___decNumberMinus;
+#    ___decNumberMultiply;
+#    ___decNumberNormalize;
+#    ___decNumberPlus;
+#    ___decNumberPower;
+#    ___decNumberQuantize;
+#    ___decNumberRemainder;
+#    ___decNumberRemainderNear;
+#    ___decNumberRescale;
+#    ___decNumberSameQuantum;
+#    ___decNumberScaleB;
+#    ___decNumberSquareRoot;
+#    ___decNumberSubtract;
+#    ___decNumberToIntegralValue;
+#    ___decNumberCopy;
+#    ___decNumberTrim;
+#    ___decNumberVersion;
+#    ___decNumberZero;
+#    ___decContextDefault;
+#    ___decContextSetStatus;
+#    ___decContextStatusToString;
+#    ___decContextSetStatusFromString;
+#    ___decNumberLog10;
+#    ___decNumberLn;
+#    ___decNumberExp;
+
+#    ___decNumberSquareRoot;
+#    ___decNumberMin;
+#    ___decNumberMax;
+
+# From decContext.c
+    ___decContextClearStatus;
+    ___decContextDefault;
+    ___decContextGetRounding;
+    ___decContextGetStatus;
+    ___decContextRestoreStatus;
+    ___decContextSaveStatus;
+    ___decContextSetRounding;
+    ___decContextSetStatus;
+    ___decContextSetStatusFromString;
+    ___decContextSetStatusFromStringQuiet;
+    ___decContextSetStatusQuiet;
+    ___decContextStatusToString;
+    ___decContextTestSavedStatus;
+    ___decContextTestStatus;
+    ___decContextZeroStatus;
+
+# From decNumber.c
     ___decNumberAbs;
     ___decNumberAdd;
+    ___decNumberAnd;
+    ___decNumberClass;
+    ___decNumberClassToString;
     ___decNumberCompare;
+    ___decNumberCompareSignal;
     ___decNumberCompareTotal;
+    ___decNumberCompareTotalMag;
+    ___decNumberCopy;
+    ___decNumberCopyAbs;
+    ___decNumberCopyNegate;
+    ___decNumberCopySign;
     ___decNumberDivide;
     ___decNumberDivideInteger;
     ___decNumberExp;
+    ___decNumberFMA;
+    ___decNumberFromInt32;
+    ___decNumberFromString;
+    ___decNumberFromUInt32;
+    ___decNumberGetBCD;
+    ___decNumberInvert;
+    ___decNumberIsNormal;
+    ___decNumberIsSubnormal;
     ___decNumberLn;
     ___decNumberLog10;
+    ___decNumberLogB;
     ___decNumberMax;
+    ___decNumberMaxMag;
     ___decNumberMin;
+    ___decNumberMinMag;
     ___decNumberMinus;
     ___decNumberMultiply;
+    ___decNumberNextMinus;
+    ___decNumberNextPlus;
+    ___decNumberNextToward;
     ___decNumberNormalize;
+    ___decNumberOr;
     ___decNumberPlus;
     ___decNumberPower;
     ___decNumberQuantize;
+    ___decNumberReduce;
     ___decNumberRemainder;
     ___decNumberRemainderNear;
     ___decNumberRescale;
+    ___decNumberRotate;
     ___decNumberSameQuantum;
+    ___decNumberScaleB;
+    ___decNumberSetBCD;
+    ___decNumberShift;
     ___decNumberSquareRoot;
     ___decNumberSubtract;
+    ___decNumberToEngString;
+    ___decNumberToInt32;
+    ___decNumberToIntegralExact;
     ___decNumberToIntegralValue;
-    ___decNumberCopy;
+    ___decNumberToString;
+    ___decNumberToUInt32;
     ___decNumberTrim;
     ___decNumberVersion;
+    ___decNumberXor;
     ___decNumberZero;
-    ___decContextDefault;
-    ___decContextSetStatus;
-    ___decContextStatusToString;
-    ___decContextSetStatusFromString;
-    ___decNumberLog10;
-    ___decNumberLn;
-    ___decNumberExp;
+
+# From decNumberMath.c
     ___decNumberPow;
-    ___decNumberSquareRoot;
     ___decNumberSinh;
     ___decNumberCosh;
     ___decNumberTanh;
@@ -282,8 +371,8 @@ libdecnumber {
     ___decNumberCos;
     ___decNumberTan;
     ___decNumberAtan;
-    ___decNumberMin;
-    ___decNumberMax;
+
+# From dpd/decimal*.c
     ___decimal128FromString;
     ___decimal128ToString;
     ___decimal128ToEngString;
@@ -299,7 +388,5 @@ libdecnumber {
     ___decimal32ToEngString;
     ___decimal32FromNumber;
     ___decimal32ToNumber;
-    # Questionable export
-    ___decFinalize;
   };
 }

@@ -1,5 +1,6 @@
 /* Internal header for parsing printf format strings.
-   Copyright (C) 1995-1999, 2000, 2002, 2003 Free Software Foundation, Inc.
+   Copyright (C) 1995-1999, 2000, 2002, 2003, 2007
+   Free Software Foundation, Inc.
    This file is part of th GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -20,6 +21,9 @@
 #include <printf.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
+#include <wchar.h>
+
 
 struct printf_spec
   {
@@ -40,7 +44,8 @@ struct printf_spec
     size_t ndata_args;
   };
 
-/* The various kinds of arguments that can be passed to printf.  */
+
+/* The various kinds off arguments that can be passed to printf.  */
 union printf_arg
   {
     wchar_t pa_wchar;
@@ -87,11 +92,17 @@ extern printf_function **__printf_function_table attribute_hidden;
 
 /* Find the next spec in FORMAT, or the end of the string.  Returns
    a pointer into FORMAT, to a '%' or a '\0'.  */
-extern const unsigned char *__find_specmb (const UCHAR_T *format,
-					   mbstate_t *ps) attribute_hidden;
+__extern_always_inline const unsigned char *
+__find_specmb (const unsigned char *format)
+{
+  return (const unsigned char *) __strchrnul ((const char *) format, '%');
+}
 
-extern const unsigned int *__find_specwc (const UCHAR_T *format)
-     attribute_hidden;
+__extern_always_inline const unsigned int *
+__find_specwc (const unsigned int *format)
+{
+  return (const unsigned int *) __wcschrnul ((const wchar_t *) format, L'%');
+}
 
 
 /* FORMAT must point to a '%' at the beginning of a spec.  Fills in *SPEC
@@ -101,8 +112,7 @@ extern const unsigned int *__find_specwc (const UCHAR_T *format)
    remains the highest argument index used.  */
 extern size_t __parse_one_specmb (const unsigned char *format, size_t posn,
 				  struct printf_spec *spec,
-				  size_t *max_ref_arg, mbstate_t *ps)
-     attribute_hidden;
+				  size_t *max_ref_arg) attribute_hidden;
 
 extern size_t __parse_one_specwc (const unsigned int *format, size_t posn,
 				  struct printf_spec *spec,

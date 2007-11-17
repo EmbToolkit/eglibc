@@ -1,0 +1,28 @@
+#if !defined(DECIMAL64SYMBOLS)
+#define DECIMAL64SYMBOLS
+
+#ifdef IN_LIBGCC2
+#define decDigitsFromDPD __decDigitsFromDPD
+#define decDigitsToDPD __decDigitsToDPD
+#define decimal64Canonical __decimal64Canonical
+#define decimal64FromNumber __decimal64FromNumber
+#define decimal64FromString __decimal64FromString
+#define decimal64IsCanonical __decimal64IsCanonical
+#define decimal64ToEngString __decimal64ToEngString
+#define decimal64ToNumber __decimal64ToNumber
+#define decimal64ToString __decimal64ToString
+#endif
+
+#ifdef IN_LIBDFP
+#define decDigitsFromDPD ___decDigitsFromDPD
+#define decDigitsToDPD ___decDigitsToDPD
+#define decimal64Canonical ___decimal64Canonical
+#define decimal64FromNumber ___decimal64FromNumber
+#define decimal64FromString ___decimal64FromString
+#define decimal64IsCanonical ___decimal64IsCanonical
+#define decimal64ToEngString ___decimal64ToEngString
+#define decimal64ToNumber ___decimal64ToNumber
+#define decimal64ToString ___decimal64ToString
+#endif
+
+#endif

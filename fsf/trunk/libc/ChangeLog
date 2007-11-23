@@ -1,3 +1,28 @@
+2007-11-22  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #5382]
+	* nscd/nscd.h (NSCD_THREAD_STACKSIZE): Define.
+	* nscd/connections.c (start_threads): Use NSCD_THREAD_STACKSIZE.
+	* nscd/mem.c (gc): Don't allocate arrays on stack if it can
+	overflow it.
+	Partially based on a patch by Petr Baudis <pasky@suse.cz>.
+
+	* sysdeps/unix/sysv/linux/nscd_setup_thread.c (setup_thread):
+	Return zero in case thread library is not NPTL.
+
+	[BZ #5375]
+	* resolv/res_hconf.c (_res_hconf_reorder_addrs): Fix locking when
+	initializing interface list.
+
+	[BZ #5378]
+	* nis/nss_compat/compat-initgroups.c (getgrent_next_nss): Don't
+	use result of nss_getgrgid_r if nothing was found.  For other
+	error return with a failure.
+	Partially based on a patch by Petr Baudis <pasky@suse.cz>.
+
+	* locale/programs/ld-collate.c (collate_read): Fix loop to match
+	macro name.
+
 2007-11-19  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/posix/getaddrinfo.c (defaults_scopes, scopes): New variables.

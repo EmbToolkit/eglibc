@@ -1,14 +1,40 @@
+2007-11-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/syscalls.list: Add open
+	and creat system calls.
+
+	* sysdeps/unix/sysv/linux/check_native.c: Include <asm/types.h>.
+
+2007-11-23  Martin Schwidefsky  <schwidefsky@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/Makefile [subdir=inet] (sysdep_headers):
+	Add netiucv/iucv.h.
+	* sysdeps/unix/sysv/linux/netiucv/iucv.h: New file.
+	* sysdeps/unix/sysv/linux/opensock.c (__opensock): Add AF_IUCV
+	protocol.
+	* sysdeps/unix/sysv/linux/sa_len.c (__libc_sa_len): Likewise.
+	* sysdeps/unix/sysv/linux/s390/opensock.c: New file.
+	* sysdeps/unix/sysv/linux/s390/sa_len.c: New file.
+
+2007-11-22  Martin Schwidefsky  <schwidefsky@de.ibm.com>
+
+	* sysdeps/s390/bits/string.h (strlen, strcpy, strncpy, strcat,
+	strncat): Define as macros to avoid compile errors.
+
+	* sysdeps/unix/sysv/linux/s390/s390-64/syscalls.list:  Add open and
+	creat entries.
+
 2007-11-22  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #5382]
 	* nscd/nscd.h (NSCD_THREAD_STACKSIZE): Define.
 	* nscd/connections.c (start_threads): Use NSCD_THREAD_STACKSIZE.
-	* nscd/mem.c (gc): Don't allocate arrays on stack if it can
+	* nscd/mem.c (gc): Don't allocate arrays on the stack if they can
 	overflow it.
 	Partially based on a patch by Petr Baudis <pasky@suse.cz>.
 
 	* sysdeps/unix/sysv/linux/nscd_setup_thread.c (setup_thread):
-	Return zero in case thread library is not NPTL.
+	Return zero in case the thread library is not NPTL.
 
 	[BZ #5375]
 	* resolv/res_hconf.c (_res_hconf_reorder_addrs): Fix locking when

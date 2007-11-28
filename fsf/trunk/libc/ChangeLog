@@ -1,3 +1,25 @@
+2007-11-26  Ulrich Drepper  <drepper@redhat.com>
+
+	* posix/unistd.h: Declare fsync also for __USE_XOPEN2K.
+	* posix/regex.h (REG_ENOSYS): Likewise.
+	* wcsmbs/wchar.h: Define __need_file also for __USE_XOPEN2K.
+
+2007-11-25  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/nscd.h (MAX_STACK_USE): Define.
+	* nscd/mem.c (MAX_STACK_USE): Remove definition here.
+	(gc): Initialize stack_used based on allocation in prune_cache.
+	* nscd/cache.c (prune_cache): Use heap for mark array if necessary.
+	Clear array before use.
+
+	* nscd/aicache.c (addhstaiX): Update statistics counter in case
+	memory allocation failed.
+	* nscd/hstcache.c (cache_addhst): Likewise.
+	* nscd/grpcache.c (cache_addgr): Likewise.
+	* nscd/servicescache.c (cache_addserv): Likewise.
+	* nscd/pwdcache.c (cache_addpw): Likewise.
+	* nscd/initgrcache.c (addinitgroupsX): Likewise.
+
 2007-11-23  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/powerpc/powerpc64/syscalls.list: Add open

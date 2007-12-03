@@ -1,3 +1,16 @@
+2007-12-03  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #5439]
+	* sysdeps/unix/sysv/linux/sys/signalfd.h: Fix use of __nonnull.
+
+	[BZ #5435]
+	* sysdeps/unix/sysv/linux/i386/makecontext.S: Align stack.
+
+	* stdlib/tst-setcontext.c: Catch the case where the links gets
+	messed up and we do not reach main again.
+
+	* po/ca.po: Update from translation team.
+
 2007-11-26  Ulrich Drepper  <drepper@redhat.com>
 
 	* posix/unistd.h: Declare fsync also for __USE_XOPEN2K.

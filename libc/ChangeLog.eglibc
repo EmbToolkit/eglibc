@@ -1,3 +1,35 @@
+2008-01-07  Joseph Myers  <joseph@codesourcery.com>
+
+	Merge from FSF glibc-2_5-branch:
+
+	2007-05-21  Jakub Jelinek  <jakub@redhat.com>
+	[BZ #4514]
+	* stdio-common/vfprintf.c (vfprintf): Don't shadow workstart variable,
+	reinitialize workend at the start of each do_positional format spec
+	loop, free workstart before do_positional loops.
+	(printf_unknown): Fix size of work_buffer.
+	* stdio-common/tst-sprintf.c (main): Add 3 new testcases.
+
+	2007-05-06  Ulrich Drepper  <drepper@redhat.com>
+	* stdio-common/vfprintf.c (process_string_arg): Optimize
+	ridiculous precision in wide char code printing multi-byte string.
+	Reported by Jim Meyering <jim@meyering.net>.
+
+	2007-05-04  Ulrich Drepper  <drepper@redhat.com>
+	* stdio-common/vfprintf.c (process_string_arg): Adjust call to
+	__mbsnrtowcs after last change.
+
+	2007-05-02  Jakub Jelinek  <jakub@redhat.com>
+	* stdio-common/vfprintf.c (process_string_arg): Use a VLA rather than
+	fixed length array for ignore.
+
+	2007-04-30  Ulrich Drepper  <drepper@redhat.com>
+	[BZ #4438]
+	* stdio-common/vfprintf.c (process_string_arg): Don't overflow the
+	stack for large precisions.
+	* stdio-common/test-vfprintf.c (main): Add test for large
+	precision.
+
 2007-10-28  Joseph Myers  <joseph@codesourcery.com>
 
 	Backport:

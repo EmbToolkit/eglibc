@@ -1,5 +1,5 @@
 libc {
-  GLIBC_2.5 {
+  GLIBC_2.6 {
     # functions used in other libraries
     __printf_dfp;
   };

@@ -281,7 +281,9 @@ __MATHCALL (rint,, (_Mdouble_ __x));
 
 /* Return X + epsilon if X < Y, X - epsilon if X > Y.  */
 __MATHCALLX (nextafter,, (_Mdouble_ __x, _Mdouble_ __y), (__const__));
-# if defined __USE_ISOC99 && !defined __LDBL_COMPAT
+# if defined __STDC_WANT_DEC_FP__ && __USE_DEC_FP_NEXTTOWARD__
+__MATHCALLX (nexttoward,, (_Mdouble_ __x, _Decimal128 __y), (__const__));
+# elif defined __USE_ISOC99 && !defined __LDBL_COMPAT
 __MATHCALLX (nexttoward,, (_Mdouble_ __x, long double __y), (__const__));
 # endif
 

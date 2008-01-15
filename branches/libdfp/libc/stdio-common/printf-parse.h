@@ -60,6 +60,11 @@ union printf_arg
     const char *pa_string;
     const wchar_t *pa_wstring;
     void *pa_pointer;
+#ifdef __STDC_DEC_FP__
+    _Decimal128 pa_decimal128;
+    _Decimal64 pa_decimal64;
+    _Decimal32 pa_decimal32;
+#endif
   };
 
 

@@ -1,5 +1,5 @@
 libdfp {
-  GLIBC_2.5 {
+  GLIBC_2.6 {
     # functions potentially used in other libraries
     fe_dec_getround;
     fe_dec_setround;
@@ -220,66 +220,11 @@ libdfp {
     __isnand32;
     __isnand64;
     __isnand128;
-  };
-}
-libc {
-  GLIBC_2.5 {
-    __decrm_location;
-    strtod32;
-    strtod64;
-    strtod128;
-    wcstod32;
-    wcstod64;
-    wcstod128;
-  };
-}
-libdecnumber {
-  GLIBC_2.5 {
-#    ___decNumberFromString;
-#    ___decNumberToString;
-#    ___decNumberToEngString;
-#    ___decNumberAbs;
-#    ___decNumberAdd;
-#    ___decNumberCompare;
-#    ___decNumberCompareTotal;
-#    ___decNumberDivide;
-#    ___decNumberDivideInteger;
-#    ___decNumberExp;
-#    ___decNumberFromInt32;
-#    ___decNumberFromUInt32;
-#    ___decNumberLn;
-#    ___decNumberLog10;
-#    ___decNumberMax;
-#    ___decNumberMin;
-#    ___decNumberMinus;
-#    ___decNumberMultiply;
-#    ___decNumberNormalize;
-#    ___decNumberPlus;
-#    ___decNumberPower;
-#    ___decNumberQuantize;
-#    ___decNumberRemainder;
-#    ___decNumberRemainderNear;
-#    ___decNumberRescale;
-#    ___decNumberSameQuantum;
-#    ___decNumberScaleB;
-#    ___decNumberSquareRoot;
-#    ___decNumberSubtract;
-#    ___decNumberToIntegralValue;
-#    ___decNumberCopy;
-#    ___decNumberTrim;
-#    ___decNumberVersion;
-#    ___decNumberZero;
-#    ___decContextDefault;
-#    ___decContextSetStatus;
-#    ___decContextStatusToString;
-#    ___decContextSetStatusFromString;
-#    ___decNumberLog10;
-#    ___decNumberLn;
-#    ___decNumberExp;
 
-#    ___decNumberSquareRoot;
-#    ___decNumberMin;
-#    ___decNumberMax;
+#  };
+#}
+#libdecnumber {
+#  GLIBC_2.6 {
 
 # From decContext.c
     ___decContextClearStatus;
@@ -390,3 +335,15 @@ libdecnumber {
     ___decimal32ToNumber;
   };
 }
+libc {
+  GLIBC_2.6 {
+    __decrm_location;
+    strtod32;
+    strtod64;
+    strtod128;
+    wcstod32;
+    wcstod64;
+    wcstod128;
+  };
+}
+

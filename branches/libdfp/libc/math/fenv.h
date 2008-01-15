@@ -57,6 +57,10 @@
 */
 #include <bits/fenv.h>
 
+#ifdef __STDC_WANT_DEC_FP__
+#  include <bits/dfpfenv.h>
+#endif
+
 __BEGIN_DECLS
 
 /* Floating-point exception handling.  */

@@ -456,6 +456,17 @@ extern unsigned long long int wcstouq (__const wchar_t *__restrict __nptr,
 				       int __base) __THROW;
 #endif /* GCC and use GNU.  */
 
+#ifdef __STDC_WANT_DEC_FP__
+extern _Decimal32 wcstod32 (__const wchar_t *__restrict __nptr,
+		     wchar_t **__restrict __endptr) __THROW;
+
+extern _Decimal64 wcstod64 (__const wchar_t *__restrict __nptr,
+		     wchar_t **__restrict __endptr) __THROW;
+
+extern _Decimal128 wcstod128 (__const wchar_t *__restrict __nptr,
+		     wchar_t **__restrict __endptr) __THROW;
+#endif /* __STDC_WANT_DEC_FP__ */
+
 #ifdef __USE_GNU
 /* The concept of one static locale per category is not very well
    thought out.  Many applications will need to process its data using

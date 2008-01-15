@@ -4,8 +4,8 @@ headers		:= bits/dfpfenv.h bits/dfpcalls.h
 
 # Build the -ldfp and -libdecnumber libraries.
 
-#extra-libs := libdfp
-extra-libs := libdfp libdecnumber
+extra-libs := libdfp
+#extra-libs := libdfp libdecnumber
 extra-libs-others := $(extra-libs)
 # install-lib-ldscripts := libdfp.so
 
@@ -15,16 +15,17 @@ vpath %.h libdecnumber:libdecnumber/dpd
 
 
 # Some symbols need to be in libdfp.so as well as libc.
-libdfp-shared = fmt_d32 fmt_d64 fmt_d128 dfptypeconv decode-decimal
+libdfp-shared = fmt_d32 fmt_d64 fmt_d128 dfptypeconv decode-decimal \
+	decNumber decimal32 decimal64 decimal128 decContext
 
 # The libdecnumber printing functions need to be in libc.so as well as
 # libdecnumber.
-libdecnumber-shared = decNumber decimal32 decimal64 decimal128 decContext
+#libdecnumber-shared = decNumber decimal32 decimal64 decimal128 decContext
 
 include ../Makeconfig
 
 # libDecNumber contains some functionality which isn't needed in libc.
-libdecnumber-routines := $(libdecnumber-shared) decNumberMath
+#libdecnumber-routines := $(libdecnumber-shared) decNumberMath
 
 # These get added to libdfp.  Anything in $(libdfp-shared) gets
 # added to libc.so as well because they're the printf helpers.
@@ -98,11 +99,12 @@ libdfp-routines := $(libdfp-shared) \
 	fmodd32 fmodd64 fmodd128 \
 	hypotd32 hypotd64 hypotd128 \
 	fmad32 fmad64 fmad128 \
-	mapround fe_decround
+	mapround fe_decround \
+	decNumberMath
 
 # Some of these functions are picked up out of the dfp/sysdeps/dfp directory
 # due to the sysdeps/unix/sysv/linux/Implies sydeps/dfp/Subdirs chain.
-routines = $(libdecnumber-shared:%=libc_%) $(libdfp-shared:%=libc_%) \
+routines = $(libdfp-shared:%=libc_%) \
 	decroundtls strtod32 strtod64 strtod128 \
 	wcstod32 wcstod64 wcstod128 printf_dfp printf_dfphex
 
@@ -198,10 +200,10 @@ include $(o-iterator)
 
 # Required to get libdfp linked against the test cases.
 ifeq ($(build-shared),yes)
-$(addprefix $(objpfx),$(tests)): $(objpfx)libdfp.so$(libdfp.so-version) $(objpfx)libdecnumber.so$(libdecnumber.so-version)
+$(addprefix $(objpfx),$(tests)): $(objpfx)libdfp.so$(libdfp.so-version)
 endif
 
 # libc is required for libdfp in order to query the rounding mode when
 # invoking dfp functions because we need the TLS functions.
 # We current link libm.so because we need _LIB_VERSION.
-$(objpfx)libdfp.so: $(common-objpfx)libc.so $(common-objpfx)libc_nonshared.a $(common-objpfx)dfp/libdecnumber.so $(common-objpfx)math/libm.so
+$(objpfx)libdfp.so: $(common-objpfx)libc.so $(common-objpfx)libc_nonshared.a $(common-objpfx)math/libm.so

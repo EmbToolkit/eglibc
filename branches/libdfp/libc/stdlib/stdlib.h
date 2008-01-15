@@ -219,6 +219,26 @@ __END_NAMESPACE_C99
 #endif /* ISO C99 or GCC and use MISC.  */
 
 
+#ifdef __STDC_WANT_DEC_FP__
+__BEGIN_NAMESPACE_STD
+/* Convert a string to a _Decimal32 number.  */
+extern _Decimal32 strtod32 (__const char *__restrict __nptr,
+                     char **__restrict __endptr)
+     __THROW __nonnull ((1)) __wur;
+/* Convert a string to a _Decimal64 number.  */
+
+extern _Decimal64 strtod64 (__const char *__restrict __nptr,
+                     char **__restrict __endptr)
+     __THROW __nonnull ((1)) __wur;
+
+/* Convert a string to a _Decimal128 number.  */
+extern _Decimal128 strtod128 (__const char *__restrict __nptr,
+                     char **__restrict __endptr)
+     __THROW __nonnull ((1)) __wur;
+__END_NAMESPACE_STD
+#endif /* __STDC_WANT_DEC_FP__ */
+
+
 #ifdef __USE_GNU
 /* The concept of one static locale per category is not very well
    thought out.  Many applications will need to process its data using

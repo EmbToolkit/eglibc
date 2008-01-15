@@ -31,6 +31,12 @@
 #include "_itoa.h"
 #include <locale/localeinfo.h>
 #include <stdio.h>
+#ifdef __STDC_DEC_FP__
+#include <printf_dfp.h>
+#define IFDEF__STDC_DEC_FP__(...) __VA_ARGS__
+#else
+#define IFDEF__STDC_DEC_FP__(...)
+#endif
 
 /* This code is shared between the standard stdio implementation found
    in GNU C library and the libio implementation originally found in
@@ -236,8 +242,13 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
     /* '8' */  8, /* '9' */  8,            0,            0,
 	       0,            0,            0,            0,
 	       0, /* 'A' */ 26,            0, /* 'C' */ 25,
+#ifdef __STDC_DEC_FP__
+    /* 'D' */ 31, /* 'E' */ 19, /* F */   19, /* 'G' */ 19,
+    /* 'H' */ 30, /* 'I' */ 29,            0,            0,
+#else
 	       0, /* 'E' */ 19, /* F */   19, /* 'G' */ 19,
 	       0, /* 'I' */ 29,            0,            0,
+#endif
     /* 'L' */ 12,            0,            0,            0,
 	       0,            0,            0, /* 'S' */ 21,
 	       0,            0,            0,            0,
@@ -285,7 +296,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 
 #define STEP0_3_TABLE							      \
     /* Step 0: at the beginning.  */					      \
-    static JUMP_TABLE_TYPE step0_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step0_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (flag_space),		/* for ' ' */				      \
@@ -316,10 +327,14 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_floathex),	/* for 'A', 'a' */			      \
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
-      REF (flag_i18n),	        /* for 'I' */				      \
+      REF (flag_i18n)	        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (mod_decimal_half),   /* for 'H' */				      \
+      REF (mod_decimal)         /* for 'D' */				      \
+)									      \
     };									      \
     /* Step 1: after processing width.  */				      \
-    static JUMP_TABLE_TYPE step1_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step1_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (form_unknown),	/* for ' ' */				      \
@@ -351,9 +366,13 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (mod_decimal_half),   /* for 'H' */				      \
+      REF (mod_decimal),        /* for 'D' */				      \
+)									      \
     };									      \
     /* Step 2: after processing precision.  */				      \
-    static JUMP_TABLE_TYPE step2_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step2_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (form_unknown),	/* for ' ' */				      \
@@ -385,9 +404,13 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (mod_decimal_half),   /* for 'H' */				      \
+      REF (mod_decimal)         /* for 'D' */				      \
+)									      \
     };									      \
     /* Step 3a: after processing first 'h' modifier.  */		      \
-    static JUMP_TABLE_TYPE step3a_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step3a_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (form_unknown),	/* for ' ' */				      \
@@ -419,9 +442,13 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (form_unknown),       /* for 'H' */				      \
+      REF (form_unknown)	/* for 'D' */				      \
+)									      \
     };									      \
     /* Step 3b: after processing first 'l' modifier.  */		      \
-    static JUMP_TABLE_TYPE step3b_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step3b_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (form_unknown),	/* for ' ' */				      \
@@ -453,11 +480,52 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (form_unknown),       /* for 'H' */				      \
+      REF (form_unknown)        /* for 'D' */				      \
+    };									      \
+    /* Some format codes should not be allowed for decimal-float.  */	      \
+    /* Step 3c: after processing first 'D' modifier.  */		      \
+    static JUMP_TABLE_TYPE step3c_jumps[] =				      \
+    {									      \
+      REF (form_unknown),						      \
+      REF (form_unknown),	/* for ' ' */				      \
+      REF (form_unknown),	/* for '+' */				      \
+      REF (form_unknown),	/* for '-' */				      \
+      REF (form_unknown),	/* for '<hash>' */			      \
+      REF (form_unknown),	/* for '0' */				      \
+      REF (form_unknown),	/* for '\'' */				      \
+      REF (form_unknown),	/* for '*' */				      \
+      REF (form_unknown),	/* for '1'...'9' */			      \
+      REF (form_unknown),	/* for '.' */				      \
+      REF (form_unknown),	/* for 'h' */				      \
+      REF (form_unknown),	/* for 'l' */				      \
+      REF (form_unknown),	/* for 'L', 'q' */			      \
+      REF (form_unknown),	/* for 'z', 'Z' */			      \
+      REF (form_percent),	/* for '%' */				      \
+      REF (form_integer),	/* for 'd', 'i' */			      \
+      REF (form_unsigned),	/* for 'u' */				      \
+      REF (form_octal),		/* for 'o' */				      \
+      REF (form_hexa),		/* for 'X', 'x' */			      \
+      REF (form_float),		/* for 'E', 'e', 'F', 'f', 'G', 'g' */	      \
+      REF (form_character),	/* for 'c' */				      \
+      REF (form_string),	/* for 's', 'S' */			      \
+      REF (form_pointer),	/* for 'p' */				      \
+      REF (form_number),	/* for 'n' */				      \
+      REF (form_strerror),	/* for 'm' */				      \
+      REF (form_wcharacter),	/* for 'C' */				      \
+      REF (form_floathex),	/* for 'A', 'a' */			      \
+      REF (form_unknown),	/* for 't' */				      \
+      REF (form_unknown),	/* for 'j' */				      \
+      REF (form_unknown),	/* for 'I' */				      \
+      REF (form_unknown),	/* for 'H' */				      \
+      REF (mod_decimal_long)    /* for 'D' */				      \
+)									      \
     }
 
 #define STEP4_TABLE							      \
     /* Step 4: processing format specifier.  */				      \
-    static JUMP_TABLE_TYPE step4_jumps[30] =				      \
+    static JUMP_TABLE_TYPE step4_jumps[] =				      \
     {									      \
       REF (form_unknown),						      \
       REF (form_unknown),	/* for ' ' */				      \
@@ -489,6 +557,10 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
+IFDEF__STDC_DEC_FP__(,						      \
+      REF (form_unknown),	/* for 'H' */				      \
+      REF (form_unknown)	/* for 'D' */				      \
+)									      \
     }
 
 
@@ -782,14 +854,30 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 					.pad = pad,			      \
 					.extra = 0,			      \
 					.i18n = use_outdigits,		      \
+IFDEF__STDC_DEC_FP__(		.is_decimal = is_decimal, )	      \
 					.wide = sizeof (CHAR_T) != 1 };	      \
 									      \
-	    if (is_long_double)						      \
+	    if (is_long_double IFDEF__STDC_DEC_FP__(&& !is_decimal))     \
 	      the_arg.pa_long_double = va_arg (ap, long double);	      \
+IFDEF__STDC_DEC_FP__(						      \
+	    else if (is_long_double && is_decimal)			      \
+	      the_arg.pa_decimal128 = va_arg (ap, _Decimal128);		      \
+	    else if (is_short && is_decimal)				      \
+	      /* The specification indicates that _Decimal32 should  */	      \
+	      /* NOT be promoted to _Decimal64 for DFP types.  */	      \
+	      the_arg.pa_decimal32 = va_arg (ap, _Decimal32);		      \
+	    else if (is_decimal && !is_long_double && !is_short)	      \
+	      the_arg.pa_decimal64 = va_arg (ap, _Decimal64);		      \
+)									      \
 	    else							      \
 	      the_arg.pa_double = va_arg (ap, double);			      \
 	    ptr = (const void *) &the_arg;				      \
 									      \
+IFDEF__STDC_DEC_FP__(						      \
+	    if (is_decimal)						      \
+	      function_done = __printf_dfp (s, &info, &ptr);		      \
+	    else							      \
+)									      \
 	    function_done = __printf_fp (s, &info, &ptr);		      \
 	  }								      \
 	else								      \
@@ -839,14 +927,28 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 					.group = group,			      \
 					.pad = pad,			      \
 					.extra = 0,			      \
+IFDEF__STDC_DEC_FP__(		.is_decimal = is_decimal, )	      \
 					.wide = sizeof (CHAR_T) != 1 };	      \
 									      \
-	    if (is_long_double)						      \
+	    if (is_long_double IFDEF__STDC_DEC_FP__(&& !is_decimal))     \
 	      the_arg.pa_long_double = va_arg (ap, long double);	      \
+IFDEF__STDC_DEC_FP__(						      \
+	    else if (is_long_double && is_decimal)			      \
+	      the_arg.pa_decimal128 = va_arg (ap, _Decimal128);		      \
+	    else if (is_short && is_decimal)				      \
+	      the_arg.pa_decimal32 = va_arg (ap, _Decimal32);		      \
+	    else if (is_decimal && !is_long_double && !is_short)	      \
+	      the_arg.pa_decimal64 = va_arg (ap, _Decimal64);		      \
+)									      \
 	    else							      \
 	      the_arg.pa_double = va_arg (ap, double);			      \
 	    ptr = (const void *) &the_arg;				      \
 									      \
+IFDEF__STDC_DEC_FP__(						      \
+	    if (is_decimal)						      \
+	      function_done = __printf_dfphex (s, &info, &ptr);		      \
+	    else							      \
+)									      \
 	    function_done = __printf_fphex (s, &info, &ptr);		      \
 	  }								      \
 	else								      \
@@ -855,6 +957,12 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	    if (__ldbl_is_dbl)						      \
 	      fspec->info.is_long_double = 0;				      \
 									      \
+IFDEF__STDC_DEC_FP__(						      \
+	    /* FIX ME */						      \
+	    if (is_decimal)						      \
+	      function_done = __printf_dfphex (s, &fspec->info, &ptr);	      \
+	    else							      \
+)									      \
 	    function_done = __printf_fphex (s, &fspec->info, &ptr);	      \
 	  }								      \
 									      \
@@ -1336,6 +1444,9 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       int is_short = 0;	/* Argument is short int.  */
       int is_long = 0;	/* Argument is long int.  */
       int is_char = 0;	/* Argument is promoted (unsigned) char.  */
+#ifdef __STDC_DEC_FP__
+      int is_decimal = 0; /* Argument is decimal floating point.  */
+#endif
       int width = 0;	/* Width of output; 0 means none specified.  */
       int prec = -1;	/* Precision of output; -1 means none specified.  */
       /* This flag is set by the 'I' modifier and selects the use of the
@@ -1553,6 +1664,31 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       is_long = sizeof (intmax_t) > sizeof (unsigned int);
       JUMP (*++f, step4_jumps);
 
+#ifdef __STDC_DEC_FP__
+      /* Process 'H' modifier.  No other modifier is allowed to follow.  */
+    LABEL (mod_decimal_half):
+      is_decimal = 1;
+      is_short = 1;
+      JUMP (*++f, step4_jumps);
+
+      /* Process 'D' modifier.  There might be another 'D' following.  */
+    LABEL (mod_decimal):
+      is_decimal = 1;
+      is_short = 0;
+      is_long = 0;
+      JUMP (*++f, step3c_jumps);
+
+      /* Process 'DD' modifier.  */
+    LABEL (mod_decimal_long):
+      /* is_decimal = 0;  */
+      is_decimal = 1;
+      is_long_double = 1;
+      JUMP (*++f, step4_jumps);
+
+      /* The previous step3c_jumps or step4_jumps will jump directly
+       * to the LABELs defined in the process_arg macro.  */
+#endif
+
       /* Process current format.  */
       while (1)
 	{
@@ -1730,6 +1866,11 @@ do_positional:
 	T (PA_INT|PA_FLAG_LONG_LONG, pa_long_long_int, long long int);
 	T (PA_FLOAT, pa_double, double);	/* Promoted.  */
 	T (PA_DOUBLE, pa_double, double);
+#ifdef __STDC_DEC_FP__
+	T (PA_DECIMAL, pa_decimal32, _Decimal32);
+	T (PA_DECIMAL|PA_FLAG_SHORT, pa_decimal64, _Decimal64);
+	T (PA_DECIMAL|PA_FLAG_LONG_DOUBLE, pa_decimal128, _Decimal128);
+#endif
 	case PA_DOUBLE|PA_FLAG_LONG_DOUBLE:
 	  if (__ldbl_is_dbl)
 	    {
@@ -1792,6 +1933,9 @@ do_positional:
 	int width = specs[nspecs_done].info.width;
 	int prec = specs[nspecs_done].info.prec;
 	int use_outdigits = specs[nspecs_done].info.i18n;
+#ifdef __STDC_DEC_FP__
+	int is_decimal = specs[nspecs_done].info.is_decimal;
+#endif
 	char pad = specs[nspecs_done].info.pad;
 	CHAR_T spec = specs[nspecs_done].info.spec;
 

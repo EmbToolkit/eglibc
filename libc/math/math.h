@@ -64,6 +64,10 @@ __BEGIN_DECLS
 #define __MATHDECL_1(type, function,suffix, args) \
   extern type __MATH_PRECNAME(function,suffix) args __THROW
 
+#ifdef __USE_DEC_FP_NEXTTOWARD__
+#undef __USE_DEC_FP_NEXTTOWARD__
+#endif
+
 #define _Mdouble_ 		double
 #define __MATH_PRECNAME(name,r)	__CONCAT(name,r)
 # define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_STD
@@ -73,6 +77,87 @@ __BEGIN_DECLS
 #undef _Mdouble_BEGIN_NAMESPACE
 #undef _Mdouble_END_NAMESPACE
 #undef	__MATH_PRECNAME
+
+/* Decimal-Floating point support is outlined in ISO proposed C-specification
+   WG14 N1176 and IEEE 754r.  */
+#ifdef __STDC_WANT_DEC_FP__
+#define DEC_INFINITY	__builtin_infd32()
+#define DEC_NAN		(0.0DF * DEC_INFINITY)
+# define HUGE_VAL_D64	__builtin_infd64()
+/*# define DEC_INFINITY   (9999999.E96DF + 1.E96df)
+#define DEC_NAN (0.0DF * DEC_INFINITY)
+# define HUGE_VAL_D64   (9.999999999999999E384DD + 1.E384dd) */
+# define HUGE_VAL_D32	HUGE_VAL_D64
+# define HUGE_VAL_D128	HUGE_VAL_D64
+
+/* this causes the nexttoward mathcall to get a _Decimal128 second parameter
+ * rather than a long double one.  */
+#define __USE_DEC_FP_NEXTTOWARD__ 1
+
+#define __dfp_compatible(X) ((_Decimal128)(__typeof__(X))1.E-50DL == 1.E-50DL)
+
+/* For _Decimal32  */
+# ifndef _M_Decimal32_
+#  define _M_Decimal32_		_Decimal32
+# endif
+# define _Mdouble_		_M_Decimal32_
+# ifdef __STDC__
+#  define __MATH_PRECNAME(name,r) name##d32##r
+# else
+#  define __MATH_PRECNAME(name,r) name/**/d32/**/r
+# endif
+# define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_C99
+# define _Mdouble_END_NAMESPACE   __END_NAMESPACE_C99
+# include <bits/mathcalls.h>
+# include <bits/dfpcalls.h>
+# undef	_Mdouble_
+# undef _Mdouble_BEGIN_NAMESPACE
+# undef _Mdouble_END_NAMESPACE
+# undef	__MATH_PRECNAME
+
+/* For _Decimal64 */
+# ifndef _M_Decimal64_
+#  define _M_Decimal64_		_Decimal64
+# endif
+# define _Mdouble_		_M_Decimal64_
+# ifdef __STDC__
+#  define __MATH_PRECNAME(name,r) name##d64##r
+# else
+#  define __MATH_PRECNAME(name,r) name/**/d64/**/r
+# endif
+# define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_C99
+# define _Mdouble_END_NAMESPACE   __END_NAMESPACE_C99
+# include <bits/mathcalls.h>
+# include <bits/dfpcalls.h>
+# undef	_Mdouble_
+# undef _Mdouble_BEGIN_NAMESPACE
+# undef _Mdouble_END_NAMESPACE
+# undef	__MATH_PRECNAME
+
+/* For _Decimal128 */
+# ifndef _M_Decimal128_
+#  define _M_Decimal128_	_Decimal128
+# endif
+# define _Mdouble_		_M_Decimal128_
+# ifdef __STDC__
+#  define __MATH_PRECNAME(name,r) name##d128##r
+# else
+#  define __MATH_PRECNAME(name,r) name/**/d128/**/r
+# endif
+# define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_C99
+# define _Mdouble_END_NAMESPACE   __END_NAMESPACE_C99
+# include <bits/mathcalls.h>
+# include <bits/dfpcalls.h>
+# undef	_Mdouble_
+# undef _Mdouble_BEGIN_NAMESPACE
+# undef _Mdouble_END_NAMESPACE
+# undef	__MATH_PRECNAME
+
+#endif /* __STDC_WANT_DEC_FP__  */
+
+#ifdef __USE_DEC_FP_NEXTTOWARD__
+#undef __USE_DEC_FP_NEXTTOWARD__
+#endif
 
 #if defined __USE_MISC || defined __USE_ISOC99
 
@@ -194,7 +279,8 @@ extern int signgam;
 
 */
 
-/* All floating-point numbers can be put in one of these categories.  */
+/* All decimal and binary floating-point numbers can be put in one of these
+   categories.  */
 enum
   {
     FP_NAN,
@@ -211,38 +297,83 @@ enum
 
 /* Return number of classification appropriate for X.  */
 # ifdef __NO_LONG_DOUBLE_MATH
-#  define fpclassify(x) \
+#  define ____fpclassify(x) \
      (sizeof (x) == sizeof (float) ? __fpclassifyf (x) : __fpclassify (x))
 # else
-#  define fpclassify(x) \
+#  define ____fpclassify(x) \
      (sizeof (x) == sizeof (float)					      \
       ? __fpclassifyf (x)						      \
       : sizeof (x) == sizeof (double)					      \
       ? __fpclassify (x) : __fpclassifyl (x))
 # endif
 
+# ifdef __STDC_WANT_DEC_FP__
+#  define fpclassify(x) \
+     (									      \
+       (!__dfp_compatible(x)? (____fpclassify(x)) :			      \
+	 (sizeof (x) == sizeof (_Decimal128)? __fpclassifyd128(x):	      \
+	    (sizeof (x) == sizeof (_Decimal64)? __fpclassifyd64(x):	      \
+	      __fpclassifyd32(x)					      \
+	    )								      \
+	 )								      \
+       )								      \
+     )
+# else
+#  define fpclassify(x) ____fpclassify(x)
+# endif
+
 /* Return nonzero value if sign of X is negative.  */
 # ifdef __NO_LONG_DOUBLE_MATH
-#  define signbit(x) \
+#  define ____signbit(x) \
      (sizeof (x) == sizeof (float) ? __signbitf (x) : __signbit (x))
 # else
-#  define signbit(x) \
+#  define ____signbit(x) \
      (sizeof (x) == sizeof (float)					      \
       ? __signbitf (x)							      \
       : sizeof (x) == sizeof (double)					      \
       ? __signbit (x) : __signbitl (x))
 # endif
 
+# ifdef __STDC_WANT_DEC_FP__
+#  define signbit(x) \
+     (									      \
+       (!__dfp_compatible(x)? (____signbit(x)) :			      \
+	 (sizeof (x) == sizeof (_Decimal128)? __signbitd128(x):		      \
+	    (sizeof (x) == sizeof (_Decimal64)? __signbitd64(x):	      \
+	      __signbitd32(x)						      \
+	    )								      \
+	 )								      \
+       )								      \
+     )
+# else
+#  define signbit(x) ____signbit(x)
+# endif
+
 /* Return nonzero value if X is not +-Inf or NaN.  */
 # ifdef __NO_LONG_DOUBLE_MATH
-#  define isfinite(x) \
+#  define ____isfinite(x) \
      (sizeof (x) == sizeof (float) ? __finitef (x) : __finite (x))
 # else
-#  define isfinite(x) \
+#  define ____isfinite(x) \
      (sizeof (x) == sizeof (float)					      \
       ? __finitef (x)							      \
       : sizeof (x) == sizeof (double)					      \
       ? __finite (x) : __finitel (x))
+# endif
+
+# ifdef __STDC_WANT_DEC_FP__
+#  define isfinite(x) \
+     (									      \
+       (!__dfp_compatible(x)? (____isfinite(x)) :			      \
+	 (sizeof (x) == sizeof (_Decimal128)? __finited128(x):	      \
+	    (sizeof (x) == sizeof (_Decimal64)? __finited64(x):	      \
+	      __finited32(x)						      \
+	    )								      \
+	 )								      \
+       )								      \
+     )
+# else
+#  define isfinite(x) ____isfinite(x)
 # endif
 
 /* Return nonzero value if X is neither zero, subnormal, Inf, nor NaN.  */
@@ -251,26 +382,55 @@ enum
 /* Return nonzero value if X is a NaN.  We could use `fpclassify' but
    we already have this functions `__isnan' and it is faster.  */
 # ifdef __NO_LONG_DOUBLE_MATH
-#  define isnan(x) \
+#  define ____isnan(x) \
      (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
 # else
-#  define isnan(x) \
-     (sizeof (x) == sizeof (float)					      \
-      ? __isnanf (x)							      \
-      : sizeof (x) == sizeof (double)					      \
+#  define ____isnan(x) \
+     (sizeof (x) == sizeof (float)		      \
+      ? __isnanf (x)				      \
+      : sizeof (x) == sizeof (double)		      \
       ? __isnan (x) : __isnanl (x))
+# endif
+
+# ifdef __STDC_WANT_DEC_FP__
+#  define isnan(x) \
+     (!__dfp_compatible(x)			      \
+      ? (____isnan(x))				      \
+      : (sizeof (x) == sizeof (_Decimal128)	      \
+	? __isnand128(x)			      \
+	: (sizeof (x) == sizeof (_Decimal64)	      \
+	  ? __isnand64(x)			      \
+	  : __isnand32(x)))			      \
+     )
+# else
+#  define isnan(x) ____isnan(x)
 # endif
 
 /* Return nonzero value is X is positive or negative infinity.  */
 # ifdef __NO_LONG_DOUBLE_MATH
-#  define isinf(x) \
+#  define _____isinf(x) \
      (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
 # else
-#  define isinf(x) \
+#  define ____isinf(x) \
      (sizeof (x) == sizeof (float)					      \
       ? __isinff (x)							      \
       : sizeof (x) == sizeof (double)					      \
       ? __isinf (x) : __isinfl (x))
+# endif
+
+# ifdef __STDC_WANT_DEC_FP__
+#  define isinf(x) \
+     (									      \
+       (!__dfp_compatible(x)? (____isinf(x)) :				      \
+	 (sizeof (x) == sizeof (_Decimal128)? __isinfd128(x):		      \
+	    (sizeof (x) == sizeof (_Decimal64)? __isinfd64(x):		      \
+	      __isinfd32(x)						      \
+	    )								      \
+	 )								      \
+       )								      \
+     )
+# else
+#  define isinf(x) ____isinf(x)
 # endif
 
 /* Bitmasks for the math_errhandling macro.  */
@@ -381,6 +541,23 @@ extern int matherr (struct exception *__exc);
 # define M_SQRT1_2l	0.7071067811865475244008443621048490L  /* 1/sqrt(2) */
 #endif
 
+/* Some useful constants for DFP support (with the DL specifier).  Proper
+ * truncation to DD and DF will be handled by libdfp. */
+#ifdef __STDC_WANT_DEC_FP__
+#  define M_Edl		2.7182818284590452353602874713526625DL  /* e */
+#  define M_LOG2Edl	1.4426950408889634073599246810018921DL  /* log_2 e */
+#  define M_LOG10Edl	0.4342944819032518276511289189166051DL  /* log_10 e */
+#  define M_LN2dl	0.6931471805599453094172321214581766DL  /* log_e 2 */
+#  define M_LN10dl	2.3025850929940456840179914546843642DL  /* log_e 10 */
+#  define M_PIdl	3.1415926535897932384626433832795029DL  /* pi */
+#  define M_PI_2dl	1.5707963267948966192313216916397514DL  /* pi/2 */
+#  define M_PI_4dl	0.7853981633974483096156608458198757DL  /* pi/4 */
+#  define M_1_PIdl	0.3183098861837906715377675267450287DL  /* 1/pi */
+#  define M_2_PIdl	0.6366197723675813430755350534900574DL  /* 2/pi */
+#  define M_2_SQRTPIdl	1.1283791670955125738961589031215452DL  /* 2/sqrt(pi) */
+#  define M_SQRT2dl	1.4142135623730950488016887242096981DL  /* sqrt(2) */
+#  define M_SQRT1_2dl	0.7071067811865475244008443621048490DL  /* 1/sqrt(2) */
+#endif /* __STDC_WANT_DEC_FP__  */
 
 /* When compiling in strict ISO C compatible mode we must not use the
    inline functions since they, among other things, do not set the

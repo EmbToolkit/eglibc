@@ -1,6 +1,6 @@
 libdfp {
-  GLIBC_2.5
+  GLIBC_2.6
 }
-libdecnumber {
-  GLIBC_2.5
-}
+#libdecnumber {
+#  GLIBC_2.6
+#}

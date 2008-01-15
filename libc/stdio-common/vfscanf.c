@@ -24,6 +24,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#ifdef __STDC_DEC_FP__
+#include <dfpstdlib.h>
+#endif
 #include <string.h>
 #include <wchar.h>
 #include <wctype.h>
@@ -67,6 +70,9 @@
 #define READ_POINTER	0x1000	/* this is a pointer value */
 #define POSIX_MALLOC	0x2000	/* m: malloc strings */
 #define MALLOC		(GNU_MALLOC | POSIX_MALLOC)
+#ifdef __STDC_DEC_FP__
+#define DECIMAL		0x4000  /* H/D/DD: decimal float */
+#endif
 
 #include <locale/localeinfo.h>
 #include <libioP.h>
@@ -583,6 +589,9 @@ _IO_vfscanf_internal (_IO_FILE *s, const char *format, _IO_va_list argptr,
 	  skip_space = 0;
 	}
 
+#ifdef __STDC_DEC_FP__
+found_decimal:
+#endif
       switch (fc)
 	{
 	case L_('%'):	/* Must match a literal '%'.  */
@@ -1777,6 +1786,31 @@ _IO_vfscanf_internal (_IO_FILE *s, const char *format, _IO_va_list argptr,
 	    }
 	  break;
 
+#ifdef __STDC_DEC_FP__
+	case L_('H'):   /* _Decimal32  */
+	  base = 10;
+	  /*number_signed = 1;*/
+	  negative = 1;
+	  flags |= DECIMAL | SHORT;
+	  fc = *f++;
+	  /* Pick up trailing float modifier.  */
+	  goto found_decimal;
+
+	case L_('D'):   /* _Decimal64  */
+	  flags |= DECIMAL;
+	  base = 10;
+	  /*number_signed = 1;*/
+	  negative = 1;
+	  char tfc;
+	  tfc = *f++;
+	  if (tfc == L_('D'))  /* _Decimal128  */
+	    flags |= LONGDBL;
+	  else
+	    --f;        /* Only one 'D'.  Back it up.  It is not %DD.  */
+	  fc = *f++;
+	  /* Pick up trailing float modifier.  */
+	  goto found_decimal;
+#endif
 	case L_('e'):	/* Floating-point numbers.  */
 	case L_('E'):
 	case L_('f'):
@@ -2253,6 +2287,29 @@ _IO_vfscanf_internal (_IO_FILE *s, const char *format, _IO_va_list argptr,
 	scan_float:
 	  /* Convert the number.  */
 	  ADDW (L_('\0'));
+#ifdef __STDC_DEC_FP__
+	  if((flags & DECIMAL) && (flags & SHORT))
+	    {
+	      _Decimal32 d = __strtod32_internal(wp, &tw, flags & GROUP);
+	      if (!(flags & SUPPRESS) && tw != wp)
+	        /* va_arg is currently busted in libgcc for _Decimal32 so this
+	         * will segfault */
+	        *ARG (_Decimal32 *) = negative ? -d : d;
+	    }
+	  else if((flags & DECIMAL) && (flags & LONGDBL))
+	    {
+	      _Decimal128 d = __strtod128_internal(wp, &tw, flags & GROUP);
+	      if (!(flags & SUPPRESS) && tw != wp)
+	        *ARG (_Decimal128 *) = negative ? -d : d;
+	    }
+	  else if (flags & DECIMAL)
+	    {
+	      _Decimal64 d = __strtod64_internal(wp, &tw, flags & GROUP);
+	      if (!(flags & SUPPRESS) && tw != wp)
+	        *ARG (_Decimal64 *) = negative ? -d : d;
+	    }
+	  else
+#endif
 	  if ((flags & LONGDBL) && !__ldbl_is_dbl)
 	    {
 	      long double d = __strtold_internal (wp, &tw, flags & GROUP);

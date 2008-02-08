@@ -1,3 +1,35 @@
+2008-02-06  Roland McGrath  <roland@redhat.com>
+
+	* Makerules ($(common-objpfx)sysd-rules):
+	Depend on $(sysdep-makeconfigs).
+
+2008-01-31  Roland McGrath  <roland@redhat.com>
+
+	[BZ #5442]
+	* configure.in: Use -print-file-name if it yields a directory,
+	for each of include and include-fixed.
+	* configure: Regenerated.
+
+	* Makeconfig (sysd-rules-targets): New variable.
+	* sysdeps/unix/make-syscalls.sh: Use it in the rules emitted.
+	* sysdeps/unix/Makefile (omit-deps): Append variants for each target.
+
+2008-01-30  Roland McGrath  <roland@redhat.com>
+
+	* manual/libc.texinfo: Update back-cover text.
+
+	* elf/elf.h (NT_386_TLS): New macro.
+
+2008-01-29  Roland McGrath  <roland@redhat.com>
+
+	* Makeconfig (sysd-rules-patterns): New variable.
+	* Makerules ($(common-objpfx)sysd-rules): Drive the loop from that.
+	(check-inhibit-asm): New canned sequence, replaces ...
+	(open-check-inhibit-asm, close-check-inhibit-asm): ... these, removed.
+	* elf/rtld-Rules ($(objpfx)rtld-%.os): Use $(rtld-CPPFLAGS) in commands.
+	(rtld-CPPFLAGS): Renamed from CPPFLAGS-rtld.
+	(CFLAGS-rtld): Variable removed.
+
 2008-01-24  Roland McGrath  <roland@redhat.com>
 
 	* configure.in: Let configure fragments set base_os.

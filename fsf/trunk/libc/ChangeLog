@@ -1,3 +1,55 @@
+2008-03-08  Roland McGrath  <roland@frob.com>
+
+	* hurd/hurdsig.c (_hurd_internal_post_signal): When normal rules would
+	ignore a signal that came from a machine exception, treat it as a
+	fatal core-dump signal instead.
+	Reported by Samuel Thibault <samuel.thibault@ens-lyon.org>.
+
+	* sysdeps/mach/hurd/i386/trampoline.c (_hurd_setup_sighandler):
+	Clear DF bit in thread state's eflags.
+	Reported by Samuel Thibault <samuel.thibault@ens-lyon.org>.
+
+2008-03-08  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #5774]
+	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Consume closing brace
+	of NAN(...) sequence.
+	* stdlib/Makefile (tests): Add tst-strtod6.
+	* stdlib/tst-strtod6.c: New file.
+
+	* inet/inet6_opt.c (inet6_opt_init): Check extlen for overflow.
+
+	[BZ #5762]
+	* posix/getopt.c (_getopt_internal_r): Clarify error message by
+	putting offending option character in quotes.  Clean up error
+	messages.
+	* po/be.po: Adjust msgstr in translation file.
+	* po/bg.po: Likewise.
+	* po/ca.po: Likewise.
+	* po/cs.po: Likewise.
+	* po/da.po: Likewise.
+	* po/de.po: Likewise.
+	* po/es.po: Likewise.
+	* po/fr.po: Likewise.
+	* po/hr.po: Likewise.
+	* po/ko.po: Likewise.
+	* po/nl.po: Likewise.
+	* po/rw.po: Likewise.
+	* po/sk.po: Likewise.
+	* po/sv.po: Likewise.
+	* po/tr.po: Likewise.
+	* po/zh_CN.po: Likewise.
+	* po/zh_TW.po: Likewise.
+
+	[BZ #5760]
+	* inet/inet6_opt.c (inet6_opt_init): Fix ip6h_len computation.
+	Patch by Roland Bless <roland@bless.de>.
+
+	* sysdeps/unix/sysv/linux/dl-sysdep.c: Avoid unnecessary code for
+	.o file.
+	* elf/Makefile (routines): Add dl-sysdep.
+	(elide-routines.os): Likewise.
+
 2008-03-07  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #5786]

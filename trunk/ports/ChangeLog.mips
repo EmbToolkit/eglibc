@@ -1,3 +1,28 @@
+2008-03-26  David Stephenson  <david.stephenson@sicortex.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/mips/fpu/fesetround.c (fesetround): Use fpu_control_t.
+	* sysdeps/mips/fpu/fgetexcptflg.c (fegetexceptflag): Likewise.
+	* sysdeps/mips/fpu/fsetexcptflg.c (fesetexceptflag): Likewise.
+
+2008-03-09  Andreas Jaeger  <aj@suse.de>
+
+	[BZ #5753]
+	* sysdeps/mips/ieee754.h: Use protected namespace
+	__BIG_ENDIAN/__LITTLE_ENDIAN.
+	Patch by Aurelien Jarno <aurelien@aurel32.net>.
+
+2008-03-04  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/siginfo.h (struct siginfo):
+	Reorganize to match other architectures.  Replace _timer._timer1
+	and _timer._timer2 with _timer.si_tid, _timer.si_overrun, and
+	_timer.si_sigval.  Correct the type of _sigpoll.si_band.
+	(si_timerid, si_overrun): Define.
+	(__SIGEV_PAD_SIZE): Correct for __WORDSIZE == 64.
+	(__pthread_attr_s): Remove declaration.
+	(struct sigevent): Remove XXX.  Add _tid.
+
 2007-10-22  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/bits/fcntl.h (F_DUPFD_CLOEXEC): Define.

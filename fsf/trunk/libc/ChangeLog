@@ -1,3 +1,35 @@
+2008-03-29  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfprintf.c (vfprintf): Correct overflow test.
+
+	[BZ #5939]
+	* sysdeps/posix/tempname.c (__gen_tempname): Correct flag selection.
+
+	* posix/getopt.c (_getopt_internal_r): Remove old POSIX-demanded
+	error message.  POSIX today does not require the messages to be in
+	a specific form.  Suggested by Jim Meyering <jim@meyering.net>.
+
+	[BZ #5979]
+	* sunrpc/auth_unix.c: Unify printed strings.
+	* sunrpc/clnt_tcp.c: Likewise.
+	* sunrpc/clnt_udp.c: Likewise.
+	* sunrpc/clnt_unix.c: Likewise.
+	* sunrpc/svc_tcp.c: Likewise.
+	* sunrpc/svc_udp.c: Likewise.
+	* sunrpc/svc_unix.c: Likewise.
+	* sunrpc/xdr.c: Likewise.
+	* sunrpc/xdr_array.c: Likewise.
+	* sunrpc/xdr_rec.c: Likewise.
+	* sunrpc/xdr_ref.c: Likewise.
+	* locale/programs/ld-time.c (time_finish): Unify messages.
+	* locale/programs/locfile.c (handle_copy): Fix typo.
+	* nscd/nscd.c (options): Fix typo.
+
+	[BZ #5995]
+	* stdlib/strtod_l.c: Use correct sign for result in one more
+	underflow case.
+	Patch by Eric Blake <ebb9@byu.net>.
+
 2008-03-27  Jakub Jelinek  <jakub@redhat.com>
 
 	* sysdeps/unix/sysv/linux/wordsize-64/syscalls.list: Add open

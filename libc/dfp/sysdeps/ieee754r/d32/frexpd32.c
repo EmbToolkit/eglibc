@@ -33,12 +33,28 @@
 #define FUNCTION_NAME frexp
 
 #include <dfpmacro.h>
+#include <numdigits.h>
 
 DEC_TYPE
 INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
 {
   DEC_TYPE result;
-  decNumber dn_x;
+  int digits, exponent;
+ 
+  if (isinf(x) || isnan(x))
+    return x+x;
+  
+  digits = numdigits(x);
+  exponent = getexp(x);
+  *y = digits + exponent;
+
+  result = x;
+  setexp(&result, -digits);
+
+  return result;
+  
+/* old decnumber implementation */  
+/*  decNumber dn_x;
   decContext context;
 
   *y = 0;
@@ -52,7 +68,8 @@ INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
 
   ___decContextDefault(&context, DEFAULT_CONTEXT);
   FUNC_CONVERT_FROM_DN (&dn_x, &result, &context);
-  return result;
+  
+  return result;*/
 }
 
 weak_alias (INTERNAL_FUNCTION_NAME, EXTERNAL_FUNCTION_NAME)

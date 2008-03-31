@@ -31,6 +31,7 @@
 #include "_itoa.h"
 #include <locale/localeinfo.h>
 #include <stdio.h>
+
 #ifdef __STDC_DEC_FP__
 #include <printf_dfp.h>
 #define IFDEF__STDC_DEC_FP__(...) __VA_ARGS__
@@ -328,7 +329,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
       REF (flag_i18n)	        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (mod_decimal_half),   /* for 'H' */				      \
       REF (mod_decimal)         /* for 'D' */				      \
 )									      \
@@ -366,9 +367,9 @@ IFDEF__STDC_DEC_FP__(,						      \
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (mod_decimal_half),   /* for 'H' */				      \
-      REF (mod_decimal),        /* for 'D' */				      \
+      REF (mod_decimal)         /* for 'D' */				      \
 )									      \
     };									      \
     /* Step 2: after processing precision.  */				      \
@@ -404,7 +405,7 @@ IFDEF__STDC_DEC_FP__(,						      \
       REF (mod_ptrdiff_t),      /* for 't' */				      \
       REF (mod_intmax_t),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (mod_decimal_half),   /* for 'H' */				      \
       REF (mod_decimal)         /* for 'D' */				      \
 )									      \
@@ -442,7 +443,7 @@ IFDEF__STDC_DEC_FP__(,						      \
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (form_unknown),       /* for 'H' */				      \
       REF (form_unknown)	/* for 'D' */				      \
 )									      \
@@ -480,7 +481,7 @@ IFDEF__STDC_DEC_FP__(,						      \
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (form_unknown),       /* for 'H' */				      \
       REF (form_unknown)        /* for 'D' */				      \
     };									      \
@@ -557,7 +558,7 @@ IFDEF__STDC_DEC_FP__(,						      \
       REF (form_unknown),       /* for 't' */				      \
       REF (form_unknown),       /* for 'j' */				      \
       REF (form_unknown)        /* for 'I' */				      \
-IFDEF__STDC_DEC_FP__(,						      \
+IFDEF__STDC_DEC_FP__(,							      \
       REF (form_unknown),	/* for 'H' */				      \
       REF (form_unknown)	/* for 'D' */				      \
 )									      \
@@ -854,7 +855,7 @@ IFDEF__STDC_DEC_FP__(,						      \
 					.pad = pad,			      \
 					.extra = 0,			      \
 					.i18n = use_outdigits,		      \
-IFDEF__STDC_DEC_FP__(		.is_decimal = is_decimal, )	      \
+IFDEF__STDC_DEC_FP__(			.is_decimal = is_decimal, )	      \
 					.wide = sizeof (CHAR_T) != 1 };	      \
 									      \
 	    if (is_long_double IFDEF__STDC_DEC_FP__(&& !is_decimal))     \
@@ -927,12 +928,12 @@ IFDEF__STDC_DEC_FP__(						      \
 					.group = group,			      \
 					.pad = pad,			      \
 					.extra = 0,			      \
-IFDEF__STDC_DEC_FP__(		.is_decimal = is_decimal, )	      \
+IFDEF__STDC_DEC_FP__(			.is_decimal = is_decimal, )	      \
 					.wide = sizeof (CHAR_T) != 1 };	      \
 									      \
-	    if (is_long_double IFDEF__STDC_DEC_FP__(&& !is_decimal))     \
+	    if (is_long_double IFDEF__STDC_DEC_FP__(&& !is_decimal))	      \
 	      the_arg.pa_long_double = va_arg (ap, long double);	      \
-IFDEF__STDC_DEC_FP__(						      \
+IFDEF__STDC_DEC_FP__(							      \
 	    else if (is_long_double && is_decimal)			      \
 	      the_arg.pa_decimal128 = va_arg (ap, _Decimal128);		      \
 	    else if (is_short && is_decimal)				      \
@@ -944,7 +945,7 @@ IFDEF__STDC_DEC_FP__(						      \
 	      the_arg.pa_double = va_arg (ap, double);			      \
 	    ptr = (const void *) &the_arg;				      \
 									      \
-IFDEF__STDC_DEC_FP__(						      \
+IFDEF__STDC_DEC_FP__(							      \
 	    if (is_decimal)						      \
 	      function_done = __printf_dfphex (s, &info, &ptr);		      \
 	    else							      \
@@ -957,7 +958,7 @@ IFDEF__STDC_DEC_FP__(						      \
 	    if (__ldbl_is_dbl)						      \
 	      fspec->info.is_long_double = 0;				      \
 									      \
-IFDEF__STDC_DEC_FP__(						      \
+IFDEF__STDC_DEC_FP__(							      \
 	    /* FIX ME */						      \
 	    if (is_decimal)						      \
 	      function_done = __printf_dfphex (s, &fspec->info, &ptr);	      \

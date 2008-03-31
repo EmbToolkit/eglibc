@@ -13,7 +13,7 @@
 #define decimal32ToString __decimal32ToString
 #endif
 
-#ifdef IN_LIBDFP
+#ifdef __STDC_DEC_FP__
 #define decDigitsFromDPD ___decDigitsFromDPD
 #define decDigitsToDPD ___decDigitsToDPD
 #define decimal32Canonical ___decimal32Canonical

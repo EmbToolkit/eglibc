@@ -13,7 +13,7 @@
 #define decimal64ToString __decimal64ToString
 #endif
 
-#ifdef IN_LIBDFP
+#ifdef __STDC_DEC_FP__
 #define decDigitsFromDPD ___decDigitsFromDPD
 #define decDigitsToDPD ___decDigitsToDPD
 #define decimal64Canonical ___decimal64Canonical

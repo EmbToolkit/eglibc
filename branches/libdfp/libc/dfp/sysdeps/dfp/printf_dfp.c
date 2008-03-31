@@ -30,9 +30,14 @@
 
 #include <fmt_dfp.h>
 
+extern void __get_dpd_digits (int, const void *const *, char*, int*, int*, int*,
+int*);
+
+
 /* This defines make it possible to use the same code for GNU C library and
    the GNU I/O library.	 */
 #define PUT(f, s, n) _IO_sputn (f, s, n)
+#define PAD(f, c, n) (wide ? _IO_wpadn (f, c, n) : INTUSE(_IO_padn) (f, c, n))
 /* We use this file GNU C library and GNU I/O library.	So make
    names equal.	 */
 #undef putc
@@ -82,6 +87,20 @@
 	}								      \
     } while (0)
 
+#define PADN(ch, len)							      \
+  do									      \
+    {									      \
+      if (PAD (fp, ch, len) != len)					      \
+	{								      \
+	  if (buffer_malloced)						      \
+	    free (wbuffer);						      \
+	  return -1;							      \
+	}								      \
+      done += len;							      \
+    }									      \
+  while (0)
+
+
 #define DECIMAL_PRINTF_BUF_SIZE 65 /* ((DECIMAL128_PMAX + 14) * 2) + 1  */
 /* TODO: add wide character support */
 
@@ -90,9 +109,6 @@ __printf_dfp (FILE *fp,
 	      const struct printf_info *info,
 	      const void *const *args)
 {
-	char str[DECIMAL_PRINTF_BUF_SIZE];
-	const char *str_ptr = str;
-
 	int wide = info->wide;
 	wchar_t *wbuffer = NULL;
 	int buffer_malloced = 0;  /* PRINT macro uses this.  */
@@ -100,21 +116,304 @@ __printf_dfp (FILE *fp,
 	int done = 0;
 	int len = 0;
 
-	if (info->is_short) /* %H  */
-	  {
-	   __fmt_d32 (info, args, str, DECIMAL_PRINTF_BUF_SIZE);
-	  }
-	else if (info->is_long_double) /* %DD  */
-	  {
-	   __fmt_d128 (info, args, str, DECIMAL_PRINTF_BUF_SIZE);
-	  }
-	else /* %D  */
-	  {
-	   __fmt_d64 (info, args, str, DECIMAL_PRINTF_BUF_SIZE);
-	  }
-	len=strlen(str);
-	PRINT(str_ptr, wbuffer, len);
+  /* Locale-dependent representation of decimal point.	*/
+  const char *decimal;
+  wchar_t decimalwc;
+  char spec = tolower(info->spec);
 
-	return 0;
+  /* Locale-dependent thousands separator and grouping specification.  */
+  const char *thousands_sep = NULL;
+  wchar_t thousands_sepwc = 0;
+  const char *grouping;
+
+  
+#ifdef OPTION_EGLIBC_LOCALE_CODE
+  if (info->extra == 0)
+    {
+      decimal = _NL_CURRENT (LC_NUMERIC, DECIMAL_POINT);
+      decimalwc = _NL_CURRENT_WORD (LC_NUMERIC, _NL_NUMERIC_DECIMAL_POINT_WC);
+    }
+  else
+    {
+      decimal = _NL_CURRENT (LC_MONETARY, MON_DECIMAL_POINT);
+      if (*decimal == '\0')
+	decimal = _NL_CURRENT (LC_NUMERIC, DECIMAL_POINT);
+      decimalwc = _NL_CURRENT_WORD (LC_MONETARY,
+				    _NL_MONETARY_DECIMAL_POINT_WC);
+      if (decimalwc == L'\0')
+	decimalwc = _NL_CURRENT_WORD (LC_NUMERIC,
+				      _NL_NUMERIC_DECIMAL_POINT_WC);
+    }
+  /* The decimal point character must not be zero.  */
+  assert (*decimal != '\0');
+  assert (decimalwc != L'\0');
+#else
+  /* Hard-code values from 'C' locale.  */
+  decimal = ".";
+  decimalwc = L'.';
+#endif
+
+
+#ifdef OPTION_EGLIBC_LOCALE_CODE
+  if (info->group)
+    {
+      if (info->extra == 0)
+	grouping = _NL_CURRENT (LC_NUMERIC, GROUPING);
+      else
+	grouping = _NL_CURRENT (LC_MONETARY, MON_GROUPING);
+
+      if (*grouping <= 0 || *grouping == CHAR_MAX)
+	grouping = NULL;
+      else
+	{
+	  /* Figure out the thousands separator character.  */
+	  if (wide)
+	    {
+	      if (info->extra == 0)
+		thousands_sepwc =
+		  _NL_CURRENT_WORD (LC_NUMERIC, _NL_NUMERIC_THOUSANDS_SEP_WC);
+	      else
+		thousands_sepwc =
+		  _NL_CURRENT_WORD (LC_MONETARY,
+				    _NL_MONETARY_THOUSANDS_SEP_WC);
+	    }
+	  else
+	    {
+	      if (info->extra == 0)
+		thousands_sep = _NL_CURRENT (LC_NUMERIC, THOUSANDS_SEP);
+	      else
+		thousands_sep = _NL_CURRENT (LC_MONETARY, MON_THOUSANDS_SEP);
+	    }
+
+	  if ((wide && thousands_sepwc == L'\0')
+	      || (! wide && *thousands_sep == '\0'))
+	    grouping = NULL;
+	  else if (thousands_sepwc == L'\0')
+	    /* If we are printing multibyte characters and there is a
+	       multibyte representation for the thousands separator,
+	       we must ensure the wide character thousands separator
+	       is available, even if it is fake.  */
+	    thousands_sepwc = 0xfffffffe;
+	}
+    }
+  else
+    grouping = NULL;
+#else
+  grouping = NULL;
+#endif
+
+
+{
+    char digits[DECIMAL_PRINTF_BUF_SIZE];
+    int exp, /* the exponent */
+     is_neg, /* is negative */
+     is_nan, /* is not a number */
+     is_inf, /* is infinite */
+     sig,    /* number of significant digits */
+     width,  /* width of the field */
+     decpt,  /* decimal point offset into digits[] */
+     prec,   /* number of digits that follow the decimal point,
+                or number of significant digits for %g */
+     limit,  /* maximum offset into digits[], may exceed len */
+     n;      /* current digit offset into digits[] */
+    digits[0] = '0'; /* need an extra digit for rounding up */
+    
+//    __get_dpd_digits (
+//      (info->is_short) ?        32: /* %H */
+//      (info->is_long_double) ? 128: /* %DD */
+//                                64, /* %D */
+//	args, digits+1, &exp, &is_neg, &is_nan, &is_inf);
+
+    if (info->is_short)
+      __get_digits_d32 (*((_Decimal32*)args[0]), digits+1, &exp, &is_neg,
+			&is_nan, &is_inf);
+    else if (info->is_long_double)
+      __get_digits_d128 (*((_Decimal128*)args[0]), digits+1, &exp, &is_neg,
+			 &is_nan, &is_inf);
+    else
+      __get_digits_d64 (*((_Decimal64*)args[0]), digits+1, &exp, &is_neg,
+			&is_nan, &is_inf);
+
+    width = info->width;
+    prec = info->prec;
+    
+    if (is_nan || is_inf) {
+      width -= 3;
+      /*if (is_nan) is_neg = 0;*/
+      if (is_neg || info->showsign || info->space) width--;
+      
+      if (!info->left && width > 0)
+        PADN (' ', width);
+
+      if (is_neg)
+        outchar ('-');
+      else if (info->showsign)
+        outchar ('+');
+      else if (info->space)
+        outchar (' ');
+      
+      if (is_nan)
+        if (isupper(info->spec))
+	  { outchar ('N'); outchar ('A'); outchar ('N'); }
+	else
+	  { outchar ('n'); outchar ('a'); outchar ('n'); }
+      else
+        if (isupper(info->spec))
+	  { outchar ('I'); outchar ('N'); outchar ('F'); }
+	else
+	  { outchar ('i'); outchar ('n'); outchar ('f'); }
+	
+      if (info->left && width > 0)
+        PADN (' ', width);
+
+      return 0;
+    }
+    
+   
+    n = 0;
+    while (digits[n] == '0') n++;
+    sig = strlen(digits+n);
+    if (sig == 0) { sig = 1; n--; } /* coefficient is zero */
+    len = n + sig;
+    
+    
+    
+    /* if no precision is specified, use that of the decimal type */
+    if (prec < 0)
+      switch (spec)
+	{
+	  case 'f': prec = (exp < 0) ? -exp : 0; break;
+	  case 'g': prec = sig; break;
+	  case 'e': prec = sig-1; break;
+	}
+    else if (prec < ((spec == 'f') ? -exp : sig-(spec!='g')))
+    /* do rounding if precision is less than the decimal type */
+      {
+        int index;
+        index = n + prec;
+	if (spec == 'f') index += sig + exp;
+	if (spec == 'e') index += 1;
+	if (spec == 'g') index += 0;
+
+        if (index < len && digits[index] >= '5')
+          {
+            while (digits[--index] == '9') digits[index] = '0';
+            digits[index]++;
+            if (index < n) { n--; sig++; }
+          }
+      }
+    
+    /* calculate decimal point, adjust prec and exp if necessary */
+    switch(spec)
+      {
+	case 'f':
+	  decpt = n + sig + exp;
+	  break;
+
+	case 'g':
+	  if (0 >= exp && exp >= -(prec+5) && exp+sig <= prec)
+	    {
+	      spec = 'f';
+	      prec -= exp+sig;
+	      decpt = n + sig + exp;
+	      break;
+	    }
+	  /* fallthru to 'e' */
+	  prec--;
+
+	case 'e':
+	  exp += sig-1;
+	  decpt = n + 1;
+	  break;
+     }
+
+    /* remove trailing zeroes for %g */
+    /* temporarily disabled until we can figure out the draft
+    if (tolower (info->spec) == 'g')
+      {
+        while (prec > 0 && decpt+prec > len) prec--;
+	while (prec > 0 && digits[decpt+prec-1] == '0') prec--;
+      }*/
+
+    /* remove trailing zeroes for %g, but only if they are not significant */
+    if (tolower (info->spec) == 'g')
+      {
+        while (prec > 0 && decpt+prec > len) prec--;
+	while (prec > 0 && decpt+prec > n+sig && digits[decpt+prec-1] == '0') prec--;
+      }
+      
+
+    /* digits to the left of the decimal pt. */
+    if (n < decpt) width -= decpt - n;
+    else width--;  /* zero */
+  
+    /* digits to the right of the decimal pt. */
+    if (prec > 0) width -= 1 + prec;
+    else if (info->alt) width -= 1;
+  
+    if (spec != 'f')
+      width -= 4 + (0!=(exp/1000)) + (0!=(exp/100));
+  
+    if (is_neg || info->showsign || info->space) width--;
+
+    if (!info->left && info->pad != '0' && width > 0)
+      PADN (info->pad, width);
+
+    if (is_neg)
+      outchar ('-');
+    else if (info->showsign)
+      outchar ('+');
+    else if (info->space)
+      outchar (' ');
+
+    if (!info->left && info->pad == '0' && width > 0)
+      PADN ('0', width);
+
+
+  if (decpt <= n)
+    {
+      outchar ('0');
+      n = decpt;
+      if (n < 0)
+        {
+          outchar (wide ? decimalwc : *decimal);
+          while (n < 0 && n < decpt + prec)
+	    {
+              outchar ('0');
+              n++;
+            }
+        }
+    }
+  while (n < len && n < decpt + prec)
+    {
+      if (n == decpt) outchar (wide ? decimalwc : *decimal);
+      outchar (digits[n]);
+      n++;
+    }
+  while (n < decpt + prec)
+    {
+      if (n == decpt) outchar (wide ? decimalwc : *decimal);
+      outchar ('0');
+      n++;
+    }
+  if (n == decpt && info->alt) outchar (wide ? decimalwc : *decimal);
+  
+  
+  if (spec != 'f')
+   {
+     outchar (isupper(info->spec) ? 'E' : 'e');
+     if (exp < 0) { outchar ('-'); exp = -exp; } else outchar ('+');
+     n = exp;
+     if (exp >= 1000) { outchar ('0'+(n/1000)); n%=1000; }
+     if (exp >= 100) { outchar ('0'+(n/100)); n%=100; }
+     outchar ('0'+(n/10));
+     outchar ('0'+(n%10));
+ 
+   }
+  if (info->left && width > 0)
+    PADN (info->pad, width);
+}  
+
+   return 0;
 }
 libc_hidden_def (__printf_dfp)

@@ -378,7 +378,8 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 #endif
       /* If TP is at the start of the digits, there was no correctly
 	 grouped prefix of the string; so no number found.  */
-      RETURN (FLOAT_ZERO, tp == start_of_digits ? (base == 16 ? cp - 1 : nptr) : tp);
+      RETURN (negative ? -FLOAT_ZERO : FLOAT_ZERO,
+              tp == start_of_digits ? (base == 16 ? cp - 1 : nptr) : tp);
     }
 
   /* Remember first significant digit and read following characters until the
@@ -434,7 +435,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 	  if (tp < startp)
 	    /* The number is validly grouped, but consists
 	       only of zeroes.  The whole value is zero.  */
-	    RETURN (FLOAT_ZERO, tp);
+	    RETURN (negative ? -FLOAT_ZERO : FLOAT_ZERO, tp);
 
 	  /* Recompute DIG_NO so we won't read more digits than
 	     are properly grouped.  */
@@ -559,12 +560,17 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 	cp = expp;
     }
 
+
+      printf("lead_zero=%d dig_no=%d int_no=%d exponent=%d\n", 
+              lead_zero, dig_no, int_no, exponent);
+
   /* We don't want to have to work with trailing zeroes after the radix.  */
   if (dig_no > int_no)
     {
       while (expp[-1] == L_('0'))
 	{
 	  --expp;
+	  --exponent;
 	  --dig_no;
 	}
       assert (dig_no >= int_no);
@@ -593,7 +599,25 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
     *endptr = (STRING_TYPE *) cp;
 
   if (dig_no == 0)
-    return negative ? -FLOAT_ZERO : FLOAT_ZERO;
+    {
+      printf("lead_zero=%d dig_no=%d int_no=%d exponent=%d\n", 
+              lead_zero, dig_no, int_no, exponent);
+
+
+      if (exponent != 0)
+        return negative ? -FLOAT_ZERO : FLOAT_ZERO;
+
+
+      d32 += 1;
+      while(exponent-- > 0)
+	d32 *= 10;
+      while(++exponent < 0)
+	d32 /= 10;
+
+      d32 -= d32;
+      return negative ? -d32 : d32;
+    }
+
 
   if (lead_zero)
     {

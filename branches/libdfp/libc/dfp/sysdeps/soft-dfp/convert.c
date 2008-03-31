@@ -263,7 +263,6 @@ FUNCTION_NAME (SRC_TYPE a)
 // truncdddf
 	long double temp;
 	SRC_TYPE a_norm;
-	SRC_TYPE a_half;
 	long long mant;
 	int	exp, sexp;
 
@@ -344,7 +343,6 @@ FUNCTION_NAME (SRC_TYPE a)
 // trunctddf
 	long double temp;	/* Need at least 16 decimal digits of accuracy.  */
 	SRC_TYPE a_norm;
-	SRC_TYPE a_half;
 	long long mant;
 	int	exp, sexp;
 
@@ -389,7 +387,6 @@ FUNCTION_NAME (SRC_TYPE a)
 // trunctdsf
 	double temp;
 	SRC_TYPE a_norm;
-	SRC_TYPE a_half;
 	long long mant;
 	int	exp, sexp;
 	

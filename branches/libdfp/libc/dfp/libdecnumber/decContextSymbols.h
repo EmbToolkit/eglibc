@@ -19,7 +19,7 @@
 #define decContextZeroStatus __decContextZeroStatus
 #endif
 
-#ifdef IN_LIBDFP
+#ifdef __STDC_DEC_FP__
 #define decContextClearStatus ___decContextClearStatus
 #define decContextDefault ___decContextDefault
 #define decContextGetRounding ___decContextGetRounding

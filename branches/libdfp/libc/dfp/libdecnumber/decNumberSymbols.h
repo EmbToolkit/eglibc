@@ -66,7 +66,7 @@
 #define decNumberZero __decNumberZero
 #endif
 
-#ifdef IN_LIBDFP
+#ifdef __STDC_DEC_FP__
 #define decNumberAbs ___decNumberAbs
 #define decNumberAdd ___decNumberAdd
 #define decNumberAnd ___decNumberAnd

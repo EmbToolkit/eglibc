@@ -13,7 +13,7 @@
 #define decimal128ToString __decimal128ToString
 #endif
 
-#ifdef IN_LIBDFP
+#ifdef __STDC_DEC_FP__
 #define decDigitsFromDPD ___decDigitsFromDPD
 #define decDigitsToDPD ___decDigitsToDPD
 #define decimal128Canonical ___decimal128Canonical

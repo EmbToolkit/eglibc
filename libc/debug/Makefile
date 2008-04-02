@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001,2004,2005,2006,2007 Free Software Foundation, Inc.
+# Copyright (C) 1998-2001,2004-2008 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -35,21 +35,25 @@ routines  = noophooks \
 	    read_chk pread_chk pread64_chk recv_chk recvfrom_chk \
 	    readlink_chk readlinkat_chk getwd_chk getcwd_chk \
 	    realpath_chk ptsname_r_chk fread_chk fread_u_chk \
-	    wctomb_chk wcscpy_chk wmemcpy_chk wmemmove_chk wmempcpy_chk \
-	    wcpcpy_chk wcsncpy_chk wcscat_chk wcsncat_chk wmemset_chk \
-	    wcpncpy_chk \
-	    swprintf_chk vswprintf_chk \
 	    confstr_chk getgroups_chk ttyname_r_chk \
-	    gethostname_chk getdomainname_chk wcrtomb_chk mbsnrtowcs_chk \
-	    wcsnrtombs_chk mbsrtowcs_chk wcsrtombs_chk mbstowcs_chk \
-	    wcstombs_chk \
+	    gethostname_chk getdomainname_chk \
+	    asprintf_chk vasprintf_chk dprintf_chk \
+	    vdprintf_chk obprintf_chk \
 	    stack_chk_fail fortify_fail \
 	    $(static-only-routines)
 routines-$(OPTION_EGLIBC_GETLOGIN) += getlogin_r_chk
 routines-$(OPTION_EGLIBC_BACKTRACE) += backtrace backtracesyms backtracesymsfd 
 routines-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO)			\
-	 += wprintf_chk fwprintf_chk	\
+	 += wprintf_chk fwprintf_chk				\
 	    vwprintf_chk vfwprintf_chk fgetws_chk fgetws_u_chk
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR)				\
+	 += wctomb_chk wcscpy_chk wmemcpy_chk wmemmove_chk wmempcpy_chk	\
+	    wcpcpy_chk wcsncpy_chk wcscat_chk wcsncat_chk wmemset_chk	\
+	    wcpncpy_chk							\
+	    swprintf_chk vswprintf_chk					\
+	    wcrtomb_chk mbsnrtowcs_chk					\
+	    wcsnrtombs_chk mbsrtowcs_chk wcsrtombs_chk mbstowcs_chk	\
+	    wcstombs_chk 
 
 static-only-routines := warning-nop stack_chk_fail_local
 
@@ -58,6 +62,11 @@ CFLAGS-sprintf_chk.c = -D_IO_MTSAFE_IO
 CFLAGS-snprintf_chk.c = -D_IO_MTSAFE_IO
 CFLAGS-vsprintf_chk.c = -D_IO_MTSAFE_IO
 CFLAGS-vsnprintf_chk.c = -D_IO_MTSAFE_IO
+CFLAGS-asprintf_chk.c = -D_IO_MTSAFE_IO
+CFLAGS-vasprintf_chk.c = -D_IO_MTSAFE_IO
+CFLAGS-obprintf_chk.c = -D_IO_MTSAFE_IO
+CFLAGS-dprintf_chk.c = -D_IO_MTSAFE_IO $(exceptions)
+CFLAGS-vdprintf_chk.c = -D_IO_MTSAFE_IO $(exceptions)
 CFLAGS-printf_chk.c = -D_IO_MTSAFE_IO $(exceptions)
 CFLAGS-fprintf_chk.c = -D_IO_MTSAFE_IO $(exceptions)
 CFLAGS-vprintf_chk.c = -D_IO_MTSAFE_IO $(exceptions)
@@ -125,9 +134,6 @@ extra-libs-others = $(extra-libs)
 
 libSegFault-routines = segfault
 libSegFault-inhibit-o = $(filter-out .os,$(object-suffixes))
-OPTION_EGLIBC_BACKTRACE-CFLAGS-$(OPTION_EGLIBC_BACKTRACE) \
-	= -DOPTION_EGLIBC_BACKTRACE
-CFLAGS-segfault.c = $(OPTION_EGLIBC_BACKTRACE-CFLAGS-y)
 
 libpcprofile-routines = pcprofile
 libpcprofile-inhibit-o = $(filter-out .os,$(object-suffixes))

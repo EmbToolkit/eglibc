@@ -31,16 +31,18 @@ routines := offtime asctime clock ctime ctime_r difftime \
 	    tzfile getitimer setitimer			 \
 	    stime dysize timegm ftime			 \
 	    getdate strptime strptime_l			 \
-	    strftime wcsftime strftime_l wcsftime_l
+	    strftime strftime_l
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR)		 \
+	 := wcsftime wcsftime_l
 aux-$(OPTION_EGLIBC_LOCALE_CODE) += alt_digit era lc-time-cleanup
 distribute := datemsk
 
 tests	:= test_time clocktest tst-posixtz \
-	   tst-getdate tst-mktime tst-mktime2 tst-ftime_l tst-strftime \
+	   tst-getdate tst-mktime tst-mktime2 tst-strftime \
 	   tst-mktime3 tst-strptime2 bug-asctime bug-asctime_r bug-mktime1 \
-	   tst-strptime3
+	   tst-strptime3 bug-getdate1
 tests-$(OPTION_EGLIBC_LOCALE_CODE) \
-	+= tst-strptime
+	+= tst-strptime tst-ftime_l
 tests-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO) \
 	+= tst_wcsftime
 
@@ -54,12 +56,6 @@ CFLAGS-tzfile.c = $(tz-cflags)
 CFLAGS-tzset.c = $(tz-cflags)
 CFLAGS-getdate.c = -fexceptions
 
-OPTION_EGLIBC_LOCALE_CODE-CFLAGS-$(OPTION_EGLIBC_LOCALE_CODE) \
-	= -DOPTION_EGLIBC_LOCALE_CODE
-
-CFLAGS-strftime_l.c = $(OPTION_EGLIBC_LOCALE_CODE-CFLAGS-y)
-CFLAGS-strptime_l.c = $(OPTION_EGLIBC_LOCALE_CODE-CFLAGS-y)
-
 # Don't warn about Y2k problem in strftime format string.
 CFLAGS-test_time.c = -Wno-format
 
@@ -68,3 +64,5 @@ test_time-ARGS= EST5EDT CST
 
 tst-strptime-ENV = LOCPATH=${common-objpfx}localedata
 tst-ftime_l-ENV = LOCPATH=${common-objpfx}localedata
+
+bug-getdate1-ARGS = ${objpfx}bug-getdate1-fmt

@@ -1,3 +1,284 @@
+2008-04-01  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	* Makerules (install-lib): Don't install libpthread_pic.a.
+	(install-map): Don't install libpthread_pic.map.
+
+2008-02-23  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR nptl/3270
+	nptl/
+	* allocatestack.c (setxid_mark_thread, setxid_unmark_thread): New.
+	(setxid_signal_thread): Return a successful signal indicator.  Just
+	skip threads without SETXID_BITMASK.
+	(__nptl_setxid): Use separate marking and unmarking loops.  Repeat
+	signalling if necessary.
+	* init.c (sighandler_setxid): Use atomic operations for
+	cancelhandling.  Wake __nptl_setxid last.
+
+2008-02-17  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+	2008-01-12  H.J. Lu  <hongjiu.lu@intel.com>
+	* sysdeps/i386/fpu/ftestexcept.c (fetestexcept): Use short for fnstsw.
+
+2008-02-11  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #3406]
+	* sysdeps/ieee754/flt-32/w_expf.c (o_threshold): Correct value.
+	* math/libm-test.inc (exp_test): Test 88.72269439697265625.
+
+2008-02-07  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makerules (install-extras, install-map): New variables.
+	(installed-libcs): Add libc_pic.a.
+	(install-lib): Include _pic.a files for versioned shared
+	libraries.
+	(install-map-nosubdir, install-extras-nosubdir): Add rules for
+	installing extra files.
+	(install-no-libc.a-nosubdir): Depend on install-map-nosubdir and
+	install-extras-nosubdir.
+
+2008-01-09  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* scripts/cross-test-ssh.sh (env_blacklist): Add TERM, TERMCAP, PWD.
+	(remove_newlines): New.
+	(blacklist_exports): Unset blacklisted variables and use export.
+	(Top level): Use remove_newlines.
+
+2007-12-13  Sandra Loosemore  <sandra@codesourcery.com>
+
+	* sysdeps/ieee754/ldbl-opt/Makefile (libnldbl-calls):  Make strfmon
+	and strfmon_l conditional on OPTION_EGLIBC_LOCALE_CODE.
+	* sysdeps/ieee754/ldbl-opt/nldbl-compat.c (__nldbl___vstrfmon,
+	__nldbl___vstrfmon_l, __nldbl___strfmon, __nldbl___strfmon_l):
+	Make conditional on __OPTION_EGLIBC_LOCALE_CODE.
+
+2007-12-13  Jim Blandy  <jimb@codesourcery.com>
+	    Sandra Loosemore  <sandra@codesourcery.com>
+
+	Implement the OPTION_POSIX_C_LANG_WIDE_CHAR option group.
+	* option-groups.def (OPTION_POSIX_C_LANG_WIDE_CHAR): New entry.
+	(OPTION_EGLIBC_LOCALE_CODE, OPTION_POSIX_WIDE_CHAR_DEVICE_IO):
+	Note dependence on OPTION_POSIX_C_LANG_WIDE_CHAR.
+	(OPTION_POSIX_WIDE_CHAR_DEVICE_IO): Doc fix; note effect on 
+        support for 'ccs=CHARSET' strings in fopen and friends.
+	* option-groups.mak (option-disabled): New function.
+	* scripts/option-groups.awk: Generate preprocessor conditionals to
+	protect gnu/option-groups.h from multiple #inclusion.
+
+	* stdlib/Makefile (routines): Put in group: mblen mbstowcs mbtowc
+	wcstombs wctomb wcstoimax wcstoumax.
+	(tests): Put in group: testmb.
+	* debug/Makefile (routines): Put in group: wctomb_chk wcscpy_chk
+	wmemcpy_chk wmemmove_chk wmempcpy_chk wcpcpy_chk wcsncpy_chk
+	wcscat_chk wcsncat_chk wmemset_chk wcpncpy_chk swprintf_chk
+	vswprintf_chk wcrtomb_chk mbsnrtowcs_chk wcsnrtombs_chk
+	mbsrtowcs_chk wcsrtombs_chk mbstowcs_chk wcstombs_chk.
+	* debug/tst-chk1.c (do_test): Make wide character parts conditional
+	on __OPTION_POSIX_WIDE_CHAR_DEVICE_IO.
+	* wcsmbs/Makefile (routines): Put in group: wcscat wcschr wcscmp
+	wcscpy wcscspn wcsdup wcslen wcsncat wcsncmp wcsncpy wcspbrk
+	wcsrchr wcsspn wcstok wcsstr wmemchr wmemcmp wmemmove wcpcpy
+	wcpncpy wmempcpy btowc wctob mbsinit mbrlen mbrtowc wcrtomb
+	mbsrtowcs wcsrtombs mbsnrtowcs wcsnrtombs wcsnlen wcschrnul wcstol
+	wcstoul wcstoll wcstoull wcstod wcstold wcstof wcstol_l wcstoul_l
+	wcstoll_l wcstoull_l wcstod_l wcstold_l wcstof_l wcscoll wcsxfrm
+	wcwidth wcswidth wcscoll_l wcsxfrm_l wcscasecmp wcsncase
+	wcscasecmp_l wcsncase_l wcsmbsload mbsrtowcs_l isoc99_swscanf
+	isoc99_vswscanf.
+	(tests): Put in group: tst-wcstof wcsmbs-tst1 tst-wcsnlen tst-wcpncpy
+	tst-mbsrtowcs wcsatcliff.
+	* time/Makefile (routines): Put in group: wcsftime wcsftime_l
+	* libio/Makefile (routines): When group is disabled, add
+	wdummyfileops.  Put in group: wfiledoalloc iowpadn swprintf
+	vswprintf iovswscanf swscanf wgenops wstrops wfileops wmemstream.
+        (tests): Put in group: tst_swprintf tst_swscanf	tst-sscanf
+	tst-wmemstream1 tst-wmemstream2.
+	* libio/wdummyfileops.c: New file.  Provide a dummy definition for
+	the _IO_FILE functions that prints an error message and dies.
+	* libio/libioP.h: #include <gnu/option-groups.h>.
+	(_IO_is_wide): New macro.  Used as necessary to excise references
+	to wide character code.
+	* libio/iosetbuffer.c (_IO_setbuffer): Don't call _IO_WSETBUF if
+	wide characters are not supported.
+	* libio/ioseekoff.c (_IO_seekoff_unlocked): Use _IO_is_wide.
+	* libio/iofwide.c: #include <gnu/option-groups.h>.
+	(_IO_fwide): When the group is disabled, provide a simplified
+	definition that aborts if the caller attempts to make a stream
+	wide-oriented.
+	* libio/fileops.c (_IO_new_file_close_it): Use _IO_is_wide.
+	(_IO_new_file_fopen): Conditionalize for
+	__OPTION_POSIX_WIDE_CHAR_DEVICE_IO.
+	* libio/ioseekpos.c (_IO_seekpos_unlocked): Use _IO_is_wide.
+	* libio/__fpurge.c (__fpurge): Likewise.
+	* wctype/Makefile (routines): Put in group: wcfuncs wctype
+	iswctype wcfuncs_l wctype_l iswctype_l wctrans_l.
+	(tests): Put in group: test_wctype test_wcfuncs.
+	* posix/fnmatch_loop.c (FCT) (either internal_fnmatch or
+	internal_fnwmatch): Handle character categories accessed via
+	'wctype' only if the group is enabled.
+	* stdio-common/Makefile (routines): Put in group: vfwprintf
+	vfwscanf printf-parsewc.
+	(tests): Put in group: bug18a tst-swscanf tst-wc-printf.
+	* stdio-common/printf_fp.c (__printf_fp): When the group is
+	disabled, fix 'wide' at zero.
+	* stdio-common/printf_fphex.c (__printf_fphex): Same.
+	* stdio-common/printf_size.c (__printf_size): Same.
+	* stdio-common/vfprintf.c (MULTIBYTE_SUPPORT): New macro.
+	(process_string_arg): If the format contains wide characters or
+	strings, assert that we have multibyte support.
+	* stdio-common/vfscanf.c (MULTIBYTE_SUPPORT): New macro.
+	(_IO_vfscanf_internal): If we see wide string or character format
+	directives, assert that we have multibyte support.
+	* stdio-common/scanf14.c (main): Make conditional on
+	__OPTION_EGLIBC_LOCALE_CODE.
+	* stdio-common/tst-sprintf.c (main): Make wide character test 
+	conditional on __OPTION_POSIX_C_LANG_WIDE_CHAR.
+	* stdio-common/tstdiomisc.c (F): Likewise.
+
+2007-12-11  Jim Blandy  <jimb@codesourcery.com>
+
+	Clean up test results with OPTION_EGLIBC_LOCALE_CODE disabled.
+	* debug/tst-chk1.c: Omit locale tests when group is disabled.
+	* intl/Makefile (tests): Put tst-translit, tst-gettext2,
+	tst-codeset, and tst-gettext3 in the group.
+	* libio/Makefile (tests): Put tst-fgetws, tst-fopenloc,
+	tst-setvbuf1, tst-ungetwc1, tst-ungetwc2, bug-ftell, bug-ungetwc2,
+	tst-widetext, and tst-fopenloc in the group; some were formerly in
+	OPTION_POSIX_WIDE_CHAR_DEVICE_IO.
+	* nptl/Makefile (tests): Put tst-locale1 in the group.
+	* posix/Makefile (tests): Put bug-regex17, bug-regex18,
+	bug-regex20, bug-regex23, and bug-regex26 in the group.
+	(tst-rxspencer): Pass --utf8 only when the group is enabled.
+	* posix/bug-regex6.c: Omit non-C locale tests when group is disabled.
+	* stdio-common/Makefile (tests): Put bug14 and scanf13 in the group.
+	* stdlib/Makefile (tests): Put tst-strtod4, tst-strtod5, and
+	testmb2 in the group.
+	* stdlib/tst-strtod.c: Omit locale tests when group is disabled.
+	* string/tst-strxfrm.c, string/tst-strxfrm2.c: Same.
+	* time/Makefile (tests): Put tst-ftime_l in the group.
+	
+	Fix code broken by OPTION_EGLIBC_LOCALE_CODE.
+	* posix/regex_internal.h: #include <gnu/option-groups.h>.
+	(string_mb_cur_max, dfa_mb_cur_max): New macros for accessing the
+	'mb_cur_max' fields of re_string_t and re_dfa_t, whose values can
+	be constant when the group is disabled.  Use them throughout.
+	* posix/regex_internal.c: Use string_mb_cur_max and dfa_mb_cur_max
+	as appropriate.
+	* posix/regcomp.c: Same.
+	(re_compile_fastmap_iter): Process COMPLEX_BRACKET nodes only when
+	the group is enabled.
+	(init_dfa): When the group is disabled, clear map_notascii.
+	(parse_bracket_exp): Process MB_CHAR elements only when the group
+	is enabled.  Otherwise, fix 'nrules' at zero, for the compiler's
+	benefit, and assume the collation sequence is the identity.
+	(parse_bracket_element): Create MB_CHAR elements only when the
+	group is enabled.
+	(build_equiv_class): When the group is disabled, we know there
+	will be no collation rules.
+	(build_charclass): When the group is disabled, do not try to
+	process references to wide character categories accessed via
+	'wctype'.
+	* posix/regexec.c: Use string_mb_cur_max and dfa_mb_cur_max
+	as appropriate.
+	(find_collation_sequence_value): Define function only when the
+	group is enabled.
+	(check_node_accept_bytes): Check character against 'wctype' style
+	classes only if group is enabled.  When the group is disabled,
+	Skip collation-rule-based matching.
+	* posix/fnmatch.c: #include <gnu/option-groups.h>.
+	Define HANDLE_MULTIBYTE only if when OPTION_EGLIBC_LOCALE_CODE is
+	enabled.
+	* posix/fnmatch_loop.c (FCT (internal_fnmatch or internal_fnwmatch)): 
+	If the group is disabled, assume that the collation sequence is
+	the identity.
+	* stdio-common/_i18n_number.h (_i18n_number_rewrite): Provide only
+	a trivial definition when the group is disabled.
+	* stdio-common/vfprintf.c: #include <gnu/option-groups.h>.
+	(LOCALE_SUPPORT): Define.
+	(vfprintf): Consult it as appropriate.
+	* stdio-common/vfscanf.c: #include <gnu/option-groups.h>.
+	(_IO_vfwscanf): If the group is disabled, don't try to consult the
+	locale for decimal point and thousands separator characters, or
+	for custom digits.
+	* stdlib/strtod_l.c (__STRTOF_INTERNAL): Don't try to consult the
+	locale's numeric settings.
+	* string/strxfrm_l.c, string/strcoll_l.c: Don't try to consult the
+	locale's collation settings.
+
+	Fix testing with OPTION_EGLIBC_CATGETS disabled.
+	* catgets/Makefile (tests): Put de/libc.cat, test1.cat,
+	test2.cat, and test-gencat.out in the option group.
+
+2007-11-29  Sandra Loosemore  <sandra@codesourcery.com>
+
+	Allow building EGLIBC with -Os.
+
+	* include/features.h (__USE_EXTERN_INLINES_IN_LIBC):  New.
+	* io/sys/stat.h: Use it instead of __USE_EXTERN_INLINES.
+
+2007-11-09  Sandra Loosemore  <sandra@codesourcery.com>
+
+	* nss/gen-fixed-nsswitch.c (internal_function):  Provide a fallback
+	definition.
+
+2007-10-29  Jim Blandy  <jimb@codesourcery.com>
+
+	* Makeconfig ($(common-objpfx)gnu/option-groups.h): New generated
+	header.
+	* scripts/option-groups.awk: New script, to generate it.
+	* debug/Makefile (CFLAGS-segfault.c): Don't define option group
+	symbols here.
+	* wcsmbs/Makefile (CFLAGS-wcsmbsload.c): Same.
+	* time/Makefile (CFLAGS-strftime_l.c, CFLAGS-strptime_l.c): Same.
+	* intl/Makefile (CFLAGS-dcigettext.c): Same.
+	* sysdeps/unix/sysv/linux/Makefile (CFLAGS-gethostid.c)
+	(CFLAGS-libc_fatal.c): Same.
+	* misc/Makefile (CFLAGS-error.c, CFLAGS-err.c): Same.
+	* nss/Makefile (CFLAGS-nsswitch.c, CFLAGS-getnssent_r.c)
+	(CFLAGS-getent.c): Same.
+	* string/Makefile (CFLAGS-strerror_l.c): Same.
+	* iconv/Makefile (CFLAGS-gconv_db.c, CFLAGS-gconv_trans.c)
+	(CFLAGS-iconv_prog.c): Same.
+	* locale/Makefile (CFLAGS-C-ctype.c, CFLAGS-xlocale.c)
+	(CFLAGS-ld-messages.c): Same.
+	* argp/Makefile (CFLAGS-argp-help.c, CFLAGS-argp-fmtstream.c): Same.
+	* nptl/Makefile (CFLAGS-pthread_create.c): Same.
+	* posix/Makefile (CFLAGS-glob.c, CFLAGS-bug-regex1.c): Same.
+	* stdio-common/Makefile (CFLAGS-printf_fp.c)
+	(CFLAGS-printf_fphex.c, CFLAGS-fxprintf.c, CFLAGS-tst-popen.c): Same.
+	* libidn/Makefile (CFLAGS-toutf8.c): Same.
+	* debug/segfault.c, wcsmbs/wcsmbsload.c, time/strftime_l.c: 
+	* time/strptime_l.c, intl/dcigettext.c:
+	* sysdeps/unix/sysv/linux/libc_fatal.c:
+	* sysdeps/unix/sysv/linux/gethostid.c, misc/err.c, misc/error.c:
+	* nss/getnssent_r.c, nss/nsswitch.c, nss/getent.c:
+	* string/strerror_l.c, iconv/gconv_db.c, iconv/iconv_prog.c:
+	* iconv/gconv_trans.c, locale/xlocale.c, locale/C-ctype.c:
+	* locale/programs/ld-messages.c, argp/argp-help.c:
+	* argp/argp-fmtstream.c, nptl/pthread_create.c, posix/glob.c:
+	* posix/bug-regex1.c, stdio-common/printf_fp.c:
+	* stdio-common/printf_fphex.c, stdio-common/tst-popen.c:
+	* stdio-common/fxprintf.c, libidn/toutf8.c: #include
+	<gnu/option-groups.h>, and test for the symbols that #defines,
+	instead.
+
+	* nss/gen-fixed-nsswitch.c: Don't #include "nsswitch.h".  Instead,
+	make our own copies of the datatype and enum definitions.  Do
+	#include "nss.h".
+	(lookup_actions, service_library, known_function, service_user)
+	(name_database_entry, name_database): Copy definitions from
+	nsswitch.c.
+	* grp/Makefile (LDLIBS-testgrp): Link against the libraries listed
+	in nss/fixed-nsswitch-libs when OPTION_EGLIBC_NSSWITCH is
+	disabled.
+	* posix/Makefile (LDLIBS-globtest): Same.
+	* option-groups.def (OPTION_EGLIBC_NSSWITCH): Doc fix.
+
+2007-10-23  Jim Blandy  <jimb@codesourcery.com>
+
+	* bits/wchar.h (__WCHAR_MIN): Add missing underscores to name.
+
 2007-10-07  Jim Blandy  <jimb@codesourcery.com>
 
 	Implement the OPTION_EGLIBC_CXX_TESTS option group.

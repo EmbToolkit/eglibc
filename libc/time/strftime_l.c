@@ -1,4 +1,4 @@
-/* Copyright (C) 2002, 2004 Free Software Foundation, Inc.
+/* Copyright (C) 2002, 2004, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -33,6 +33,10 @@
 # define MULTIBYTE_IS_FORMAT_SAFE 1
 # define STDC_HEADERS 1
 # include "../locale/localeinfo.h"
+#endif
+
+#ifdef _LIBC
+# include <gnu/option-groups.h>
 #endif
 
 #if defined emacs && !defined HAVE_BCOPY
@@ -84,6 +88,7 @@ extern char *tzname[];
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdbool.h>
 #else
 # ifndef HAVE_MEMCPY
 #  define memcpy(d, s, n) bcopy ((s), (d), (n))
@@ -453,27 +458,9 @@ static CHAR_T const month_name[][10] =
 # define ut 0
 #endif
 
-#if !defined _LIBC && HAVE_TZNAME && HAVE_TZSET
-  /* Solaris 2.5 tzset sometimes modifies the storage returned by localtime.
-     Work around this bug by copying *tp before it might be munged.  */
-  size_t _strftime_copytm (char *, size_t, const char *,
-			   const struct tm * ut_argument_spec_iso) __THROW;
-  size_t
-  my_strftime (s, maxsize, format, tp ut_argument)
-      CHAR_T *s;
-      size_t maxsize;
-      const CHAR_T *format;
-      const struct tm *tp;
-      ut_argument_spec
-  {
-    struct tm tmcopy;
-    tmcopy = *tp;
-    return _strftime_copytm (s, maxsize, format, &tmcopy ut_argument);
-  }
-# undef my_strftime
-# define my_strftime _strftime_copytm
-#endif
-
+static size_t __strftime_internal (CHAR_T *, size_t, const CHAR_T *,
+				   const struct tm *, bool ut_argument_spec_iso
+				   LOCALE_PARAM_PROTO) __THROW;
 
 /* Write information from TP into S according to the format
    string FORMAT, writing no more that MAXSIZE characters
@@ -481,12 +468,38 @@ static CHAR_T const month_name[][10] =
    characters written.  If S is NULL, nothing will be written
    anywhere, so to determine how many characters would be
    written, use NULL for S and (size_t) UINT_MAX for MAXSIZE.  */
+
 size_t
 my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
+     CHAR_T *s;
+     size_t maxsize;
+     const CHAR_T *format;
+     const struct tm *tp;
+     ut_argument_spec
+     LOCALE_PARAM_DECL
+{
+#if !defined _LIBC && HAVE_TZNAME && HAVE_TZSET
+  /* Solaris 2.5 tzset sometimes modifies the storage returned by localtime.
+     Work around this bug by copying *tp before it might be munged.  */
+  struct tm tmcopy;
+  tmcopy = *tp;
+  tp = &tmcopy;
+#endif
+  return __strftime_internal (s, maxsize, format, tp, false
+			      ut_argument LOCALE_ARG);
+}
+#ifdef _LIBC
+libc_hidden_def (my_strftime)
+#endif
+
+static size_t
+__strftime_internal (s, maxsize, format, tp, tzset_called ut_argument
+		     LOCALE_PARAM)
       CHAR_T *s;
       size_t maxsize;
       const CHAR_T *format;
       const struct tm *tp;
+      bool tzset_called;
       ut_argument_spec
       LOCALE_PARAM_DECL
 {
@@ -559,7 +572,9 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
       /* POSIX.1 requires that local time zone information is used as
 	 though strftime called tzset.  */
 # if HAVE_TZSET
-      tzset ();
+      if (!tzset_called)
+	tzset ();
+      tzset_called = true;
 # endif
     }
 #endif
@@ -834,10 +849,12 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
 	subformat:
 	  {
 	    CHAR_T *old_start = p;
-	    size_t len = my_strftime (NULL, (size_t) -1, subfmt,
-				      tp ut_argument LOCALE_ARG);
-	    add (len, my_strftime (p, maxsize - i, subfmt,
-				   tp ut_argument LOCALE_ARG));
+	    size_t len = __strftime_internal (NULL, (size_t) -1, subfmt,
+					      tp, tzset_called ut_argument
+					      LOCALE_ARG);
+	    add (len, __strftime_internal (p, maxsize - i, subfmt,
+					   tp, tzset_called ut_argument
+					   LOCALE_ARG));
 
 	    if (to_uppcase)
 	      while (old_start < p)
@@ -883,7 +900,7 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
 	    goto bad_format;
 	  if (modifier == L_('E'))
 	    {
-#if defined (OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
+#if (! _LIBC || __OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
 	      struct era_entry *era = _nl_get_era_entry (tp HELPER_LOCALE_ARG);
 	      if (era)
 		{
@@ -956,7 +973,7 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
 
 	  if (modifier == L_('O') && 0 <= number_value)
 	    {
-#if defined (OPTION_EGLIBC_LOCALE_CODE) && defined (_NL_CURRENT)
+#if (! _LIBC || __OPTION_EGLIBC_LOCALE_CODE) && defined (_NL_CURRENT)
 	      /* Get the locale specific alternate representation of
 		 the number NUMBER_VALUE.  If none exist NULL is returned.  */
 	      const CHAR_T *cp = nl_get_alt_digit (number_value
@@ -1261,7 +1278,7 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
 	case L_('Y'):
 	  if (modifier == 'E')
 	    {
-#if defined (OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
+#if (! _LIBC || __OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
 	      struct era_entry *era = _nl_get_era_entry (tp HELPER_LOCALE_ARG);
 	      if (era)
 		{
@@ -1286,7 +1303,7 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
 	case L_('y'):
 	  if (modifier == L_('E'))
 	    {
-#if defined (OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
+#if (! _LIBC || __OPTION_EGLIBC_LOCALE_CODE) && HAVE_STRUCT_ERA_ENTRY
 	      struct era_entry *era = _nl_get_era_entry (tp HELPER_LOCALE_ARG);
 	      if (era)
 		{
@@ -1409,9 +1426,6 @@ my_strftime (s, maxsize, format, tp ut_argument LOCALE_PARAM)
     *p = L_('\0');
   return i;
 }
-#ifdef _LIBC
-libc_hidden_def (my_strftime)
-#endif
 
 
 #ifdef emacs

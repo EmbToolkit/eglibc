@@ -693,6 +693,9 @@ typedef int (*__compar_fn_t) (__const void *, __const void *);
 typedef __compar_fn_t comparison_fn_t;
 # endif
 #endif
+#ifdef __USE_GNU
+typedef int (*__compar_d_fn_t) (__const void *, __const void *, void *);
+#endif
 
 __BEGIN_NAMESPACE_STD
 /* Do a binary search for KEY in BASE, which consists of NMEMB elements
@@ -705,6 +708,11 @@ extern void *bsearch (__const void *__key, __const void *__base,
    using COMPAR to perform the comparisons.  */
 extern void qsort (void *__base, size_t __nmemb, size_t __size,
 		   __compar_fn_t __compar) __nonnull ((1, 4));
+#ifdef __USE_GNU
+extern void qsort_r (void *__base, size_t __nmemb, size_t __size,
+		     __compar_d_fn_t __compar, void *__arg)
+  __nonnull ((1, 4));
+#endif
 
 
 /* Return the absolute value of X.  */

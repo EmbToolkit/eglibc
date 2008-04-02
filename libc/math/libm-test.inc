@@ -487,11 +487,24 @@ check_float_internal (const char *test_name, FLOAT computed, FLOAT expected,
   else
     {
       diff = FUNC(fabs) (computed - expected);
-      /* ilogb (0) isn't allowed.  */
-      if (expected == 0.0)
-	ulp = diff / FUNC(ldexp) (1.0, - MANT_DIG);
-      else
-	ulp = diff / FUNC(ldexp) (1.0, FUNC(ilogb) (expected) - MANT_DIG);
+      switch (fpclassify (expected))
+	{
+	case FP_ZERO:
+	  /* ilogb (0) isn't allowed. */
+	  ulp = diff / FUNC(ldexp) (1.0, - MANT_DIG);
+	  break;
+	case FP_NORMAL:
+	  ulp = diff / FUNC(ldexp) (1.0, FUNC(ilogb) (expected) - MANT_DIG);
+	  break;
+	case FP_SUBNORMAL:
+	  ulp = (FUNC(ldexp) (diff, MANT_DIG)
+		 / FUNC(ldexp) (1.0, FUNC(ilogb) (expected)));
+	  break;
+	default:
+	  /* It should never happen. */
+	  abort ();
+	  break;
+	}
       set_max_error (ulp, curr_max_error);
       print_diff = 1;
       if ((exceptions & IGNORE_ZERO_INF_SIGN) == 0
@@ -2497,6 +2510,7 @@ exp_test (void)
   TEST_f_f (exp, 3, M_E3l);
   TEST_f_f (exp, 0.75L, 2.11700001661267466854536981983709561L);
   TEST_f_f (exp, 50.0L, 5184705528587072464087.45332293348538L);
+  TEST_f_f (exp, 88.72269439697265625L, 3.40233126623160774937554134772290447915e38L);
 #ifdef TEST_LDOUBLE
   /* The result can only be represented in long double.  */
   TEST_f_f (exp, 1000.0L, 0.197007111401704699388887935224332313e435L);
@@ -4468,6 +4482,11 @@ nearbyint_test (void)
   TEST_f_f (nearbyint, -0.5, minus_zero);
   TEST_f_f (nearbyint, -1.5, -2.0);
 
+  TEST_f_f (nearbyint, 262144.75, 262145.0);
+  TEST_f_f (nearbyint, 262142.75, 262143.0);
+  TEST_f_f (nearbyint, 524286.75, 524287.0);
+  TEST_f_f (nearbyint, 524288.75, 524289.0);
+
   END (nearbyint);
 }
 
@@ -4839,6 +4858,10 @@ rint_test (void)
   TEST_f_f (rint, -0.1, -0.0);
   TEST_f_f (rint, -0.25, -0.0);
   TEST_f_f (rint, -0.625, -1.0);
+  TEST_f_f (rint, 262144.75, 262145.0);
+  TEST_f_f (rint, 262142.75, 262143.0);
+  TEST_f_f (rint, 524286.75, 524287.0);
+  TEST_f_f (rint, 524288.75, 524289.0);
 #ifdef TEST_LDOUBLE
   /* The result can only be represented in long double.  */
   TEST_f_f (rint, 4503599627370495.5L, 4503599627370496.0L);

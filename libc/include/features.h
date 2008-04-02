@@ -310,7 +310,7 @@
 /* Major and minor version number of the GNU C library package.  Use
    these macros to test for features in specific releases.  */
 #define	__GLIBC__	2
-#define	__GLIBC_MINOR__	6
+#define	__GLIBC_MINOR__	7
 
 #define __GLIBC_PREREQ(maj, min) \
 	((__GLIBC__ << 16) + __GLIBC_MINOR__ >= ((maj) << 16) + (min))
@@ -343,6 +343,14 @@
     && !defined __OPTIMIZE_SIZE__ && !defined __NO_INLINE__ \
     && defined __extern_inline
 # define __USE_EXTERN_INLINES	1
+#endif
+
+/* There are some functions that must be declared 'extern inline' even with
+   -Os when building LIBC, or they'll end up undefined.  */
+#if __GNUC_PREREQ (2, 7) && defined __OPTIMIZE__ \
+    && (defined _LIBC || !defined __OPTIMIZE_SIZE__) && !defined __NO_INLINE__ \
+    && defined __extern_inline
+# define __USE_EXTERN_INLINES_IN_LIBC	1
 #endif
 
 

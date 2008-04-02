@@ -1,5 +1,5 @@
 /* *printf* family compatibility routines for IEEE double as long double
-   Copyright (C) 2006, 2007 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2007, 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@cygnus.com>, 2006.
 
@@ -48,6 +48,9 @@ libc_hidden_proto (__nldbl___vfprintf_chk)
 libc_hidden_proto (__nldbl___vsyslog_chk)
 libc_hidden_proto (__nldbl___vsprintf_chk)
 libc_hidden_proto (__nldbl___vswprintf_chk)
+libc_hidden_proto (__nldbl___vasprintf_chk)
+libc_hidden_proto (__nldbl___vdprintf_chk)
+libc_hidden_proto (__nldbl___obstack_vprintf_chk)
 libc_hidden_proto (__nldbl___vstrfmon)
 libc_hidden_proto (__nldbl___vstrfmon_l)
 libc_hidden_proto (__nldbl___isoc99_vsscanf)
@@ -667,6 +670,86 @@ __nldbl___wprintf_chk (int flag, const wchar_t *fmt, ...)
   return done;
 }
 
+int
+attribute_compat_text_section
+__nldbl___vasprintf_chk (char **ptr, int flag, const char *fmt, va_list arg)
+{
+  int res;
+  __no_long_double = 1;
+  res = __vasprintf_chk (ptr, flag, fmt, arg);
+  __no_long_double = 0;
+  return res;
+}
+libc_hidden_def (__nldbl___vasprintf_chk)
+
+int
+attribute_compat_text_section
+__nldbl___asprintf_chk (char **ptr, int flag, const char *fmt, ...)
+{
+  va_list arg;
+  int done;
+
+  va_start (arg, fmt);
+  done = __nldbl___vasprintf_chk (ptr, flag, fmt, arg);
+  va_end (arg);
+
+  return done;
+}
+
+int
+attribute_compat_text_section
+__nldbl___vdprintf_chk (int d, int flag, const char *fmt, va_list arg)
+{
+  int res;
+  set_no_long_double ();
+  res = __vdprintf_chk (d, flag, fmt, arg);
+  clear_no_long_double ();
+  return res;
+}
+libc_hidden_def (__nldbl___vdprintf_chk)
+
+int
+attribute_compat_text_section
+__nldbl___dprintf_chk (int d, int flag, const char *fmt, ...)
+{
+  va_list arg;
+  int done;
+
+  va_start (arg, fmt);
+  done = __nldbl___vdprintf_chk (d, flag, fmt, arg);
+  va_end (arg);
+
+  return done;
+}
+
+int
+attribute_compat_text_section
+__nldbl___obstack_vprintf_chk (struct obstack *obstack, int flag,
+			       const char *fmt, va_list arg)
+{
+  int res;
+  __no_long_double = 1;
+  res = __obstack_vprintf_chk (obstack, flag, fmt, arg);
+  __no_long_double = 0;
+  return res;
+}
+libc_hidden_def (__nldbl___obstack_vprintf_chk)
+
+int
+attribute_compat_text_section
+__nldbl___obstack_printf_chk (struct obstack *obstack, int flag,
+			      const char *fmt, ...)
+{
+  va_list arg;
+  int done;
+
+  va_start (arg, fmt);
+  done = __nldbl___obstack_vprintf_chk (obstack, flag, fmt, arg);
+  va_end (arg);
+
+  return done;
+}
+
 extern __typeof (printf_size) __printf_size;
 
 int
@@ -693,6 +776,7 @@ __nldbl___printf_fp (FILE *fp, const struct printf_info *info,
   return ___printf_fp (fp, &info_no_ldbl, args);
 }
 
+#if __OPTION_EGLIBC_LOCALE_CODE
 ssize_t
 attribute_compat_text_section
 __nldbl_strfmon (char *s, size_t maxsize, const char *format, ...)
@@ -747,6 +831,7 @@ __nldbl___vstrfmon_l (char *s, size_t maxsize, __locale_t loc,
   return res;
 }
 libc_hidden_def (__nldbl___vstrfmon_l)
+#endif
 
 void
 attribute_compat_text_section

@@ -86,9 +86,8 @@ tests		:= tstgetopt testfnm runtests runptests	     \
 		   tst-gnuglob bug-regex6 bug-regex7 \
 		   bug-regex8 bug-regex9 bug-regex10 bug-regex11 bug-regex12 \
 		   bug-regex13 bug-regex14 bug-regex15 bug-regex16 \
-		   bug-regex17 bug-regex18 bug-regex20 \
-		   bug-regex21 bug-regex23 bug-regex24 \
-		   bug-regex26 bug-regex27 bug-regex28 \
+		   bug-regex21 bug-regex24 \
+		   bug-regex27 bug-regex28 \
 		   tst-nice tst-nanosleep tst-regex2 \
 		   transbug tst-rxspencer tst-pcre tst-boost \
 		   tst-vfork1 tst-vfork2 tst-vfork3 tst-waitid \
@@ -98,12 +97,13 @@ tests		:= tstgetopt testfnm runtests runptests	     \
 		   tst-execve1 tst-execve2 tst-execle1 tst-execle2 \
 		   tst-execvp3 tst-execvp4 \
 		   tst-fnmatch2 tst-cpucount tst-cpuset
-tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+tests-$(OPTION_EGLIBC_LOCALE_CODE)					    \
 		+= tst-fnmatch tst-regex tst-regexloc bug-regex1 bug-regex5 \
-		   bug-regex19 bug-regex22 bug-regex25
+		   bug-regex17 bug-regex18 bug-regex19 bug-regex20	    \
+		   bug-regex22 bug-regex23 bug-regex25 bug-regex26
 tests-$(OPTION_EGLIBC_INET) \
 	        += tst-getaddrinfo bug-ga1 tst-getaddrinfo2 \
-		   tst-rfc3484 tst-rfc3484-2 tst-getaddrinfo3
+		   tst-rfc3484 tst-rfc3484-2 tst-rfc3484-3 tst-getaddrinfo3
 xtests-$(OPTION_EGLIBC_INET) += bug-ga2
 ifeq (yes,$(build-shared))
 test-srcs	:= globtest
@@ -144,6 +144,7 @@ tests: $(objpfx)globtest.out
 $(objpfx)globtest.out: globtest.sh $(objpfx)globtest
 	$(SHELL) -e globtest.sh $(common-objpfx) $(elf-objpfx) \
 		 $(rtld-installed-name) '$(cross-test-wrapper)'
+LDLIBS-globtest += $(shell cat $(common-objpfx)nss/fixed-nsswitch-libs)
 ifeq (y,$(OPTION_EGLIBC_WORDEXP))
 tests: $(objpfx)wordexp-tst.out
 $(objpfx)wordexp-tst.out: wordexp-tst.sh $(objpfx)wordexp-test
@@ -154,10 +155,6 @@ endif
 # eglibc: endif
 
 OPTION_EGLIBC_INET-CFLAGS-$(OPTION_EGLIBC_INET) = -DUSE_NSCD=1
-OPTION_EGLIBC_GETLOGIN-CFLAGS-$(OPTION_EGLIBC_GETLOGIN) \
-	= -DOPTION_EGLIBC_GETLOGIN
-OPTION_POSIX_WIDE_CHAR_DEVICE_IO-CFLAGS-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO) \
-	= -DOPTION_POSIX_WIDE_CHAR_DEVICE_IO
 
 CFLAGS-regex.c = -Wno-strict-prototypes
 CFLAGS-getaddrinfo.c = -DRESOLVER -fexceptions $(OPTION_EGLIBC_INET-CFLAGS-y)
@@ -182,8 +179,7 @@ CFLAGS-spawnp.os = -fomit-frame-pointer
 CFLAGS-spawni.c = -fexceptions
 CFLAGS-spawni.os = -fomit-frame-pointer
 CFLAGS-pause.c = -fexceptions
-CFLAGS-glob.c = $(uses-callbacks) -fexceptions \
-		$(OPTION_EGLIBC_GETLOGIN-CFLAGS-y)
+CFLAGS-glob.c = $(uses-callbacks) -fexceptions
 CFLAGS-glob64.c = $(uses-callbacks) -fexceptions
 CFLAGS-getconf.c = -DGETCONF_DIR='"$(libexecdir)/getconf"'
 CFLAGS-execve.os = -fomit-frame-pointer
@@ -193,7 +189,6 @@ CFLAGS-execle.os = -fomit-frame-pointer
 CFLAGS-execl.os = -fomit-frame-pointer
 CFLAGS-execvp.os = -fomit-frame-pointer
 CFLAGS-execlp.os = -fomit-frame-pointer
-CFLAGS-bug-regex1.c = $(OPTION_POSIX_WIDE_CHAR_DEVICE_IO-CFLAGS-y)
 
 tstgetopt-ARGS = -a -b -cfoobar --required foobar --optional=bazbug \
 		--none random --col --color --colour
@@ -219,7 +214,10 @@ bug-regex22-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex23-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex25-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex26-ENV = LOCPATH=$(common-objpfx)localedata
-tst-rxspencer-ARGS = --utf8 rxspencer/tests
+tst-rxspencer-ARGS = rxspencer/tests
+ifeq (y,$(OPTION_EGLIBC_LOCALE_CODE))
+tst-rxspencer-ARGS += --utf8 
+endif
 tst-rxspencer-ENV = LOCPATH=$(common-objpfx)localedata
 tst-pcre-ARGS = PCRE.tests
 tst-boost-ARGS = BOOST.tests

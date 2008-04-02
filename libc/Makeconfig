@@ -1,4 +1,5 @@
-# Copyright (C) 1991-2003,2004,2005,2006,2007 Free Software Foundation, Inc.
+# Copyright (C) 1991-2003,2004,2005,2006,2007,2008
+#	Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -913,6 +914,24 @@ libdl =
 endif
 endif
 
+# Generate a header file that #defines preprocessor symbols indicating
+# which option groups are enabled.  Note that the option-groups.config file
+# may not exist at all.
+before-compile += $(common-objpfx)gnu/option-groups.h
+common-generated += gnu/option-groups.h gnu/option-groups.stmp
+headers += gnu/option-groups.h
+$(common-objpfx)gnu/option-groups.h: $(common-objpfx)gnu/option-groups.stmp; @:
+$(common-objpfx)gnu/option-groups.stmp:					\
+		$(..)scripts/option-groups.awk				\
+		$(..)option-groups.defaults				\
+		$(wildcard $(common-objpfx)option-groups.config)
+	$(make-target-directory)
+	@rm -f ${@:stmp=T} $@
+	LC_ALL=C $(AWK) -f $^ > ${@:stmp=T}
+	$(move-if-change) ${@:stmp=T} ${@:stmp=h}
+	touch $@
+
+
 # These are the subdirectories containing the library source.  The order
 # is more or less arbitrary.  The sorting step will take care of the
 # dependencies.
@@ -939,12 +958,21 @@ $(common-objpfx)sysd-sorted: $(..)scripts/gen-sorted.awk \
 $(all-Depend-files): ;
 endif
 
+# This gives partial TARGET:SOURCE pattern pairs to have rules
+# emitted into sysd-rules.  A sysdeps Makeconfig fragment can
+# add its own special object file prefix to this list with e.g. foo-%:%
+# to have foo-*.? compiled from *.? using $(foo-CPPFLAGS).
+sysd-rules-patterns := %:% rtld-%:% m_%:s_%
+
 # Let sysdeps/ subdirs contain a Makeconfig fragment for us to include here.
 sysdep-makeconfigs := $(wildcard $(+sysdep_dirs:=/Makeconfig))
 ifneq (,$(sysdep-makeconfigs))
 include $(sysdep-makeconfigs)
 endif
 
+# Compute just the target patterns.  Makeconfig has set sysd-rules-patterns.
+sysd-rules-targets := $(foreach p,$(sysd-rules-patterns),\
+		      		$(firstword $(subst :, ,$p)))
 
 endif # Makeconfig not yet included
 

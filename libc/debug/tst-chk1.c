@@ -1,4 +1,4 @@
-/* Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+/* Copyright (C) 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2004.
 
@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <locale.h>
+#include <obstack.h>
 #include <paths.h>
 #include <setjmp.h>
 #include <signal.h>
@@ -30,6 +31,10 @@
 #include <wchar.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <gnu/option-groups.h>
+
+#define obstack_chunk_alloc malloc
+#define obstack_chunk_free free
 
 char *temp_filename;
 static void do_prepare (void);
@@ -318,6 +323,7 @@ do_test (void)
   snprintf (buf + 8, l0 + 3, "%d", num2);
   CHK_FAIL_END
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   CHK_FAIL_START
   swprintf (wbuf + 8, 3, L"%d", num1);
   CHK_FAIL_END
@@ -325,6 +331,7 @@ do_test (void)
   CHK_FAIL_START
   swprintf (wbuf + 8, l0 + 3, L"%d", num1);
   CHK_FAIL_END
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 # endif
 
   memcpy (buf, str1 + 2, l0 + 9);
@@ -392,6 +399,7 @@ do_test (void)
   CHK_FAIL_END
 #endif
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
 
   /* These ops can be done without runtime checking of object size.  */
   wmemcpy (wbuf, L"abcdefghij", 10);
@@ -616,6 +624,7 @@ do_test (void)
   CHK_FAIL_END
 #endif
 
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   /* Now checks for %n protection.  */
 
@@ -704,6 +713,36 @@ do_test (void)
   buf2[6] = '\0';
   if (fprintf (fp, buf2 + 4, str5) != 7)
     FAIL ();
+
+  char *my_ptr = NULL;
+  strcpy (buf2 + 2, "%n%s%n");
+  /* When the format string is writable and contains %n,
+     with -D_FORTIFY_SOURCE=2 it causes __chk_fail.  */
+  CHK_FAIL2_START
+  if (asprintf (&my_ptr, buf2, str4, &n1, str5, &n1) != 14)
+    FAIL ();
+  else
+    free (my_ptr);
+  CHK_FAIL2_END
+
+  struct obstack obs;
+  obstack_init (&obs);
+  CHK_FAIL2_START
+  if (obstack_printf (&obs, buf2, str4, &n1, str5, &n1) != 14)
+    FAIL ();
+  CHK_FAIL2_END
+  obstack_free (&obs, NULL);
+
+  my_ptr = NULL;
+  if (asprintf (&my_ptr, "%s%n%s%n", str4, &n1, str5, &n1) != 14)
+    FAIL ();
+  else
+    free (my_ptr);
+
+  obstack_init (&obs);
+  if (obstack_printf (&obs, "%s%n%s%n", str4, &n1, str5, &n1) != 14)
+    FAIL ();
+  obstack_free (&obs, NULL);
 
   if (freopen (temp_filename, "r", stdin) == NULL)
     {
@@ -1173,6 +1212,7 @@ do_test (void)
 # endif
 #endif
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   if (setlocale (LC_ALL, "de_DE.UTF-8") != NULL)
     {
       assert (MB_CUR_MAX <= 10);
@@ -1329,6 +1369,7 @@ do_test (void)
       puts ("cannot set locale");
       ret = 1;
     }
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   fd = posix_openpt (O_RDWR);
   if (fd != -1)

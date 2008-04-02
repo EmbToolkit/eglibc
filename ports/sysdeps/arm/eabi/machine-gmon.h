@@ -29,6 +29,11 @@ static void mcount_internal (u_long frompc, u_long selfpc)
 /* Use an assembly stub with a special ABI.  The calling lr has been
    pushed to the stack (which will be misaligned).  We should preserve
    all registers except ip and pop a word off the stack.
+
+   NOTE: This assumes mcount_internal does not clobber any non-core
+   (coprocessor) registers.  Currently this is true, but may require
+   additional attention in the future.
+
    The calling sequence looks something like:
 func:
    push {lr}

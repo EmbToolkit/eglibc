@@ -1,3 +1,7 @@
+2008-04-02  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/arm/eabi/machine-gmon.h: New file.
+
 2007-08-29  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* sysdeps/powerpc/powerpc32/e500/fpu/fsetexcptflg.c

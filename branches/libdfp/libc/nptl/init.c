@@ -221,12 +221,21 @@ sighandler_setxid (int sig, siginfo_t *si, void *ctx)
 
   /* Reset the SETXID flag.  */
   struct pthread *self = THREAD_SELF;
-  int flags = THREAD_GETMEM (self, cancelhandling);
-  THREAD_SETMEM (self, cancelhandling, flags & ~SETXID_BITMASK);
+  int flags, newval;
+  do
+    {
+      flags = THREAD_GETMEM (self, cancelhandling);
+      newval = THREAD_ATOMIC_CMPXCHG_VAL (self, cancelhandling,
+					  flags & ~SETXID_BITMASK, flags);
+    }
+  while (flags != newval);
 
   /* And release the futex.  */
   self->setxid_futex = 1;
   lll_futex_wake (&self->setxid_futex, 1, LLL_PRIVATE);
+
+  if (atomic_decrement_val (&__xidcmd->cntr) == 0)
+    lll_futex_wake (&__xidcmd->cntr, 1, LLL_PRIVATE);
 }
 
 
@@ -284,7 +293,7 @@ __pthread_initialize_minimal_internal (void)
   /* Private futexes are always used (at least internally) so that
      doing the test once this early is beneficial.  */
   {
-    int word;
+    int word = 0;
     word = INTERNAL_SYSCALL (futex, err, 3, &word,
 			    FUTEX_WAKE | FUTEX_PRIVATE_FLAG, 1);
     if (!INTERNAL_SYSCALL_ERROR_P (word, err))

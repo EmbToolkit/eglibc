@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2006, 2007 Free Software Foundation, Inc.
+# Copyright (C) 1991-2006, 2007, 2008 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -38,7 +38,6 @@ routines-y	:=							      \
 	exit on_exit atexit cxa_atexit cxa_finalize old_atexit		      \
 	abs labs llabs							      \
 	div ldiv lldiv							      \
-	mblen mbstowcs mbtowc wcstombs wctomb				      \
 	random random_r rand rand_r					      \
 	drand48 erand48 lrand48 nrand48 mrand48 jrand48			      \
 	srand48 seed48 lcong48						      \
@@ -52,14 +51,17 @@ routines-y	:=							      \
 	system canonicalize						      \
 	a64l l64a							      \
 	getsubopt xpg_basename fmtmsg					      \
-	strtoimax strtoumax wcstoimax wcstoumax				      \
+	strtoimax strtoumax						      \
 	getcontext setcontext makecontext swapcontext
 routines-$(OPTION_EGLIBC_LOCALE_CODE) +=				      \
 	strfmon strfmon_l
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR) +=				      \
+	mblen mbstowcs mbtowc wcstombs wctomb				      \
+	wcstoimax wcstoumax
 ifeq (yy,$(OPTION_EGLIBC_LOCALE_CODE)$(OPTION_POSIX_REGEXP))
 routines-y += rpmatch
 endif
-aux =	grouping groupingwc
+aux =	grouping groupingwc tens_in_limb
 
 # These routines will be omitted from the libc shared object.
 # Instead the static object files will be included in a special archive
@@ -69,15 +71,17 @@ static-only-routines = atexit
 distribute	:= exit.h grouping.h abort-instr.h isomac.c tst-fmtmsg.sh   \
 		   allocalim.h
 test-srcs	:= tst-fmtmsg
-tests		:= tst-strtol tst-strtod testmb testrand testsort testdiv   \
+tests		:= tst-strtol tst-strtod testrand testsort testdiv          \
 		   test-canon test-canon2 tst-strtoll tst-environ	    \
 		   tst-xpg-basename tst-random tst-random2 tst-bsearch	    \
 		   tst-limits tst-rand48 bug-strtod tst-setcontext	    \
-		   test-a64l tst-qsort tst-system testmb2 bug-strtod2	    \
+		   test-a64l tst-qsort tst-system bug-strtod2		    \
 		   tst-atof1 tst-atof2 tst-strtod2 tst-rand48-2             \
-		   tst-makecontext tst-strtod4 tst-strtod5 tst-qsort2
+		   tst-makecontext tst-qsort2 tst-makecontext2 tst-strtod6
 tests-$(OPTION_EGLIBC_LOCALE_CODE) \
-		+= tst-strtod3
+		+= tst-strtod3 tst-strtod4 tst-strtod5 testmb2
+tests-$(OPTION_POSIX_C_LANG_WIDE_CHAR) \
+		+= testmb
 include ../Makeconfig
 
 ifeq ($(build-shared),yes)
@@ -114,6 +118,7 @@ endif
 
 CFLAGS-tst-bsearch.c = $(stack-align-test-flags)
 CFLAGS-tst-qsort.c = $(stack-align-test-flags)
+CFLAGS-tst-makecontext2.c = $(stack-align-test-flags)
 
 include ../Rules
 

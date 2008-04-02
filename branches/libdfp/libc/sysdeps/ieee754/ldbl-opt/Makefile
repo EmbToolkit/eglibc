@@ -20,9 +20,9 @@ libnldbl-calls = asprintf dprintf fprintf fscanf fwprintf fwscanf iovfscanf \
 		 fprintf_chk fwprintf_chk printf_chk snprintf_chk sprintf_chk \
 		 swprintf_chk vfprintf_chk vfwprintf_chk vprintf_chk \
 		 vsnprintf_chk vsprintf_chk vswprintf_chk vwprintf_chk \
-		 wprintf_chk \
+		 wprintf_chk asprintf_chk vasprintf_chk dprintf_chk \
+		 vdprintf_chk obstack_printf_chk obstack_vprintf_chk \
 		 syslog syslog_chk vsyslog vsyslog_chk \
-		 strfmon strfmon_l \
 		 strtold strtold_l strtoldint wcstold wcstold_l wcstoldint \
 		 qecvt qfcvt qgcvt qecvt_r qfcvt_r \
 		 isinf isnan finite signbit scalb log2 lgamma_r ceil \
@@ -40,6 +40,8 @@ libnldbl-calls = asprintf dprintf fprintf fscanf fwprintf fwscanf iovfscanf \
 		 isoc99_vscanf isoc99_vfscanf isoc99_vsscanf \
 		 isoc99_wscanf isoc99_fwscanf isoc99_swscanf \
 		 isoc99_vwscanf isoc99_vfwscanf isoc99_vswscanf
+libnldbl-calls-$(OPTION_EGLIBC_LOCALE_CODE) += strfmon strfmon_l
+libnldbl-calls += $(libnldbl-calls-y)
 libnldbl-routines = $(libnldbl-calls:%=nldbl-%)
 libnldbl-inhibit-o = $(object-suffixes)
 libnldbl-static-only-routines = $(libnldbl-routines)

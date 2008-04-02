@@ -27,6 +27,7 @@
 #include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gnu/option-groups.h>
 
 #include <aliases.h>
 #include <grp.h>
@@ -48,7 +49,7 @@
    - We never add databases or service libraries, or look up functions
      at runtime, so there's no need for a lock to protect our tables.
    See ../option-groups.def for the details.  */
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
 
 /* Prototypes for the local functions.  */
 static name_database *nss_parse_file (const char *fname) internal_function;
@@ -94,7 +95,7 @@ static const char *const __nss_shlib_revision = LIBNSS_FILES_SO + 15;
 /* The root of the whole data base.  */
 static name_database *service_table;
 
-#else /* OPTION_EGLIBC_NSSWITCH */
+#else /* __OPTION_EGLIBC_NSSWITCH */
 
 /* Bring in the statically initialized service table we generated at
    build time.  */
@@ -106,7 +107,7 @@ const static name_database *service_table = &fixed_name_database;
 #define lock_nsswitch (0)
 #define unlock_nsswitch (0)
 
-#endif /* OPTION_EGLIBC_NSSWITCH */
+#endif /* __OPTION_EGLIBC_NSSWITCH */
 
 
 /* -1 == database not found
@@ -126,7 +127,7 @@ __nss_database_lookup (const char *database, const char *alternate_name,
       return 0;
     }
 
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
   /* Are we initialized yet?  */
   if (service_table == NULL)
     /* Read config file.  */
@@ -153,7 +154,7 @@ __nss_database_lookup (const char *database, const char *alternate_name,
 	    *ni = entry->service;
     }
 
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
   /* No configuration data is available, either because nsswitch.conf
      doesn't exist or because it doesn't has a line for this database.
 
@@ -184,9 +185,12 @@ libc_hidden_def (__nss_database_lookup)
     0 == function found
     1 == finished */
 int
-__nss_lookup (service_user **ni, const char *fct_name, void **fctp)
+__nss_lookup (service_user **ni, const char *fct_name, const char *fct2_name,
+	      void **fctp)
 {
   *fctp = __nss_lookup_function (*ni, fct_name);
+  if (*fctp == NULL && fct2_name != NULL)
+    *fctp = __nss_lookup_function (*ni, fct2_name);
 
   while (*fctp == NULL
 	 && nss_next_action (*ni, NSS_STATUS_UNAVAIL) == NSS_ACTION_CONTINUE
@@ -195,6 +199,8 @@ __nss_lookup (service_user **ni, const char *fct_name, void **fctp)
       *ni = (*ni)->next;
 
       *fctp = __nss_lookup_function (*ni, fct_name);
+      if (*fctp == NULL && fct2_name != NULL)
+	*fctp = __nss_lookup_function (*ni, fct2_name);
     }
 
   return *fctp != NULL ? 0 : (*ni)->next == NULL ? 1 : -1;
@@ -205,8 +211,8 @@ __nss_lookup (service_user **ni, const char *fct_name, void **fctp)
     0 == adjusted for next function
     1 == finished */
 int
-__nss_next (service_user **ni, const char *fct_name, void **fctp, int status,
-	    int all_values)
+__nss_next2 (service_user **ni, const char *fct_name, const char *fct2_name,
+	     void **fctp, int status, int all_values)
 {
   if (all_values)
     {
@@ -219,7 +225,8 @@ __nss_next (service_user **ni, const char *fct_name, void **fctp, int status,
   else
     {
       /* This is really only for debugging.  */
-       if (NSS_STATUS_TRYAGAIN > status || status > NSS_STATUS_RETURN)
+      if (__builtin_expect (NSS_STATUS_TRYAGAIN > status
+			    || status > NSS_STATUS_RETURN, 0))
 	 __libc_fatal ("illegal status in __nss_next");
 
        if (nss_next_action (*ni, status) == NSS_ACTION_RETURN)
@@ -234,6 +241,8 @@ __nss_next (service_user **ni, const char *fct_name, void **fctp, int status,
       *ni = (*ni)->next;
 
       *fctp = __nss_lookup_function (*ni, fct_name);
+      if (*fctp == NULL && fct2_name != NULL)
+	*fctp = __nss_lookup_function (*ni, fct2_name);
     }
   while (*fctp == NULL
 	 && nss_next_action (*ni, NSS_STATUS_UNAVAIL) == NSS_ACTION_CONTINUE
@@ -241,10 +250,19 @@ __nss_next (service_user **ni, const char *fct_name, void **fctp, int status,
 
   return *fctp != NULL ? 0 : -1;
 }
-libc_hidden_def (__nss_next)
+libc_hidden_def (__nss_next2)
 
 
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
+int
+attribute_compat_text_section
+__nss_next (service_user **ni, const char *fct_name, void **fctp, int status,
+	    int all_values)
+{
+  return __nss_next2 (ni, fct_name, NULL, fctp, status, all_values);
+}
+
+
 int
 __nss_configure_lookup (const char *dbname, const char *service_line)
 {
@@ -458,7 +476,7 @@ __nss_lookup_function (service_user *ni, const char *fct_name)
 libc_hidden_def (__nss_lookup_function)
 
 
-#else /* below if ! defined (OPTION_EGLIBC_NSSWITCH) */
+#else /* below if ! __OPTION_EGLIBC_NSSWITCH */
 
 
 int
@@ -487,7 +505,7 @@ libc_hidden_def (__nss_lookup_function)
 #endif
 
 
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
 static name_database *
 internal_function
 nss_parse_file (const char *fname)
@@ -770,10 +788,10 @@ nss_new_service (name_database *database, const char *name)
 
   return *currentp;
 }
-#endif /* OPTION_EGLIBC_NSSWITCH */
+#endif /* __OPTION_EGLIBC_NSSWITCH */
 
 
-#ifdef OPTION_EGLIBC_INET
+#if __OPTION_EGLIBC_INET
 /* Called by nscd and nscd alone.  */
 void
 __nss_disable_nscd (void)
@@ -784,10 +802,10 @@ __nss_disable_nscd (void)
   __nss_not_use_nscd_hosts = -1;
   __nss_not_use_nscd_services = -1;
 }
-#endif /* OPTION_EGLIBC_INET */
+#endif /* __OPTION_EGLIBC_INET */
 
 
-#ifdef OPTION_EGLIBC_NSSWITCH
+#if __OPTION_EGLIBC_NSSWITCH
 /* Free all resources if necessary.  */
 libc_freeres_fn (free_mem)
 {
@@ -837,4 +855,4 @@ libc_freeres_fn (free_mem)
 
   free (top);
 }
-#endif /* OPTION_EGLIBC_NSSWITCH */
+#endif /* __OPTION_EGLIBC_NSSWITCH */

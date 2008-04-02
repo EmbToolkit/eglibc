@@ -401,7 +401,7 @@ tzset_internal (always, explicit)
   if (tz && *tz == ':')
     ++tz;
 
-  /* Check whether the value changes since the last run.  */
+  /* Check whether the value changed since the last run.  */
   if (old_tz != NULL && tz != NULL && strcmp (tz, old_tz) == 0)
     /* No change, simply return.  */
     return;
@@ -414,8 +414,7 @@ tzset_internal (always, explicit)
   tz_rules[1].name = NULL;
 
   /* Save the value of `tz'.  */
-  if (old_tz != NULL)
-    free (old_tz);
+  free (old_tz);
   old_tz = tz ? __strdup (tz) : NULL;
 
   /* Try to read a data file.  */
@@ -606,9 +605,8 @@ __tz_convert (const time_t *timer, int use_localtime, struct tm *tp)
 
   /* Update internal database according to current TZ setting.
      POSIX.1 8.3.7.2 says that localtime_r is not required to set tzname.
-     This is a good idea since this allows at least a bit more parallelism.
-     By analogy we apply the same rule to gmtime_r.  */
-  tzset_internal (tp == &_tmbuf, 0);
+     This is a good idea since this allows at least a bit more parallelism.  */
+  tzset_internal (tp == &_tmbuf && use_localtime, 1);
 
   if (__use_tzfile)
     __tzfile_compute (*timer, use_localtime, &leap_correction,

@@ -31,6 +31,7 @@
 #include "_itoa.h"
 #include <locale/localeinfo.h>
 #include <stdio.h>
+#include <gnu/option-groups.h>
 
 #ifdef __STDC_DEC_FP__
 #include <printf_dfp.h>
@@ -71,6 +72,19 @@
     } while (0)
 #define UNBUFFERED_P(S) ((S)->_IO_file_flags & _IO_UNBUFFERED)
 
+#define done_add(val) \
+  do {									      \
+    unsigned int _val = val;						      \
+    assert ((unsigned int) done < (unsigned int) INT_MAX);		      \
+    if (__builtin_expect ((unsigned int) INT_MAX - (unsigned int) done	      \
+			  < _val, 0))					      \
+      {									      \
+	done = -1;							      \
+	goto all_done;							      \
+      }									      \
+    done += _val;							      \
+  } while (0)
+
 #ifndef COMPILE_WPRINTF
 # define vfprintf	_IO_vfprintf_internal
 # define CHAR_T		char
@@ -83,7 +97,7 @@
 # define PUT(F, S, N)	_IO_sputn ((F), (S), (N))
 # define PAD(Padchar) \
   if (width > 0)							      \
-    done += INTUSE(_IO_padn) (s, (Padchar), width)
+    done_add (INTUSE(_IO_padn) (s, (Padchar), width))
 # define PUTC(C, F)	_IO_putc_unlocked (C, F)
 # define ORIENT		if (_IO_vtable_offset (s) == 0 && _IO_fwide (s, -1) != -1)\
 			  return -1
@@ -102,7 +116,7 @@
 # define PUT(F, S, N)	_IO_sputn ((F), (S), (N))
 # define PAD(Padchar) \
   if (width > 0)							      \
-    done += _IO_wpadn (s, (Padchar), width)
+    done_add (_IO_wpadn (s, (Padchar), width))
 # define PUTC(C, F)	_IO_putwc_unlocked (C, F)
 # define ORIENT		if (_IO_fwide (s, 1) != 1) return -1
 
@@ -111,6 +125,18 @@
 # define _itoa_word(Val, Buf, Base, Case) _itowa_word (Val, Buf, Base, Case)
 # undef EOF
 # define EOF WEOF
+#endif
+
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
+# define MULTIBYTE_SUPPORT (1)
+#else
+# define MULTIBYTE_SUPPORT (0)
+#endif
+
+#if __OPTION_EGLIBC_LOCALE_CODE
+# define LOCALE_SUPPORT (1)
+#else
+# define LOCALE_SUPPORT (0)
 #endif
 
 #include "_i18n_number.h"
@@ -123,20 +149,21 @@
   do									      \
     {									      \
       register const INT_T outc = (Ch);					      \
-      if (PUTC (outc, s) == EOF)					      \
+      if (PUTC (outc, s) == EOF || done == INT_MAX)			      \
 	{								      \
 	  done = -1;							      \
 	  goto all_done;						      \
 	}								      \
-      else								      \
-	++done;								      \
+      ++done;								      \
     }									      \
   while (0)
 
 #define outstring(String, Len)						      \
   do									      \
     {									      \
-      if ((size_t) PUT (s, (String), (Len)) != (size_t) (Len))		      \
+      assert ((size_t) done <= (size_t) INT_MAX);			      \
+      if ((size_t) PUT (s, (String), (Len)) != (size_t) (Len)		      \
+	  || (size_t) INT_MAX - (size_t) done < (size_t) (Len))		      \
 	{								      \
 	  done = -1;							      \
 	  goto all_done;						      \
@@ -820,7 +847,7 @@ IFDEF__STDC_DEC_FP__(,							      \
 	    {								      \
 	      int temp = width;						      \
 	      width = prec;						      \
-	      PAD (L_('0'));;						      \
+	      PAD (L_('0'));						      \
 	      width = temp;						      \
 	    }								      \
 									      \
@@ -900,7 +927,7 @@ IFDEF__STDC_DEC_FP__(						      \
 	    goto all_done;						      \
 	  }								      \
 									      \
-	done += function_done;						      \
+	done_add (function_done);					      \
       }									      \
       break;								      \
 									      \
@@ -974,7 +1001,7 @@ IFDEF__STDC_DEC_FP__(							      \
 	    goto all_done;						      \
 	  }								      \
 									      \
-	done += function_done;						      \
+	done_add (function_done);					      \
       }									      \
       break;								      \
 									      \
@@ -1184,8 +1211,11 @@ IFDEF__STDC_DEC_FP__(							      \
 # define process_string_arg(fspec) \
     LABEL (form_character):						      \
       /* Character.  */							      \
-      if (is_long)							      \
-	goto LABEL (form_wcharacter);					      \
+      if (is_long)                                                            \
+        {                                                                     \
+          assert (MULTIBYTE_SUPPORT);                                         \
+          goto LABEL (form_wcharacter);                                       \
+        }                                                                     \
       --width;	/* Account for the character itself.  */		      \
       if (!left)							      \
 	PAD (' ');							      \
@@ -1198,6 +1228,7 @@ IFDEF__STDC_DEC_FP__(							      \
       break;								      \
 									      \
     LABEL (form_wcharacter):						      \
+      assert (MULTIBYTE_SUPPORT);                                             \
       {									      \
 	/* Wide character.  */						      \
 	char buf[MB_CUR_MAX];						      \
@@ -1260,7 +1291,8 @@ IFDEF__STDC_DEC_FP__(							      \
 		/* Search for the end of the string, but don't search past    \
 		   the length (in bytes) specified by the precision.  Also    \
 		   don't use incomplete characters.  */			      \
-		if (_NL_CURRENT_WORD (LC_CTYPE, _NL_CTYPE_MB_CUR_MAX) == 1)   \
+		if (! LOCALE_SUPPORT                                          \
+                    ||_NL_CURRENT_WORD (LC_CTYPE, _NL_CTYPE_MB_CUR_MAX) == 1) \
 		  len = __strnlen (string, prec);			      \
 		else							      \
 		  {							      \
@@ -1296,6 +1328,7 @@ IFDEF__STDC_DEC_FP__(							      \
 	  }								      \
 	else								      \
 	  {								      \
+            assert (MULTIBYTE_SUPPORT);                                       \
 	    const wchar_t *s2 = (const wchar_t *) string;		      \
 	    mbstate_t mbstate;						      \
 									      \
@@ -1493,7 +1526,9 @@ IFDEF__STDC_DEC_FP__(							      \
     LABEL (flag_quote):
       group = 1;
 
-      if (grouping == (const char *) -1)
+      if (! LOCALE_SUPPORT)
+        grouping = NULL;
+      else if (grouping == (const char *) -1)
 	{
 #ifdef COMPILE_WPRINTF
 	  thousands_sep = _NL_CURRENT_WORD (LC_NUMERIC,
@@ -1611,18 +1646,25 @@ IFDEF__STDC_DEC_FP__(							      \
       if (prec > width
 	  && prec + 32 > (int)(sizeof (work_buffer) / sizeof (work_buffer[0])))
 	{
-	  if (__libc_use_alloca ((prec + 32) * sizeof (CHAR_T)))
-	    workend = ((CHAR_T *) alloca ((prec + 32) * sizeof (CHAR_T)))
-		      + (prec + 32);
+	  if (__builtin_expect (prec > ~((size_t) 0) / sizeof (CHAR_T) - 31,
+				0))
+	    {
+	      done = -1;
+	      goto all_done;
+	    }
+	  size_t needed = ((size_t) prec + 32) * sizeof (CHAR_T);
+
+	  if (__libc_use_alloca (needed))
+	    workend = (((CHAR_T *) alloca (needed)) + ((size_t) prec + 32));
 	  else
 	    {
-	      workstart = (CHAR_T *) malloc ((prec + 32) * sizeof (CHAR_T));
+	      workstart = (CHAR_T *) malloc (needed);
 	      if (workstart == NULL)
 		{
 		  done = -1;
 		  goto all_done;
 		}
-	      workend = workstart + (prec + 32);
+	      workend = workstart + ((size_t) prec + 32);
 	    }
 	}
       JUMP (*f, step2_jumps);
@@ -1759,7 +1801,9 @@ do_positional:
     free (workstart);
     workstart = NULL;
 
-    if (grouping == (const char *) -1)
+    if (! LOCALE_SUPPORT)
+      grouping = NULL;
+    else if (grouping == (const char *) -1)
       {
 #ifdef COMPILE_WPRINTF
 	thousands_sep = _NL_CURRENT_WORD (LC_NUMERIC,
@@ -2032,7 +2076,7 @@ do_positional:
 		  goto all_done;
 		}
 
-	      done += function_done;
+	      done_add (function_done);
 	    }
 	    break;
 	  }

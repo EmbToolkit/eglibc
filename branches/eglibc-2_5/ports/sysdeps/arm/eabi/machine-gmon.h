@@ -70,6 +70,7 @@ void __attribute__((__naked__)) _mcount (void)				\
 {									\
   __asm__("push		{r0, r1, r2, r3, fp, lr};"			\
 	  "movs		r0, fp;"					\
+	  "ittt		ne;"						\
 	  "ldrne	r0, [r0, #-4];"					\
 	  "movsne	r1, lr;"					\
 	  "blne		mcount_internal;"				\

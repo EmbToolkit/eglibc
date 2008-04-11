@@ -1,3 +1,7 @@
+2008-04-11  Paul Brook  <paul@codesourcery.com>
+
+	* Versions.def: Add GLIBC_2.8 for backported symbols.
+
 2008-02-23  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	PR nptl/3270

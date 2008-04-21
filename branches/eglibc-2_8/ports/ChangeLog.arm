@@ -1,3 +1,21 @@
+2008-04-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/check_pf.c: Update from generic
+	version.
+
+2008-04-21  Khem Raj  <kraj@mvista.com>
+
+	* sysdeps/unix/sysv/linux/arm/ioperm.c: Don't include asm/page.h.
+
+2008-04-21  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/arm/nptl/sysdep-cancel.h (DOCARGS_6,
+	UNDOCARGS_6): Define.
+
+2008-04-21  Khem Raj  <kraj@mvista.com>
+
+	* sysdeps/unix/sysv/linux/arm/bits/shm.h: New file.
+
 2008-04-11  Paul Brook  <paul@codesourcery.com>
 	    Sandra Loosemore  <sandra@codesourcery.com>
 

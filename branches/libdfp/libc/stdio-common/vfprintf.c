@@ -974,7 +974,7 @@ IFDEF__STDC_DEC_FP__(							      \
 									      \
 IFDEF__STDC_DEC_FP__(							      \
 	    if (is_decimal)						      \
-	      function_done = __printf_dfphex (s, &info, &ptr);		      \
+	      function_done = __printf_dfp (s, &info, &ptr);		      \
 	    else							      \
 )									      \
 	    function_done = __printf_fphex (s, &info, &ptr);		      \
@@ -988,7 +988,7 @@ IFDEF__STDC_DEC_FP__(							      \
 IFDEF__STDC_DEC_FP__(							      \
 	    /* FIX ME */						      \
 	    if (is_decimal)						      \
-	      function_done = __printf_dfphex (s, &fspec->info, &ptr);	      \
+	      function_done = __printf_dfp (s, &fspec->info, &ptr);	      \
 	    else							      \
 )									      \
 	    function_done = __printf_fphex (s, &fspec->info, &ptr);	      \

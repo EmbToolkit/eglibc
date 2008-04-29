@@ -32,14 +32,32 @@
 #define FUNCTION_NAME ldexp
 
 #include <dfpmacro.h>
+#include <numdigits.h>
 
 DEC_TYPE
 IEEE_FUNCTION_NAME (DEC_TYPE x, int y)
 {
-  decContext context;
   DEC_TYPE result;
-  decNumber dn_x;
   long newexp;
+
+#if NUMDIGITS_SUPPORT==1
+  newexp = getexp(x) + y + 1;
+  if (newexp > PASTE(DECIMAL,PASTE(_DECIMAL_SIZE,_Emax)))
+    {
+    result = DFP_HUGE_VAL;
+    DFP_EXCEPT (FE_OVERFLOW);
+    }
+  else if (newexp < PASTE(DECIMAL,PASTE(_DECIMAL_SIZE,_Emin)))
+    {
+    result = -DFP_HUGE_VAL;
+    DFP_EXCEPT (FE_OVERFLOW);
+    }
+  else   
+    result = setexp(x, newexp);
+
+#else
+  decContext context;
+  decNumber dn_x;
 
   FUNC_CONVERT_TO_DN (&x, &dn_x);
   if (___decNumberIsNaN (&dn_x) || ___decNumberIsZero (&dn_x) ||
@@ -62,6 +80,7 @@ IEEE_FUNCTION_NAME (DEC_TYPE x, int y)
 
   if (context.status & DEC_Overflow)
     DFP_EXCEPT (FE_OVERFLOW);
+#endif
 
   return result;
 }

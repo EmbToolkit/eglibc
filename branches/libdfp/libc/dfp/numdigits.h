@@ -1,7 +1,7 @@
-/* Function body to print DFP values in hex
-   Copyright (C) 2006 IBM Corporation.
+/* Number of digits functions, generic (use libdecNumber).
 
-   Author(s): Ryan S. Arnold <rsa@us.ibm.com>
+   Copyright (C) 2006, 2007, 2008 IBM Corporation.
+   Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
    The Decimal Floating Point C Library is free software; you can
    redistribute it and/or modify it under the terms of the GNU Lesser
@@ -20,18 +20,9 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
-/* The gmp headers need some configuration frobs.  */
-/* #define HAVE_ALLOCA 1  */
+#ifndef _NUMDIGITS_H
+#define _NUMDIGITS_H 1
 
-#include "printf_dfp.h"
-#include <unistd.h>
+#define NUMDIGITS_SUPPORT 0
 
-int
-__printf_dfphex (FILE *fp,
-		 const struct printf_info *info,
-		 const void *const *args)
-{
-	write (1, "in __printf_dfphex\n", 19);
-	return 0;
-}
-/* libc_hidden_def (__printf_dfphex) */
+#endif /* _NUMDIGITS_H */

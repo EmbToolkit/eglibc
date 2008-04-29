@@ -30,6 +30,8 @@
 
 #include <fmt_dfp.h>
 
+#include <fenv.h>
+
 extern void __get_dpd_digits (int, const void *const *, char*, int*, int*, int*,
 int*);
 
@@ -102,7 +104,10 @@ int*);
 
 
 #define DECIMAL_PRINTF_BUF_SIZE 65 /* ((DECIMAL128_PMAX + 14) * 2) + 1  */
-/* TODO: add wide character support */
+
+/* fe_decround.c will initialize this function pointer to fe_decgetround */
+int (*__printf_dfp_getround_callback)(void) = NULL;
+
 
 int
 __printf_dfp (FILE *fp,
@@ -214,7 +219,7 @@ __printf_dfp (FILE *fp,
      decpt,  /* decimal point offset into digits[] */
      prec,   /* number of digits that follow the decimal point,
                 or number of significant digits for %g */
-     limit,  /* maximum offset into digits[], may exceed len */
+     default_prec, /* default precision, if none given */
      n;      /* current digit offset into digits[] */
     digits[0] = '0'; /* need an extra digit for rounding up */
     
@@ -276,67 +281,118 @@ __printf_dfp (FILE *fp,
     if (sig == 0) { sig = 1; n--; } /* coefficient is zero */
     len = n + sig;
     
-    
+    switch (spec)
+      {
+        case 'a': /* fall thru */
+	case 'g': default_prec = sig; break;
+	case 'f': default_prec = (exp < 0) ? -exp : 0; break;
+        case 'e': default_prec = sig-1; break;
+      }
     
     /* if no precision is specified, use that of the decimal type */
     if (prec < 0)
-      switch (spec)
-	{
-	  case 'f': prec = (exp < 0) ? -exp : 0; break;
-	  case 'g': prec = sig; break;
-	  case 'e': prec = sig-1; break;
-	}
-    else if (prec < ((spec == 'f') ? -exp : sig-(spec!='g')))
+      prec = default_prec;
+    else if (prec < default_prec)
     /* do rounding if precision is less than the decimal type */
       {
-        int index;
-        index = n + prec;
-	if (spec == 'f') index += sig + exp;
-	if (spec == 'e') index += 1;
-	if (spec == 'g') index += 0;
+        int index, roundmode = 0, do_round = 0;
+	char rounddigit = '4';
+	
+        index = n + prec + sig - default_prec;
 
-        if (index < len && digits[index] >= '5')
-          {
+        /* FIXME: we should check rounding mode for %a */
+	if (__printf_dfp_getround_callback) {
+	  roundmode = (*__printf_dfp_getround_callback)();
+	
+/*	outchar('[');
+	outchar('r');
+	outchar('o');
+	outchar('u');
+	outchar('n');
+	outchar('d');
+	outchar('m');
+	outchar('o');
+	outchar('d');
+	outchar('e');
+	outchar('=');
+	outchar('0'+roundmode);
+	outchar(']');*/
+	
+	switch (roundmode) {
+	  case FE_DEC_TONEAREST: rounddigit = '4'; break;
+	  case FE_DEC_TOWARDZERO: rounddigit = '9'; break;
+	  case FE_DEC_UPWARD: rounddigit = is_neg ? '9' : '0'-1; break;
+	  case FE_DEC_DOWNWARD: rounddigit = is_neg ? '0'-1 : '9'; break;
+	  case FE_DEC_TONEARESTFROMZERO: rounddigit = '4'; break;
+	  case 5: rounddigit = '4'; break; /* nearest, ties toward zero */
+	  case 6: rounddigit = '0'-1; break; /* away from zero */
+	  case 7: rounddigit = '4'; break; /* round for shorter precision */
+	  default: rounddigit = '4'; break;
+	}
+	
+	}
+	
+        if (index < len && digits[index] > rounddigit)
+          do { 
+	    int trailzero = index+1;
+	    if (digits[index] == rounddigit+1)
+	      {
+	        while (trailzero < len)
+	          {
+	            if (digits[trailzero] != '0')
+		      {
+		        trailzero = 0;
+		        break;
+		      }
+		    ++trailzero;
+		  }
+		if (roundmode == FE_DEC_TONEAREST && trailzero &&
+		  (digits[index-1] & 1) == 0) break;
+		if (roundmode == FE_DEC_UPWARD && !trailzero) break;
+		if (roundmode == FE_DEC_DOWNWARD && !trailzero) break;
+		if (roundmode == 5 && trailzero) break;
+		if (roundmode == 6 && trailzero) break;
+	      }
+	  
             while (digits[--index] == '9') digits[index] = '0';
             digits[index]++;
             if (index < n) { n--; sig++; }
-          }
+          } while (0);
       }
     
     /* calculate decimal point, adjust prec and exp if necessary */
-    switch(spec)
+    if (spec == 'f')
       {
-	case 'f':
-	  decpt = n + sig + exp;
-	  break;
-
-	case 'g':
-	  if (0 >= exp && exp >= -(prec+5) && exp+sig <= prec)
-	    {
-	      spec = 'f';
-	      prec -= exp+sig;
-	      decpt = n + sig + exp;
-	      break;
-	    }
-	  /* fallthru to 'e' */
-	  prec--;
-
-	case 'e':
-	  exp += sig-1;
-	  decpt = n + 1;
-	  break;
-     }
+	decpt = n + sig + exp;
+      }
+    else if (spec == 'a' && -(prec+5) <= exp && exp <= 0 && exp+sig <= prec)
+      {
+	spec = 'f';
+	prec -= exp+sig;
+	decpt = n + sig + exp;
+      }
+    else if (spec == 'g' && -4 < exp+sig && exp+sig <= prec)
+      {
+	spec = 'f';
+	prec -= exp+sig;
+	decpt = n + sig + exp;
+      }
+    else
+      {
+        if (spec != 'e') prec--;
+	exp += sig-1;
+	decpt = n + 1;
+      }
 
     /* remove trailing zeroes for %g */
-    /* temporarily disabled until we can figure out the draft
-    if (tolower (info->spec) == 'g')
+    if (tolower(info->spec) == 'g')
       {
         while (prec > 0 && decpt+prec > len) prec--;
 	while (prec > 0 && digits[decpt+prec-1] == '0') prec--;
-      }*/
+      }
 
-    /* remove trailing zeroes for %g, but only if they are not significant */
-    if (tolower (info->spec) == 'g')
+    /* remove trailing zeroes for %a, but only if they are not significant */
+    if (tolower(info->spec) == 'a')
       {
         while (prec > 0 && decpt+prec > len) prec--;
 	while (prec > 0 && decpt+prec > n+sig && digits[decpt+prec-1] == '0') prec--;
@@ -344,7 +400,11 @@ __printf_dfp (FILE *fp,
       
 
     /* digits to the left of the decimal pt. */
-    if (n < decpt) width -= decpt - n;
+    if (n < decpt)
+      { 
+        width -= decpt - n;
+	if (grouping) width -= (decpt-n)/3;
+      }
     else width--;  /* zero */
   
     /* digits to the right of the decimal pt. */
@@ -352,7 +412,12 @@ __printf_dfp (FILE *fp,
     else if (info->alt) width -= 1;
   
     if (spec != 'f')
-      width -= 4 + (0!=(exp/1000)) + (0!=(exp/100));
+      {
+        width -= 3;
+	if (0!=(exp/10) || spec!='a') --width;
+	if (0!=(exp/100)) --width;
+	if (0!=(exp/1000)) --width;
+      }
   
     if (is_neg || info->showsign || info->space) width--;
 
@@ -369,7 +434,7 @@ __printf_dfp (FILE *fp,
     if (!info->left && info->pad == '0' && width > 0)
       PADN ('0', width);
 
-
+  /* print zero, decimal point and leading zeroes if needed */
   if (decpt <= n)
     {
       outchar ('0');
@@ -384,29 +449,40 @@ __printf_dfp (FILE *fp,
             }
         }
     }
+  /* print digits */
   while (n < len && n < decpt + prec)
     {
-      if (n == decpt) outchar (wide ? decimalwc : *decimal);
+      if (n == decpt) 
+        outchar (wide ? decimalwc : *decimal);
+      else if (grouping && n < decpt && (decpt-n)%3 == 0)
+        outchar (wide ? thousands_sepwc : *thousands_sep);
       outchar (digits[n]);
       n++;
     }
+  /* print trailing zeroes */
   while (n < decpt + prec)
     {
-      if (n == decpt) outchar (wide ? decimalwc : *decimal);
+      if (n == decpt) 
+        outchar (wide ? decimalwc : *decimal);
+      else if (grouping && n < decpt && (decpt-n)%3 == 0)
+        outchar (wide ? thousands_sepwc : *thousands_sep);
       outchar ('0');
       n++;
     }
+  /* print decimal point, if needed */
   if (n == decpt && info->alt) outchar (wide ? decimalwc : *decimal);
   
   
   if (spec != 'f')
    {
      outchar (isupper(info->spec) ? 'E' : 'e');
-     if (exp < 0) { outchar ('-'); exp = -exp; } else outchar ('+');
-     n = exp;
-     if (exp >= 1000) { outchar ('0'+(n/1000)); n%=1000; }
-     if (exp >= 100) { outchar ('0'+(n/100)); n%=100; }
-     outchar ('0'+(n/10));
+     if (exp < 0) 
+       { outchar ('-'); n = -exp; }
+     else
+       { outchar ('+'); n = exp; }
+     if (n >= 1000) outchar ('0'+((n/1000)%10)); 
+     if (n >= 100) outchar ('0'+((n/100)%10));
+     if (n >= 10 || spec!='a') outchar ('0'+((n/10)%10));
      outchar ('0'+(n%10));
  
    }

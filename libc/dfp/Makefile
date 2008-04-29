@@ -112,7 +112,7 @@ libdfp-routines := $(libdfp-shared) \
 # due to the sysdeps/unix/sysv/linux/Implies sydeps/dfp/Subdirs chain.
 routines = $(libdfp-shared:%=libc_%) \
 	decroundtls strtod32 strtod64 strtod128 \
-	wcstod32 wcstod64 wcstod128 printf_dfp printf_dfphex
+	wcstod32 wcstod64 wcstod128 printf_dfp
 
 # Will only apply to those C files being built into libdfp
 ifeq ($(subdir), dfp)

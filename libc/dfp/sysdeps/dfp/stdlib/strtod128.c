@@ -24,7 +24,7 @@
 #define FLOAT_HUGE_VAL	DEC_INFINITY
 #define FLT		DEC128
 #define FLOAT_SIZE	128
-#define FLOAT_ZERO	0.0DL
+#define FLOAT_ZERO	0.DL
 #define SET_MANTISSA(x,y)
 #endif
 

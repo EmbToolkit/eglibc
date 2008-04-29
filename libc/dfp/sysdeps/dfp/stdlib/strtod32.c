@@ -5,6 +5,7 @@
    Contributed by IBM Corporation.
    Adapted primarily from stdlib/strtod_l.c by Ulrich Drepper <drepper@cygnus.com>
    Author(s): Joseph Kerian <jkerian@us.ibm.com>
+              Pete Eberlein <eberlein@us.ibm.com>
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -42,9 +43,13 @@
 # define FLOAT_HUGE_VAL	HUGE_VAL_D32
 # define FLOAT_SIZE	32
 # define FLT		DEC32
-# define FLOAT_ZERO	0.0DF
+# define FLOAT_ZERO	0.DF
 # define SET_MANTISSA(x,y)
 #endif
+
+#define DEC_TYPE	FLOAT
+#define _DECIMAL_SIZE	FLOAT_SIZE
+#include <numdigits.h>
 
 /* We use this code for the extended locale handling where the
    function gets as an additional argument the locale which has to be
@@ -455,7 +460,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
   /* We have the number digits in the integer part.  Whether these are all or
      any is really a fractional digit will be decided later.  */
   int_no = dig_no;
-  lead_zero = int_no == 0 ? -1 : 0;
+  lead_zero = int_no == 0 ? 1 : 0;  /* FIXME: Why was this -1 */
 
   /* Read the fractional digits.  A special case are the 'american style'
      numbers like `16.' i.e. with decimal but without trailing digits.  */
@@ -561,16 +566,14 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
     }
 
 
-      printf("lead_zero=%d dig_no=%d int_no=%d exponent=%d\n", 
-              lead_zero, dig_no, int_no, exponent);
-
   /* We don't want to have to work with trailing zeroes after the radix.  */
+#if 0  /* Actually, for DFP, we do. */
   if (dig_no > int_no)
     {
       while (expp[-1] == L_('0'))
 	{
 	  --expp;
-	  --exponent;
+	  /*--exponent;*/  /* FIXME: This can't be here */
 	  --dig_no;
 	}
       assert (dig_no >= int_no);
@@ -591,7 +594,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 	++exponent;
       }
     while (dig_no > 0 && exponent < 0);
-
+#endif
  number_parsed:
 
   /* The whole string is parsed.  Store the address of the next character.  */
@@ -600,21 +603,20 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 
   if (dig_no == 0)
     {
-      printf("lead_zero=%d dig_no=%d int_no=%d exponent=%d\n", 
-              lead_zero, dig_no, int_no, exponent);
-
-
-      if (exponent != 0)
+      if (exponent == 0)
         return negative ? -FLOAT_ZERO : FLOAT_ZERO;
 
-
+#if NUMDIGITS_SUPPORT==0
       d32 += 1;
-      while(exponent-- > 0)
+      while(exponent-- > 0)  /* FIXME: this doesn't work right for exponent>0 */
 	d32 *= 10;
       while(++exponent < 0)
 	d32 /= 10;
-
       d32 -= d32;
+#else
+      d32 = setexp(d32, exponent);
+#endif
+
       return negative ? -d32 : d32;
     }
 
@@ -643,6 +645,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
       exponent -= base == 16 ? 4 * lead_zero : lead_zero;
       dig_no -= lead_zero;
     }
+
 
   /* Now we have the number of digits in total and the integer digits as well
      as the exponent and its sign.  We can decide whether the read digits are
@@ -718,7 +721,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
       /* Read the decimal part as a FLOAT.  */
       int digcnt = dig_no - int_no;
       FLOAT frac = FLOAT_ZERO;
-
+      
   /* There might be radix characters in
 	    the string.  But these all can be ignored because we know the
 	    format of the number is correct and we have an exact number
@@ -731,7 +734,7 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
 	startp += decimal_len;
 #endif
 
-      do
+      /*do
 	{
 	  if(base == 10)
 	    frac = frac/10 + *(startp+digcnt-1) - L_('0');
@@ -743,13 +746,30 @@ FUNCTION_L_INTERNAL (const STRING_TYPE * nptr, STRING_TYPE ** endptr,
       while (--digcnt > 0);
       frac /= 10;
 
-      d32 += frac;
+      d32 += frac;*/
+      
+      do
+        {
+	  if(base == 10)
+	    d32 = d32*10 + *startp - L_('0');
+	  else
+	    d32 = d32*10 + (*startp >= L_('0') && 
+		*startp <= L_('9') ? -L_('0') : 10-L_('a'))
+		+ *startp;
+	  ++startp;
+	  --exponent;
+        }
+      while (--digcnt > 0);
     }
 
+#if NUMDIGITS_SUPPORT==0
   while(exponent-- > 0)
     d32 *= 10;
   while(++exponent < 0)
     d32 /= 10;
+#else
+  d32 = setexp(d32, getexp(d32) + exponent);
+#endif
 
   return negative? -d32:d32;
 }

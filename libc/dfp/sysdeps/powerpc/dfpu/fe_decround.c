@@ -122,3 +122,14 @@ int __fe_dec_getround(void)
   }
 }
 strong_alias(__fe_dec_getround, fe_dec_getround)
+
+
+
+extern int (*__printf_dfp_getround_callback)(void);
+
+void __attribute__ ((constructor)) 
+__init_printf_dfp_getround (void)
+{
+  __printf_dfp_getround_callback = &__fe_dec_getround;
+}
+libc_hidden_def (__init_printf_dfp_getround);

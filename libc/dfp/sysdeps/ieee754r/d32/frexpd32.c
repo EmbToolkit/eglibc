@@ -38,6 +38,7 @@
 DEC_TYPE
 INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
 {
+#if NUMDIGITS_SUPPORT==1
   DEC_TYPE result;
   int digits, exponent;
  
@@ -48,13 +49,10 @@ INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
   exponent = getexp(x);
   *y = digits + exponent;
 
-  result = x;
-  setexp(&result, -digits);
-
-  return result;
+  result = setexp(result, -digits);
   
-/* old decnumber implementation */  
-/*  decNumber dn_x;
+#else 
+  decNumber dn_x;
   decContext context;
 
   *y = 0;
@@ -68,8 +66,9 @@ INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
 
   ___decContextDefault(&context, DEFAULT_CONTEXT);
   FUNC_CONVERT_FROM_DN (&dn_x, &result, &context);
+#endif 
   
-  return result;*/
+  return result;
 }
 
 weak_alias (INTERNAL_FUNCTION_NAME, EXTERNAL_FUNCTION_NAME)

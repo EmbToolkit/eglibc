@@ -23,6 +23,16 @@
 #ifndef _NUMDIGITS_H
 #define _NUMDIGITS_H 1
 
+#define NUMDIGITS_SUPPORT 1
+
+#ifndef DEC_TYPE
+#error DEC_TYPE must be declared
+#endif
+
+#ifndef _DECIMAL_SIZE
+#error _DECIMAL_SIZE must be declared
+#endif
+
 #include "dpd-private.h"
 #include <string.h>
 
@@ -62,44 +72,110 @@ getexp (DEC_TYPE x)
 }
 
 
-static inline void
-setexp (DEC_TYPE *x, int exp)
+static inline DEC_TYPE
+setexp (DEC_TYPE x, int exp)
 {
 
 #if _DECIMAL_SIZE == 32
   union ieee754r_Decimal32 d;
-  d.sd = *x;
+  d.sd = x;
   exp += DECIMAL32_Bias;
   d.ieee.bec = exp;
   d.ieee.c = lm2lmd_to_c[c_decoder[d.ieee.c].lmd][exp >> DECIMAL32_BEC_bits];
-  *x = d.sd;
+  return d.sd;
 
 #elif _DECIMAL_SIZE == 64
   union ieee754r_Decimal64 d;
-  d.dd = *x;
+  d.dd = x;
   exp += DECIMAL64_Bias;
   d.ieee.bec = exp;
   d.ieee.c = lm2lmd_to_c[c_decoder[d.ieee.c].lmd][exp >> DECIMAL64_BEC_bits];
-  *x = d.dd;
+  return d.dd;
 
 #elif _DECIMAL_SIZE == 128
   union ieee754r_Decimal128 d;
-  d.td = *x;
+  d.td = x;
   exp += DECIMAL128_Bias;
   d.ieee.bec = exp;
   d.ieee.c = lm2lmd_to_c[c_decoder[d.ieee.c].lmd][exp >> DECIMAL128_BEC_bits];
-  *x = d.td;
+  return d.td;
 
 #endif
 
 }
+
+static inline unsigned int 
+__dfp_declet_to_dpd(char *str) 
+{
+  return bcd_to_dpd[(str[0]<<8) + (str[1]<<4) + str[2] - '0'*0x111];
+}
+
+static inline DEC_TYPE
+setdigits (DEC_TYPE x, char *str)
+{
+  unsigned int bcd;
+#if _DECIMAL_SIZE == 32
+  union ieee754r_Decimal32 d;
+  d.sd = x;
+  d.ieee.c = lm2lmd_to_c[str[0]-'0'][c_decoder[d.ieee.c].lm_exp];
+
+  d.ieee.cc0 = __dfp_declet_to_dpd(str+1);
+  d.ieee.cc1 = __dfp_declet_to_dpd(str+4);
+
+  return d.sd;
+
+#elif _DECIMAL_SIZE == 64
+  union ieee754r_Decimal64 d;
+  d.dd = x;
+  d.ieee.c = lm2lmd_to_c[str[0]-'0'][c_decoder[d.ieee.c].lm_exp];
+
+  d.ieee.cc0 = __dfp_declet_to_dpd(str+1);
+  /* Packed fields crossing a word boundary require special handling. */
+  bcd = __dfp_declet_to_dpd(str+4);
+  d.ieee.cc1H8 = bcd>>2;
+  d.ieee.cc1L2 = bcd;
+  d.ieee.cc2 = __dfp_declet_to_dpd(str+7);
+  d.ieee.cc3 = __dfp_declet_to_dpd(str+10);
+  d.ieee.cc4 = __dfp_declet_to_dpd(str+13);
+
+  return d.dd;
+
+#elif _DECIMAL_SIZE == 128
+  union ieee754r_Decimal128 d;
+  d.td = x;
+  d.ieee.c = lm2lmd_to_c[str[0]-'0'][c_decoder[d.ieee.c].lm_exp];
+
+  d.ieee.cc0 = __dfp_declet_to_dpd(str+1);
+  /* Packed fields crossing a word boundary require special handling. */
+  bcd = __dfp_declet_to_dpd(str+4);
+  d.ieee.cc1H4 = bcd>>6;
+  d.ieee.cc1L6 = bcd;
+  d.ieee.cc2 = __dfp_declet_to_dpd(str+7);
+  d.ieee.cc3 = __dfp_declet_to_dpd(str+10);
+  bcd = __dfp_declet_to_dpd(str+13);
+  d.ieee.cc4H6 = bcd>>4;
+  d.ieee.cc4L4 = bcd;
+  d.ieee.cc5 = __dfp_declet_to_dpd(str+16);
+  d.ieee.cc6 = __dfp_declet_to_dpd(str+19);
+  bcd = __dfp_declet_to_dpd(str+22);
+  d.ieee.cc7H8 = bcd>>2;
+  d.ieee.cc7L2 = bcd;
+  d.ieee.cc8 = __dfp_declet_to_dpd(str+25);
+  d.ieee.cc9 = __dfp_declet_to_dpd(str+28);
+  d.ieee.cc10 = __dfp_declet_to_dpd(str+31);
+
+  return d.td;
+
+#endif
+}
+
 
 
 
 static inline int
 numdigits (DEC_TYPE x)
 {
-  int firstdigit = 0 ;
+  int firstdigit = 0;
 #if _DECIMAL_SIZE == 32
   char digits[8];
   __get_digits_d32(x, digits, NULL, NULL, NULL, NULL);
@@ -113,6 +189,33 @@ numdigits (DEC_TYPE x)
   while (digits[firstdigit] == '0') firstdigit++;
 
   return strlen(digits + firstdigit);
+}
+
+static inline DEC_TYPE
+left_justify (DEC_TYPE x)
+{
+  int firstdigit = 0, len;
+#if _DECIMAL_SIZE == 32
+  char digits[8+7];
+  __get_digits_d32(x, digits, NULL, NULL, NULL, NULL);
+#elif _DECIMAL_SIZE == 64
+  char digits[17+16];
+  __get_digits_d64(x, digits, NULL, NULL, NULL, NULL);
+#elif _DECIMAL_SIZE == 128
+  char digits[35+34];
+  __get_digits_d128(x, digits, NULL, NULL, NULL, NULL);
+#endif
+  while (digits[firstdigit] == '0') firstdigit++;
+  len = strlen(digits + firstdigit);
+  if (len)
+    {
+      /* pad the significant digits with enough trailing zeroes */
+      memset(digits + firstdigit + len, '0', firstdigit);
+      x = setdigits(x, digits + firstdigit);
+      x = setexp(x, getexp(x) - firstdigit);
+    }
+
+  return x;
 }
 
 

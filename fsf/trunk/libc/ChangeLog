@@ -1,3 +1,23 @@
+2008-05-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/dl-tls.c (__tls_get_addr): Optimize by moving slow path in
+	its own function.  This reduces the frame setup costs and more.
+
+2008-02-11  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #3406]
+	* sysdeps/ieee754/flt-32/w_expf.c (o_threshold): Correct value.
+	* math/libm-test.inc (exp_test): Test 88.72269439697265625.
+
+2008-05-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* io/openat.c (__openat_2): Also pass fd to __openat.
+	* io/openat64.c (__openat64_2): Also pass fd to __openat64.
+	Patch by Kristian Van Der Vliet <vanders@liqwyd.com>.
+
+	* string/tester.c (test_memcmp): Add a few more tests.
+	Patch by Mats Erik Andersson <ynglingatal@comhem.se>.
+
 2008-05-10  Ulrich Drepper  <drepper@redhat.com>
 
 	* nscd/cache.c (cache_add): Before returning with failure and this

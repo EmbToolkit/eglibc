@@ -1,5 +1,9 @@
 2008-06-17  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/arm/eabi/feupdateenv.c: New.
+
+2008-06-17  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/arm/libm-test-ulps: Update.
 
 2008-04-11  Paul Brook  <paul@codesourcery.com>

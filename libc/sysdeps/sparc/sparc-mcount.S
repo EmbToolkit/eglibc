@@ -1,5 +1,7 @@
-/* Copyright (C) 2008 Free Software Foundation, Inc.
+/* sparc-specific implemetation of profiling support.
+   Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by David S. Miller <davem@davemloft.net>, 2008.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,15 +18,12 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <atomic.h>
-#include "pthreadP.h"
+#include <sysdep.h>
 
-int
-pthread_spin_lock (pthread_spinlock_t *lock)
-{
-  while (atomic_compare_and_exchange_val_acq (lock, 1, 0) != 0)
-   while (*lock != 0)
-    ;
+ENTRY(_mcount)
+	mov	%i7, %o0
+	ba	__mcount_internal
+	 mov	%o7, %o1
+END(_mcount)
 
-  return 0;
-}
+weak_alias (_mcount, mcount)

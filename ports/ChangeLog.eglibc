@@ -1,3 +1,9 @@
+2008-06-24  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+	2008-05-21  Joseph Myers  <joseph@codesourcery.com>
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Cleanup namespace.
+
 2008-06-17  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/eabi/feupdateenv.c: New.

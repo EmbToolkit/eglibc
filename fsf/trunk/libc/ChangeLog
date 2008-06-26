@@ -1,3 +1,30 @@
+2008-06-25  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #6654]
+	* stdlib/canonicalize.c (__realpath): readlink can write too much
+	into the buffer on platforms without PATH_MAX.
+
+2008-06-17  Carlos O'Donell  <carlos@codesourcery.com>
+
+	[BZ #6653]
+	* posix/tst-regex.c (main): Rename to...
+	(do_test): ... this. Remove cmdline option processing.
+	(TIMEOUT): Define.
+	(TEST_FUNCTION): Define.
+	(CMDLINE_OPTIONS): Define.
+
+2008-06-25  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #5210]
+	* configure.in: Add -Werror to -fstack-protector test to catch
+	unsupported architectures.
+	Patch by Gilles Esponasse <g.esp@free.fr>.
+
+2008-06-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* stdlib/tst-setcontext.c: Set back_in_main before exit if
+	getcontext returns ENOSYS.
+
 2008-06-18  Ulrich Drepper  <drepper@redhat.com>
 
 	* nscd/connections.c (main_loop_poll): Fix test for read error.

@@ -1,6 +1,10 @@
 #ifndef _SFP_MACHINE_H_
 #define _SFP_MACHINE_H_
 #include <fenv_libc.h>
+#include <libc-symbols.h>
+
+int __feraiseexcept_soft (int);
+libc_hidden_proto (__feraiseexcept_soft)
 
 #define _FP_W_TYPE_SIZE		32
 #define _FP_W_TYPE		unsigned long

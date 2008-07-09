@@ -28,7 +28,7 @@ feholdexcept (fenv_t *envp)
   fenv_union_t u;
 
   /* Get the current state.  */
-  fegetenv (envp);
+  __fegetenv (envp);
 
   u.fenv = *envp;
   /* Clear everything except the rounding mode.  */

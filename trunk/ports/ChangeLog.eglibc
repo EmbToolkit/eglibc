@@ -1,3 +1,22 @@
+2008-07-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/shlib-versions:
+	New.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/single/shlib-versions:
+	New.
+	* c++-types-powerpce500v1-linux-gnu.data: New.
+	* c++-types-powerpce500v2-linux-gnu.data: New.
+	* localplt-powerpce500v1-linux-gnu.data: New.
+	* localplt-powerpce500v2-linux-gnu.data: New.
+	* sysdeps/powerpc/powerpc32/e500/fpu/spe.h: New.
+	* sysdeps/powerpc/powerpc32/e500/fpu/strtofix.c: Include <spe.h>.
+	Use libc_hidden_def for STRTOFIX.
+	* sysdeps/powerpc/powerpc32/e500/soft-fp/sfp-machine.h: Declare
+	__feraiseexcept_soft and use libc_hidden_proto.
+	* sysdeps/powerpc/powerpc32/e500/soft-fp/fraiseexcept-soft.c:
+	Declare __feraiseexcept_soft.  Use libc_hidden_proto and
+	libc_hidden_def.
+
 2008-07-08  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/nofpu/shlib-versions: New.

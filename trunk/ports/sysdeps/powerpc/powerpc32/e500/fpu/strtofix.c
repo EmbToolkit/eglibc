@@ -1,5 +1,6 @@
 /* Convert string representing a number to float value, using given locale.
-   Copyright (C) 1997,1998,2002,2004,2005,2006 Free Software Foundation, Inc.
+   Copyright (C) 1997,1998,2002,2004,2005,2006,2008
+   Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -28,6 +29,7 @@
 #include <locale/localeinfo.h>
 #include <locale.h>
 #include <math.h>
+#include <spe.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -696,3 +698,5 @@ STRTOFIX (const char *nptr, char **endptr)
 #endif
   return round_and_set_sign (val, negative, half, extra);
 }
+
+libc_hidden_def (STRTOFIX)

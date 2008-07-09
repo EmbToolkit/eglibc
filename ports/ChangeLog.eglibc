@@ -1,5 +1,13 @@
 2008-07-08  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/powerpc/nofpu/shlib-versions: New.
+	* c++-types-powerpcsoft-linux-gnu.data: New.
+	* localplt-powerpcsoft-linux-gnu.data: New.
+	* sysdeps/powerpc/nofpu/feholdexcpt.c (feholdexcept): Use
+	__fegetenv.
+
+2008-07-08  Joseph Myers  <joseph@codesourcery.com>
+
 	* c++-types-arm-linux-gnueabi.data: New.
 	* localplt-arm-linux-gnueabi.data: New.
 	* sysdeps/arm/bsd-_setjmp.S: Use HIDDEN_JUMPTARGET to call

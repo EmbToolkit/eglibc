@@ -1,3 +1,8 @@
+2008-07-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/bits/setjmp.h (__jmp_buf): Give name to structure
+	type.
+
 2008-06-30  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/eabi/fgetexcptflg.c: New.

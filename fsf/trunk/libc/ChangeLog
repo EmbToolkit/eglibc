@@ -1,3 +1,22 @@
+2008-08-02  Roland McGrath  <roland@frob.com>
+
+	* sysdeps/mach/i386/machine-lock.h (__spin_unlock, __spin_try_lock):
+	Add memory clobbers.
+
+2008-08-02  Ulrich Drepper  <drepper@redhat.com>
+
+	* manual/arith.texi: Avoid @strong{Note:}.
+	* manual/creature.texi: Likewise.
+	* manual/filesys.texi: Likewise.
+	* manual/math.texi: Likewise.
+	* manual/memory.texi: Likewise.
+	* manual/resource.texi: Likewise.
+	* manual/syslog.texi: Likewise.
+	* manual/time.texi: Likewise.
+
+	* sysdeps/posix/clock_getres.c (hp_timing_getres): Remove inline
+	to prevent warning.
+
 2008-08-01  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/Versions: Fix changes due to old patch for

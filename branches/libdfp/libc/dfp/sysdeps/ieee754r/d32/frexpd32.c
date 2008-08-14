@@ -1,5 +1,5 @@
 /* Break floating point number into normalized fraction and integral power of two
-   Copyright (C) 2006 IBM Corporation.
+   Copyright (C) 2008 IBM Corporation.
 
    Author(s): Joseph Kerian <jkerian@us.ibm.com>
 
@@ -38,8 +38,9 @@
 DEC_TYPE
 INTERNAL_FUNCTION_NAME (DEC_TYPE x, int *y)
 {
-#if NUMDIGITS_SUPPORT==1
   DEC_TYPE result;
+
+#if NUMDIGITS_SUPPORT==1
   int digits, exponent;
  
   if (isinf(x) || isnan(x))

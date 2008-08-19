@@ -1,3 +1,78 @@
+2008-07-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* locales/iso14651_t1_common: Add Kannada collation support.
+	Patch by Pravin Satpute <psatpute@redhat.com>.
+	
+2008-07-08  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #6713]
+	* charmaps/UTF-8: Fix U1DBA entry representation.
+	Patch by Colin Watson.
+
+2008-06-27  Ulrich Drepper  <drepper@redhat.com>
+
+	* tst-strptime.c (do_test): Add test of %EY.
+
+2008-06-25  Ulrich Drepper  <drepper@redhat.com>
+
+	* tst-strptime.c (do_test): Add test for parsing era year
+	representation.
+
+	[BZ #5911]
+	* locales/es_CR: Define first_weekday and first_workday.
+
+	[BZ #5814]
+	* locales/fi_FI: Fix separator for hours, minutes, and seconds.
+
+2008-06-24  Ulrich Drepper  <drepper@redhat.com>
+
+	* locales/iso14651_t1_common: Add support for Gurumukhi script.
+	Patch by Pravin Satpute <psatpute@redhat.com>.
+
+2008-05-21  Ulrich Drepper  <drepper@redhat.com>
+
+	* locales/iso14651_t1_common: Remove U0C0D entry added for Telugu.
+	Reported by Pravin Satpute.
+
+2008-05-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* locales/iso14651_t1_common: Remove duplicate U0C7B definition.
+
+2008-05-14  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #6438]
+	* locales/iso14651_t1_common: Add sorting data for Telugu.
+
+	[BZ #6447]
+	* locales/be_BY: Fix yesexpr.
+	Patch by Alexander Mikhailian <mikhailian@altern.org>.
+
+2008-04-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* charmaps/UTF-8: Update for Unicode v5.1.
+	* locales/i18n: Update for Unicode 5.
+
+2008-04-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* tst-langinfo.sh: Adjust for latest fr_FR locale changes.
+
+2008-04-07  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #6021]
+	* locales/es_ES: Fix p_cs_precedes and n_cs_precedes.
+	Use common collation definition.
+
+	[BZ #6040]
+	* locales/fr_FR: Fix abmon, abday, d_ftm, grouping.
+
+	[BZ #6004]
+	* locales/iso14651_t1_common: Fix first weight for U+1E60, U+1E62,
+	U+1E64, U+1E66, and U+1E68.
+	Patch by Jesse Thilo <unixweenie@gmail.com>.
+
+	[BZ #5478]
+	* locales/hu_HU: Fix name_fmt.
+
 2008-03-31  Ulrich Drepper  <drepper@redhat.com>
 
 	* locales/iso14651_t1_common: Add support for Gujarati script.

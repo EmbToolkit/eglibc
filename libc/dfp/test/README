@@ -3,6 +3,9 @@
 if test -z "$1"; then
 	cc="/opt/at05/bin/gcc"
 	export PATH=/opt/at05/bin:$PATH
+
+	SYSROOT=$HOME/tc
+	cc="$HOME/gcc/bin/gcc -I$SYSROOT/include -L$SYSROOT/lib -Wl,-rpath=$SYSROOT/lib -Wl,-dynamic-linker=$SYSROOT/lib/ld.so.1"
 else
 	cc=$1/gcc
 	export PATH=$1:$PATH
@@ -14,9 +17,9 @@ for i in $( ls *.c);
     if [ "$i" == "test-decimal.c" ]; then
         continue;
     fi
-    echo "${cc} -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`"
-    ${cc} -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`;
+    echo "${cc} -ldfp -std=gnu99  $i -o `basename $i .c`"
+    ${cc} -ldfp -std=gnu99  $i -o `basename $i .c`;
 
-    echo "${cc} -m64 -ldfp -ldecnumber -std=gnu99  $i -o `basename $i .c`_64"
-    ${cc} -ldfp -m64 -ldecnumber -std=gnu99  $i -o `basename $i .c`_64;
+    echo "${cc} -m64 -ldfp -std=gnu99  $i -o `basename $i .c`_64"
+    ${cc} -ldfp -m64 -std=gnu99  $i -o `basename $i .c`_64;
   done

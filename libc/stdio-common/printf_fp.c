@@ -1,5 +1,5 @@
 /* Floating point output for `printf'.
-   Copyright (C) 1995-2003, 2006, 2007 Free Software Foundation, Inc.
+   Copyright (C) 1995-2003, 2006, 2007, 2008 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1995.
@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <gnu/option-groups.h>
+#include <fpu_control.h>	/* for getting the rounding mode */
+
 
 #ifdef COMPILE_WPRINTF
 # define CHAR_T        wchar_t
@@ -965,15 +967,30 @@ ___printf_fp (FILE *fp,
 	  }
       }
 
+
+{ int roundmode;
+  wchar_t rounddigit;
+  _FPU_GETCW (roundmode);
+  roundmode &= _FPU_RC_NEAREST|_FPU_RC_DOWN|_FPU_RC_UP|_FPU_RC_ZERO;
+  switch (roundmode)
+    {
+    case _FPU_RC_NEAREST: rounddigit = L'4'; break;
+    case _FPU_RC_DOWN: rounddigit = is_neg ? L'0'-1: L'9'; break;
+    case _FPU_RC_UP: rounddigit = is_neg ? L'9': L'0'-1; break;
+    case _FPU_RC_ZERO: rounddigit = L'9'; break;
+    default: rounddigit = L'4'; break;
+    }
+
     /* Do rounding.  */
     digit = hack_digit ();
-    if (digit > L'4')
+    if (digit > rounddigit)
       {
 	wchar_t *wtp = wcp;
 
-	if (digit == L'5'
+	if (digit == (rounddigit + 1)
 	    && ((*(wcp - 1) != decimalwc && (*(wcp - 1) & 1) == 0)
-		|| ((*(wcp - 1) == decimalwc && (*(wcp - 2) & 1) == 0))))
+		|| ((*(wcp - 1) == decimalwc && (*(wcp - 2) & 1) == 0))
+		|| (roundmode == _FPU_RC_UP || roundmode == _FPU_RC_DOWN)))
 	  {
 	    /* This is the critical case.	 */
 	    if (fracsize == 1 && frac[0] == 0)
@@ -1086,6 +1103,7 @@ ___printf_fp (FILE *fp,
 	      }
 	  }
       }
+}
 
   do_expo:
     /* Now remove unnecessary '0' at the end of the string.  */
@@ -1170,6 +1188,7 @@ ___printf_fp (FILE *fp,
 
     {
       char *buffer = NULL;
+      char *buffer_end = NULL;
       char *cp = NULL;
       char *tmpptr;
 
@@ -1179,6 +1198,9 @@ ___printf_fp (FILE *fp,
 	  size_t decimal_len;
 	  size_t thousands_sep_len;
 	  wchar_t *copywc;
+	  size_t factor = (info->i18n
+			   ? _NL_CURRENT_WORD (LC_CTYPE, _NL_CTYPE_MB_CUR_MAX)
+			   : 1);
 
 	  decimal_len = strlen (decimal);
 
@@ -1187,10 +1209,11 @@ ___printf_fp (FILE *fp,
 	  else
 	    thousands_sep_len = strlen (thousands_sep);
 
+	  size_t nbuffer = (2 + chars_needed * factor + decimal_len
+			    + ngroups * thousands_sep_len);
 	  if (__builtin_expect (buffer_malloced, 0))
 	    {
-	      buffer = (char *) malloc (2 + chars_needed + decimal_len
-					+ ngroups * thousands_sep_len);
+	      buffer = (char *) malloc (nbuffer);
 	      if (buffer == NULL)
 		{
 		  /* Signal an error to the caller.  */
@@ -1199,8 +1222,8 @@ ___printf_fp (FILE *fp,
 		}
 	    }
 	  else
-	    buffer = (char *) alloca (2 + chars_needed + decimal_len
-				      + ngroups * thousands_sep_len);
+	    buffer = (char *) alloca (nbuffer);
+	  buffer_end = buffer + nbuffer;
 
 	  /* Now copy the wide character string.  Since the character
 	     (except for the decimal point and thousands separator) must
@@ -1219,9 +1242,17 @@ ___printf_fp (FILE *fp,
       if (__builtin_expect (info->i18n, 0))
         {
 #ifdef COMPILE_WPRINTF
-	  wstartp = _i18n_number_rewrite (wstartp, wcp);
+	  wstartp = _i18n_number_rewrite (wstartp, wcp,
+					  wbuffer + wbuffer_to_alloc);
+	  wcp = wbuffer + wbuffer_to_alloc;
+	  assert ((uintptr_t) wbuffer <= (uintptr_t) wstartp);
+	  assert ((uintptr_t) wstartp
+		  < (uintptr_t) wbuffer + wbuffer_to_alloc);
 #else
-	  tmpptr = _i18n_number_rewrite (tmpptr, cp);
+	  tmpptr = _i18n_number_rewrite (tmpptr, cp, buffer_end);
+	  cp = buffer_end;
+	  assert ((uintptr_t) buffer <= (uintptr_t) tmpptr);
+	  assert ((uintptr_t) tmpptr < (uintptr_t) buffer_end);
 #endif
         }
 

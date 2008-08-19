@@ -1,4 +1,4 @@
-/* Copyright (C) 2005, 2007 Free Software Foundation, Inc.
+/* Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,5 +23,5 @@
 int
 pthread_spin_trylock (pthread_spinlock_t *lock)
 {
-  return atomic_compare_and_exchange_val_acq(lock, 1, 0) ? EBUSY : 0;
+  return atomic_compare_and_exchange_val_acq (lock, 1, 0) ? EBUSY : 0;
 }

@@ -1,3 +1,110 @@
+2008-08-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/m68k/bits/byteswap.h: Allow inclusion from <endian.h>.
+	(__bswap_constant_16): Define.
+	(__bswap_16): Allow arguments with side effects.
+	(__bswap_constant_32): Ensure result is unsigned.
+	(__bswap_32): Define as inline function in fallback case.
+	(__bswap_constant_64): Define.
+	(__bswap_64): Use it for constant arguments.
+	* sysdeps/m68k/bits/setjmp.h (__jmp_buf): Give name to structure
+	type.
+	* sysdeps/m68k/m680x0/fpu/bits/mathinline.h: Only allow inclusion
+	from <math.h>.  Do not use extern inline directly.
+	* sysdeps/unix/sysv/linux/m68k/bits/fcntl.h: Include <bits/uio.h>.
+	(O_CLOEXEC, SYNC_FILE_RANGE_WAIT_BEFORE, SYNC_FILE_RANGE_WRITE,
+	SYNC_FILE_RANGE_WAIT_AFTER, SPLICE_F_MOVE, SPLICE_F_NONBLOCK,
+	SPLICE_F_MORE, SPLICE_F_GIFT): Define.
+	(sync_file_range, vmsplice, splice, tee): Declare.
+	* sysdeps/unix/sysv/linux/m68k/bits/mman.h (MADV_REMOVE): Define.
+	* sysdeps/unix/sysv/linux/m68k/bits/poll.h (POLLMSG, POLLREMOVE,
+	POLLRDHUP): Define.
+	* sysdeps/unix/sysv/linux/m68k/bits/stat.h (UTIME_NOW,
+	UTIME_OMIT): Define.
+	* sysdeps/unix/sysv/linux/m68k/kernel-features.h: New.
+	* sysdeps/unix/sysv/linux/m68k/sys/user.h: New.
+
+2008-07-22  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/fpu_control.h (_FPU_GETCW, _FPU_SETCW): Make asms
+	volatile.
+
+2008-07-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/bits/setjmp.h (__jmp_buf): Give name to structure
+	type.
+
+2008-07-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/shlib-versions:
+	New.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/single/shlib-versions:
+	New.
+	* c++-types-powerpce500v1-linux-gnu.data: New.
+	* c++-types-powerpce500v2-linux-gnu.data: New.
+	* localplt-powerpce500v1-linux-gnu.data: New.
+	* localplt-powerpce500v2-linux-gnu.data: New.
+	* sysdeps/powerpc/powerpc32/e500/fpu/spe.h: New.
+	* sysdeps/powerpc/powerpc32/e500/fpu/strtofix.c: Include <spe.h>.
+	Use libc_hidden_def for STRTOFIX.
+	* sysdeps/powerpc/powerpc32/e500/soft-fp/sfp-machine.h: Declare
+	__feraiseexcept_soft and use libc_hidden_proto.
+	* sysdeps/powerpc/powerpc32/e500/soft-fp/fraiseexcept-soft.c:
+	Declare __feraiseexcept_soft.  Use libc_hidden_proto and
+	libc_hidden_def.
+
+2008-07-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/nofpu/shlib-versions: New.
+	* c++-types-powerpcsoft-linux-gnu.data: New.
+	* localplt-powerpcsoft-linux-gnu.data: New.
+	* sysdeps/powerpc/nofpu/feholdexcpt.c (feholdexcept): Use
+	__fegetenv.
+
+2008-07-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* c++-types-arm-linux-gnueabi.data: New.
+	* localplt-arm-linux-gnueabi.data: New.
+	* sysdeps/arm/bsd-_setjmp.S: Use HIDDEN_JUMPTARGET to call
+	__sigsetjmp.
+	* sysdeps/arm/bsd-setjmp.S: Likewise.
+	* sysdeps/arm/eabi/aeabi_localeconv.c: Use __localeconv.
+	* sysdeps/arm/eabi/find_exidx.c (__gnu_Unwind_Find_exidx): Use
+	__dl_iterate_phdr.
+	* sysdeps/arm/eabi/setjmp.S: Add hidden_def (__sigsetjmp).
+	* sysdeps/arm/memmove.S: Use HIDDEN_JUMPTARGET to call memcpy from
+	within libc.
+	* sysdeps/arm/setjmp.S: Add hidden_def (__sigsetjmp).
+	* sysdeps/unix/sysv/linux/arm/clone.S: Use HIDDEN_JUMPTARGET to
+	call _exit.
+	* sysdeps/unix/sysv/linux/arm/ioperm.c (init_iosys): Use __sysctl,
+	__readlink and fgets_unlocked.
+	(_ioperm): Use __open and __close.
+
+2008-06-30  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/fgetexcptflg.c: New.
+	* sysdeps/arm/eabi/fsetexcptflg.c (__fesetexceptflag): Operate on
+	set exception flags, not on mask of enabled exceptions.
+
+2008-06-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/feupdateenv.c: New.
+
+2008-06-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/libm-test-ulps: Update.
+
+2008-04-11  Paul Brook  <paul@codesourcery.com>
+	    Sandra Loosemore  <sandra@codesourcery.com>
+
+	* sysdeps/arm/eabi/machine-gmon.h (_mcount):  Make the thumb2
+	version compile without error.
+
+2008-04-11  Paul Brook  <paul@codesourcery.com>
+
+	* sysdeps/arm/eabi/Versions: Add __gnu_mcount_nc.
+
 2008-04-02  Paul Brook  <paul@codesourcery.com>
 
 	* sysdeps/arm/eabi/machine-gmon.h: New file.

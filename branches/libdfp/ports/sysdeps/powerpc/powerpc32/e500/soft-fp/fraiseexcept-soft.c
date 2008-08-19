@@ -1,5 +1,5 @@
 /* Raise given exceptions.
-   Copyright (C) 2004 Free Software Foundation, Inc.
+   Copyright (C) 2004, 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Aldy Hernandez <aldyh@redhat.com>, 2004.
 
@@ -20,6 +20,11 @@
 
 #include <fenv_libc.h>
 #include <bp-sym.h>
+#include <libc-symbols.h>
+
+int __feraiseexcept_soft (int);
+libc_hidden_proto (__feraiseexcept_soft)
 
 #define __FERAISEEXCEPT_INTERNAL __feraiseexcept_soft
 #include "../spe-raise.c"
+libc_hidden_def (__feraiseexcept_soft)

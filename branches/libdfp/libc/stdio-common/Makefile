@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2006, 2007 Free Software Foundation, Inc.
+# Copyright (C) 1991-2006, 2007, 2008 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -65,7 +65,8 @@ tests := tstscanf test_rdwr test-popen tstgetln test-fseek \
 	 tst-sprintf tst-rndseek tst-fdopen tst-fphex \
 	 tst-popen tst-unlockedio tst-fmemopen2 tst-put-error tst-fgets \
 	 tst-fwrite bug16 bug17 tst-sprintf2 bug18 \
-	 bug19 tst-popen2 scanf14 scanf15 bug21 bug22
+	 bug19 tst-popen2 scanf14 scanf15 bug21 bug22 scanf16 scanf17 \
+	 tst-setvbuf1
 tests-$(OPTION_EGLIBC_LOCALE_CODE) \
       += tst-sscanf tst-swprintf bug15 test-vfprintf bug14 scanf13
 tests-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO) \
@@ -123,10 +124,12 @@ CFLAGS-isoc99_scanf.c += $(exceptions)
 CFLAGS-errlist.c = $(fno-unit-at-a-time)
 CFLAGS-siglist.c = $(fno-unit-at-a-time)
 
-# The following is a hack since we must compile scanf15.c without any
+# The following is a hack since we must compile scanf1{5,7}.c without any
 # GNU extension.  The latter are needed, though, when internal headers
 # are used.  So made sure we see the installed headers first.
 CFLAGS-scanf15.c = -I../libio -I../stdlib -I../wcsmbs -I../time -I../string \
+		   -I../wctype
+CFLAGS-scanf17.c = -I../libio -I../stdlib -I../wcsmbs -I../time -I../string \
 		   -I../wctype
 
 # We know the test has a format string problem.
@@ -141,3 +144,7 @@ bug15-ENV = LOCPATH=$(common-objpfx)localedata
 ifneq (,$(filter %REENTRANT, $(defines)))
 CPPFLAGS += -D_IO_MTSAFE_IO
 endif
+
+$(objpfx)tst-setvbuf1.out: tst-setvbuf1.expect $(objpfx)tst-setvbuf1
+	$(built-program-cmd) > $@ 2>&1
+	cmp tst-setvbuf1.expect $@

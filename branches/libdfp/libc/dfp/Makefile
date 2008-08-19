@@ -10,6 +10,7 @@ extra-libs-others := $(extra-libs)
 # install-lib-ldscripts := libdfp.so
 
 # The libdecnumber code is in the libdecnumber/ directory.
+ifeq ($(ARCH) 
 vpath %.c libdecnumber:libdecnumber/dpd
 vpath %.h libdecnumber:libdecnumber/dpd
 

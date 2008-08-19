@@ -1,6 +1,4 @@
-/* xmknod call using old-style Unix mknod system call.
-   Copyright (C) 1991, 1993, 1995, 1996, 1997, 1998, 2000, 2002, 2003
-   Free Software Foundation, Inc.
+/* Copyright (C) 1991, 1995, 1996, 2002, 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,33 +17,28 @@
    02111-1307 USA.  */
 
 #include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/sysmacros.h>
+#include <unistd.h>
+#include <stddef.h>
 
-#include <sysdep.h>
-#include <sys/syscall.h>
-#include <bp-checks.h>
-
-/* Create a device file named PATH, with permission and special bits MODE
-   and device number DEV (which can be constructed from major and minor
-   device numbers with the `makedev' macro above).  */
+/* Create a one-way communication channel (__pipe).  If successful,
+   two file descriptors are stored in PIPEDES; bytes written on
+   PIPEDES[1] can be read from PIPEDES[0].  Apply FLAGS to the new
+   file descriptors.  Returns 0 if successful, -1 if not.  */
 int
-__xmknod (int vers, const char *path, mode_t mode, dev_t *dev)
+__pipe2 (pipedes, flags)
+     int pipedes[2];
+     int flags;
 {
-  unsigned long k_dev;
-
-  if (vers != _MKNOD_VER)
+  if (pipedes == NULL)
     {
       __set_errno (EINVAL);
       return -1;
     }
 
-  /* We must convert the value to dev_t type used by the kernel.  */
-  k_dev = ((major (*dev) & 0xff) << 8) | (minor (*dev) & 0xff);
-
-  return INLINE_SYSCALL (mknod, 3, CHECK_STRING (path), mode, k_dev);
+  __set_errno (ENOSYS);
+  return -1;
 }
+weak_alias (__pipe2, pipe2)
+stub_warning (pipe2)
 
-weak_alias (__xmknod, _xmknod)
-libc_hidden_def (__xmknod)
+#include <stub-tag.h>

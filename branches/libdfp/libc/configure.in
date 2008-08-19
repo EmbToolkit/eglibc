@@ -355,7 +355,6 @@ AC_ARG_WITH([cpu],
   esac
 ])
 
-
 # An add-on can set this when it wants to disable the sanity check below.
 libc_config_ok=no
 
@@ -1552,7 +1551,7 @@ EOF
   if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS
 		     -S -o conftest.s conftest.c 1>&AS_MESSAGE_LOG_FD]) \
      && grep -q .note.GNU-stack conftest.s \
-     && AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS -Wa,--noexecstack
+     && AC_TRY_COMMAND([${CC-cc} $ASFLAGS -Wa,--noexecstack
 		       -c -o conftest.o conftest.s 1>&AS_MESSAGE_LOG_FD])
   then
     libc_cv_as_noexecstack=yes
@@ -1637,11 +1636,11 @@ EOF
   AC_SUBST(libc_cv_hashstyle)
 fi
 
-AC_CACHE_CHECK(for -fno-toplevel-reorder, libc_cv_fno_toplevel_reorder, [dnl
+AC_CACHE_CHECK(for -fno-toplevel-reorder -fno-section-anchors, libc_cv_fno_toplevel_reorder, [dnl
 cat > conftest.c <<EOF
 int foo;
 EOF
-if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS -S -fno-toplevel-reorder
+if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS -S -fno-toplevel-reorder -fno-section-anchors
 			    conftest.c 1>&AS_MESSAGE_LOG_FD])
 then
   libc_cv_fno_toplevel_reorder=yes
@@ -1650,7 +1649,7 @@ else
 fi
 rm -f conftest*])
 if test $libc_cv_fno_toplevel_reorder = yes; then
-  fno_unit_at_a_time=-fno-toplevel-reorder
+  fno_unit_at_a_time="-fno-toplevel-reorder -fno-section-anchors"
 else
   fno_unit_at_a_time=-fno-unit-at-a-time
 fi
@@ -1661,7 +1660,7 @@ cat > conftest.c <<EOF
 int foo;
 main () { return 0;}
 EOF
-if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS -fstack-protector
+if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS -Werror -fstack-protector
 			    -o conftest conftest.c 1>&AS_MESSAGE_LOG_FD])
 then
   libc_cv_ssp=yes
@@ -1995,6 +1994,22 @@ EOF
     AC_DEFINE(HAVE_TLS_MODEL_ATTRIBUTE)
   fi
 fi
+
+if test -n "$submachine"; then
+  AC_CACHE_CHECK([for compiler option for CPU variant],
+  		 libc_cv_cc_submachine, [dnl
+  libc_cv_cc_submachine=no
+  for opt in "-march=$submachine" "-mcpu=$submachine"; do
+    if AC_TRY_COMMAND([${CC-cc} $opt -xc /dev/null -S -o /dev/null]); then
+      libc_cv_cc_submachine="$opt"
+      break
+    fi
+  done])
+  if test "x$libc_cv_cc_submachine" = xno; then
+    AC_MSG_ERROR([${CC-cc} does not support $submachine])
+  fi
+fi
+AC_SUBST(libc_cv_cc_submachine)
 
 dnl Check whether we have the gd library available.
 AC_MSG_CHECKING(for libgd)

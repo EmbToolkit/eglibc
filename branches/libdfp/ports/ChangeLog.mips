@@ -1,3 +1,55 @@
+2008-08-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/sys/epoll.h: Change epoll_create2
+	to epoll_create1.
+
+2008-08-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Define SOCK_CLOEXEC,
+	SOCK_NONBLOCK, PF_ISDN and AF_ISDN.
+	* sysdeps/unix/sysv/linux/mips/sys/epoll.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/eventfd.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/inotify.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/signalfd.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/timerfd.h: New file.
+
+2008-08-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/fpu_control.h (_FPU_GETCW, _FPU_SETCW): Make asms
+	volatile.
+
+2008-07-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/bits/setjmp.h (__jmp_buf): Give name to structure
+	type.
+
+2008-05-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Cleanup namespace.
+	(SOCK_DCCP): Define.
+
+2008-05-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/resource.h: Define
+	RUSAGE_THREAD and RUSAGE_LWP.
+
+2008-04-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/shm.h: Fix comment describing
+	shmid_ds.
+
+2008-04-21  Khem Raj  <kraj@mvista.com>
+
+	* sysdeps/unix/sysv/linux/mips/xmknod.c: Delete file.
+
+2008-04-02  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/syscalls.list: Add 
+	truncate and ftruncate systems calls.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/ftruncate64.c: Make an
+	empty file.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/truncate64.c: Ditto.
+
 2008-03-28  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/nptl/bits/local_lim.h: Undefine

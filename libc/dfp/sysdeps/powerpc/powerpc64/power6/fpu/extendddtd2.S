@@ -1,5 +1,5 @@
 /* Decimal Floating Point extend 64-bit to 128-bit.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal128 __extendddtd2 (__decimal64 x)  */
-ENTRY (__extendddtd2)
-	dctqpq	fp2,fp1	/* Convert x to __decimal128. */
+/* _Decimal128 __dpd_extendddtd2 (_Decimal64 x)  */
+ENTRY (__dpd_extendddtd2)
+	dctqpq	fp2,fp1	/* Convert x to _Decimal128. */
 	blr
-	END (__extendddtd2)
+	END (__dpd_extendddtd2)

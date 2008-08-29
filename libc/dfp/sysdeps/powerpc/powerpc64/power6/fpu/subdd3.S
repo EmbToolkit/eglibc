@@ -1,5 +1,5 @@
 /* Decimal Floating Point 64-bit substract.  POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __subdd3 (__decimal64 x, __decimal64 y)  */
-ENTRY (__subdd3)
+/* _Decimal64 __dpd_subdd3 (_Decimal64 x, _Decimal64 y)  */
+ENTRY (__dpd_subdd3)
 	dsub	fp1,fp1,fp2
 	blr
-	END (__subdd3)
+	END (__dpd_subdd3)

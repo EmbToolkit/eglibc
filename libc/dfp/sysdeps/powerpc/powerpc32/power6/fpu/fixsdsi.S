@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 32-bit to int.
    POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,12 +22,13 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __fixsdsi (__decimal32 x)  */
-ENTRY (__fixsdsi)
+/* int __dpd_fixsdsi (_Decimal32 x)   */
+/* long __dpd_fixsdsi (_Decimal32 x)  */
+ENTRY (__dpd_fixsdsi)
 	stwu	r1,-16(r1)
 	cfi_adjust_cfa_offset (16)
-	dctdp	fp1,fp1	/* Convert x to __decimal64.  */
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
+	dctdp	fp1,fp1	/* Convert x to _Decimal64.  */
+	drintn	0,fp1,fp1,1	/* Preround to toward zero.  */
 	dctfix	fp0,fp1 /* Convert x to integer.  */
 	stfd	fp0,8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -54,4 +55,4 @@ L(negoverflow):
 L(done):
 	addi	r1,r1,16
 	blr
-	END (__fixsdsi)
+	END (__dpd_fixsdsi)

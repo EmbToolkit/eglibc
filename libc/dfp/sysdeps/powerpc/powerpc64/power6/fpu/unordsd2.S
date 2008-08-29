@@ -1,6 +1,6 @@
 /* Decimal Floating Point 32-bit unordered compare.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,13 +22,13 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __unordsd2 (__decimal32 x, __decimal32 y)  */
-ENTRY (__unordsd2)
-	dctdp	fp1,fp1	/* Convert x to __decimal64. */
-	dctdp	fp2,fp2	/* Convert y to __decimal64. */
+/* int __dpd_unordsd2 (_Decimal32 x, _Decimal32 y)  */
+ENTRY (__dpd_unordsd2)
+	dctdp	fp1,fp1	/* Convert x to _Decimal64. */
+	dctdp	fp2,fp2	/* Convert y to _Decimal64. */
 	dcmpu	cr0,fp1,fp2 	/* if (!unordered(x,y)) */
 	li	r3, 0		/*   return 0  */
 	bnulr+	cr0		/* else	 */
 	li	r3, 1		/*   return 1  */
 	blr
-	END (__unordsd2)
+	END (__dpd_unordsd2)

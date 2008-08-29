@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 128-bit to unsigned long.
    POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@
 #include <sysdep.h>
 #include <math_ldbl_opt.h>
 
-	.section	.rodata.cst8,"aM",@progbits,8
+	.section	.rodata.cst16,"aM",@progbits,32
 	.align	3
 .LC1:	/* 9223372036854775808.0DL */
 	.long	0x2207c000
@@ -34,10 +34,9 @@
 	.long	0xa99e40ed
 	.long	0xc5ba58e0
 	.section	".text"
-
 	.machine	"power6"
-/* unsigned long __fixunstddi (__decimal128 x)  */
-ENTRY (__fixunstddi)
+/* unsigned long long __dpd_fixunstddi (_Decimal128 x)  */
+ENTRY (__dpd_fixunstddi)
 	stwu	r1,-16(r1)
 	cfi_adjust_cfa_offset (16)
 #ifdef SHARED
@@ -69,10 +68,12 @@ ENTRY (__fixunstddi)
 	lfd	fp8,0(r10)
 	lfd	fp9,8(r10)
 #endif
-	drintnq. 0,fp2,fp2,1	/* Preround to toward zero.  */
+	dsubq   fp6,fp10,fp10   /* Generate 0.0 constant for later.  */
+	drintnq 0,fp2,fp2,1	/* Preround to toward zero.  */
+	dcmpuq  cr1,fp2,fp6     /* Check for less than zero.  */
 	dcmpuq	cr0,fp2,fp10	/* check if > 2**63-1 */
 	blt	cr1,L(negative)
-	blt	cr0,L(poslong)
+	ble	cr0,L(poslong)
 /* The return is an unsigned long, but "DFP convert to fixed" takes
    signed long, so we need to pre-adjust (-18446744073709551616.0DD)
    to get the final (signed) conversion result to be the correct	
@@ -80,7 +81,7 @@ ENTRY (__fixunstddi)
 	dsubq	fp2,fp2,fp8
 	dcmpuq	cr0,fp2,fp10	/* if x still > 2**63-1 */
 	li	r3,-1		/* return max_unsigned_long */
-	blt	cr0,L(done)	/* else */
+	bgt	cr0,L(done)
 L(poslong):
 	dctfixq	fp0,fp2 /* Convert x to integer.  */
 	stfd	fp0,8(r1)
@@ -95,5 +96,5 @@ L(done):
 	mr	r4,r3
 	addi	r1,r1,16
 	blr
-	END (__fixunstddi)
+	END (__dpd_fixunstddi)
 

@@ -1,5 +1,5 @@
 /* Decimal Floating Point convert 64-bit to int.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,9 +21,9 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __fixddsi (__decimal64 x)  */
-ENTRY (__fixddsi)
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
+/* int __dpd_fixddsi (_Decimal64 x)  */
+ENTRY (__dpd_fixddsi)
+	drintn	0,fp1,fp1,1	/* Preround to toward zero.  */
 	dctfix	fp0,fp1 /* Convert x to integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -33,11 +33,10 @@ ENTRY (__fixddsi)
 /* The return is an int, but we have long long, so we need to force overflow
    if there are any significant bits in the high word or overflow (incorrect
    sign) from the low word.  */
-
 	cmpd	cr0,r3,r4
 	cmpd	cr7,r3,r5
-	cmpdi	cr6,r3,0
-	blt	cr1,L(negative)
+	cmpdi	cr6,r3,0	/* Is the answer less than zero?  */
+	blt	cr6,L(negative)
 	bltlr	cr0
 L(posoverflow):
 	addi	r3,r4,-1	/* return max positive int.  */
@@ -47,5 +46,5 @@ L(negative):		/* If (result >= min negative int */
 L(negoverflow):		/* else */
 	mr	r3,r5	/* return min negative int.  */
 	blr
-	END (__fixddsi)
+	END (__dpd_fixddsi)
 

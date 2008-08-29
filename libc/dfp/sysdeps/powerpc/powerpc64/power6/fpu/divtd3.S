@@ -1,5 +1,5 @@
 /* Decimal Floating Point 128-bit divide.  POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal128 __divtd3 (__decimal128 x, __decimal128 y)  */
-ENTRY (__divtd3)
+/* _Decimal128 __dpd_divtd3 (_Decimal128 x, _Decimal128 y)  */
+ENTRY (__dpd_divtd3)
 	ddivq	fp2,fp2,fp4
 	blr
-	END (__divtd3)
+	END (__dpd_divtd3)

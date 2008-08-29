@@ -1,5 +1,5 @@
 /* Decimal Floating Point convert 64-bit to unsigned int.  P6 PPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,9 +21,9 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* unsigned int __fixunsddsi (__decimal64 x)  */
-ENTRY (__fixunsddsi)
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
+/* unsigned int __dpd_fixunsddsi (_Decimal64 x)  */
+ENTRY (__dpd_fixunsddsi)
+	drintn	0,fp1,fp1,1	/* Preround to toward zero.  */
 	dctfix	fp0,fp1 /* Convert x to integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -33,8 +33,9 @@ ENTRY (__fixunsddsi)
 /* The return is an unsigned int, but we have long long, so we need to force
    overflow if there are any significant bits in the high word or return
    zero if negative.  */
+	cmpdi	cr0,r3,0 /* less than zero? */
 	cmpld	cr6,r3,r4
-	blt	cr1,L(negative)
+	blt	cr0,L(negative)
 	blelr	cr6
 L(posoverflow):
 	mr	r3,r4	/* return max unsigned int.  */
@@ -42,4 +43,4 @@ L(posoverflow):
 L(negative):
 	li	r3,0	/* return 0 for negative floats.  */
 	blr
-	END (__fixunsddsi)
+	END (__dpd_fixunsddsi)

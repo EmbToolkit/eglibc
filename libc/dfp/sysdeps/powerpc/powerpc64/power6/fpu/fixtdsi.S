@@ -1,5 +1,5 @@
 /* Decimal Floating Point convert 128-bit to int.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,10 +21,10 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __fixtdsi (__decimal28 x)  */
-ENTRY (__fixtdsi)
-	drintnq. 0,fp2,fp2,1	/* Preround to toward zero.  */
-	dctfixq fp0,fp2 /* Convert x to integer.  */
+/* int __dpd_fixtdsi (_Decimal28 x)  */
+ENTRY (__dpd_fixtdsi)
+	drintnq	0,fp2,fp2,1	/* Preround to toward zero.  */
+	dctfixq	fp0,fp2 /* Convert x to integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	oris	r4,0,0x8000 /* 0x0000000080000000  */
@@ -34,10 +34,10 @@ ENTRY (__fixtdsi)
    if there are any significant bits in the high word or overflow (incorrect
    sign) from the low word.  */
 
+	cmpdi	cr6,r3,0
 	cmpd	cr0,r3,r4
 	cmpd	cr7,r3,r5
-	cmpdi	cr6,r3,0
-	blt	cr1,L(negative)
+	blt	cr6,L(negative)
 	bltlr	cr0
 L(posoverflow):
 	addi	r3,r4,-1	/* return max positive int.  */
@@ -47,4 +47,4 @@ L(negative):		/* If (result >= min negative int */
 L(negoverflow):		/* else */
 	mr	r3,r5	/* return min negative int.  */
 	blr
-	END (__fixtdsi)
+	END (__dpd_fixtdsi)

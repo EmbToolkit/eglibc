@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 32-bit to unsigned int.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,10 +22,10 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* unsigned int __fixunssdsi (__decimal32 x)  */
-ENTRY (__fixunssdsi)
-	dctdp	fp1,fp1	/* Convert x to __decimal64.  */
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
+/* unsigned int __dpd_fixunssdsi (_Decimal32 x)  */
+ENTRY (__dpd_fixunssdsi)
+	dctdp	fp1,fp1	/* Convert x to _Decimal64.  */
+	drintn	0,fp1,fp1,1	/* Preround to toward zero.  */
 	dctfix	fp0,fp1 /* Convert x to integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -44,4 +44,4 @@ L(posoverflow):
 L(negative):
 	li	r3,0	/* return 0 for negative floats.  */
 	blr
-	END (__fixunssdsi)
+	END (__dpd_fixunssdsi)

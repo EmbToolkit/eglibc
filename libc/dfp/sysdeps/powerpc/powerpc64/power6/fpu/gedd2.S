@@ -1,5 +1,5 @@
 /* Decimal Floating Point 64-bit compare >=.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __gedd2 (__decimal64 x, __decimal64 y)  */
-ENTRY (__gedd2)
+/* int __dpd_gedd2 (_Decimal64 x, _Decimal64 y)  */
+ENTRY (__dpd_gedd2)
 	dcmpu	cr0,fp1,fp2 	/* if ((x > y) && !unordered(x,y)) */
 	li	r3, 1		/*   return 1  */
 	bgtlr	cr0		/* else	if ((x == y) && !unordered(x,y)) */
@@ -30,4 +30,4 @@ ENTRY (__gedd2)
 	beqlr	cr0		/* else	 */
 	li	r3, -1		/*   return -1  */
 	blr
-	END (__gedd2)
+	END (__dpd_gedd2)

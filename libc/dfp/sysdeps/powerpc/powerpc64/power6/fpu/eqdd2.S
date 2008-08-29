@@ -1,5 +1,5 @@
 /* Decimal Floating Point 64-bit compare equal.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,11 +21,11 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __eqdd2 (__decimal64 x, __decimal64 y)  */
-ENTRY (__eqdd2)
+/* int __dpd_eqdd2 (_Decimal64 x, _Decimal64 y)  */
+ENTRY (__dpd_eqdd2)
 	dcmpu	cr0,fp1,fp2 	/* if ((x == y) && !unordered(x,y)) */
 	li	r3, 0		/*   return 0  */
 	beqlr	cr0		/* else	 */
 	li	r3, 1		/*   return 1  */
 	blr
-	END (__eqdd2)
+	END (__dpd_eqdd2)

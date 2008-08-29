@@ -24,6 +24,19 @@
 
 # include <features.h>
 
+/* rounding control */
+#define _FPU_RC_NEAREST 0x00   /* RECOMMENDED */
+#define _FPU_RC_DOWN    0x03
+#define _FPU_RC_UP      0x02
+#define _FPU_RC_ZERO    0x01
+
+/* masking of interrupts */
+#define _FPU_MASK_ZM  0x40 /* zero divide */
+#define _FPU_MASK_OM  0x20 /* overflow */
+#define _FPU_MASK_UM  0x10 /* underflow */
+#define _FPU_MASK_XM  0x08 /* inexact */
+#define _FPU_MASK_IM  0x80 /* invalid operation */
+
 /* These bits are reserved are not changed.  */
 # define _FPU_RESERVED 0x070700FC
 

@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 32-bit to unsigned long.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,31 +23,37 @@
 
 	.section	".toc","aw"
 .LC1:	/* 9223372036854775808.0DD */
-	.tc FD_6e45237c_836973f6[TC],0x6e45237c836973f6
+	.tc  FT_2207c000_3_a4cfa07a_2c7f600a[TC],0x2207c00000000003,0xa4cfa07a2c7f600a
 .LC2:	/* 18446744073709551616.0DD */
-	.tc FD_264a4cdd_2077c2dd[TC],0x264a4cdd2077c2dd
+	.tc FT_2207c000_c_a99e40ed_c5ba58e0[TC],0x2207c0000000000c,0xa99e40edc5ba58e0
 	.section	".text"
 
 	.machine	"power6"
-/* unsigned long __fixunssddi (__decimal32 x)  */
-ENTRY (__fixunssddi)
-	dctdp	fp1,fp1	/* Convert x to __decimal64.  */
+/* unsigned long __dpd_fixunssddi (_Decimal32 x)       */
+/* unsigned long long __dpd_fixunssddi (_Decimal32 x)  */
+ENTRY (__dpd_fixunssddi)
+	dctdp	fp1,fp1	/* Convert x to _Decimal64.  */
+	dctqpq	fp2,fp1	/* Convert x to _Decimal128.  */
 	lfd	fp10,.LC1@toc(2)
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
-	dcmpu	cr0,fp1,fp10	/* check if > 2**63-1 */
+	lfd	fp11,.LC1@toc+8(2)
+	dsubq	fp6,fp10,fp10	/* Generate 0.0 constant for later.  */
+	drintnq	0,fp2,fp2,1	/* Preround to toward zero.  */
+	dcmpuq	cr1,fp2,fp6	/* Check for less than zero.  */
+	dcmpuq	cr0,fp2,fp10	/* check if > 2**63-1 */
 	blt	cr1,L(negative)
-	lfd	fp11,.LC1@toc(2)
-	blt	cr0,L(poslong)
+	lfd	fp8,.LC2@toc(2)
+	lfd	fp9,.LC2@toc+8(2)
+	ble	cr0,L(poslong)
 /* The return is an unsigned long, but "DFP convert to fixed" takes
    signed long, so we need to pre-adjust (-18446744073709551616.0DD)
    to get the final (signed) conversion result to be the correct	
    unsigned result.  */
-	dsub	fp1,fp1,fp11
-	dcmpu	cr0,fp1,fp10	/* if x still > 2**63-1 */
+	dsubq	fp2,fp2,fp8
+	dcmpuq	cr0,fp2,fp10	/* if x still > 2**63-1 */
 	li	r3,-1		/* return max_unsigned_long */
 	bgelr	cr0		/* else */
 L(poslong):
-	dctfix	fp0,fp1 /* Convert x to integer.  */
+	dctfixq fp0,fp2 /* Convert x to long integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	ld	r3,-8(r1)
@@ -55,5 +61,5 @@ L(poslong):
 L(negative):
 	li	r3,0	/* return 0 for negative floats.  */
 	blr
-	END (__fixunssddi)
+	END (__dpd_fixunssddi)
 

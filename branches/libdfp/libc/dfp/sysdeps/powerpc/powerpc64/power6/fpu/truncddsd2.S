@@ -1,6 +1,6 @@
 /* Decimal Floating Point truncate 64-bit to 32-bit.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,8 +22,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal32 __truncddsd2 (__decimal64 x)  */
-ENTRY (__truncddsd2)
-	drsp	fp1,fp1	/* Round result to __decimal32. */
+/* _Decimal32 __dpd_truncddsd2 (_Decimal64 x)  */
+ENTRY (__dpd_truncddsd2)
+	drsp	fp1,fp1	/* Round result to _Decimal32. */
 	blr
-	END (__truncddsd2)
+	END (__dpd_truncddsd2)

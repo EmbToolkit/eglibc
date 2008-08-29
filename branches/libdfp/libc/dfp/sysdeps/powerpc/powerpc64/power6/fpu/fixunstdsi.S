@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 128-bit to unsigned int.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,11 +22,11 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* unsigned int __fixunstdsi (__decimal128 x)  */
-ENTRY (__fixunstdsi)
-	drintnq. 0,fp2,fp2,1	/* Preround to toward zero.  */
-	dctfixq fp0,fp2 /* Convert x to integer.  */
-	stfd	fp1,-8(r1)
+/* unsigned int __dpd_fixunstdsi (_Decimal128 x)  */
+ENTRY (__dpd_fixunstdsi)
+	drintnq	0,fp2,fp2,1	/* Preround to toward zero.  */
+	dctfixq	fp0,fp2 /* Convert x to integer.  */
+	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	oris	r4,0,0xffff /* 0x00000000ffff0000  */
 	ori	r4,r4,0xffff /* 0x00000000ffffffff  */
@@ -34,8 +34,9 @@ ENTRY (__fixunstdsi)
 /* The return is an unsigned int, but we have long long, so we need to force
    overflow if there are any significant bits in the high word or return
    zero if negative.  */
+	cmpdi	cr0,r3,0
 	cmpld	cr6,r3,r4
-	blt	cr1,L(negative)
+	blt	cr0,L(negative)
 	blelr	cr6
 L(posoverflow):
 	mr	r3,r4	/* return max unsigned int.  */
@@ -43,4 +44,4 @@ L(posoverflow):
 L(negative):
 	li	r3,0	/* return 0 for negative floats.  */
 	blr
-	END (__fixunstdsi)
+	END (__dpd_fixunstdsi)

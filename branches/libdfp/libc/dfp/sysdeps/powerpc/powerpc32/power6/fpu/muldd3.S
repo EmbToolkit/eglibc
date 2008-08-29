@@ -1,5 +1,5 @@
 /* Decimal Floating Point 64-bit multiply.  POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __muldd3 (__decimal64 x, __decimal64 y)  */
-ENTRY (__muldd3)
+/* _Decimal64 __dpd_muldd3 (_Decimal64 x, _Decimal64 y)  */
+ENTRY (__dpd_muldd3)
 	dmul	fp1,fp1,fp2
 	blr
-	END (__muldd3)
+	END (__dpd_muldd3)

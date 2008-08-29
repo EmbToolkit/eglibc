@@ -1,6 +1,6 @@
 /* Convert unsigned int to Decimal Floating Point 32-bit.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,13 +22,14 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal32 __floatunssisd (unsigned int x)  */
-ENTRY (__floatunssisd)
+/* _Decimal32 __dpd_floatunssisd (unsigned int x)  */
+ENTRY (__dpd_floatunssisd)
 	clrldi	r0,r3,32	/* extend unsigned.  */
 	std	r0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lfd	fp0,-8(r1)
-	dcffix	fp1,fp0 /* Convert x to decimal floatuns.  */
-	drsp	fp1,fp1	/* Round result to __decimal32. */
+	dcffixq	fp2,fp0 /* Convert x to _Decimal128 floatuns.  */
+	drdpq	fp0,fp2	/* Round result to _Decimal64. */
+	drsp	fp1,fp0	/* Round result to _Decimal32. */
 	blr
-	END (__floatunssisd)
+	END (__dpd_floatunssisd)

@@ -1,5 +1,5 @@
 /* Decimal Floating Point 32-bit subtract.  POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,11 +21,11 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal32 __subsd3 (__decimal32 x, __decimal32 y)  */
-ENTRY (__subsd3)
-	dctdp	fp1,fp1	/* Convert x to __decimal64. */
-	dctdp	fp2,fp2	/* Convert y to __decimal64. */
+/* _Decimal32 __dpd_subsd3 (_Decimal32 x, _Decimal32 y)  */
+ENTRY (__dpd_subsd3)
+	dctdp	fp1,fp1	/* Convert x to _Decimal64. */
+	dctdp	fp2,fp2	/* Convert y to _Decimal64. */
 	dsub	fp1,fp1,fp2
-	drsp	fp1,fp1	/* Round result to __decimal32. */
+	drsp	fp1,fp1	/* Round result to _Decimal32. */
 	blr
-	END (__subsd3)
+	END (__dpd_subsd3)

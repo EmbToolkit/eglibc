@@ -1,6 +1,6 @@
 /* Convert unsigned long to Decimal Floating Point 128-bit.
    POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,13 +22,14 @@
 #include <math_ldbl_opt.h>
 
 	.section	".toc","aw"
-.LC1:	/* 9223372036854775808.0DD */
+.LC1:	/* 9223372036854775808.0DL */
 	.tc FT_2207c000_3_a4cfa07a_2c7f600a[TC],0x2207c00000000003,0xa4cfa07a2c7f600a
 	.section	".text"
 
 	.machine	"power6"
-/* __decimal128 __floatunsditd (unsigned long x)  */
-ENTRY (__floatunsditd)
+/* _Decimal128 __dpd_floatunsditd (unsigned long x)       */
+/* _Decimal128 __dpd_floatunsditd (unsigned long long x)  */
+ENTRY (__dpd_floatunsditd)
 	cmpdi	cr0,r3,0
 	std	r3,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -39,7 +40,7 @@ ENTRY (__floatunsditd)
 /* we need to do more here. The function converts a unsigned long, but
    the dcffix instruction provides a signed conversion.  So we force
    the binary to be positive by clearing the sign bit before we convert
-   to decimal.  Then we add 9223372036854775808.0DD to the result of the
+   to decimal.  Then we add 9223372036854775808.0DL to the result of the
    dcffixq.  This gives the decimal equivalent to the full 64-bit value.  */
 L(negative):
 	fabs	fp0,fp0
@@ -48,4 +49,4 @@ L(negative):
 	dcffixq	fp2,fp0 /* Convert x to decimal float.  */
 	daddq	fp2,fp2,fp10
 	blr
-	END (__floatunsditd)
+	END (__dpd_floatunsditd)

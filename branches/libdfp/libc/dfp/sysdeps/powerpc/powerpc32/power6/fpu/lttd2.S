@@ -1,5 +1,5 @@
 /* Decimal Floating Point 128-bit compare >=.  P6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __lttd2 (__decimal128 x, __decimal128 y)  */
-ENTRY (__lttd2)
+/* int __dpd_lttd2 (_Decimal128 x, _Decimal128 y)  */
+ENTRY (__dpd_lttd2)
 	dcmpuq	cr0,fp2,fp4 	/* if ((x < y) && !unordered(x,y)) */
 	li	r3, -1		/*   return -1  */
 	bltlr	cr0		/* else	if ((x == y) && !unordered(x,y)) */
@@ -30,4 +30,4 @@ ENTRY (__lttd2)
 	beqlr	cr0		/* else	 */
 	li	r3, 1		/*   return 1  */
 	blr
-	END (__lttd2)
+	END (__dpd_lttd2)

@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 128-bit to unsigned long.
    POWER6 PPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -29,16 +29,19 @@
 	.section	".text"
 
 	.machine	"power6"
-/* unsigned long __fixunstddi (__decimal128 x)  */
-ENTRY (__fixunstddi)
+/* unsigned long __dpd_fixunstddi (_Decimal128 x)       */
+/* unsigned long long __dpd_fixunstddi (_Decimal128 x)  */
+ENTRY (__dpd_fixunstddi)
 	lfd	fp10,.LC1@toc(2)
 	lfd	fp11,.LC1@toc+8(2)
-	drintnq. 0,fp2,fp2,1	/* Preround to toward zero.  */
+	dsubq	fp6,fp10,fp10	/* Generate 0.0 constant for later.  */
+	drintnq	0,fp2,fp2,1	/* Preround to toward zero.  */
+	dcmpuq	cr1,fp2,fp6	/* Check for less than zero.  */
 	dcmpuq	cr0,fp2,fp10	/* check if > 2**63-1 */
 	blt	cr1,L(negative)
 	lfd	fp8,.LC2@toc(2)
 	lfd	fp9,.LC2@toc+8(2)
-	blt	cr0,L(poslong)
+	ble	cr0,L(poslong)
 /* The return is an unsigned long, but "DFP convert to fixed" takes
    signed long, so we need to pre-adjust (-18446744073709551616.0DD)
    to get the final (signed) conversion result to be the correct	
@@ -56,5 +59,5 @@ L(poslong):
 L(negative):
 	li	r3,0	/* return 0 for negative floats.  */
 	blr
-	END (__fixunstddi)
+	END (__dpd_fixunstddi)
 

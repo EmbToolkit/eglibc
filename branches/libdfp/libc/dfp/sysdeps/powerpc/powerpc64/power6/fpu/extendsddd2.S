@@ -1,5 +1,5 @@
 /* Decimal Floating Point extend 32-bit to 64-bit.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __extendsddd2 (__decimal32 x)  */
-ENTRY (__extendsddd2)
-	dctdp	fp1,fp1	/* Convert x to __decimal64. */
+/* _Decimal64 __dpd_extendsddd2 (_Decimal32 x)  */
+ENTRY (__dpd_extendsddd2)
+	dctdp	fp1,fp1	/* Convert x to _Decimal64. */
 	blr
-	END (__extendsddd2)
+	END (__dpd_extendsddd2)

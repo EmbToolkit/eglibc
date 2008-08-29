@@ -1,6 +1,6 @@
 /* Decimal Floating Point convert 32-bit to unsigned int.
    POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,12 +22,13 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* int __fixunssdsi (__decimal32 x)  */
-ENTRY (__fixunssdsi)
+/* unsigned int __dpd_fixunssdsi (_Decimal32 x)  */
+/* unsigned long __dpd_fixunssdsi (_Decimal32 x)  */
+ENTRY (__dpd_fixunssdsi)
 	stwu	r1,-16(r1)
 	cfi_adjust_cfa_offset (16)
-	dctdp	fp1,fp1	/* Convert x to __decimal64.  */
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
+	dctdp	fp1,fp1	/* Convert x to _Decimal64.  */
+	drintn 	0,fp1,fp1,1	/* Preround to toward zero.  */
 	dctfix	fp0,fp1 /* Convert x to integer.  */
 	stfd	fp0,8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
@@ -37,7 +38,7 @@ ENTRY (__fixunssdsi)
    if there are any significant bits in the high word or overflow (incorrect
    sign) from the low word.  */
 	cmpwi	cr0,r0,0
-	cmpwi	cr6,r3,0
+	cmpli	cr6,r3,0 /* Logical form to cmp unsigned.  */
 	blt	cr0,L(negative)
 	bne	cr0,L(posoverflow)
 	bge	cr6,L(done)
@@ -49,4 +50,4 @@ L(negative):
 L(done):
 	addi	r1,r1,16
 	blr
-	END (__fixunssdsi)
+	END (__dpd_fixunssdsi)

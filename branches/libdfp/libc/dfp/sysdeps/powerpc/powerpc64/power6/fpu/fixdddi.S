@@ -1,5 +1,5 @@
 /* Decimal Floating Point convert 64-bit to long.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,12 +21,13 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* long __fixdddi (__decimal64 x)  */
-ENTRY (__fixdddi)
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
-	dctfix	fp0,fp1 /* Convert x to integer.  */
+/* long __dpd_fixdddi (_Decimal64 x)       */
+/* long long __dpd_fixdddi (_Decimal64 x)  */
+ENTRY (__dpd_fixdddi)
+	drintn	0,fp1,fp1,1	/* Preround to toward zero.  */
+	dctfix	fp0,fp1		/* Convert x to integer.  */
 	stfd	fp0,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	ld	r3,-8(r1)
 	blr
-	END (__fixdddi)
+	END (__dpd_fixdddi)

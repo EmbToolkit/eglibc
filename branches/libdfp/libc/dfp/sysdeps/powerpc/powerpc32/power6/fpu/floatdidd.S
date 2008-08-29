@@ -1,6 +1,6 @@
 /* Convert int to Decimal Floating Point 64-bit.
    POWER6 PowerPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,21 +22,17 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __floatdidd (int x)  */
-ENTRY (__floatdidd)
-	cmpwi	cr6,r3,0
+/* _Decimal64 __dpd_floatdidd (long long x)  */
+ENTRY (__dpd_floatdidd)
 	stwu	r1,-16(r1)
 	cfi_adjust_cfa_offset (16)
-	li	r0,-1	/* extend negative.  */
-	blt	cr6,L(negative)
-	li	r0,0	/* extend positive.  */
-L(negative):
-	stw	r0,8(r1)
-	stw	r3,12(r1)
+	stw	r3,8(r1)
+	stw	r4,12(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lfd	fp0,8(r1)
-	dcffix	fp1,fp0 /* Convert x to decimal float.  */
-L(done):
+	dcffixq	fp2,fp0 /* Convert x to _Decimal128 float.  */
+	drdpq	fp0,fp2 /* Round result to _Decimal64.  */
+	fmr	fp1,fp0
 	addi	r1,r1,16
 	blr
-	END (__floatdidd)
+	END (__dpd_floatdidd)

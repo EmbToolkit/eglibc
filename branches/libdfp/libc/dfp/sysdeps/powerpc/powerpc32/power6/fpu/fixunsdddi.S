@@ -1,5 +1,5 @@
 /* Decimal Floating Point convert 64-bit to unsigned long.  P6 PPC32 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -20,20 +20,22 @@
 #include <sysdep.h>
 #include <math_ldbl_opt.h>
 
-
-	.section	.rodata.cst8,"aM",@progbits,8
+	.section	.rodata.cst16,"aM",@progbits,32
 	.align	3
-.LC1:	/* 9223372036854775808.0DD */
-	.long	0x6e45237c
-	.long	0x836973f6
-.LC2:	/* 18446744073709551616.0DD */
-	.long	0x264a4cdd
-	.long	0x2077c2dd
+.LC1:	/* 9223372036854775808.0DL */
+	.long	0x2207c000
+	.long	0x00000003
+	.long	0xa4cfa07a
+	.long	0x2c7f600a
+.LC2:	/* 18446744073709551616.0DL */
+	.long	0x2207c000
+	.long	0x0000000c
+	.long	0xa99e40ed
+	.long	0xc5ba58e0
 	.section	".text"
-
 	.machine	"power6"
-/* unsigned long __fixunsdddi (__decimal64 x)  */
-ENTRY (__fixunsdddi)
+/* unsigned long long __dpd_fixunsdddi (_Decimal64 x)  */
+ENTRY (__dpd_fixunsdddi)
 	stwu	r1,-16(r1)
 	cfi_adjust_cfa_offset (16)
 #ifdef SHARED
@@ -52,27 +54,36 @@ ENTRY (__fixunsdddi)
 	mtlr	r11
 	cfi_same_value (lr)
 	lfd	fp10,0(r9)
-	lfd	fp11,.LC2-.LC1(r9)
+	lfd	fp11,8(r9)
+	lfd	fp8,.LC2-.LC1(r9)
+	lfd	fp9,.LC2-.LC1+8(r9)
 #else
 	lis	r9,.LC1@ha
 	lis	r10,.LC2@ha
-	lfd	fp10,.LC1@l(r9)
-	lfd	fp11,.LC2@l(r10)
+	addi	r9,r9,.LC1@l
+	addi	r10,r10,.LC2@l
+	lfd	fp10,0(r9)
+	lfd	fp11,8(r9)
+	lfd	fp8,0(r10)
+	lfd	fp9,8(r10)
 #endif
-	drintn.	0,fp1,fp1,1	/* Preround to toward zero.  */
-	dcmpu	cr0,fp1,fp10	/* check if > 2**63-1 */
+	dsubq	fp6,fp10,fp10   /* Generate 0.0 constant for later.  */
+	dctqpq	fp2,fp1		/* Convert param to _Decimal128.  */
+	drintnq 0,fp2,fp2,1	/* Preround to toward zero.  */
+	dcmpuq  cr1,fp2,fp6     /* Check for less than zero.  */
+	dcmpuq	cr0,fp2,fp10	/* check if > 2**63-1 */
 	blt	cr1,L(negative)
-	blt	cr0,L(poslong)
+	ble	cr0,L(poslong)
 /* The return is an unsigned long, but "DFP convert to fixed" takes
    signed long, so we need to pre-adjust (-18446744073709551616.0DD)
    to get the final (signed) conversion result to be the correct	
    unsigned result.  */
-	dsub	fp1,fp1,fp11
-	dcmpu	cr0,fp1,fp10	/* if x still > 2**63-1 */
+	dsubq	fp2,fp2,fp8
+	dcmpuq	cr0,fp2,fp10	/* if x still > 2**63-1 */
 	li	r3,-1		/* return max_unsigned_long */
-	blt	cr0,L(done)	/* else */
+	bgt	cr0,L(done)
 L(poslong):
-	dctfix	fp0,fp1 /* Convert x to integer.  */
+	dctfixq	fp0,fp2 /* Convert x to integer.  */
 	stfd	fp0,8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lwz	r3,8(r1)
@@ -85,5 +96,5 @@ L(done):
 	mr	r4,r3
 	addi	r1,r1,16
 	blr
-	END (__fixunsdddi)
+	END (__dpd_fixunsdddi)
 

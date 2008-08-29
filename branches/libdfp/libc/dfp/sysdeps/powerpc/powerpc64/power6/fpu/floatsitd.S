@@ -1,5 +1,5 @@
 /* Convert int to Decimal Floating Point 128-bit.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,11 +21,11 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal128 __floatsitd (int x)  */
-ENTRY (__floatsitd)
+/* _Decimal128 __dpd_floatsitd (int x)  */
+ENTRY (__dpd_floatsitd)
 	std	r3,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lfd	fp0,-8(r1)
-	dcffixq	fp2,fp0 /* Convert x to decimal float.  */
+	dcffixq	fp2,fp0 /* Convert x to _Decimal128 float.  */
 	blr
-	END (__floatsitd)
+	END (__dpd_floatsitd)

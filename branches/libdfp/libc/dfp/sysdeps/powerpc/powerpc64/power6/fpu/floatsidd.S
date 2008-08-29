@@ -1,5 +1,5 @@
 /* Convert int to Decimal Floating Point 64-bit.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,11 +21,13 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __floatsidd (int x)  */
-ENTRY (__floatsidd)
+/* _Decimal64 __dpd_floatsidd (int x)  */
+ENTRY (__dpd_floatsidd)
 	std	r3,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lfd	fp0,-8(r1)
-	dcffix	fp1,fp0 /* Convert x to decimal float.  */
+	dcffixq	fp2,fp0 /* Convert x to decimal float.  */
+	drdpq	fp0,fp2 /* Round result to _Decimal64.  */
+	fmr	fp1,fp0
 	blr
-	END (__floatsidd)
+	END (__dpd_floatsidd)

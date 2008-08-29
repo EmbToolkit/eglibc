@@ -1,21 +1,21 @@
 libdfp {
   GLIBC_2.7 {
-    __addsd3; __adddd3; __addtd3;
-    __subsd3; __subdd3; __subtd3;
-    __mulsd3; __muldd3; __multd3;
-    __divsd3; __divdd3; __divtd3;
-    __extendsddd2; __extendsdtd2; __extendddtd2;
-    __trunctdsd2; __truncddsd2; __trunctddd2;
-    __unordsd2; __unorddd2; __unordtd2;
-    __eqsd2; __eqdd2; __eqtd2; __nesd2; __nedd2; __netd2;
-    __gesd2; __gedd2; __getd2; __gtsd2; __gtdd2; __gttd2;
-    __ltsd2; __ltdd2; __lttd2; __lesd2; __ledd2; __letd2;
-    __fixsdsi; __fixddsi; __fixtdsi; __fixsddi; __fixdddi; __fixtddi;
-    __fixunssdsi; __fixunsddsi; __fixunstdsi;
-    __fixunssddi; __fixunsdddi; __fixunstddi;
-    __floatsisd; __floatsidd; __floatsitd;
-    __floatdisd; __floatdidd; __floatditd;
-    __floatunssisd; __floatunssidd; __floatunssitd;
-    __floatunsdisd; __floatunsdidd; __floatunsditd;
+    __dpd_addsd3; __dpd_adddd3; __dpd_addtd3;
+    __dpd_subsd3; __dpd_subdd3; __dpd_subtd3;
+    __dpd_mulsd3; __dpd_muldd3; __dpd_multd3;
+    __dpd_divsd3; __dpd_divdd3; __dpd_divtd3;
+    __dpd_extendsddd2; __dpd_extendsdtd2; __dpd_extendddtd2;
+    __dpd_trunctdsd2; __dpd_truncddsd2; __dpd_trunctddd2;
+    __dpd_unordsd2; __dpd_unorddd2; __dpd_unordtd2;
+    __dpd_eqsd2; __dpd_eqdd2; __dpd_eqtd2; __dpd_nesd2; __dpd_nedd2; __dpd_netd2;
+    __dpd_gesd2; __dpd_gedd2; __dpd_getd2; __dpd_gtsd2; __dpd_gtdd2; __dpd_gttd2;
+    __dpd_ltsd2; __dpd_ltdd2; __dpd_lttd2; __dpd_lesd2; __dpd_ledd2; __dpd_letd2;
+    __dpd_fixsdsi; __dpd_fixddsi; __dpd_fixtdsi; __dpd_fixsddi; __dpd_fixdddi; __dpd_fixtddi;
+    __dpd_fixunssdsi; __dpd_fixunsddsi; __dpd_fixunstdsi;
+    __dpd_fixunssddi; __dpd_fixunsdddi; __dpd_fixunstddi;
+    __dpd_floatsisd; __dpd_floatsidd; __dpd_floatsitd;
+    __dpd_floatdisd; __dpd_floatdidd; __dpd_floatditd;
+    __dpd_floatunssisd; __dpd_floatunssidd; __dpd_floatunssitd;
+    __dpd_floatunsdisd; __dpd_floatunsdidd; __dpd_floatunsditd;
   }
 }

@@ -1,5 +1,5 @@
 /* Convert long to Decimal Floating Point 32-bit.  P6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,12 +21,14 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal32 __floatdisd (long x)  */
-ENTRY (__floatdisd)
-	std	r0,-8(r1)
+/* _Decimal32 __dpd_floatdisd (long x)  */
+/* _Decimal32 __dpd_floatdisd (long long x)  */
+ENTRY (__dpd_floatdisd)
+	std	r3,-8(r1)
 	ori	r1,r1,0		/* Special group ending nop.  */
 	lfd	fp0,-8(r1)
-	dcffix	fp1,fp0 /* Convert x to decimal float.  */
-	drsp	fp1,fp1	/* Round result to __decimal32. */
+	dcffixq	fp2,fp0 /* Convert x to _Decimal128 float.  */
+	drdpq	fp0,fp2	/* Round result to _Decimal64.  */
+	drsp	fp1,fp0	/* Round result to _Decimal32. */
 	blr
-	END (__floatdisd)
+	END (__dpd_floatdisd)

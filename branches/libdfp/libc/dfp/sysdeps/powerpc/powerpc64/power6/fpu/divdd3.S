@@ -1,5 +1,5 @@
 /* Decimal Floating Point 64-bit divide.  POWER6 PowerPC64 version.
-   Copyright (C) 2006 Free Software Foundation, Inc.
+   Copyright (C) 2006,2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
 #include <math_ldbl_opt.h>
 
 	.machine	"power6"
-/* __decimal64 __divdd3 (__decimal64 x, __decimal64 y)  */
-ENTRY (__divdd3)
+/* _Decimal64 __dpd_divdd3 (_Decimal64 x, _Decimal64 y)  */
+ENTRY (__dpd_divdd3)
 	ddiv	fp1,fp1,fp2
 	blr
-	END (__divdd3)
+	END (__dpd_divdd3)

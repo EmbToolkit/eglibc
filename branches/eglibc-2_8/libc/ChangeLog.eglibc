@@ -1,3 +1,8 @@
+2008-09-08  Pete Eberlein  <eberlein@us.ibm.com>
+
+	* elf/ldd.bash.in: Make pipefail check more robust when using
+	non-bash shells.
+
 2008-06-17  Joseph Myers  <joseph@codesourcery.com>
 
 	* stdlib/tst-setcontext.c: Set back_in_main before exit if

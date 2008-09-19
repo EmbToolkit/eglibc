@@ -1,5 +1,5 @@
 /* _Decimal128 compare equality for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -21,7 +21,7 @@
 
 
 #define _DECIMAL_SIZE 128
-#define ACTUAL_FUNCTION_NAME __eqtd2
+#define ACTUAL_FUNCTION_NAME eqtd2
 #include <decimal128.h>
 
 #include "eqsd2.c"

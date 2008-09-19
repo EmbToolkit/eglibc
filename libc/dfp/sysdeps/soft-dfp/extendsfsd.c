@@ -1,5 +1,5 @@
 /* Handle conversion from binary float (32) to Decimal32
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,9 +20,39 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#ifndef BINARY_TO_DECIMAL
 #define BINARY_TO_DECIMAL
 #define SRC 32
 #define DEST 32
 #define NAME extend
+#endif
 
-#include "convert.c"
+#include "convert.h"
+
+#if DEST==32
+#define TEMP_TYPE	_Decimal64
+#else
+#define TEMP_TYPE	_Decimal128
+#endif
+
+CONVERT_WRAPPER(
+// extendsfsd, extendsfdd, extendsftd
+	TEMP_TYPE temp;
+	float a_norm;
+	long long mant;
+	int exp, sexp;
+
+	a_norm = FREXPSF (a, &exp);
+	mant = a_norm * 16777216.0;	/* 24 bits of mantissa.  */
+	sexp = exp - 24;		/* Exponent adjusted for mantissa.  */
+	temp = mant;
+	if (sexp > 0)
+		temp *= DECPOWOF2[sexp];
+	else if (sexp < 0)
+		temp /= DECPOWOF2[-sexp];
+	result = temp;
+	/* Clear inexact exception raised by DFP arithmetic.  */
+	if (DFP_EXCEPTIONS_ENABLED
+	    && DFP_TEST_EXCEPTIONS (FE_OVERFLOW|FE_UNDERFLOW) == 0)
+	  DFP_CLEAR_EXCEPTIONS (FE_INEXACT);
+)

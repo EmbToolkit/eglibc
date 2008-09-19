@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal32 to binary long double (128)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,9 +20,27 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#ifndef DECIMAL_TO_BINARY
 #define DECIMAL_TO_BINARY
 #define SRC 32
 #define DEST 128
 #define NAME extend
 
-#include "convert.c"
+extern double __extendsddf (_Decimal32);
+extern _Decimal32 __truncdfsd (double);
+
+#endif
+
+#include "convert.h"
+
+CONVERT_WRAPPER(
+	double df_part1, df_part2;
+	_Decimal32 sd_part1, sd_part2;
+
+	df_part1 = a;			/* TD -> DF  */
+	sd_part1 = df_part1;		/* DF -> SD (not exact) */
+	sd_part2 = a - sd_part1;	/* SD */
+	df_part2 = sd_part2;		/* SD -> DF (trunc) */
+	result = df_part1;
+	result += df_part2;
+)

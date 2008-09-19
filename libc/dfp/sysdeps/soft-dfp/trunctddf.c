@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal128 to binary double (64)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,49 @@
 #define DEST 64
 #define NAME trunc
 
-#include "convert.c"
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// trunctddf
+	long double temp;	/* Need at least 16 decimal digits of accuracy.  */
+	SRC_TYPE a_norm;
+	long long mant;
+	int	exp, sexp;
+
+	a_norm = FREXPD128 (a, &exp);
+	/* Avoid going beyond the bounds of the exponent table.  */
+	if (exp > BINPOWOF10_LIMIT)		/* Obvious overflow.  */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_OVERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -INFINITY : INFINITY;
+	  }
+	else if (exp < -BINPOWOF10_LIMIT)		/* Obvious underflow.  */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -0.0 : 0.0;
+	  }
+
+	mant = a_norm * 1.E+17DL;		/* 17 digits of mantissa.  */
+	sexp = exp - 17;			/* Exponent adjusted for mantissa.  */
+	temp = mant;
+	if (sexp > 0)
+	  temp *= BINPOWOF10[sexp];
+	else if (sexp < 0)
+	  {
+	    /* Avoid going beyond the bounds of the exponent table for
+	       negative exponents.  */
+	    if (sexp < -BINPOWOF10_LIMIT)
+	      {
+	        temp /= BINPOWOF10[BINPOWOF10_LIMIT];
+	        sexp += BINPOWOF10_LIMIT;
+	      }
+	    temp /= BINPOWOF10[-sexp];
+	  }
+	result = temp;
+	/* Clear inexact exception raised by DFP arithmetic.  */
+	if (DFP_EXCEPTIONS_ENABLED
+	    && DFP_TEST_EXCEPTIONS (FE_OVERFLOW|FE_UNDERFLOW) == 0)
+	  DFP_CLEAR_EXCEPTIONS (FE_INEXACT);
+)

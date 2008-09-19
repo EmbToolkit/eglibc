@@ -1,5 +1,5 @@
 /* _Decimal128 multiplication for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -21,7 +21,7 @@
 
 
 #define _DECIMAL_SIZE 128
-#define ACTUAL_FUNCTION_NAME __multd3
+#define ACTUAL_FUNCTION_NAME multd3
 #include <decimal128.h>
 
 #include "mulsd3.c"

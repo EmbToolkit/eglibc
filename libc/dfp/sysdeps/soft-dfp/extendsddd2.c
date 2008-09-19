@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal32 to Decimal64
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,9 +20,38 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#ifndef DECIMAL_TO_DECIMAL
 #define DECIMAL_TO_DECIMAL
 #define SRC 32
 #define DEST 64
 #define NAME extend
+#endif
 
-#include "convert.c"
+#include "convert.h"
+
+DEST_TYPE
+PREFIXED_FUNCTION_NAME (SRC_TYPE a)
+{
+	DEST_TYPE result;
+	decNumber d;
+	decContext context;
+	IEEE_SRC_TYPE e;
+	IEEE_DEST_TYPE r;
+	
+	___decContextDefault(&context, CONTEXT_INIT);
+	context.round = __dn_getround();
+	
+	PASTE(___host_to_ieee_,SRC) ((&a), &e);
+	PASTE(___decimal,PASTE(SRC,ToNumber))(&e, &d);
+	/* PASTE(___decimal,PASTE(SRC,ToNumber))(&a, &d); */
+	/* PASTE(___decimal,PASTE(DEST,FromNumber))(&result, &d, &context);  */
+	PASTE(___decimal,PASTE(DEST,FromNumber))(&r, &d, &context);
+	PASTE(PASTE(___ieee_,DEST),_to_host) (&r, (&result));
+
+	if (context.status != 0) {
+	  int dec_flags = context.status & (DEC_IEEE_854_Inexact|DEC_IEEE_854_Invalid_operation);
+	  DFP_HANDLE_EXCEPTIONS(DFP_IEEE_FLAGS(dec_flags));
+	}
+
+	return result;
+}

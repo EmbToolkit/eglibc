@@ -1,5 +1,5 @@
 /* _Decimal32 subtraction for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -23,7 +23,7 @@
 #ifndef _DECIMAL_SIZE
 #  include <decimal32.h>
 #  define _DECIMAL_SIZE 32
-#  define ACTUAL_FUNCTION_NAME __subsd3
+#  define ACTUAL_FUNCTION_NAME subsd3
 #endif
 
 #include <decContext.h>
@@ -34,7 +34,7 @@
 
 #include <dfpmacro.h>
 DEC_TYPE
-ACTUAL_FUNCTION_NAME (DEC_TYPE x, DEC_TYPE y)
+PREFIXED_FUNCTION_NAME (DEC_TYPE x, DEC_TYPE y)
 {
   DEC_TYPE result;
   decNumber dn_x, dn_y, dn_result;

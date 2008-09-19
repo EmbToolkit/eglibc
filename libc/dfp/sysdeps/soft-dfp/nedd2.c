@@ -1,5 +1,5 @@
 /* _Decimal64 compare inequality for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -21,7 +21,7 @@
 
 
 #define _DECIMAL_SIZE 64
-#define ACTUAL_FUNCTION_NAME __nedd2
+#define ACTUAL_FUNCTION_NAME nedd2
 #include <decimal64.h>
 
 #include "nesd2.c"

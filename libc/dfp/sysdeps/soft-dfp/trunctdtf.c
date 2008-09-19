@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal128 to binary long double (dual 64bit)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,7 @@
 #define DEST 128
 #define NAME trunc
 
-#include "convert.c"
+extern double __trunctddf(_Decimal128);
+extern _Decimal128 __extenddftd(double);
+
+#include "extendddtf.c"

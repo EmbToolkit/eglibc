@@ -103,7 +103,7 @@ int __fe_dec_getround(void)
 {
   union {
     double as_double;
-    struct { unsigned int dummy: 29, drn:3; };
+    struct { unsigned int dummy, dummy2: 28, drn:3; };
   } fpscr;
 
   /* On Power6, read the fpscr into a double union using mffs

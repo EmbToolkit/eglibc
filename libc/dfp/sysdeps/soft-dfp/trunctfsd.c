@@ -1,5 +1,5 @@
 /* Handle conversion from binary long double (128) to Decimal32
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,9 +20,33 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#ifndef BINARY_TO_DECIMAL
 #define BINARY_TO_DECIMAL
 #define SRC 128
 #define DEST 32
 #define NAME trunc
 
-#include "convert.c"
+extern _Decimal32 __truncdfsd(double);
+
+#endif
+
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// truncdfsd, extenddfdd, extenddftd
+	DEST_TYPE temp;
+	union {
+		SRC_TYPE ld;
+		double d[2];
+	} ldd;
+
+	ldd.ld = a;
+	temp = ldd.d[0];
+	result = temp;
+	temp = ldd.d[1];
+	result += temp;
+	/* Clear inexact exception raised by DFP arithmetic.  */
+	if (DFP_EXCEPTIONS_ENABLED
+	    && DFP_TEST_EXCEPTIONS (FE_OVERFLOW|FE_UNDERFLOW) == 0)
+	  DFP_CLEAR_EXCEPTIONS (FE_INEXACT);
+)

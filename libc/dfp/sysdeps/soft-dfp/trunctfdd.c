@@ -1,5 +1,5 @@
 /* Handle conversion from binary long double (128) to Decimal64
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,6 @@
 #define DEST 64
 #define NAME trunc
 
-#include "convert.c"
+extern _Decimal64 __extenddfdd(double);
+
+#include "trunctfsd.c"

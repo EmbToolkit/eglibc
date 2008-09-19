@@ -12,3 +12,18 @@ AC_SUBST(libc_cv_cc_with_decimal_float)
 if test $libc_cv_cc_with_decimal_float = no; then
   AC_MSG_ERROR([The dfp add-on requires a compiler with --enable-decimal-float configured.])
 fi
+
+dnl which decimal format is the compiler using
+AC_CACHE_CHECK(which decimal format to use,
+               libc_cv_cc_decimal_format, [
+  if ${CC-cc} -E -dD -std=gnu99 -o - -xc /dev/null | grep -q "__DECIMAL_BID_FORMAT__"; then
+    libc_cv_cc_decimal_format=bid
+  else
+    libc_cv_cc_decimal_format=dpd
+  fi ])
+AC_SUBST(libc_cv_cc_decimal_format)
+
+dnl Define decimal-format in config.make
+config_vars="$config_vars
+decimal-format = $libc_cv_cc_decimal_format"
+

@@ -1,5 +1,5 @@
 /* Handle conversion from binary unsigned integer (32) to Decimal64
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -26,4 +26,4 @@
 #define NAME floatuns
 #define UNSIGNED
 
-#include "convert.c"
+#include "floatsisd.c"

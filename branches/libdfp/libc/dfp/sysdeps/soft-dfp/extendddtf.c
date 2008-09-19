@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal64 to binary long double (128)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -19,10 +19,32 @@
 
    Please see dfp/COPYING.txt for more information.  */
 
-
+#ifndef DECIMAL_TO_BINARY
 #define DECIMAL_TO_BINARY
 #define SRC 64
 #define DEST 128
 #define NAME extend
 
-#include "convert.c"
+extern double __truncdddf (_Decimal64);
+extern _Decimal64 __extenddfdd (double);
+
+#endif
+
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// extendddtf, trunctdtf
+	double df_part1, df_part2;
+	SRC_TYPE dd_part1, dd_part2;
+
+	df_part1 = a;			/* TD -> DF  */
+	dd_part1 = df_part1;		/* DF -> DD./TD.  */
+	dd_part2 = a - dd_part1;	/* DD./TD.  */
+	df_part2 = dd_part2;		/* DD/TD -> DF.  */
+	result = df_part1;
+	result += df_part2;
+	/* Clear inexact exception raised by DFP arithmetic.  */
+	if (DFP_EXCEPTIONS_ENABLED
+	    && DFP_TEST_EXCEPTIONS (FE_OVERFLOW|FE_UNDERFLOW) == 0)
+	  DFP_CLEAR_EXCEPTIONS (FE_INEXACT);
+)

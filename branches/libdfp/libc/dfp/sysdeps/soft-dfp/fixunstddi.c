@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal64 to binary unsigned long (64)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -26,4 +26,4 @@
 #define NAME fixuns
 #define UNSIGNED
 
-#include "convert.c"
+#include "fixsdsi.c"

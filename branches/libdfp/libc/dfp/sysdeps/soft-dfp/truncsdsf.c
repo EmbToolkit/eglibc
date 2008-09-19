@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal32 to binary float (32)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,9 +20,29 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#ifndef DECIMAL_TO_BINARY
 #define DECIMAL_TO_BINARY
 #define SRC 32
 #define DEST 32
 #define NAME trunc
+#endif
 
-#include "convert.c"
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// truncsdsf, extendsddf
+	double temp;
+	SRC_TYPE a_norm;
+	long long mant;
+	int	exp, sexp;
+
+	a_norm = FREXPD32 (a, &exp);
+	mant = a_norm * 1E+7DF;		/* 7 digits of mantissa.  */
+	sexp = exp - 7;			/* Exponent adjusted for mantissa.  */
+	temp = mant;
+	if (sexp > 0)
+	  temp *= BINPOWOF10[sexp];
+	else if (sexp < 0)
+	  temp /= BINPOWOF10[-sexp];
+	result = temp;
+)

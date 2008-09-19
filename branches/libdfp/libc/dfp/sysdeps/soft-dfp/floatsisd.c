@@ -1,5 +1,5 @@
 /* Handle conversion from binary integer (32) to Decimal32
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -19,10 +19,41 @@
 
    Please see dfp/COPYING.txt for more information.  */
 
-
+#ifndef INTEGER_TO_DECIMAL
 #define INTEGER_TO_DECIMAL
 #define SRC 32
 #define DEST 32
 #define NAME float
+#endif
 
-#include "convert.c"
+#include "convert.h"
+#include <stdio.h>
+
+#define BUFMAX 128
+
+DEST_TYPE
+PREFIXED_FUNCTION_NAME (SRC_TYPE a)
+{
+  DEST_TYPE f;
+  char buf[BUFMAX];
+  decContext context;
+  IEEE_DEST_TYPE e;
+
+        ___decContextDefault (&context, CONTEXT_INIT);
+        context.round = DEC_ROUND_HALF_EVEN;
+
+  /* Use a C library function to get a floating point string.  */
+  sprintf (buf, INT_FMT ".0", CAST_FOR_FMT(a));
+  /* Convert from the floating point string to a decimal* type.  */
+  /* PASTE(___decimal,PASTE(DEST,FromString))(&f, buf, &context);  */
+  PASTE(___decimal,PASTE(DEST,FromString))(&e, buf, &context);
+  PASTE(PASTE(___ieee_,DEST),_to_host) (&e, (&f));
+
+        if (context.status != 0) {
+          int dec_flags = context.status & 
+            (DEC_IEEE_854_Inexact|DEC_IEEE_854_Invalid_operation|DEC_IEEE_854_Overflow);
+          DFP_HANDLE_EXCEPTIONS(DFP_IEEE_FLAGS(dec_flags));
+        }
+
+  return f;
+}

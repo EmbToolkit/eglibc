@@ -1,5 +1,5 @@
 /* _Decimal32 compare unordered for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -23,26 +23,16 @@
 #ifndef _DECIMAL_SIZE
 #  include <decimal32.h>
 #  define _DECIMAL_SIZE 32
-#  define ACTUAL_FUNCTION_NAME __unordsd2
+#  define ACTUAL_FUNCTION_NAME unordsd2
 #endif
 
-#include <decContext.h>
-#include <decNumber.h>
 #include <math.h>
 
 #define FUNCTION_NAME unord
 
 #include <dfpmacro.h>
 int
-ACTUAL_FUNCTION_NAME (DEC_TYPE x, DEC_TYPE y)
+PREFIXED_FUNCTION_NAME (DEC_TYPE x, DEC_TYPE y)
 {
-  decNumber dn_x;
-  decNumber dn_y;
-  decContext context;
-  ___decContextDefault(&context, DEFAULT_CONTEXT);
-
-  FUNC_CONVERT_TO_DN(&x, &dn_x);
-  FUNC_CONVERT_TO_DN(&y, &dn_y);
-
-  return (___decNumberIsNaN(&dn_x) || ___decNumberIsNaN(&dn_y));
+  return FUNC_D(__isnan) (x) || FUNC_D(__isnan) (y);
 }

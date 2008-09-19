@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal128 to binary float (32)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,37 @@
 #define DEST 32
 #define NAME trunc
 
-#include "convert.c"
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// trunctdsf
+	double temp;
+	SRC_TYPE a_norm;
+	long long mant;
+	int	exp, sexp;
+	
+	a_norm = FREXPD128 (a, &exp);
+	/* Handle obvious overflow and underflow to avoid going beyond the
+	   bounds of the exponent table.  */
+	if (exp > 39)		/* Obvious overflow.  */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_OVERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -INFINITY : INFINITY;
+	  }
+	else if (exp < -39)	/* Obvious underflow. */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -0.0 : 0.0;
+	  }
+
+	mant = a_norm * 1E+15DL;		/* 15 digits of mantissa.  */
+	sexp = exp - 15;			/* Exponent adjusted for mantissa.  */
+	temp = mant;
+	if (sexp > 0)
+	  temp *= BINPOWOF10[sexp];
+	else if (sexp < 0)
+	  temp /= BINPOWOF10[-sexp];
+        result = temp;
+)

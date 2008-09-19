@@ -107,6 +107,15 @@ do {									\
  * the INTERNAL_FUNCTION_NAME will be the errno wrapper */
 #define IEEE_FUNCTION_NAME	PASTE(__ieee743r_,EXTERNAL_FUNCTION_NAME)
 
+/* Functions will need to be prefixed with __bid_ or __dpd_ depending on
+ * how GCC was configured. --enable-decimal-float=[bid,dpd] */
+#if __DECIMAL_BID_FORMAT__==1
+#define PREFIXED_FUNCTION_NAME  PASTE(__bid_,ACTUAL_FUNCTION_NAME)
+#else
+#define PREFIXED_FUNCTION_NAME  PASTE(__dfp_,ACTUAL_FUNCTION_NAME)
+#endif
+
+
 /* Use this if you need to refer to the type appropriate function
  * elswhere. For example FUNC_D (fabs) (x) may be needed in asin
  * FUNC_D(fabs) (x) will resolve to fabsd32 (x) in the 32 bit version */
@@ -145,5 +154,6 @@ do {									\
 /* Ideally these shouldn't need to be used elsewhere outside of this file */
 #define PASTE(x,y) PASTE2(x,y)
 #define PASTE2(x,y) x##y
+
 
 

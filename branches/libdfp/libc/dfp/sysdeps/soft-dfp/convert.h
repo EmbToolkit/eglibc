@@ -1,5 +1,5 @@
 /* Handle conversion from binary integers, floats and decimal types
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -20,34 +20,36 @@
    Please see dfp/COPYING.txt for more information.  */
 
 
+#include <math.h>
+
 /* decimal source */
 #if defined DECIMAL_TO_INTEGER || defined DECIMAL_TO_BINARY || defined DECIMAL_TO_DECIMAL
 
 #if SRC==32
-#define SRC_TYPE _Decimal32
-#define IEEE_SRC_TYPE decimal32
-#define SRC_LITERAL(n) n##DF
-#define SRC_KIND sd
-#define SIGNBIT __signbitd32
-#define CLASSIFY __fpclassifyd32
+# define SRC_TYPE _Decimal32
+# define IEEE_SRC_TYPE decimal32
+# define SRC_LITERAL(n) n##DF
+# define SRC_KIND sd
+# define SIGNBIT __signbitd32
+# define CLASSIFY __fpclassifyd32
 #endif
 
 #if SRC==64
-#define SRC_TYPE _Decimal64
-#define IEEE_SRC_TYPE decimal64
-#define SRC_LITERAL(n) n##DD
-#define SRC_KIND dd
-#define SIGNBIT __signbitd64
-#define CLASSIFY __fpclassifyd64
+# define SRC_TYPE _Decimal64
+# define IEEE_SRC_TYPE decimal64
+# define SRC_LITERAL(n) n##DD
+# define SRC_KIND dd
+# define SIGNBIT __signbitd64
+# define CLASSIFY __fpclassifyd64
 #endif
 
 #if SRC==128
-#define SRC_TYPE _Decimal128
-#define IEEE_SRC_TYPE decimal128
-#define SRC_LITERAL(n) n##DL
-#define SRC_KIND td
-#define SIGNBIT __signbitd128
-#define CLASSIFY __fpclassifyd128
+# define SRC_TYPE _Decimal128
+# define IEEE_SRC_TYPE decimal128
+# define SRC_LITERAL(n) n##DL
+# define SRC_KIND td
+# define SIGNBIT __signbitd128
+# define CLASSIFY __fpclassifyd128
 #endif
 
 extern int SIGNBIT (SRC_TYPE);
@@ -245,12 +247,20 @@ extern const _Decimal128 decpowof2[];
 #define PASTE(a,b) PASTE2(a,b)
 #define PASTE2(x,y) x##y
 #define PASTE4(a,b,c,d) PASTE(PASTE(a,b),PASTE(c,d))
-#define PASTE5(a,b,c,d,e) PASTE(PASTE4(a,b,c,d),2)
+#define PASTE5(a,b,c,d,e) PASTE(PASTE4(a,b,c,d),e)
 
 #if defined DECIMAL_TO_DECIMAL
-#define FUNCTION_NAME PASTE5(__,NAME,SRC_KIND,DEST_KIND,2)
+#define FUNCTION_NAME PASTE4(NAME,SRC_KIND,DEST_KIND,2)
 #else
-#define FUNCTION_NAME PASTE4(__,NAME,SRC_KIND,DEST_KIND)
+#define FUNCTION_NAME PASTE4(NAME,SRC_KIND,DEST_KIND,)
+#endif
+
+/* Functions will need to be prefixed with __bid_ or __dpd_ depending on 
+ * how GCC was configured. --enable-decimal-float=[bid,dpd] */
+#if __DECIMAL_BID_FORMAT__==1
+#define PREFIXED_FUNCTION_NAME  PASTE(__bid_,FUNCTION_NAME)
+#else
+#define PREFIXED_FUNCTION_NAME  PASTE(__dfp_,FUNCTION_NAME)
 #endif
 
 #if (SRC == 128 && (defined DECIMAL_TO_DECIMAL || defined DECIMAL_TO_INTEGER)) || \
@@ -279,16 +289,54 @@ extern const _Decimal128 decpowof2[];
       (((status) & DEC_IEEE_854_Underflow) ? FE_UNDERFLOW : 0))
 
 #include <fenv_libc.h>
-#define DFP_TEST_EXCEPTIONS(status)	({	\
+
+#ifdef fegetenv_register
+# define DFP_TEST_EXCEPTIONS(status)	({	\
 	fenv_union_t u; 			\
 	u.fenv = fegetenv_register(); 		\
 	u.l[1] & (status);			\
 	})
-#define DFP_CLEAR_EXCEPTIONS(status)	{	\
+# define DFP_CLEAR_EXCEPTIONS(status)	{	\
 	fenv_union_t u;				\
 	u.fenv = fegetenv_register();		\
 	u.l[1] &= ~status;			\
 	fesetenv_register(u.fenv);		\
 	}
+#else
+/* Non-register targets might want to use the standard functions.
+ * Note that it is necessary to include these symbols in libdfp
+ * to avoid libm dependencies.  */
+# define DFP_TEST_EXCEPTIONS(status)	fetestexcept (status)
+# define DFP_CLEAR_EXCEPTIONS(status)	feclearexcept (status)
+#endif
+
 #define DFP_HANDLE_EXCEPTIONS(status)	feraiseexcept(status)
 
+
+
+
+
+
+#define CONVERT_WRAPPER(...)			\
+DEST_TYPE					\
+PREFIXED_FUNCTION_NAME (SRC_TYPE a)		\
+{						\
+	DEST_TYPE result = DEST_LITERAL(0.);	\
+						\
+	switch (CLASSIFY (a)) {			\
+		case FP_ZERO:			\
+			result = SIGNBIT(a) ? DEST_LITERAL(-0.) : DEST_LITERAL(0.);	\
+			break;			\
+		case FP_INFINITE: 		\
+			result = SIGNBIT(a) ? -DEST_INFINITY : DEST_INFINITY;	\
+			break;			\
+		case FP_NAN:			\
+			result = DEST_NAN;	\
+			break;			\
+		default: {			\
+			__VA_ARGS__		\
+			}			\
+	}					\
+	return result;				\
+}
+			

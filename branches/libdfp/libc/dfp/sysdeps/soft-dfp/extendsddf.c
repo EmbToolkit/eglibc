@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal32 to binary double (64)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,4 @@
 #define DEST 64
 #define NAME extend
 
-#include "convert.c"
+#include "truncsdsf.c"

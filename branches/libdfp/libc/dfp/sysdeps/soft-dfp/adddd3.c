@@ -1,5 +1,5 @@
 /* _Decimal64 addition for soft-dfp
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -21,7 +21,7 @@
 
 
 #define _DECIMAL_SIZE 64
-#define ACTUAL_FUNCTION_NAME __adddd3
+#define ACTUAL_FUNCTION_NAME adddd3
 #include <decimal64.h>
 
 #include "addsd3.c"

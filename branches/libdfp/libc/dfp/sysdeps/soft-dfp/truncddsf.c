@@ -1,5 +1,5 @@
 /* Handle conversion from Decimal64 to binary float (32)
-   Copyright (C) 2007 IBM Corporation.
+   Copyright (C) 2007,2008 IBM Corporation.
 
    Author(s): Pete Eberlein <eberlein@us.ibm.com>
 
@@ -25,4 +25,38 @@
 #define DEST 32
 #define NAME trunc
 
-#include "convert.c"
+#include "convert.h"
+
+CONVERT_WRAPPER(
+// truncddsf
+	double temp;
+	_Decimal64 a_norm;
+	long long mant;
+	int exp, sexp;
+	
+	a_norm = FREXPD64 (a, &exp);
+	
+	/* Check for values that would overflow the exponent table, which
+	   would be obvious overflow and underflow.  */
+	if (exp > 39)		/* Obvious overflow.  */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_OVERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -INFINITY : INFINITY;
+	  }
+	else if (exp < -39)	/* Obvious underflow.  */
+	  {
+	    if (DFP_EXCEPTIONS_ENABLED)
+	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
+	    return SIGNBIT(a) ? -0.0 : 0.0;
+	  }
+
+	mant = a_norm * 1.E+16DD;	/* 16 digits of mantissa.  */
+	sexp = exp - 16;		/* Exponent adjusted for mantissa.  */
+	temp = mant;
+	if (sexp > 0)
+	  temp *= BINPOWOF10[sexp];
+	else if (sexp < 0)
+	  temp /= BINPOWOF10[-sexp];
+	result = temp;
+)

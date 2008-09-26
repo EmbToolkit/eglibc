@@ -1,3 +1,8 @@
+2008-09-26  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.ac: Support --with-pkgversion and --with-bugurl.
+	* configure, config.h.in: Regenerate.
+
 2007-11-07  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* include/gnu/option-groups.h: New file.

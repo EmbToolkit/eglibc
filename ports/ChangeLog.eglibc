@@ -1,3 +1,10 @@
+2008-11-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c
+	(_Unwind_Resume): Adjust offset from PC for Thumb-2.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c
+	(_Unwind_Resume): Likewise.
+
 2008-08-08  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/m68k/bits/byteswap.h (__bswap_constant_16): Define.

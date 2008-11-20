@@ -1,5 +1,11 @@
 2008-11-20  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/arm/tls-macros.h (ARM_PC_OFFSET): Define.
+	(TLS_IE): Define differently for Thumb-2.
+	(TLS_LE, TLS_LD, TLS_GD): Use ARM_PC_OFFSET.
+
+2008-11-20  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c
 	(_Unwind_Resume): Adjust offset from PC for Thumb-2.
 	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c

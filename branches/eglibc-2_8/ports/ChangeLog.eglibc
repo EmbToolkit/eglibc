@@ -1,3 +1,7 @@
+2008-11-27  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/aio_misc.h: New.
+
 2008-11-25  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/sysdep.h (LOAD_ARGS_1, LOAD_ARGS_2,

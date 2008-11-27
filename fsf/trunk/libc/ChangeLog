@@ -1,3 +1,20 @@
+2008-11-26  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/posix/getaddrinfo.c (getaddrinfo): Only restrict search
+	to IPv4 or IPv6 if an interface has been found.
+
+2008-11-26  Roland McGrath  <roland@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/ipc_priv.h: Renamed to ...
+	* sysdeps/unix/sysv/linux/powerpc/ipc_priv.h: ... here.
+
+	* sysdeps/unix/sysv/linux/alpha/wordexp.c: Renamed to ...
+	* sysdeps/unix/sysv/linux/ia64/wordexp.c: ... here.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/wordexp.c: Change #include.
+
+	* elf/elf.h (NT_386_IOPERM): New macro.
+	(NT_PPC_VSX): New macro.
+
 2008-11-25  Roland McGrath  <roland@redhat.com>
 
 	* sysdeps/alpha, sysdeps/unix/bsd/osf/alpha,
@@ -6,6 +23,10 @@
 	sysdeps/mach/alpha, sysdeps/mach/hurd/alpha:
 	Subdirectories moved to ports repository.
 	* configure.in (base_machine): Remove alpha case.
+
+2008-11-25  Thomas Schwinge  <tschwinge@gnu.org>
+
+	* sysdeps/mach/strerror_l.c: New file.
 
 2008-11-13  Ryan S. Arnold  <rsa@us.ibm.com>
 

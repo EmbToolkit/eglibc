@@ -1,5 +1,6 @@
 /* Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Ulrich Drepper <drepper@redhat.com>, 2008.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,27 +18,37 @@
    02111-1307 USA.  */
 
 #include <errno.h>
+#include <signal.h>
 #include <sys/socket.h>
 
-/* Await a connection on socket FD.
-   When a connection arrives, open a new socket to communicate with it,
-   set *ADDR (which is *ADDR_LEN bytes long) to the address of the connecting
-   peer and *ADDR_LEN to the address's actual length, and return the
-   new socket's descriptor, or -1 for errors.  SS is installed as
-   the thread's signal mask and FLAGS are additional flags.  */
+#include <sysdep-cancel.h>
+#include <sys/syscall.h>
+
+#define __NR_accept4                            288
+
+
+#ifdef __NR_accept4
 int
-paccept (fd, addr, addr_len, ss, flags)
-     int fd;
-     __SOCKADDR_ARG addr;
-     socklen_t *addr_len;
-     const __sigset_t *ss;
-     int flags;
+accept4 (int fd, __SOCKADDR_ARG addr, socklen_t *addr_len, int flags)
+{
+  if (SINGLE_THREAD_P)
+    return INLINE_SYSCALL (accept4, 4, fd, addr.__sockaddr__, addr_len, flags);
+
+  int oldtype = LIBC_CANCEL_ASYNC ();
+
+  int result = INLINE_SYSCALL (accept4, 4, fd, addr.__sockaddr__, addr_len,
+			       flags);
+
+  LIBC_CANCEL_RESET (oldtype);
+
+  return result;
+}
+#else
+int
+accept4 (int fd, __SOCKADDR_ARG addr, socklen_t *addr_len, int flags)
 {
   __set_errno (ENOSYS);
   return -1;
 }
-libc_hidden_def (paccept)
-
-
-stub_warning (paccept)
-#include <stub-tag.h>
+stub_warning (accept4)
+#endif

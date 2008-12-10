@@ -1,4 +1,4 @@
-/* Copyright (C) 1991, 1992, 1997 Free Software Foundation, Inc.
+/* Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,11 +16,27 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+#include <errno.h>
+#include <sys/socket.h>
 
-#include <sys/ult_syscall.h>
-#define SYS_vhangup SYS_ult_vhangup
+/* Await a connection on socket FD.
+   When a connection arrives, open a new socket to communicate with it,
+   set *ADDR (which is *ADDR_LEN bytes long) to the address of the connecting
+   peer and *ADDR_LEN to the address's actual length, and return the
+   new socket's descriptor, or -1 for errors.  The operation can be influenced
+   by the FLAGS parameter.  */
+int
+accept4 (fd, addr, addr_len, flags)
+     int fd;
+     __SOCKADDR_ARG addr;
+     socklen_t *addr_len;
+     int flags;
+{
+  __set_errno (ENOSYS);
+  return -1;
+}
+libc_hidden_def (accept4)
 
-SYSCALL (vhangup, 1)
-	ret
-	.end vhangup
+
+stub_warning (accept4)
+#include <stub-tag.h>

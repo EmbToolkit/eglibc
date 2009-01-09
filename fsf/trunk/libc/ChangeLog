@@ -1,13 +1,29 @@
+2009-01-08  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #9706]
+	* nss/nss_files/files-parse.c (strtou32): New function.
+	(INT_FIELD): Use strotu32 instead of strtoul to unify behavior
+	across 32-bit and 64-bit platforms.
+	(INT_FIELD_MAYBE_NULL): Likewise.
+
+2009-01-08  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #9720]
+	* sysdeps/unix/sysv/linux/bits/resource.h (enum __rusage_who): Avoid
+	comma after RUSAGE_CHILDREN if not -D_GNU_SOURCE.
+	* sysdeps/unix/sysv/linux/sparc/bits/resource.h (enum __rusage_who):
+	Likewise.
+
 2009-01-05  Paolo Bonzini  <bonzini@gnu.org>
 
-	[BZ 697]
+	[BZ #697]
 	* posix/regexec.c (prune_impossible_nodes): Handle sifted_states[0]
 	being NULL also if there are no backreferences.
 	* posix/rxspencer/tests: Add testcases.
 
 2009-01-04  Paolo Bonzini  <bonzini@gnu.org>
 
-	[BZ 9697]
+	[BZ #9697]
 	* posix/bug-regex17.c: Add testcases.
 	* posix/regcomp.c (re_compile_fastmap_iter): Rewrite COMPLEX_BRACKET
 	handling.

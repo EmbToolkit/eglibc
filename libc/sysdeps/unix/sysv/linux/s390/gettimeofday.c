@@ -1,5 +1,4 @@
-/* setjmp for ARM.
-   Copyright (C) 1997, 1998 Free Software Foundation, Inc.
+/* Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,20 +17,26 @@
    02111-1307 USA.  */
 
 #include <sysdep.h>
-#define _SETJMP_H
-#define _ASM
-#include <bits/setjmp.h>
+#include <bp-checks.h>
+#include <stddef.h>
+#include <sys/time.h>
+#include <time.h>
+#include <hp-timing.h>
 
-ENTRY (__sigsetjmp)
-	/* Save registers */
-	sfmea	f4, 4, [r0]!
-	stmia	r0, {v1-v6, sl, fp, sp, lr}
+#undef __gettimeofday
+#include <bits/libc-vdso.h>
 
-	/* Restore pointer to jmp_buf */
-	sub	r0, r0, #48
+/* Get the current time of day and timezone information,
+   putting it into *TV and *TZ.  If TZ is NULL, *TZ is not filled.
+   Returns 0 on success, -1 on errors.  */
 
-	/* Make a tail call to __sigjmp_save; it takes the same args.  */
-	B	PLTJMP(C_SYMBOL_NAME(__sigjmp_save))
-END (__sigsetjmp)
+int
+__gettimeofday (tv, tz)
+     struct timeval *tv;
+     struct timezone *tz;
+{
+  return INLINE_VSYSCALL (gettimeofday, 2, CHECK_1 (tv), CHECK_1 (tz));
+}
 
-hidden_def (__sigsetjmp)
+INTDEF (__gettimeofday)
+weak_alias (__gettimeofday, gettimeofday)

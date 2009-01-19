@@ -1,5 +1,5 @@
-/* setjmp for ARM.
-   Copyright (C) 1997, 1998 Free Software Foundation, Inc.
+/* Resolve function pointers to VDSO functions.
+   Copyright (C) 2008 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,21 +17,19 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
-#define _SETJMP_H
-#define _ASM
-#include <bits/setjmp.h>
 
-ENTRY (__sigsetjmp)
-	/* Save registers */
-	sfmea	f4, 4, [r0]!
-	stmia	r0, {v1-v6, sl, fp, sp, lr}
+#ifndef _LIBC_VDSO_H
+#define _LIBC_VDSO_H
 
-	/* Restore pointer to jmp_buf */
-	sub	r0, r0, #48
+#ifdef SHARED
 
-	/* Make a tail call to __sigjmp_save; it takes the same args.  */
-	B	PLTJMP(C_SYMBOL_NAME(__sigjmp_save))
-END (__sigsetjmp)
+extern long int (*__vdso_gettimeofday) (struct timeval *, void *)
+  attribute_hidden;
 
-hidden_def (__sigsetjmp)
+extern long int (*__vdso_clock_gettime) (clockid_t, struct timespec *);
+
+extern long int (*__vdso_clock_getres) (clockid_t, struct timespec *);
+
+#endif
+
+#endif /* _LIBC_VDSO_H */

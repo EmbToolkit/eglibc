@@ -1,3 +1,65 @@
+2009-01-29  Andrew Stubbs  <ams@codesourcery.com>
+
+	* elf/Makefile (ld.so): Adjust the sed script to insert _begin in to
+	newer linker scripts.
+
+2009-01-30  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #7040]
+	* sysdeps/unix/sysv/linux/sys/inotify.h: Second parameter of
+	inotify_rm_watch should have type int.
+
+2009-01-06  Steven Munroe  <sjmunroe@us.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp-common.S (__longjmp):
+	Make aligned_restore_vmx a local symbol.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S (__longjmp):
+	Likewise.
+
+2009-01-30  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/ia64/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/powerpc/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/s390/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/sh/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/sparc/bits/shm.h (SHM_EXEC): Define.
+	* sysdeps/unix/sysv/linux/x86_64/bits/shm.h (SHM_EXEC): Define.
+
+2009-01-11  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	[BZ #9726]
+	* sysdeps/powerpc/fpu/tst-setcontext-fpscr.c (_SET_DI_FPSCR,
+	_SET_SI_FPSCR): Clobber fp0 to prevent erroneous test-case passes.
+
+2009-01-08  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	[BZ #9726]
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S
+	(__CONTEXT_FUNC_NAME): Fix mtfsf to use fp31 instead of fp0.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S
+	(__CONTEXT_FUNC_NAME): Fix mtfsf to use fp31 instead of fp0.
+
+2009-01-11  Thomas Schwinge  <tschwinge@gnu.org>
+
+	* sysdeps/generic/dl-osinfo.h (_dl_setup_stack_chk_guard): Use
+	memcpy instead of memcmp.
+	(_dl_setup_pointer_guard): Likewise.
+
+2009-01-30  Ulrich Drepper  <drepper@redhat.com>
+
+	* malloc/malloc.c (sYSMALLOc): Don't use assert when detecting
+	manipulated brk, use malloc_printerr.
+	* misc/sbrk.c (__sbrk): Better error handling for nonsense
+	requests.
+
+2009-01-30  Jakub Jelinek  <jakub@redhat.com>
+
+	* string/string.h (memchr, strchr, strrchr, strpbrk, strstr, index,
+	rindex): For C++ add inlines so that they can be recognized as
+	builtins.
+	* string/strings.h: Define correct C++ prototypes for gcc 4.4.
+
 2009-01-29  Ulrich Drepper  <drepper@redhat.com>
 	    Jakub Jelinek  <jakub@redhat.com>
 
@@ -17,9 +79,9 @@
 	* sysdeps/x86_64/stackinfo.h (stackinfo_get_sp): Define.
 	(stackinfo_sub_sp): Define.
 
-	* nscd/connections.c (nscd_init): If database file access be
-	opened check whether this is due to permission problems and bail
-	in that case.
+	* nscd/connections.c (nscd_init): If database file access fails
+	check whether this is due to permission problems and bail in that
+	case.
 
 	[BZ #9741]
 	* nscd/mem.c (gc): Fix assignment of he_data in case malloc is used.

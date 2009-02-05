@@ -1,4 +1,5 @@
-/* Copyright (C) 1999, 2009 Free Software Foundation, Inc.
+/* Run-time dynamic linker data structures for loaded ELF shared objects. MIPS.
+   Copyright (C) 2001, 2003 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,23 +17,17 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-/* This file contains a bit of information about the stack allocation
-   of the processor.  */
+#ifndef	_LDSODEFS_H
 
-#ifndef _STACKINFO_H
-#define _STACKINFO_H	1
+/* Get the real definitions.  */
+#include_next <ldsodefs.h>
 
-/* On x86 the stack grows down.  */
-#define _STACK_GROWS_DOWN	1
+/* Now define our stuff.  */
 
-/* Access to the stack pointer.  The macros are used in alloca_account
-   for which they need to act as barriers as well, hence the additional
-   (unnecessary) parameters.  */
-#define stackinfo_get_sp() \
-  ({ void *p__; asm volatile ("mov %%esp, %0" : "=r" (p__)); p__; })
-#define stackinfo_sub_sp(ptr) \
-  ({ ptrdiff_t d__;                                             \
-     asm volatile ("sub %%esp, %0" : "=r" (d__) : "0" (ptr));   \
-     d__; })
+/* We need special support to initialize DSO loaded for statically linked
+   binaries.  */
+extern void _dl_static_init (struct link_map *map);
+#undef DL_STATIC_INIT
+#define DL_STATIC_INIT(map) _dl_static_init (map)
 
-#endif	/* stackinfo.h */
+#endif /* ldsodefs.h */

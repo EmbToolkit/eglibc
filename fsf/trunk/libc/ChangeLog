@@ -1,3 +1,59 @@
+2009-01-16  Petr Baudis  <pasky@suse.cz>
+
+	[BZ #9753]
+	* resolv/res_libc.c (__res_maybe_init): Call __res_vinit()
+	even if we currently have zero nscount.
+
+2009-02-06  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #9781]
+	* grp/compat-initgroups.c (compat_call): Switch to use malloc when
+	the input line is too long.
+
+	* po/Makefile (libc.pot): Add f_print as function taking c-format
+	parameter.
+
+	* debug/xtrace.sh: Unify translatable messages.
+	* elf/ldd.bash.in: Likewise.
+	* elf/sprof.c: Likewise.
+	* locale/programs/locale.c: Likewise.
+	* malloc/memusage.sh: Likewise.
+	* nss/getent.c: Likewise.
+
+2009-02-06  Joseph Myers  <joseph@codesourcery.com>
+
+	* debug/pcprofiledump.c (print_version,
+	argp_program_version_hook): New function.
+	* elf/ldconfig.c (more_help): New function.
+	(argp): Use it.
+	* elf/sln.c (usage): New function.
+	(main): Support --help and --version.
+	* malloc/memusagestat.c (print_version): New function.
+	(argp_program_version_hook): New variable.
+	* nscd/nscd.c (more_help): New function.
+	(argp): Use it.
+	* posix/getconf.c (main): Send --version output to stdout.
+	Support --help.
+	* sunrpc/rpc_main.c (usage, options_usage): Take STREAM and STATUS
+	arguments.  All callers changed.
+	(print_version): New function.
+	(parseargs): Support --help and --version.
+	* sunrpc/rpcinfo.c (usage): Take STREAM argument.  All callers
+	changed.
+	(print_version): New function.
+	(main): Use getopt_long.  Support --help and --version.
+	* sysdeps/unix/sysv/linux/lddlibc4.c (main): Support --help and
+	--version.
+
+2009-02-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* malloc/memusage.c (DEFAULT_BUFFER_SIZE): Change to 32768.
+	(update_data): Fix handling of wrapping back
+	to the beginning of the buffer.
+
+	[BZ #9823]
+	* stdio-common/psignal.c (psignal): Fix test for empty string.
+
 2009-02-05  Ulrich Drepper  <drepper@redhat.com>
 
 	* include/rpc/auth.h: Use libc_hidden_proto for _null_auth.

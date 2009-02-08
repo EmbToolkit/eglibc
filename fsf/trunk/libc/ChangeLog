@@ -1,3 +1,39 @@
+2009-02-07  Ulrich Drepper  <drepper@redhat.com>
+
+	* malloc/malloc.c (_int_free): Second argument is now mchunkptr.
+	Change all callers.
+	(_int_realloc): Likewise.  Third argument is now padded size
+	All _int_* functions are now static.
+
+	* malloc/hooks.c: Change all callers to _int_free and _int_realloc.
+	* malloc/arena.c: Likewise.
+	* include/malloc.h: Remove now unnecessary declarations of the _int_*
+	functions.
+
+	* sunrpc/rpc_common.c: We cannot move _null_auth into .rodata that
+	easily.
+
+	* malloc/malloc.c: Add branch prediction for use of the hooks.
+
+	* grp/compat-initgroups.c [NOT_IN_libc] (__libc_use_alloca): Define.
+
+2009-02-06  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #7095]
+	* bits/confname.h: Add SUSv7 macros for getconf environments.
+	* bits/environments.h: Likewise.
+	* sysdeps/unix/sysv/linux/i386/bits/environments.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/environments.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/environments.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/environments.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/environments.h: Likewise.
+	* posix/confstr.c: Handle SUSv5 and SUSv7 environments.
+	* posix/getconf.c: Likewise.
+	* posix/sysconf.c: Likewise.
+	* sysdeps/posix/sysconf.c: Likewise.
+	* posix/Makefile (getconf.speclist): Also collect SUSv5 and SUSv7
+	environments.
+
 2009-01-16  Petr Baudis  <pasky@suse.cz>
 
 	[BZ #9753]

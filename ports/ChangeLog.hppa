@@ -1,3 +1,20 @@
+2009-02-13  Khem Raj  <raj.khem@gmail.com>
+
+	* sysdeps/unix/sysv/linux/hppa/nptl/unwind-forcedunwind.c 
+	(libgcc_s_handle): New variable.
+	(pthread_cancel_init): Depend in libgcc_s_handle for decision to
+	load DSO.  Assign last.
+	(__unwind_freeres): New function.
+
+2009-02-09  Arthur Loiret  <aloiret@debian.org>
+
+	[BZ #9717]
+
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/malloc-machine.h
+	(MALLOC): Adjust __libc_tsd_define arguments.
+	(tsd_setspecific, tsd_getspecific): Adjust __libc_tsd_{set,get}
+	arguments.
+
 2008-08-07  Helge Deller  <deller@gmx.de>
 
 	* sysdeps/unix/sysv/linux/hppa/ucontext_i.sym: New file.

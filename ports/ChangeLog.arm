@@ -1,3 +1,36 @@
+2009-02-13  Khem Raj  <raj.khem@gmail.com>
+
+	* sysdeps/unix/sysv/linux/arm/nptl/unwind-forcedunwind.c 
+	(libgcc_s_handle): New variable.
+	(pthread_cancel_init): Depend in libgcc_s_handle for decision to
+	load DSO.  Assign last.
+	(__unwind_freeres): New function.
+
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c: 
+	Likewise.
+
+2009-02-05  Paul Brook  <paul@codesourcery.com>
+            Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/dl-machine.h (elf_machine_dynamic): Ditto.
+	(elf_machine_load_address): Clear T bit of PLT entry contents.
+	(RTLD_START): Mark function symbols as such.  Tweak pc-relative
+	addressing to avoid depending on pc read pipeline offset.
+	* sysdeps/arm/machine-gmon.h (MCOUNT): Add Thumb-2 implementation.
+	* sysdeps/arm/tls-macros.h: Add alignment for Thumb-2.
+	(ARM_PC_OFFSET): Define.
+	(TLS_IE): Define differently for Thumb-2.
+	(TLS_LE, TLS_LD, TLS_GD): Use ARM_PC_OFFSET.
+	* sysdeps/arm/elf/start.S: Switch to thumb mode for Thumb-2.
+	* sysdeps/unix/sysv/linux/arm/eabi/sysdep.h (INTERNAL_SYSCALL_RAW):
+	Add Thumb implementation.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/aio_misc.h: New.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-resume.c: Enforce
+	alignment for Thumb-2.  Adjust offset from PC for Thumb-2.
+	* sysdeps/unix/sysv/linux/arm/eabi/nptl/unwind-forcedunwind.c: Ditto.
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h (atomic_full_barrier,
+	__arch_compare_and_exchange_val_32_acq): Add Thumb-2 implementation.
+
 2009-02-02  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/bits/shm.h (SHM_EXEC): Define.
@@ -14,7 +47,7 @@
 
 2009-01-27  Ryosei Takagi  <ryosei@sm.sony.co.jp>
 
-        * sysdeps/unix/sysv/linux/arm/nptl/lowlevellock.h
+	* sysdeps/unix/sysv/linux/arm/nptl/lowlevellock.h
 	(lll_futex_wake_unlock, lll_futex_requeue): Return zero if success.
 
 2009-01-27  Daniel Jacobowitz  <dan@codesourcery.com>

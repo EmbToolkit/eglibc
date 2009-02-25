@@ -1,3 +1,29 @@
+2009-02-24  Ulrich Drepper  <drepper@redhat.com>
+
+	* bits/confname.h: Define _SC_TRACE_EVENT_NAME_MAX, _SC_TRACE_NAME_MAX,
+	_SC_TRACE_SYS_MAX, _SC_TRACE_USER_EVENT_MAX, _SC_XOPEN_STREAMS.
+	* sysdeps/posix/sysconf.c (__sysconf): Handle
+	_SC_TRACE_EVENT_NAME_MAX, _SC_TRACE_NAME_MAX, _SC_TRACE_SYS_MAX,
+	_SC_TRACE_USER_EVENT_MAX, _SC_XOPEN_STREAMS.
+
+2009-02-24  Roland McGrath  <roland@redhat.com>
+
+	[BZ #9895]
+	* README.template: Reworded not to use substituted version number.
+	Renamed to ...
+	* README: ... here (no longer generated).
+	* Makefile (README): Target removed.
+
+2009-02-24  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/sysconf.c (__sysconf):
+	/proc/sys/kenrel/rtsig_max doesn't exist anymore, use getrlimit
+	instead.
+
+	* io/sys/stat.h: The lstat functions have been mandatory since 2001.
+
+	* time/tzset.c (tzset_internal): Correct parsing of TZ envvar.
+
 2009-02-22  Ulrich Drepper  <drepper@redhat.com>
 
 	* po/bg.po: Update from translation team.

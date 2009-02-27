@@ -1,3 +1,46 @@
+2009-02-26  Roland McGrath  <roland@redhat.com>
+
+	* shadow/lckpwdf.c (__lckpwdf): Move FLAGS inside block using it,
+	avoids unused warning.
+
+2009-02-26  Andrew Stubbs  <ams@codesourcery.com>
+	    SUGIOKA Toshinobu  <sugioka@itonet.co.jp>
+
+	* sysdeps/unix/sysv/linux/sh/sys/procfs.h: Don't include signal.h,
+	sys/ucontext.h and asm/elf.h.  Include sys/user.h.
+	* sysdeps/unix/sysv/linux/sh/sys/user.h: Don't include features.h
+	and asm/user.h.  Include asm/ptrace.h.
+	(PTRACE_GETREGS, PTRACE_SETREGS, PTRACE_GETFPREGS,
+	PTRACE_SETFPREGS, PTRACE_GETFDPIC, PTRACE_GETFDPIC_EXEC,
+	PTRACE_GETFDPIC_INTERP, PTRACE_GETDSPREGS, PTRACE_SETDSPREGS):
+	Undefine.
+	(start_thread): Don't undefine.
+	(elf_greg_t, ELF_NGREG, elf_fpregset_t, user_fpu_struct, user):
+	Define.
+
+2009-02-26  Ulrich Drepper  <drepper@redhat.com>
+
+	* wctype/wctype.h: The *_l functions are in POSIX 2008.
+	* wcsmbs/wchar.h: mbsnrtowcs, open_wmemstream, wcpcpy, wcpncpy,
+	wcscasecmp, wcsdup, wcsncasecmp, wcsnlen, wcsnrtombs,
+	wcscasecmp_l, wcsncasecmp_l, wcscoll_l, and wcsxfrm_l.
+	* sysdeps/mach/hurd/bits/posix_opt.h: Reset value of macros from
+	200112L to 200809L.
+	* sysdeps/unix/sysv/linux/bits/posix_opt.h: Likewise.
+	* posix/getconf.c (vars): Add _SC_THREAD_ROBUST_PRIO_INHERIT and
+	_SC_THREAD_ROBUST_PRIO_PROTECT entries.
+	* bits/confname.h: Add _SC_THREAD_ROBUST_PRIO_INHERIT and
+	_SC_THREAD_ROBUST_PRIO_PROTECT.
+	* posix/unistd.h: fexecve is in POSIX 2008.
+	* time/time.h: strftime_l is in POSIX 2008.
+	* io/sys/stat.h: futimens is in POSIX 2008.
+	* string/strings.h: strcasecmp_l and strncasecmp_l are in POSIX 2008.
+	* string/string.h: stpcpy, stpncpy, strndup, strnlen, strsignal,
+	strcoll_l, strerror_l, and strxfrm_l are in POSIX 2008.
+	* stdlib/stdlib.h: mkdtemp is in POSIX 2008.
+	* libio/stdio.h: dprintf, fmemopen, getdelim, getline,
+	open_memstream, and vdprintf are in POSIX 2008.
+
 2009-02-25  Ulrich Drepper  <drepper@redhat.com>
 
 	* include/features.h: Define macros for XPG7/POSIX 2008.

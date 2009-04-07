@@ -1,3 +1,18 @@
+2009-04-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* string/strverscmp.c (__strverscmp): Fix last cleanups.
+	* string/tst-svc.input: Add new test case.
+	* string/tst-svc.expect: Adjust.
+	* string/Makefile: Don't ignore tst-svc error.
+
+	* sysdeps/x86_64/memchr.S: New file.
+
+	* resolv/resolv.h (RES_SNGLKUP): Define.
+	* resolv/res_init.c (res_setoptions): Recognize single-request option.
+	* resolv/res_send.c (send_dg): If we sent two requests at once and
+	only get one reply before timeout switch to mode where we send the
+	second request only after the first answer has been received.
+
 2009-04-05  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/x86_64/strlen.S: Optimize by using SSE2 instructions.

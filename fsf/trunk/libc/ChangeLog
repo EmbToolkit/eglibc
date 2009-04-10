@@ -1,3 +1,15 @@
+2009-04-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* stdio-common/vfprintf.c (vfprintf): Slightly more compact code.
+	Simplified code and possible copy problem fixed.
+
+	* sysdeps/unix/sysv/linux/preadv.c: Avoid prototype for static
+	function if it is not defined.  Add some necessary casts.
+	* sysdeps/unix/sysv/linux/pwritev.c: Likewise.
+
+	* sysdeps/unix/sysv/linux/kernel-features.h: SPARC and IA64 also
+	have preadv/pwritev in 2.6.30.
+
 2009-04-08  Ulrich Drepper  <drepper@redhat.com>
 
 	* malloc/malloc.c (malloc_info): New function.

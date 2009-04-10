@@ -1,5 +1,4 @@
-/* Copyright (C) 1991-2002, 2003, 2004, 2005, 2006, 2007, 2008
-   Free Software Foundation, Inc.
+/* Copyright (C) 1991-2008, 2009   Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -1663,24 +1662,10 @@ do_positional:
 	  {
 	    /* Extend the array of format specifiers.  */
 	    struct printf_spec *old = specs;
+	    specs = extend_alloca (specs, nspecs_max, 2 * nspecs_max);
 
-	    nspecs_max *= 2;
-	    specs = alloca (nspecs_max * sizeof (struct printf_spec));
-
-	    if (specs == &old[nspecs])
-	      /* Stack grows up, OLD was the last thing allocated;
-		 extend it.  */
-	      nspecs_max += nspecs_max / 2;
-	    else
-	      {
-		/* Copy the old array's elements to the new space.  */
-		memcpy (specs, old, nspecs * sizeof (struct printf_spec));
-		if (old == &specs[nspecs])
-		  /* Stack grows down, OLD was just below the new
-		     SPECS.  We can use that space when the new space
-		     runs out.  */
-		  nspecs_max += nspecs_max / 2;
-	      }
+	    /* Copy the old array's elements to the new space.  */
+	    memmove (specs, old, nspecs * sizeof (struct printf_spec));
 	  }
 
 	/* Parse the format specifier.  */
@@ -1743,13 +1728,21 @@ do_positional:
 	  args_value[cnt].mem = va_arg (ap_save, type);			      \
 	  break
 
-	T (PA_CHAR, pa_int, int); /* Promoted.  */
 	T (PA_WCHAR, pa_wchar, wint_t);
-	T (PA_INT|PA_FLAG_SHORT, pa_int, int); /* Promoted.  */
+	case PA_CHAR:				/* Promoted.  */
+	case PA_INT|PA_FLAG_SHORT:		/* Promoted.  */
+#if LONG_MAX == INT_MAX
+	case PA_INT|PA_FLAG_LONG:
+#endif
 	T (PA_INT, pa_int, int);
-	T (PA_INT|PA_FLAG_LONG, pa_long_int, long int);
+#if LONG_MAX == LONG_LONG_MAX
+	case PA_INT|PA_FLAG_LONG:
+#endif
 	T (PA_INT|PA_FLAG_LONG_LONG, pa_long_long_int, long long int);
-	T (PA_FLOAT, pa_double, double);	/* Promoted.  */
+#if LONG_MAX != INT_MAX && LONG_MAX != LONG_LONG_MAX
+# error "he?"
+#endif
+	case PA_FLOAT:				/* Promoted.  */
 	T (PA_DOUBLE, pa_double, double);
 	case PA_DOUBLE|PA_FLAG_LONG_DOUBLE:
 	  if (__ldbl_is_dbl)
@@ -1760,8 +1753,8 @@ do_positional:
 	  else
 	    args_value[cnt].pa_long_double = va_arg (ap_save, long double);
 	  break;
-	T (PA_STRING, pa_string, const char *);
-	T (PA_WSTRING, pa_wstring, const wchar_t *);
+	case PA_STRING:				/* All pointers are the same */
+	case PA_WSTRING:			/* All pointers are the same */
 	T (PA_POINTER, pa_pointer, void *);
 #undef T
 	default:

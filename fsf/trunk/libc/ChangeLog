@@ -1,3 +1,71 @@
+2009-04-23  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #9920]
+	* stdlib/random_r.c (__srandom_r): Change type of word to int32_t
+	to get consistency between 32 and 64 bit architectures.
+
+	[BZ #10052]
+	* sysdeps/unix/make-syscalls.sh: Add rule to create target
+	directory for dummy syscall rules.
+	Patch by Chris Steinbroner <hesh@pobox.com>.
+
+2009-04-23  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #10092]
+	* sysdeps/unix/sysv/linux/sys/mount.h: Define MNT_DETACH and
+	MNT_EXPIRE.
+
+2009-04-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/preadv.c: The kernel API changed.  Adjust.
+	* sysdeps/unix/sysv/linux/pwritev.c: Likewise.
+
+2009-04-23  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/posix/pwritev.c (PWRITEV): Fix up comment.  Copy
+	data from vector to temporary buffer and call PWRITEV after it
+	instead of vice versa.
+	* sysdeps/posix/preadv.c: Fix up comment.
+	* misc/preadv.c: Likewise.
+	* misc/preadv64.c: Likewise.
+	* misc/pwritev.c: Likewise.
+	* misc/pwritev64.c: Likewise.
+	* misc/sys/uio.h (preadv, pwritev, preadv64, pwritev64): Likewise.
+
+2009-04-23  Ulrich Drepper  <drepper@redhat.com>
+
+	* shadow/sgetspent_r.c (__sgetspent_r): Recognize too small buffers.
+
+	* shadow/Makefile (tests): Add tst-shadow.
+	* shadow/tst-shadow.c: New file.
+
+	[BZ #9955]
+	* gshadow/Makefile: New file.
+	* gshadow/Versions: New file.
+	* gshadow/fgetsgent.c: New file.
+	* gshadow/fgetsgent_r.c: New file.
+	* gshadow/getsgent.c: New file.
+	* gshadow/getsgent_r.c: New file.
+	* gshadow/getsgnam.c: New file.
+	* gshadow/getsgnam_r.c: New file.
+	* gshadow/gshadow.h: New file.
+	* gshadow/putsgent.c: New file.
+	* gshadow/sgetsgent.c: New file.
+	* gshadow/sgetsgent_r.c: New file.
+	* gshadow/tst-gshadow.c: New file.
+	* include/gshadow.h: New file.
+	* Makeconfig (all-subdirs): Add gshadow.
+	* Makefile (installed-headers): Add gshadow/gshadow.h.
+	* nss/Makefile (databases): Add sgrp.
+	* nss/Versions: Add gshadow functions as private exports.
+	* nss/nsswitch.conf: Add gshadow entry.
+	* nss/sgrp-lookup.c: New file.
+	* nss/nss_files/files-parse.c: Add STRING_LIST macro.  Rewrite
+	parse_list to handle STRING_LIST and TRAILING_LIST_PARSER.
+	* nss/nss_files/files-sgrp.c: New file.
+	* sysdeps/generic/paths.h: Add _PATH_GSHADOW.
+	* sysdeps/unix/sysv/linux/paths.h: Likewise.
+
 2009-04-22  Ulrich Drepper  <drepper@redhat.com>
 
 	* stdio-common/printf.h: Add missing const to register_printf_modifier.
@@ -71,7 +139,7 @@
 	* malloc/arena.c (ptmalloc_init): Load hook variable into variable
 	before test and force into register.
 	* malloc/hooks.c (top_check): Likewise.
-	(public_s_ET_STATe): Pretty printing.
+	(public_sET_STATe): Pretty printing.
 
 	* resolv/res_send.c (send_dg): Don't just ignore the result we got
 	in case we only receive one reply in single-request mode.

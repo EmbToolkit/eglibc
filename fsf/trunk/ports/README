@@ -40,4 +40,4 @@ Like all glibc add-ons, this must be used by specifying the directory in
 the --enable-add-ons option when running glibc's configure script.
 
 
-$Id: README,v 1.2 2006/02/28 08:23:38 roland Exp $
+$Id$

@@ -1,5 +1,4 @@
-/* longjmp for ARM.
-   Copyright (C) 1997, 1998, 2009 Free Software Foundation, Inc.
+/* Copyright (C) 2009 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,21 +16,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
-#define _SETJMP_H
-#define _ASM
-#include <bits/setjmp.h>
-
-/* __longjmp(jmpbuf, val) */
-
-ENTRY (__longjmp)
-	mov	ip, r0
-	movs	r0, r1		/* get the return value in place */
-	moveq	r0, #1		/* can't let setjmp() return zero! */
-
-#ifdef CHECK_SP
-	ldr	r1, [ip, #32]
-	CHECK_SP (r1)
-#endif
-	LOADREGS(ia, ip, {v1-v6, sl, fp, sp, pc})
-END (__longjmp)
+#include <stdio.h>
+#define __longjmp ____longjmp_chk
+#define CHECK_SP
+#include <__longjmp.c>

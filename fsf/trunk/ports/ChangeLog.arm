@@ -1,5 +1,16 @@
 2009-05-16  Joseph Myers  <joseph@codesourcery.com>
 
+	* sysdeps/arm/____longjmp_chk.S: New file.
+	* sysdeps/arm/__longjmp.S: If CHECK_SP is defined, use it.
+	* sysdeps/arm/eabi/__longjmp.S: Likewise.
+
+2009-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h (__ASSUME_PREADV,
+	__ASSUME_PWRITEV): Don't undefine.
+
+2009-05-16  Joseph Myers  <joseph@codesourcery.com>
+
 	* sysdeps/unix/sysv/linux/arm/Versions (libc): Add
 	fallocate64@@GLIBC_2.11.
 

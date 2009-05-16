@@ -1,6 +1,5 @@
-/* Copyright (C) 2002, 2003, 2005, 2009 Free Software Foundation, Inc.
+/* Copyright (C) 2009 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,9 +16,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include "pthreadP.h"
-
-
-#define __pthread_enable_asynccancel __libc_enable_asynccancel
-#define __pthread_disable_asynccancel __libc_disable_asynccancel
-#include <nptl/cancellation.c>
+#include <stdio.h>
+#define __longjmp ____longjmp_chk
+#define CHECK_SP
+#include <__longjmp.c>

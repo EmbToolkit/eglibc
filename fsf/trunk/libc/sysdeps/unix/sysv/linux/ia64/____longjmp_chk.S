@@ -1,6 +1,5 @@
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+/* Copyright (C) 2009 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@redhat.com>, 2008.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,36 +16,33 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <errno.h>
-#include <signal.h>
-#include <sys/socket.h>
+	.section .rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC0:
+	.string "longjmp causes uninitialized stack frame"
 
-#include <sysdep-cancel.h>
-#include <sys/syscall.h>
+	.section .sdata,"aws",@progbits
+	.align 8
+	.type	longjmp_msg,@object
+longjmp_msg:
+	data8	.LC0
+	.size	longjmp_msg, .-longjmp_msg
 
+#define __longjmp ____longjmp_chk
 
-#ifdef __NR_accept4
-int
-accept4 (int fd, __SOCKADDR_ARG addr, socklen_t *addr_len, int flags)
-{
-  if (SINGLE_THREAD_P)
-    return INLINE_SYSCALL (accept4, 4, fd, addr.__sockaddr__, addr_len, flags);
-
-  int oldtype = LIBC_CANCEL_ASYNC ();
-
-  int result = INLINE_SYSCALL (accept4, 4, fd, addr.__sockaddr__, addr_len,
-			       flags);
-
-  LIBC_CANCEL_RESET (oldtype);
-
-  return result;
-}
+#ifdef PIC
+#  define CALL_FAIL	__GI___fortify_fail
 #else
-int
-accept4 (int fd, __SOCKADDR_ARG addr, socklen_t *addr_len, int flags)
-{
-  __set_errno (ENOSYS);
-  return -1;
-}
-stub_warning (accept4)
+#  define CALL_FAIL	__fortify_fail
 #endif
+
+#define CHECK_RSP(reg) \
+	cmp.ltu p0, p8 = reg, r12;				\
+(p8)	br.cond.dpnt .Lok;;					\
+	addl r28 = @ltoffx(longjmp_msg#), r1;;			\
+	ld8.mov r28 = [r28], longjmp_msg#;;			\
+	ld8 out0 = [r28];					\
+	br.call.sptk.many b0 = CALL_FAIL#;;			\
+.Lok:
+
+#include "__longjmp.S"

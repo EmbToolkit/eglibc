@@ -1,5 +1,5 @@
 /* longjmp for PowerPC E500.
-   Copyright (C) 2004, 2006 Free Software Foundation, Inc.
+   Copyright (C) 2004, 2006, 2009 Free Software Foundation, Inc.
    Contributed by Aldy Hernandez <aldyh@redhat.com>.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@
 ENTRY (BP_SYM (__longjmp))
 	CHECK_BOUNDS_BOTH_WIDE_LIT (r3, r8, r9, JB_SIZE)
 
-#ifdef PTR_DEMANGLE
+#if defined PTR_DEMANGLE || defined CHECK_SP
 	lwz r24,(JB_GPR1*4)(r3)
 #else
 	lwz r1,(JB_GPR1*4)(r3)
@@ -59,8 +59,16 @@ ENTRY (BP_SYM (__longjmp))
 	evldd r20,((JB_FPRS+6*2)*4)(r3)
 	lwz r20,((JB_GPRS+6)*4)(r3)
 #ifdef PTR_DEMANGLE
+# ifdef CHECK_SP
+	PTR_DEMANGLE3 (r24, r24, r25)
+# else
 	PTR_DEMANGLE3 (r1, r24, r25)
+# endif
 	PTR_DEMANGLE2 (r0, r25)
+#endif
+#ifdef CHECK_SP
+	CHECK_SP (r24)
+	mr r1,r24
 #endif
 	mtlr r0
 	/*lfd fp21,((JB_FPRS+7*2)*4)(r3)*/

@@ -1,3 +1,28 @@
+2009-05-29  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/ieee754/ldbl-128/s_expm1l.c: Include <errno.h>.
+	(__expm1l): Set errno to ERANGE on overflow.
+	* sysdeps/ieee754/ldbl-128/s_tanl.c: Include <errno.h>.
+	(__tanl): Set errno to EDOM for ±Inf.
+	* sysdeps/ieee754/ldbl-128/s_cosl.c: Include <errno.h>.
+	(__cosl): Set errno to EDOM for ±Inf.
+	* sysdeps/ieee754/ldbl-128/s_sinl.c: Include <errno.h>.
+	(__sinl): Set errno to EDOM for ±Inf.
+
+2009-05-29  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/s390/s390-32/__longjmp.c (__longjmp): If CHECK_SP is
+	defined, use it.
+	* sysdeps/s390/s390-64/__longjmp.c (__longjmp): Likewise.
+	* sysdeps/s390/s390-32/____longjmp_chk.c: New file.
+	* sysdeps/s390/s390-64/____longjmp_chk.c: New file.
+
+2009-05-29  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/x86_64/cacheinfo.c: Compact intel_02_known array.  Adjust
+	code accessing it.
+	* sysdeps/unix/sysv/linux/i386/sysconf.c: Likewise.
+
 2009-05-22  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/ieee754/ldbl-128ibm/s_sinl.c: Set errno for ±Inf.

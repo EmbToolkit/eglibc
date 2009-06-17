@@ -1,12 +1,62 @@
+2009-06-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* login/Makefile: Build pt_chown as PIE.
+
+2009-06-15  Andreas Schwab  <aschwab@redhat.com>
+
+	* debug/xtrace.sh (do_help): Don't treat bug reporting message as
+	a format string.
+	* elf/sln.c (usage): Likewise.
+	* malloc/memusage.sh (do_help): Likewise.
+	* nss/getent.c (more_help): Likewise.
+	* posix/getconf.c (main): Likewise.
+	* sunrpc/rpcinfo.c (usage): Likewise.
+	* sysdeps/unix/sysv/linux/lddlibc4.c (main): Likewise.
+
+2009-06-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* login/programs/pt_chown.c: Use libcap to drop privileges other than
+	those needed.
+	* login/Makefile: If necessary link pt_chown with -lcap.
+	* sysdeps/generic/pty-private.h: Define FAIL_ENOMEM.
+	* sysdeps/unix/grantpt.c: Handle FAIL_ENOMEM.
+
+2009-06-16  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/x86_64/memchr.S (memchr): Use unsigned instead of signed
+	comparisons.
+	* string/test-memchr.c (do_random_tests): Test very large lengths
+	as well.
+
+2009-06-02  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* Makeconfig (+link-pie): Define.
+	(+prectorS): Define.
+	(+postctorS): Define.
+	* elf/Makefile ($(objpfx)tst-pie1): Use $(+link-pie).
+	* nscd/Makefile ($(objpfx)nscd): Likewise.
+
+2009-04-22  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	[BZ #10107]
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S (memcpy): Replace cmpldi
+	with cmplwi.
+	* sysdeps/powerpc/powerpc32/power6/memset.S (memset): Likewise.
+
+2009-06-16  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/grantpt.c: Remove file after folding changes
+	into ...
+	* sysdeps/unix/grantpt.c: ...here.
+
 2009-06-15  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/grantpt.c (grantpt): Only call chown and
 	chmod if it is necessary.
 
 	[BZ #10166]
-	* sysdeps/unix/sysv/linux/grantpt.c: If slave device is on devpts or
-	devfs, the mode might not be correct.  Check it and return only if it
-	is correct.
+	* sysdeps/unix/sysv/linux/grantpt.c: Remove shortcut which was used
+	when the slave device is in devpts or devfs.
 
 	[BZ #10183]
 	* posix/tst-cpucount.c: Don't try more than CPU_SETSIZE bits.
@@ -26,6 +76,7 @@
 
 	[BZ #10196]
 	* libio/tst-fgetwc.c (do_test): Use de_DE.UTF-8 as locale name.
+	* libio/Makefile: Run tst-fgetwc with necessary envvar.
 	Patch by Bruce Dubbs <bdubbs@linuxfromscratch.org>.
 
 	[BZ #10217]

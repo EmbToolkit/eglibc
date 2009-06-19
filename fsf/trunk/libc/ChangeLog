@@ -1,3 +1,17 @@
+2009-06-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* malloc/malloc.c (_int_malloc): Add some consistency checks.
+	(_int_free): Likewise.
+
+	* sysdeps/unix/sysv/linux/bits/socket.h: Define PF_IEEE802154 and
+	AF_IEEE802154.
+	* sysdeps/unix/sysv/linux/sparc/bits/socket.h: Likewise.
+	* sysdeps/unix/sysv/linux/net/if_arp.h: Define ARPHRD_IEEE802154
+	and ARPHRD_IEEE802154_PHY.
+
+	* sysdeps/unix/sysv/linux/sparc/bits/socket.h: Add missing definitions
+	relative to generic Linux version.
+
 2009-06-17  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* elf/Makefile ($(objpfx)ifuncmain1pie): Use $(+link-pie).
@@ -72,7 +86,7 @@
 	Patch by Arnaud Ebalard <arno@natisbad.org>.
 
 	[BZ #10207]
-	* nss/getent.c: Add support for print gshadow data.
+	* nss/getent.c: Add support for printing gshadow data.
 
 	[BZ #10203]
 	* nis/nss_nis/nis-pwd.c (internal_nis_endpwent): Free all buffers,

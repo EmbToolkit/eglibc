@@ -1,3 +1,7 @@
+2009-06-24  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile (CFLAGS-tst-backtrace2.c): Define.
+
 2009-05-22  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/powerpc32/e500/fpu/__longjmp-common.S: Use

@@ -16,6 +16,7 @@ endif
 
 ifeq ($(subdir),debug)
 CFLAGS-backtrace.c += -funwind-tables
+CFLAGS-tst-backtrace2.c += -funwind-tables
 endif
 
 ifeq ($(subdir),elf)

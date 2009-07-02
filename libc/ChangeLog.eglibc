@@ -1,3 +1,14 @@
+2009-07-02  Joseph Myers  <joseph@codesourcery.com>
+
+	Backport:
+
+	2009-06-15  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #10196]
+	* libio/tst-fgetwc.c (do_test): Use de_DE.UTF-8 as locale name.
+	* libio/Makefile: Run tst-fgetwc with necessary envvar.
+	Patch by Bruce Dubbs <bdubbs@linuxfromscratch.org>.
+
 2009-06-23  Joseph Myers  <joseph@codesourcery.com>
 
 	* nptl/init.c (sighandler_setxid): Remove duplicate decrement of

@@ -1,6 +1,6 @@
-/* strlen(str) -- determine the length of the string STR.
+/* Multiple versions of strspn
    Copyright (C) 2009 Free Software Foundation, Inc.
-   Contributed by Ulrich Drepper <drepper@redhat.com>.
+   Contributed by Intel Corporation.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,77 +18,46 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#include <config.h>
+
+#ifdef HAVE_SSE4_SUPPORT
+
 #include <sysdep.h>
 #include <ifunc-defines.h>
 
-
-/* Define multiple versions only for the definition in libc and for
-   the DSO.  In static binaries we need strlen before the initialization
-   happened.  */
-#if defined SHARED && !defined NOT_IN_libc
+/* Define multiple versions only for the definition in libc.  */
+#ifndef NOT_IN_libc
 	.text
-ENTRY(strlen)
-	.type	strlen, @gnu_indirect_function
+ENTRY(strspn)
+	.type	strspn, @gnu_indirect_function
 	cmpl	$0, __cpu_features+KIND_OFFSET(%rip)
 	jne	1f
 	call	__init_cpu_features
-1:	leaq	__strlen_sse2(%rip), %rax
+1:	leaq	__strspn_sse2(%rip), %rax
 	testl	$(1<<20), __cpu_features+CPUID_OFFSET+COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_ECX_OFFSET(%rip)
 	jz	2f
-	leaq	__strlen_sse42(%rip), %rax
+	leaq	__strspn_sse42(%rip), %rax
 2:	ret
-END(strlen)
-
-
-	.align 	16
-	.type	__strlen_sse42, @function
-__strlen_sse42:
-	cfi_startproc
-	CALL_MCOUNT
-	pxor	%xmm2, %xmm2
-	movq	%rdi, %rcx
-	movq	%rdi, %r8
-	andq	$~15, %rdi
-	movdqa	%xmm2, %xmm1
-	pcmpeqb	(%rdi), %xmm2
-	orl	$0xffffffff, %esi
-	subq	%rdi, %rcx
-	shll	%cl, %esi
-	pmovmskb %xmm2, %edx
-	andl	%esi, %edx
-	jnz	1f
-
-2:	pcmpistri $0x08, 16(%rdi), %xmm1
-	leaq	16(%rdi), %rdi
-	jnz	2b
-
-	leaq	(%rdi,%rcx), %rax
-	subq	%r8, %rax
-	ret
-
-1:	subq	%r8, %rdi
-	bsfl	%edx, %eax
-	addq	%rdi, %rax
-	ret
-	cfi_endproc
-	.size	__strlen_sse42, .-__strlen_sse42
-
+END(strspn)
 
 # undef ENTRY
 # define ENTRY(name) \
-	.type __strlen_sse2, @function; \
+	.type __strspn_sse2, @function; \
+	.globl __strspn_sse2; \
 	.align 16; \
-	__strlen_sse2: cfi_startproc; \
+	__strspn_sse2: cfi_startproc; \
 	CALL_MCOUNT
 # undef END
 # define END(name) \
-	cfi_endproc; .size __strlen_sse2, .-__strlen_sse2
+	cfi_endproc; .size __strspn_sse2, .-__strspn_sse2
 # undef libc_hidden_builtin_def
-/* It doesn't make sense to send libc-internal strlen calls through a PLT.
+/* It doesn't make sense to send libc-internal strspn calls through a PLT.
    The speedup we get from using SSE4.2 instruction is likely eaten away
    by the indirect call in the PLT.  */
 # define libc_hidden_builtin_def(name) \
-	.globl __GI_strlen; __GI_strlen = __strlen_sse2
+	.globl __GI_strspn; __GI_strspn = __strspn_sse2
 #endif
 
-#include "../strlen.S"
+#endif /* HAVE_SSE4_SUPPORT */
+
+#include "../strspn.S"

@@ -1,3 +1,31 @@
+2009-07-18  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/lowlevelrobustlock.S
+	(__lll_robust_timedlock_wait): If possible use FUTEX_WAIT_BITSET to
+	directly use absolute timeout.
+
+	* tst-sem5.c (do_test): Add test for premature timeout.
+	* Makefile: Linu tst-sem5 with librt.
+
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedwrlock.S
+	(pthread_rwlock_timedwrlock): If possible use FUTEX_WAIT_BITSET to
+	directly use absolute timeout.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timedrdlock.S
+	(pthread_rwlock_timedrdlock): Likewise.
+
+	* tst-cond11.c (run_test): Add test to check that the timeout is
+	long enough.
+
+	* sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S
+	(__pthread_cond_timedwait): If possible use FUTEX_WAIT_BITSET to
+	directly use absolute timeout.
+
+	* sysdeps/unix/sysv/linux/x86_64/pthread_cond_wait.S
+	(__pthread_cond_wait): Convert to using exception handler instead of
+	registered unwind buffer.
+	* sysdeps/unix/sysv/linux/x86_64/pthread_cond_timedwait.S
+	(__pthread_cond_timedwait): Likewise.
+
 2009-07-17  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/x86_64/sem_timedwait.S (sem_timedwait):

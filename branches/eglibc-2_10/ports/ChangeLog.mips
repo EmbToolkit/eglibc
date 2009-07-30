@@ -1,3 +1,18 @@
+2009-07-20  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/mips/kernel-features.h: Define
+	__ASSUME_EVENTFD2 and __ASSUME_SIGNALFD4.
+
+2009-06-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h: Define PF_IEEE802154
+	and AF_IEEE802154.
+
+2009-05-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/mips64/n64/preadv64.c,
+	sysdeps/unix/sysv/linux/mips/mips64/n64/pwritev64.c: New files.
+
 2009-04-18  Maciej W. Rozycki  <macro@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/getcontext.S: New file.

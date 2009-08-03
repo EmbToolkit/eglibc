@@ -1,3 +1,7 @@
+2009-08-03  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makefile.in (datarootdir): Define.
+
 2008-11-13  Joseph Myers  <joseph@codesourcery.com>
 
 	* include/bits/libc-tsd.h (__libc_tsd_define): Add extra

@@ -58,6 +58,16 @@
 		...
 					NULL
 */
+
+#if defined(__ARM_EABI__)
+/* Tag_ABI_align8_preserved: This code preserves 8-byte
+   alignment in any callee.  */
+	.eabi_attribute 25, 1
+/* Tag_ABI_align8_needed: This code may require 8-byte alignment from
+   the caller.  */
+	.eabi_attribute 24, 1
+#endif
+
 #if defined(__thumb2__)
 	.thumb
 	.syntax unified
@@ -87,8 +97,8 @@ _start:
 
 #ifdef SHARED
 	ldr sl, .L_GOT
-.L_GOT_OFF:
-	add sl, pc, sl
+	adr a4, .L_GOT
+	add sl, sl, a4
 
 	ldr ip, .L_GOT+4	/* __libc_csu_fini */
 	ldr ip, [sl, ip]
@@ -125,7 +135,7 @@ _start:
 
 #ifdef SHARED
 .L_GOT:
-	.word _GLOBAL_OFFSET_TABLE_-(.L_GOT_OFF+8)
+	.word _GLOBAL_OFFSET_TABLE_ - .L_GOT
 	.word __libc_csu_fini(GOT)
 	.word __libc_csu_init(GOT)
 	.word main(GOT)

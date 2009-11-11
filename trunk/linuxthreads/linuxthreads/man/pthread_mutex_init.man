@@ -88,14 +88,14 @@ mutex (number of !pthread_mutex_lock! operations performed on it by
 the calling thread), and only when this count reaches zero is the
 mutex actually unlocked.
 
-On ``error checking'' mutexes, !pthread_mutex_unlock! actually checks
-at run-time that the mutex is locked on entrance, and that it was
-locked by the same thread that is now calling !pthread_mutex_unlock!.
-If these conditions are not met, an error code is returned and the
-mutex remains unchanged.  ``Fast'' and ``recursive'' mutexes perform
-no such checks, thus allowing a locked mutex to be unlocked by a
-thread other than its owner. This is non-portable behavior and must
-not be relied upon.
+On ``error checking'' and ``recursive'' mutexes,
+!pthread_mutex_unlock! actually checks at run-time that the mutex is
+locked on entrance, and that it was locked by the same thread that is
+now calling !pthread_mutex_unlock!.  If these conditions are not met,
+an error code is returned and the mutex remains unchanged.  ``Fast''
+mutexes perform no such checks, thus allowing a locked mutex to be
+unlocked by a thread other than its owner. This is non-portable behavior
+and must not be relied upon.
 
 !pthread_mutex_destroy! destroys a mutex object, freeing the resources
 it might hold. The mutex must be unlocked on entrance. In the

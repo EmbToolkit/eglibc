@@ -1,3 +1,55 @@
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+
+	[BZ #6676]
+
+	* sysdeps/unix/sysv/linux/hppa/socket.h: Move from here...
+	* sysdeps/unix/sysv/linux/hppa/bits/socket.h: ... to here.
+
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/hppa/Versions (libc): Add 
+	fallocate64@@GLIBC_2.11.
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h
+	[__USE_GNU]: Define F_GETOWN_EX, and F_SETOWN_EX.
+	[!__USE_FILE_OFFSET64]: Define fallocate.
+	[__USE_FILE_OFFSET64 && __REDIRECT]: Define __REDIRECT.
+	[__USE_FILE_OFFSET64 && !__REDIRECT]: Define fallocate as
+	fallocate64.
+	[__USE_LARGEFILE64]: define fallocate64. 	
+
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/hppa/dl-fptr.h: Update copyright year.
+	Reduce ELF_MACHINE_BOOT_FPTR_TABLE_LEN to 64.
+	Implement ELF_MACHINE_LOAD_ADDRESS using PC relative loads.
+
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.h:
+	Remove FUTEX_WAITERS, FUTEX_OWNER_DIED, and FUTEX_TID_MASK.
+
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+	    Aurelian Jarno  <aurelien@aurel32.net>
+
+	[BZ #10527]
+
+	* sysdeps/unix/sysv/linux/hppa/socket.h: New file.
+
+2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
+
+	[BZ #6676]
+
+	* sysdeps/hppa/elf/start.S: Use R_PARISC_DLTIND* relocations
+	to support -fPIE.
+
+2009-11-08  Carlos O'Donell  <carlos@codesourcery.com>
+
+	[BZ #10920]
+
+	* sysdeps/hppa/libgcc_s.h: New file.
+	* sysdeps/unix/sysv/linux/hppa/nptl/unwind-forcedunwind.c: Remove.
+	* sysdeps/unix/sysv/linux/hppa/nptl/unwind-resume.c: Remove.
+
 2009-09-08  Carlos O'Donell  <carlos@codesourcery.com>
  
 	sysdeps/unix/sysv/linux/hppa/

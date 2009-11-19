@@ -1,3 +1,44 @@
+2009-11-17  Paolo Bonzini  <bonzini@gnu.org>
+
+	* posix/bug-regex30.c: New file.
+	* posix/Makefile: Add rules to build and run bug-regex30.
+	* posix/regcomp.c (re_compile_fastmap_iter): Add all multibyte
+	character lead bytes when there is a range in a COMPLEX_BRACKET.
+	Reported by Oleg Bylatov.
+
+2009-11-17  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #10969]
+	* locale/duplocale.c (__duplocale): Handle LC_GLOBAL_LOCALE special.
+	* locale/tst-duplocale.c: New file.
+	* locale/Makefile (tests): Add tst-duplocale.
+
+	[BZ #10968]
+	* locale/langinfo.h (_NL_LOCALE_NAME): Correct definition.
+	Patch by Bruno Haible <bruno@clisp.org>.
+	* locale/tst-locname.c: New file.
+	* locale/Makefile (tests): Add tst-locname.
+
+	[BZ #10972]
+	* sysdeps/unix/sysv/linux/powerpc/bits/mman.h: Add new MADV_*
+	constants from recent kernels.
+	* sysdeps/unix/sysv/linux/i386/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/sh/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/bits/mman.h: Likewise.
+
+2009-11-09  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/i386/fallocate.c: Include errno.h.
+	(fallocate): Return ENOSYS if __NR_fallocate is not defined.
+	* sysdeps/unix/sysv/linux/i386/fallocate64.c: Likewise.
+
+2009-11-06  Mike Frysinger  <vapier@gentoo.org>
+
+	* posix/bug-regex29.c: Include stdio.h.
+
 2009-11-14  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/unix/sysv/linux/sh/bits/fcntl.h: Update F_SETOWN_EX and

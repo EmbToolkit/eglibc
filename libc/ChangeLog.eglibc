@@ -1,3 +1,14 @@
+2009-11-20  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	Backport from trunk:
+
+	2009-11-20  Jakub Jelinek  <jakub@redhat.com>
+	PR libc/10103
+	* math/math.h: Provide *l long double prototypes redirecting
+	to double functions even when __NO_LONG_DOUBLE_MATH and not
+	__LDBL_COMPAT.
+	* math/complex.h: Likewise.
+
 2009-11-11  Thomas Schwinge  <thomas@codesourcery.com>
 
 	* configure.in (libc_cv_ssp): Make this a compile-time check.  Avoid

@@ -1,3 +1,20 @@
+2009-11-22  Ulrich Drepper  <drepper@redhat.com>
+
+	* nscd/connections.c (restart): Try harder to re-exec.
+
+	* sunrpc/create_xid.c (_create_xid): Reinitialize state after fork.
+
+	* sysdeps/unix/sysv/linux/ntp_gettimex.c:  New file.
+	* sysdeps/unix/sysv/linux/Makefile: Add rules to build ntp_gettimex.
+	* sysdeps/unix/sysv/linux/Versions: Export ntp_gettimex for GLIBC_2.12.
+	* sysdeps/unix/sysv/linux/sys/timex.h (ntptimeval): Add tai member and
+	some placeholders.  Redirect ntp_gettime to ntp_gettimex.
+	* sysdeps/unix/sysv/linux/ntp_gettime.c: Adjust for header change.
+
+	* sysdeps/unix/sysv/linux/sys/timex.h (MOD_TAI, MOD_MICRO, MOD_NANO):
+	Define.
+	(STA_RONLY): Add STA_NANO, STA_MODE, and STA_CLK.
+
 2009-11-18  H.J. Lu  <hongjiu.lu@intel.com>
 
 	[BZ #10162]

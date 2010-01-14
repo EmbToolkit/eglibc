@@ -586,7 +586,7 @@ extern int setenv (__const char *__name, __const char *__value, int __replace)
      __THROW __nonnull ((2));
 
 /* Remove the variable NAME from the environment.  */
-extern int unsetenv (__const char *__name) __THROW;
+extern int unsetenv (__const char *__name) __THROW __nonnull ((1));
 #endif
 
 #ifdef	__USE_MISC
@@ -597,8 +597,8 @@ extern int clearenv (void) __THROW;
 #endif
 
 
-#if ((defined __USE_MISC || defined __USE_XOPEN_EXTENDED)	\
-     && !defined __USE_XOPEN2K) || defined __USE_GNU
+#if defined __USE_MISC \
+    || (defined __USE_XOPEN_EXTENDED && !defined __USE_XOPEN2K)
 /* Generate a unique temporary file name from TEMPLATE.
    The last six characters of TEMPLATE must be "XXXXXX";
    they are replaced with a string that makes the file name unique.

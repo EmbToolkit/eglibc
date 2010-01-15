@@ -1,3 +1,54 @@
+2010-01-14  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #11027]
+	* sysdeps/generic/netinet/ip.h: Define IPTOS_CLASS_* macros according
+	to RFC 2474.
+	Patch by Philip Prindeville <philipp@redfish-solutions.com>.
+
+	[BZ #11141]
+	* resolv/res_send.c (reopen): Don't use IPv6 sockets for IPv4
+	addresses.
+
+	[BZ #11127]
+	* posix/regcomp.c (alc_eclosure_iter): Do not ignore
+	re_node_set_insert failure; return REG_ESPACE.
+	Patch by Paul Eggert.
+
+	* bits/confname.h: Make pre-C99-safe.
+
+2010-01-14  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	* Makeconfig (+prector, +postctor, +prectorS, +postctorS): Add
+	$(sysdep-LDFLAGS) to pre and post ctors so that the proper .o
+	files are found by GCC.
+
+2010-01-14  Ulrich Drepper  <drepper@redhat.com>
+
+	* posix/unistd.h: Relax conditions for ualarm, usleep, getwd, vfork,
+	brk, and sbrk.
+
+	* string/strings.h: Relax condition for bcmp, bcopy, bzero, ffs,
+	index, and rindex.
+
+	* stdlib/stdlib.h: Relax conditions for *cvt functions and valloc.
+
+	* Versions.def: Add GLIBC_2.12 for libpthread.
+
+	[BZ #11126]
+	* malloc/malloc.c (malloc_info): Initialize malloc if not already
+	done.  Handle empty bin lists.
+
+	* posix/unistd.h: Change getpagesize and getdtablesize declaration
+	visibility some more.
+
+	* resolv/netdb.h: Relax condition to elide obsolete resolver constants.
+
+	* posix/unistd.h: Declare getpagesize in _GNU_SOURCE mode.
+
+	[BZ #11120]
+	* sysdeps/x86_64/strcmp.S: Prevent silent errors should strncmp be
+	needed outside libc.
+
 2010-01-13  Ulrich Drepper  <drepper@redhat.com>
 
 	* stdlib/stdlib.h: Parameter of unsetenv must not be NULL.

@@ -1,3 +1,31 @@
+2010-01-12  Matt Turner  <mattst88@gmail.com>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/stat.h: Fix double-inclusion
+	problem.
+
+2010-01-12  Matt Turner  <mattst88@gmail.com>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/sigaction.h: Define
+	SA_RESTART, SA_NODEFER and SA_RESETHAND if __USE_XOPEN2K8.
+
+2010-01-12  Matt Turner  <mattst88@gmail.com>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/fcntl.h: Define O_DIRECTORY,
+	O_NOFOLLOW, O_CLOEXEC, F_DUPFD_CLOEXEC, F_SETOWN, and F_GETOWN for
+	XPG7.
+	* sysdeps/unix/sysv/linux/alpha/bits/stat.h: Enable using from
+	fcntl.h.
+
+2010-01-12  Matt Turner  <mattst88@gmail.com>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/fcntl.h: Redefine O_SYNC and
+	O_DSYNC to match 2.6.33+ kernels.
+
+2009-12-02  Mike Frysinger <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/alpha/nptl/timer_settime.c: Fix typo in
+	include timer_gettime.c -> timer_settime.c.
+
 2009-11-23  Matt Turner  <mattst88@gmail.com>
 
 	* sysdeps/unix/sysv/linux/alpha/bits/stat.h: Use struct timespec

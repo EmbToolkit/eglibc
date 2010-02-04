@@ -1,3 +1,24 @@
+2010-02-01  Kyle McMartin  <kyle@redhat.com>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/socket.h: Fix value of
+	SOCK_CLOEXEC to match O_CLOEXEC.
+
+2010-02-01  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/hppa/Versions: Bump
+	errlist-compat to 257 for GLIBC_2.12.
+	* sysdeps/unix/sysv/linux/hppa/bits/errno.h
+	(EOWNERDEAD): Define if not already defined.
+	(ENOTRECOVERABLE): Likewise.
+	(ERFKILL): Likewise.
+
+2009-11-29  Carlos O'Donell  <carlos@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h:
+	Rearrange file to reduce future maintenance.
+	[__USE_GNU]: Update F_GETOWN_EX, and F_SETOWN_EX.
+	Define f_owner_ex an __pid_type.
+
 2009-11-25  Carlos O'Donell  <carlos@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/hppa/nptl/bits/pthreadtypes.h:

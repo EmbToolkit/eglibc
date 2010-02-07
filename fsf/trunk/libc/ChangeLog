@@ -1,3 +1,20 @@
+2010-02-05  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #11230]
+	* sysdeps/ia64/memchr.S: Don't read beyond the last byte
+	during recovery.
+
+2010-01-26  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/unix/sysv/linux/s390/s390-32/utmp32.c: Use internal
+	interface.
+	* sysdeps/unix/sysv/linux/s390/s390-32/utmpx32.c: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/utmpx32.h: Declare internal
+	utmpx interface.
+
+	* sysdeps/unix/sysv/linux/sparc/Versions: Add new errlist compat
+	entry for 2.12.
+
 2010-02-03  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #11235]

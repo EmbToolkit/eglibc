@@ -1,3 +1,26 @@
+2010-02-16  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/i386/i686/multiarch/memcmp-sse4.S: Add alignnments.
+	Fix one unwind info problem.
+
+	* sysdeps/i386/i686/multiarch/memcmp-ssse3.S (less1bytes): Add CFI_POP.
+
+	* sysdeps/i386/i686/multiarch/strcmp-sse4.S: Simplify unwind info.
+
+2010-02-17  H.J. Lu  <hongjiu.lu@intel.com>
+	    Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/i386/i686/multiarch/strcmp-ssse3.S: Fix typo in unwind info.
+	Clean up a bit.
+
+2010-02-17  Carl Fredrik Hammar  <hammy.lite@gmail.com>
+
+	* hurd/hurdioctl.c (tiocsctty): Only get FD ports, do work in...
+	(tiocsctty_port): ...this new function.
+
+	* hurd/hurd/ioctl.h (_HURD_HANDLE_IOCTLS_1): Cast to
+	`ioctl_handler_t'.
+
 2010-02-15  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/i386/i686/multiarch/memcmp-sse4.S: Fix unwind info.

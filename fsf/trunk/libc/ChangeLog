@@ -1,3 +1,34 @@
+2010-02-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* config.make.in (config-asflags-i686): Define.
+	* configure.in: Substitute libc_cv_as_i686.
+	* sysdeps/i386/configure.in: Check if assembler supports -mtune=i686.
+	* sysdeps/i386/i686/Makefile (CFLAGS-.oX): Add -Wa,-mtune=i686
+	if assembler supports -mtune=i686.
+	(ASFLAGS-.oX): Likewise.
+
+2010-03-04  Ulrich Drepper  <drepper@redhat.com>
+
+	* elf/elf.h (R_X86_64_SIZE32): Define.
+	(R_X86_64_SIZE64): Define.
+
+2010-03-02  Richard Guenther  <rguenther@suse.de>
+
+	* sysdeps/x86_64/dl-machine.h (elf_machine_rela): R_X86_64_PC32
+	is sign-extending.
+
+2010-03-03  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/in.h: Add a few more definitions from
+	the kernel headers.
+
+2010-03-04  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc64/Implies: Add ieee754/dbl-64/wordsize-64 entry.
+
+	* sysdeps/sparc/sparc32/sparcv8/udiv_qrnnd.S: Delete.
+	* sysdeps/sparc/sparc32/udiv_qrnnd.S: Delete.
+
 2010-03-03  David S. Miller  <davem@davemloft.net>
 
 	* math/math_private.h (INSERT_WORDS64): Fix argument order.

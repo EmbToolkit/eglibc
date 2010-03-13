@@ -1,5 +1,5 @@
 /* Definitions of inline math functions implemented by the m68881/2.
-   Copyright (C) 1991,92,93,94,96,97,98,99,2000,2002, 2003, 2004, 2008
+   Copyright (C) 1991,92,93,94,96,97,98,99,2000,2002, 2003, 2004, 2008, 2010
      Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -85,6 +85,26 @@
 	       : "=dm" (__result) : "f" (x), "f" (y));	\
       __result != 0; })
 # endif /* GCC 3.1 */
+
+/* Test for negative number.  Used in the signbit() macro.  */
+__MATH_INLINE int
+__NTH (__signbitf (float __x))
+{
+  __extension__ union { float __f; int __i; } __u = { __f: __x };
+  return __u.__i < 0;
+}
+__MATH_INLINE int
+__NTH (__signbit (double __x))
+{
+  __extension__ union { double __d; int __i[2]; } __u = { __d: __x };
+  return __u.__i[0] < 0;
+}
+__MATH_INLINE int
+__NTH (__signbitl (long double __x))
+{
+  __extension__ union { long double __d; int __i[3]; } __u = { __d: __x };
+  return __u.__i[0] < 0;
+}
 #endif
 
 
@@ -281,17 +301,7 @@ __inline_functions(long double,l)
 #ifdef __USE_ISOC99
 
 # define __inline_functions(float_type, s)				  \
-__m81_defun (int, __CONCAT(__signbit,s), (float_type __value))	  	  \
-{									  \
-  /* There is no branch-condition for the sign bit, so we must extract	  \
-     and examine the condition codes manually.  */			  \
-  unsigned long int __fpsr;						  \
-  __asm ("ftst%.x %1\n"							  \
-	 "fmove%.l %/fpsr, %0" : "=dm" (__fpsr) : "f" (__value));	  \
-  return (__fpsr >> 27) & 1;						  \
-}									  \
-									  \
-  __m81_defun (float_type, __CONCAT(__scalbln,s),			  \
+__m81_defun (float_type, __CONCAT(__scalbln,s),			  \
 	     (float_type __x, long int __n))				  \
 {									  \
   return __CONCAT(__scalbn,s) (__x, __n);				  \

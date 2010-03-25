@@ -1,3 +1,75 @@
+2010-03-16  Chris Demetriou  <cgd@google.com>
+
+	* locale/programs/simple-hash.c: Include inttypes.h.
+	(hashval_t): Defined to be uint32_t.
+	* locale/programs/simple_hash.h: Include inttypes.h.
+	(compute_hashval): Change return type to uint32_t.
+
+2010-03-24  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/getlogin_r.c: New file.
+	* sysdeps/unix/sysv/linux/getlogin.c: New file.
+	* sysdeps/unix/getlogin_r.c: Allow compiling getlogin as static
+	function.
+	* sysdeps/unix/getlogin.c: Likewise.  Move name variable to toplevel.
+	* include/unistd.h: Declare __getlogin_r_loginuid.
+
+	[BZ #11397]
+	* sysdeps/posix/cuserid.c (cuserid): Make sure the returned string
+	is NUL terminated.
+	Patch by Jonathan Geisler <jgeisler@cse.taylor.edu>.
+
+	* sysdeps/unix/sysv/linux/mmap64.c: Allow variable shift values.
+
+2010-03-24  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/strpbrk-c.c: Define only if SHARED
+	is defined.
+
+2010-03-22  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* string/test-memcmp.c (check_result): New function.
+	(do_one_test): Use it.
+	(check1): New function.
+	(test_main): Use it.
+
+2010-03-24  Ulrich Drepper  <drepper@redhat.com>
+
+	* posix/tst-gnuglob.c: Add tests with empty patterns.  For this
+	rewrite the tests to add support for failing glob calls.
+	Some other minor cleanups.
+	* posix/bug-glob3.c: New file.
+	* posix/Makefile (tests): Add bug-glob3.
+
+2010-03-24  Ulrich Drepper  <drepper@redhat.com>
+	    Andreas Schwab  <andreas@redhat.com>
+
+	* posix/glob.c (glob): Clean up gl_pathc and gl_pathv earlier.
+	If pattern is "" bail out early
+
+2010-03-23  Jakub Jelinek  <jakub@redhat.com>
+
+	* elf/dl-lookup.c (do_lookup_x): If tab->entries is NULL,
+	but tab->size != 0, just unlock and goto success, without
+	allocating anything or entering anything into the hash table.
+	(_dl_debug_bindings): Temporarily set tab->entries to NULL
+	around do_lookup_x in undef_map->l_local_scope[0].  If
+	undef_map->l_symbolic_in_local_scope, lookup also in
+	symbolic_searchlist of following libraries in l_local_scope
+	that have DT_SYMBOLIC set.
+	* elf/dl-deps.c (_dl_map_object_deps): Compute
+	l_symbolic_in_local_scope.
+	* include/link.h (struct link_map): Add l_symbolic_in_local_scope
+	bitfield.
+
+2010-03-24  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #11410]
+	* wctype/wctype.h: Use <wchar.h> to get the wint_t definition.
+
+	* wcsmbs/wchar.h: Correct preprocessor directive indentation.  Move
+	C++ prototype handling to a better place.
+
 2010-03-18  Ulrich Drepper  <drepper@redhat.com>
 
 	* elf/dl-load.c (open_verify): Extend expected to the full size of the

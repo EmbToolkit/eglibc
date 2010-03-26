@@ -1,3 +1,67 @@
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/____longjmp_chk.S: New.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/Versions: Update errlist-compat
+	for GLIBC_2.12.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/alpha/fpu/fegetenv.c: Add hidden alias.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/dl-auxv.h (__libc_alpha_cache_shape):
+	Define extern here; move definition...
+	* sysdeps/unix/sysv/linux/alpha/dl-sysdep.c: ... here.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/sys/user.h: Don't include asm/page.h.
+	(PAGE_SHIFT, PAGE_SIZE, PAGE_MASK): Define.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/fcntl.h (F_SETOWN_EX,
+	F_GETOWN_EX, F_OWNER_TID, F_OWNER_PID, F_OWNER_PGRP,
+	F_OWNER_GID, struct f_owner_ex): Define.
+	(F_SETOWN, F_GETOWN): Define with XPG7.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/alpha/sysdep.h (PTR_MANGLE): Define for !PIC too.
+	(PTR_DEMANGLE): Likewise.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/unix/alpha/sysdep.h (INTERNAL_SYSCALL_ERROR_P,
+	INTERNAL_SYSCALL_ERRNO): "Use" the "other" variable in each macro.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdep/unix/sysv/linux/alpha/creat.c: New.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdep/alpha/elf/configure.in (libc_cv_alpha_hidden_gprel)
+	Adjust the test for gcc 4.5.
+	* sysdep/alpha/elf/configure: Rebuild.
+
+2010-03-26  Richard Henderson  <rth@redhat.com>
+
+	* sysdeps/alpha/bits/atomic.h (__arch_exchange_8_int,
+	__arch_exchange_16_int, __arch_exchange_32_int,
+	__arch_exchange_64_int, __arch_exchange_and_add_32_int,
+	__arch_exchange_and_add_64_int): Use __typeof to get the
+	return type correct without warning.
+
+2010-03-23  Matt Turner  <mattst88@gmail.com>
+            Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/socket.h: New file.
+
 2010-01-12  Matt Turner  <mattst88@gmail.com>
 
 	* sysdeps/unix/sysv/linux/alpha/bits/stat.h: Fix double-inclusion

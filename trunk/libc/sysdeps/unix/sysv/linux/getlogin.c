@@ -1,5 +1,4 @@
-/* Auxiliary vector processing for Linux/Alpha.
-   Copyright (C) 2007 Free Software Foundation, Inc.
+/* Copyright (C) 2010 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,20 +16,24 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-/* Scan the Aux Vector for the cache shape entries.  */
+#include <pwd.h>
+#include <unistd.h>
+#include <not-cancel.h>
 
-extern long __libc_alpha_cache_shape[4];
+#define STATIC static
+#define getlogin getlogin_fd0
+#include <sysdeps/unix/getlogin.c>
+#undef getlogin
 
-#define DL_PLATFORM_AUXV				\
-      case AT_L1I_CACHESHAPE:				\
-	__libc_alpha_cache_shape[0] = av->a_un.a_val;	\
-	break;						\
-      case AT_L1D_CACHESHAPE:				\
-	__libc_alpha_cache_shape[1] = av->a_un.a_val;	\
-	break;						\
-      case AT_L2_CACHESHAPE:				\
-	__libc_alpha_cache_shape[2] = av->a_un.a_val;	\
-	break;						\
-      case AT_L3_CACHESHAPE:				\
-	__libc_alpha_cache_shape[3] = av->a_un.a_val;	\
-	break;
+
+/* Return the login name of the user, or NULL if it can't be determined.
+   The returned pointer, if not NULL, is good only until the next call.  */
+
+char *
+getlogin (void)
+{
+  if (__getlogin_r_loginuid (name, sizeof (name)) == 0)
+    return name;
+
+  return getlogin_fd0 ();
+}

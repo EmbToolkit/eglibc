@@ -1,3 +1,39 @@
+2010-05-03  Aurelien Jarno  <aurelien@aurel32.net>
+ 
+	* sysdeps/alpha/memchr.S: Use prefetch load.
+	* sysdeps/alpha/alphaev6/memchr.S: Likewise.
+
+2010-05-03  Aurelien Jarno  <aurelien@aurel32.net>
+
+ 	[BZ #6827]
+	* sysdeps/alpha/dl-machine.h: Add dl-procinfo support.
+	* sysdeps/alpha/dl-procinfo.c: New.
+	* sysdeps/alpha/dl-procinfo.h: New.
+
+2010-05-03  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #5350]
+	* sysdeps/alpha/fpu/s_ceil.c: Fix corner cases.
+	* sysdeps/alpha/fpu/s_ceilf.c: Likewise.
+	* sysdeps/alpha/fpu/s_floor.c: Likewise.
+	* sysdeps/alpha/fpu/s_floorf.c: Likewise.
+	* sysdeps/alpha/fpu/s_rint.c: Likewise.
+	* sysdeps/alpha/fpu/s_rintf.c: Likewise.
+
+2010-05-03  GOTO Masanori  <gotom@debian.or.jp>
+
+	[BZ #1026]
+	* sysdeps/unix/sysv/linux/alpha/kernel-features.h: Define
+	__ASSUME_STAT64_SYSCALL.
+	* sysdeps/unix/sysv/linux/alpha/fxstat.c: Check
+	__ASSUME_STAT64_SYSCALL.
+	* sysdeps/unix/sysv/linux/alpha/fxstatat.c: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/lxstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/xstat.c: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/xstatconv.c: Don't define
+	__libc_missing_axp_stat64 when it's not	needed.
+	* sysdeps/unix/sysv/linux/alpha/xstatconv.h: Likewise.
+
 2010-03-30  Richard Henderson  <rth@redhat.com>
 
 	* sysdeps/unix/sysv/linux/alpha/bits/socket.h (MSG_WAITFORONE): New.

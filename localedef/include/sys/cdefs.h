@@ -36,3 +36,13 @@
 # define __extern_always_inline extern __always_inline
 #endif
 #endif
+
+#if !defined(__REDIRECT_NTH) && defined(__GNUC__) && __GNUC__ >= 2
+# ifdef __cplusplus
+#  define __REDIRECT_NTH(name, proto, alias) \
+     name proto __THROW __asm__ (__ASMNAME (#alias))
+# else
+#  define __REDIRECT_NTH(name, proto, alias) \
+     name proto __asm__ (__ASMNAME (#alias)) __THROW
+# endif
+#endif

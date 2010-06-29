@@ -1,3 +1,8 @@
+2010-06-29  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	* include/sys/cdefs.h (__REDIRECT_NTH): Define if not present in host
+	headers.
+
 2009-08-03  Joseph Myers  <joseph@codesourcery.com>
 
 	* Makefile.in (datarootdir): Define.

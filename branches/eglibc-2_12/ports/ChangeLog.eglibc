@@ -1,3 +1,11 @@
+2010-07-22  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	Backport 0df56592854fa25ce091883cb60fc417283383b8 from trunk:
+
+	2010-06-11  Andreas Schwab  <schwab@linux-m68k.org>
+	* sysdeps/unix/sysv/linux/m68k/nptl/bits/pthreadtypes.h: Force
+	alignment of futex variables.
+
 2009-08-25  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/powerpc32/e500/fpu/__longjmp-common.S: Move

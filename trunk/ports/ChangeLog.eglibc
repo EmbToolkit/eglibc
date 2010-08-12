@@ -1,3 +1,8 @@
+2010-08-12  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/m68k/kernel-features.h (MMAP2_PAGE_SHIFT):
+	Define to 13.
+
 2009-08-25  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/powerpc32/e500/fpu/__longjmp-common.S: Move

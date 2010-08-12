@@ -1,3 +1,67 @@
+2010-08-11  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/unix/sysv/linux/bits/statfs.h (struct statfs): Add f_flags
+	field.
+	(struct statfs64): Likewise.
+	(_STATFS_F_FLAGS): Define.
+	* sysdeps/unix/sysv/linux/s390/bits/statfs.h: Likewise.
+	* sysdeps/unix/sysv/linux/internal_statvfs.c (__statvfs_getflags):
+	Don't define if __ASSUME_STATFS_F_FLAGS is defined.
+	(ST_VALID): Define locally.
+	(INTERNAL_STATVFS): If f_flags has ST_VALID set don't call
+	__statvfs_getflags, use the provided value.
+	* sysdeps/unix/sysv/linux/kernel-features.h: Define
+	__ASSUME_STATFS_F_FLAGS.
+
+	* sysdeps/unix/sysv/linux/sys/inotify.h (IN_EXCL_UNLINK): Define.
+
+	* sysdeps/unix/sysv/linux/Makefile [subdir=misc] (sysdep_headers):
+	Add sys/fanotify.h.
+	* sysdeps/unix/sysv/linux/Versions [libc]: Export fanotify_init and
+	fanotify_mask for GLIBC_2.13.
+	* sysdeps/unix/sysv/linux/i386/syscalls.list: Add entries for
+	fanotify_init and fanotify_mark.
+	* sysdeps/unix/sysv/linux/wordsize-64/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/sys/fanotify.h: New file.
+
+	* sysdeps/unix/sysv/linux/Makefile [subdir=misc] (sysdep_routines):
+	Add prlimit.
+	* sysdeps/unix/sysv/linux/Versions [libc]: Export prlimit and
+	prlimit64 for GLIBC_2.13.
+	* sysdeps/unix/sysv/linux/bits/resource.h: Declare prlimit and
+	prlimit64.
+	* sysdeps/unix/sysv/linux/i386/syscalls.list: Add entry for prlimit64
+	syscall.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/sh/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/syscalls.lis: Likewise.
+	* sysdeps/unix/sysv/linux/wordsize-64/syscalls.list: Likewise.  Also
+	add prlimit alias.
+	* sysdeps/unix/sysv/linux/prlimit.c: New file.
+
+	[BZ #11903]
+	* sysdeps/generic/netinet/ip.h (IPTOS_CLASS): Fix definition.
+	Patch by Evgeni Bikov <bikovevg@iitp.ru>.
+
+	* nss/Makefile: Add rules to build and run tst-nss-test1.
+	* shlib-versions: Add entry for libnss_test1.
+	* nss/nss_test1.c: New file.
+	* nss/tst-nss-test1.c: New file.
+
+	* nss/nsswitch.c (__nss_database_custom): Define new variable.
+	(__nss_configure_lookup): Set appropriate entry in
+	__nss_configure_lookup to true.
+	* nss/nsswitch.h: Define enum with indeces of databases in
+	databases and __nss_database_custom arrays.  Declare
+	__nss_database_custom.
+	* grp/initgroups.c (internal_getgrouplist): Use __nss_database_custom
+	to avoid using nscd when custom rules are installed.
+	* nss/getXXbyYY_r.c: Likewise.
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Likewise.
+
+	* nss/nss_files/files-parse.c: Whitespace fixes.
+
 2010-08-09  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #11883]

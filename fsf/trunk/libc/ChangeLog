@@ -1,3 +1,20 @@
+2010-08-12  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/i386/elf/Makefile: New file.
+
+2010-08-14  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/unix/sysv/linux/sys/fanotify.h: Remove third argument
+	from fanotify_init.
+	* sysdeps/unix/sysv/linux/i386/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/wordsize-64/syscalls.list: Likewise.
+
+2010-08-15  Ulrich Drepper  <drepper@redhat.com>
+
+	* sysdeps/x86_64/strcmp.S: Use correct register for fourth parameter
+	of strncasecmp_l.
+	* sysdeps/multiarch/strcmp.S: Likewise.
+
 2010-08-14  Ulrich Drepper  <drepper@redhat.com>
 
 	* sysdeps/x86_64/Makefile [subdir=string] (sysdep_routines): Add

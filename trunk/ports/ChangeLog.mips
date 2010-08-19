@@ -1,3 +1,37 @@
+2010-08-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/kernel-features.h
+	(__ASSUME_GETDENTS64_SYSCALL): Undefine for n32 ABI before 2.6.35.
+
+2010-08-13  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	* sysdeps/unix/mips/mips64/n64/sysdep.h (PSEUDO): Add 'nop' in
+	jump delay slot.
+	* sysdeps/unix/mips/mips64/n32/sysdep.h (PSEUDO): Ditto.
+
+2010-08-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/termios.h (EXTPROC): Define.
+
+2010-08-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/statfs.h (struct statfs,
+	struct statfs64): Add f_flags field.
+
+2010-08-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/sys/inotify.h (IN_EXCL_UNLINK):
+	Define.
+
+2010-08-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/resource.h: Declare prlimit
+	and prlimit64.
+	* sysdeps/unix/sysv/linux/mips/mips32/syscalls.list,
+	sysdeps/unix/sysv/linux/mips/mips64/n64/syscalls.list: New files.
+	* sysdeps/unix/sysv/linux/mips/n32/syscalls.list: Add entry for
+	prlimit64 syscall.
+
 2010-06-14  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/mips/bits/fcntl.h (F_SETPIPE_SZ,

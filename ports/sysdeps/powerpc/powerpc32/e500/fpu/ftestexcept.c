@@ -30,3 +30,4 @@ fetestexcept (int excepts)
 
   return f & excepts;
 }
+libm_hidden_def (fetestexcept)

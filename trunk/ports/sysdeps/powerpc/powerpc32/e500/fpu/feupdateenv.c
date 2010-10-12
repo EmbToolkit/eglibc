@@ -54,4 +54,5 @@ strong_alias (__feupdateenv, __old_feupdateenv)
 compat_symbol (libm, BP_SYM (__old_feupdateenv), BP_SYM (feupdateenv), GLIBC_2_1);
 #endif
 
+libm_hidden_ver (__feupdateenv, feupdateenv)
 versioned_symbol (libm, BP_SYM (__feupdateenv), BP_SYM (feupdateenv), GLIBC_2_2);

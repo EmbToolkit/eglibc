@@ -1,3 +1,39 @@
+2010-10-19  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/i386/bits/mathdef.h (FP_FAST_FMA): If the GCC 4.6 port has
+	fast fma builtins, define the macros in the C99 standard.
+	(FP_FAST_FMAF): Likewise.
+	(FP_FAST_FMAL): Likewise.
+	* sysdeps/x86_64/bits/mathdef.h: Likewise.
+
+	* bits/mathdef.h: Update copyright year.
+	* sysdeps/powerpc/bits/mathdef.h: Likewise.
+
+2010-10-19  Michael Meissner  <meissner@linux.vnet.ibm.com>
+
+	* bits/mathdef.h (FP_FAST_FMA): If the GCC 4.6 port has fast fma
+	builtins, define the macros in the C99 standard.
+	(FP_FAST_FMAF): Likewise.
+	(FP_FAST_FMAL): Likewise.
+	* sysdeps/powerpc/bits/mathdef.h (FP_FAST_FMA): Define, ppc as
+	multiply/add.
+	(FP_FAST_FMAF): Likewise.
+
+2010-10-15  Jakub Jelinek  <jakub@redhat.com>
+
+	[BZ #3268]
+	* math/libm-test.inc (fma_test): Some new testcases.
+	* sysdeps/ieee754/ldbl-128/s_fmal.c: New file.
+	* sysdeps/ieee754/ldbl-96/s_fma.c (__fma): Fix fma with finite x and
+	y and infinite z.  Do multiplication by C already in long double.
+	* sysdeps/ieee754/ldbl-96/s_fmal.c: New file.
+	* sysdeps/ieee754/dbl-64/s_fma.c (__fma): Fix fma with finite x and
+	y and infinite z.  Do bitwise or of inexact bit into u.d.
+	* sysdeps/ieee754/ldbl-64-128/s_fmal.c: New file.
+	* sysdeps/i386/fpu/s_fmaf.S: Removed.
+	* sysdeps/i386/fpu/s_fma.S: Removed.
+	* sysdeps/i386/fpu/s_fmal.S: Removed.
+
 2010-10-16  Jakub Jelinek  <jakub@redhat.com>
 
 	[BZ #3268]

@@ -19,11 +19,6 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef _LINUX_M68K_SYSDEP_H
-#define _LINUX_M68K_SYSDEP_H 1
-
-#include <sysdeps/unix/sysdep.h>
-#include <sysdeps/m68k/sysdep.h>
 #include <tls.h>
 
 /* Defines RTLD_PRIVATE_ERRNO.  */
@@ -122,7 +117,7 @@ SYSCALL_ERROR_LABEL:							      \
     neg.l %d0;								      \
     move.l %d0, -(%sp);							      \
     jbsr __m68k_read_tp@PLTPC;						      \
-    lea (_GLOBAL_OFFSET_TABLE_@GOTPC, %pc), %a1;			      \
+    SYSCALL_ERROR_LOAD_GOT (%a1);					      \
     add.l (SYSCALL_ERROR_ERRNO@TLSIE, %a1), %a0;			      \
     move.l (%sp)+, (%a0);						      \
     move.l &-1, %d0;							      \
@@ -332,6 +327,4 @@ SYSCALL_ERROR_LABEL:							      \
 /* M68K needs system-supplied DSO to access TLS helpers
    even when statically linked.  */
 # define NEED_STATIC_SYSINFO_DSO 1
-#endif
-
 #endif

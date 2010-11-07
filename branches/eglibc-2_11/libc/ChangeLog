@@ -1,3 +1,60 @@
+2010-10-25  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #12159]
+	* sysdeps/x86_64/multiarch/strchr.S: Fix propagation of search byte
+	into all bytes of SSE register.
+	Patch by Richard Li <richardpku@gmail.com>.
+
+2010-10-22  Andreas Schwab  <schwab@redhat.com>
+
+	* include/dlfcn.h (__RTLD_SECURE): Define.
+	* elf/dl-load.c (_dl_map_object): Remove preloaded parameter.  Use
+	mode & __RTLD_SECURE instead.
+	(open_path): Rename preloaded parameter to secure.
+	* sysdeps/generic/ldsodefs.h (_dl_map_object): Adjust declaration.
+	* elf/dl-open.c (dl_open_worker): Adjust call to _dl_map_object.
+	* elf/dl-deps.c (openaux): Likewise.
+	* elf/rtld.c (struct map_args): Remove is_preloaded.
+	(map_doit): Don't use it.
+	(dl_main): Likewise.
+	(do_preload): Use __RTLD_SECURE instead of is_preloaded.
+	(dlmopen_doit): Add __RTLD_SECURE to mode bits.
+
+2010-10-06  Ulrich Drepper  <drepper@gmail.com>
+
+	* string/bug-strstr1.c: New file.
+	* string/Makefile: Add rules to build and run bug-strstr1.
+
+2010-10-05  Eric Blake  <eblake@redhat.com>
+
+	[BZ #12092]
+	* string/str-two-way.h (two_way_long_needle): Always clear memory
+	when skipping input due to the shift table.
+
+2010-10-03  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12077]
+	* sysdeps/x86_64/strcmp.S: Fix handling of remaining bytes in buffer
+	for strncmp and strncasecmp.
+	* string/stratcliff.c: Add tests for strcmp and strncmp.
+	* wcsmbs/wcsatcliff.c: Adjust for stratcliff change.
+
+2010-06-02  Kirill A. Shutemov  <kirill@shutemov.name>
+
+	* elf/dl-reloc.c: Flush cache after solving TEXTRELs if arch
+	requires it.
+
+2010-06-02  Andreas Schwab  <schwab@redhat.com>
+
+	* nis/nss_nis/nis-initgroups.c (get_uid): Properly resize buffer.
+
+2010-06-07  Jakub Jelinek  <jakub@redhat.com>
+
+	* libio/stdio.h (sscanf, vsscanf): Use __REDIRECT_NTH instead of
+	__REDIRECT followed by __THROW.
+	* wcsmbs/wchar.h (swscanf, vswscanf): Likewise.
+	* posix/getopt.h (getopt): Likewise.
+
 2010-05-26  H.J. Lu  <hongjiu.lu@intel.com>
 
 	[BZ #11640]

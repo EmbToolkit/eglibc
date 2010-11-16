@@ -1,3 +1,56 @@
+2010-11-11  Andreas Schwab  <schwab@redhat.com>
+
+	* posix/fnmatch_loop.c (NEW_PATTERN): Fix use of alloca.
+	* posix/Makefile (tests): Add $(objpfx)tst-fnmatch-mem.
+	(tst-fnmatch-ENV): Set MALLOC_TRACE.
+	($(objpfx)tst-fnmatch-mem): New rule.
+	(generated): Add tst-fnmatch-mem and tst-fnmatch.mtrace.
+	* posix/tst-fnmatch.c (main): Call mtrace.
+
+2010-08-09  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #11883]
+	* posix/fnmatch.c: Keep track of alloca use and fall back on malloc.
+	* posix/fnmatch_loop.c: Likewise.
+
+2010-11-10  Luis Machado  <luisgpm@br.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_sqrtl.c (__ieee754_sqrtl): Force
+	  signed comparison.
+
+2010-11-08  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12194]
+	* sysdeps/i386/bits/byteswap.h: Avoid warning in __bswap_16.
+	* sysdeps/x86_64/bits/byteswap.h: Likewise.
+
+2010-09-06  Andreas Schwab  <schwab@redhat.com>
+
+	* manual/Makefile: Don't mix pattern rules with normal rules.
+
+2010-08-12  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #11904]
+	* locale/programs/locale.c (print_assignment): New function.
+	(show_locale_vars): Use it.
+
+2010-10-26  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/rtld.c (dl_main): Move assertion after the point where rtld map
+	is added to the list.
+
+2010-10-20  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+	    Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/dl-object.c (_dl_new_object): Don't append the new object to
+	the global list here.  Move code to...
+	(_dl_add_to_namespace_list): ...here.  New function.
+	* elf/rtld.c (dl_main): Invoke _dl_add_to_namespace_list.
+	* sysdeps/generic/ldsodefs.h (_dl_add_to_namespace_list): Declare.
+	* elf/dl-load.c (lose): Don't remove the element from the list.
+	(_dl_map_object_from_fd): Invoke _dl_add_to_namespace_list.
+	(_dl_map_object): Likewise.
+
 2010-10-24  Ulrich Drepper  <drepper@redhat.com>
 
 	[BZ #12140]
@@ -10,21 +63,6 @@
 	(sysd-rules-targets): Remove duplicates.
 	* elf/rtld-Rules ($(objpfx)rtld-%.os): Add pattern rules with
 	rtld-%.$o dependency.
-
-2010-10-22  Andreas Schwab  <schwab@redhat.com>
-
-	* include/dlfcn.h (__RTLD_SECURE): Define.
-	* elf/dl-load.c (_dl_map_object): Remove preloaded parameter.  Use
-	mode & __RTLD_SECURE instead.
-	(open_path): Rename preloaded parameter to secure.
-	* sysdeps/generic/ldsodefs.h (_dl_map_object): Adjust declaration.
-	* elf/dl-open.c (dl_open_worker): Adjust call to _dl_map_object.
-	* elf/dl-deps.c (openaux): Likewise.
-	* elf/rtld.c (struct map_args): Remove is_preloaded.
-	(map_doit): Don't use it.
-	(dl_main): Likewise.
-	(do_preload): Use __RTLD_SECURE instead of is_preloaded.
-	(dlmopen_doit): Add __RTLD_SECURE to mode bits.
 
 2010-10-18  Andreas Schwab  <schwab@redhat.com>
 
@@ -84,6 +122,9 @@
 	Add unwind info.
 
 2010-08-31  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/sparc/sys/epoll.h (epoll_create2): Delete.
+	(epoll_create1): Declare.
 
 	* sysdeps/unix/sysv/linux/x86_64/sys/epoll.h: Fix typo.
 

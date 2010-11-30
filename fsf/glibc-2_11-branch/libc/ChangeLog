@@ -1,3 +1,30 @@
+2010-05-31  Petr Baudis  <pasky@suse.cz>
+
+	[BZ #11149]
+	* elf/ldconfig.c (main): Allow aux_cache_file open()ing to fail
+	silently even in the chroot mode.
+
+2010-05-31  Petr Baudis <pasky@suse.cz>
+
+	[BZ #10085]
+	* nis/nss_compat/compat-initgroups.c (internal_getgrent_r): Fix
+	initialization of skip_initgroups_dyn.
+
+2010-09-27  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #11611]
+	* sysdeps/unix/sysv/linux/internal_statvfs.c (INTERNAL_STATVFS):
+	Mask out sign-bit copies when constructing f_fsid.
+
+2010-11-19  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/sysv/linux/i386/bits/mman.h: Define MAP_HUGETLB.
+	* sysdeps/unix/sysv/linux/x86_64/bits/mman.h: Likewise.
+
+2010-11-16  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/sysv/linux/sys/swap.h (SWAP_FLAG_DISCARD): Define.
+
 2010-11-11  Andreas Schwab  <schwab@redhat.com>
 
 	* posix/fnmatch_loop.c (NEW_PATTERN): Fix use of alloca.

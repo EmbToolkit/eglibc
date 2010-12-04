@@ -1,3 +1,7 @@
+2010-12-03  Ulrich Drepper  <drepper@gmail.com>
+
+	* po/it.po: Update from translation team.
+
 2010-12-01  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* sysdeps/i386/i686/multiarch/strcmp-ssse3.S (STRCMP): Remove

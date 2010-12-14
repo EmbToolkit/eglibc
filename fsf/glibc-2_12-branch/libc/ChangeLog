@@ -1,3 +1,40 @@
+2010-12-13  Andreas Schwab  <schwab@redhat.com>
+
+	* version.h (VERSION): Bump for 2.12.2 release.
+
+2010-12-10  Andreas Schwab  <schwab@redhat.com>
+
+	* wcsmbs/wchar.h (wcpcpy, wcpncpy): Only declare under
+	_GNU_SOURCE.
+
+2010-12-10  Andreas Schwab  <schwab@redhat.com>
+
+	* wcsmbs/wchar.h (wcpcpy, wcpncpy): Add __restrict.
+	* wcsmbs/bits/wchar2.h (__wmemmove_chk_warn, wmemmove, wmemset):
+	Remove __restrict.
+	(wcscpy, __wcpcpy_chk, __wcpcpy_alias, wcpcpy, wcsncpy, wcpncpy)
+	(wcscat, wcsncat, __wcrtomb_chk, wcrtomb): Add __restrict.
+
+2010-12-09  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #11655]
+	* stdlib/msort.c (qsort_r): Make sure both phys_pages and pagesize
+	are initialized.
+
+2010-12-09  Jakub Jelinek  <jakub@redhat.com>
+
+	* string/bits/string3.h (memmove, bcopy): Remove __restrict.
+
+2010-08-11  Ulrich Drepper  <drepper@redhat.com>
+
+	[BZ #11903]
+	* sysdeps/generic/netinet/ip.h (IPTOS_CLASS): Fix definition.
+	Patch by Evgeni Bikov <bikovevg@iitp.ru>.
+
+2010-08-21  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.in: Move assembler checks to before sysdep dir checking.
+
 2010-11-24  Andreas Schwab  <schwab@redhat.com>
 
 	* resolv/nss_dns/dns-host.c (getanswer_r): Don't handle ttl == 0

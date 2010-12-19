@@ -1,3 +1,10 @@
+2010-12-19  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	Backport from trunk:
+	2010-12-19  Gordon Schumacher  <whiplash@pobox.com>
+	* locale/xlocale.x (DEFINE_CATEGORY): Fix merge issue.
+	* wcsmbs/wcsmbsload.c (wcsmbs_load_conv): Same.
+
 2010-03-31  Joseph Myers  <joseph@codesourcery.com>
 
 	* manual/Makefile (stamp-pkgvers): Substitute @@ for @ in

@@ -1,3 +1,31 @@
+2010-12-28  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* elf/Makefile (check-execstack): Revert last change.  Depend on
+	check-execstack.h.
+	(check-execstack.h): New target.
+	(generated): Add check-execstack.h.
+	* elf/check-execstack.c: Include "check-execstack.h".
+	(main): Revert last change.
+	(handle_file): Return zero if GNU_STACK is absent and
+	DEFAULT_STACK_PERMS doesn't include PF_X.
+
+2011-01-13  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/posix/spawni.c (__spawni): Don't fail if close file action
+	in child fails because the descriptor is already closed.
+	* include/sys/resource.h: Add libc_hidden_proto for getrlimit64.
+	* sysdeps/unix/sysv/linux/getrlimit64.c: Add libc_hidden_def.
+	* sysdeps/unix/sysv/linux/i386/getrlimit64.c: Likewise.
+
+	[BZ #12397]
+	* sysdeps/unix/sysv/linux/mkdirat.c (mkdirat): Fix handling of missing
+	syscall.
+
+	[BZ #10484]
+	* nss/nss_files/files-hosts.c (HOST_DB_LOOKUP): Handle overflows of
+	temporary buffer used to handle multi lookups locally.
+	* include/alloca.h: Add libc_hidden_proto for __libc_alloca_cutoff.
+
 2011-01-12  Ulrich Drepper  <drepper@gmail.com>
 
 	* elf/dl-dst.h (DL_DST_REQUIRED): Allow l_origin to be NULL when

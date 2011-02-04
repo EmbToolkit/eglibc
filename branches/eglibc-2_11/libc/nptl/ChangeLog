@@ -1,3 +1,9 @@
+2011-01-13  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #10484]
+	* Versions [libc] (GLIBC_PRIVATE): Export __libc_alloca_cutoff.
+	* alloca_cutoff.c: Add libc_hidden_def.
+
 2010-08-12  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* nptl/sysdeps/unix/sysv/linux/i386/Makefile: New file.

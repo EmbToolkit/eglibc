@@ -1,3 +1,131 @@
+2011-02-02  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/dl-runtime.c (_dl_call_pltexit): Pass correct address of the
+	function to the callback.
+	Patch partly by Jiri Olsa <jolsa@redhat.com>.
+
+2011-02-02  Andreas Schwab  <schwab@redhat.com>
+
+	* shadow/sgetspent.c: Check return value of __sgetspent_r instead
+	of errno.
+
+2010-10-01  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Don't discard result of
+	decoding ACE if AI_CANONIDN.
+
+2011-01-17  Ulrich Drepper  <drepper@gmail.com>
+
+	* io/fcntl.h: Define AT_NO_AUTOMOUNT.
+
+	* sysdeps/unix/sysv/linux/i386/bits/mman.h: Define MADV_HUGEPAGE and
+	MADV_NOHUGEPAGE.
+	* sysdeps/unix/sysv/linux/ia64/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/sh/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/mman.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/bits/socket.h: Define AF_CAIF, AF_ALG,
+	PF_CAIF, and PF_ALG.
+	* sysdeps/unix/sysv/linux/sparc/bits/socket.h: Likewise.
+
+2011-01-15  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #6812]
+	* nscd/hstcache.c (tryagain): Define.
+	(cache_addhst): Return tryagain not notfound for temporary errors.
+	(addhstbyX): Also set h_errno to TRY_AGAIN when memory allocation
+	failed.
+
+2011-01-13  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12397]
+	* sysdeps/unix/sysv/linux/mkdirat.c (mkdirat): Fix handling of missing
+	syscall.
+
+	[BZ #10484]
+	* nss/nss_files/files-hosts.c (HOST_DB_LOOKUP): Handle overflows of
+	temporary buffer used to handle multi lookups locally.
+	* include/alloca.h: Add libc_hidden_proto for __libc_alloca_cutoff.
+
+2011-01-12  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/dl-dst.h (DL_DST_REQUIRED): Allow l_origin to be NULL when
+	loader is ld.so.
+
+2010-03-12  Andreas Schwab  <schwab@redhat.com>
+
+	* elf/dl-dst.h: Include "trusted-dirs.h".
+	(DL_DST_REQUIRED): Take $LIB into account.
+
+2011-01-10  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	* sysdeps/i386/Makefile: stdlib/cxa_finalize.c needs 16-byte stack
+	alignment for SSE2.
+
+2011-01-12  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12394]
+	* stdio-common/printf_fp.c (__printf_fp): Add more room for grouping
+	characters.  When rounding increased number of integer digits recompute
+	number of groups.
+	* stdio-common/tst-grouping.c: New file.
+	* stdio-common/Makefile: Add rules to build and run tst-grouping.
+
+2011-01-04  David S. Miller  <davem@sunset.davemloft.net>
+
+	[BZ #11155]
+	* sysdeps/unix/sysv/linux/sparc/sparc64/fxstat.c: Use i386's
+	implementation just like for lxstat, fxstatat, et al.
+
+2010-12-27  Jim Meyering  <meyering@redhat.com>
+
+	[BZ #12348]
+	* posix/regexec.c (build_trtable): Return failure indication upon
+	calloc failure.  Otherwise, re_search_internal could infloop on OOM.
+
+2010-12-25  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12207]
+	* malloc/malloc.c (do_check_malloc_state): Use fastbin macro.
+
+2010-12-19  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/readdir_r.c (__READDIR_R): Compute reclen more
+	accurately.
+	* sysdeps/unix/sysv/linux/wordsize-64/readdir_r.c: Define
+	GETDENTS_64BIT_ALIGNED.
+
+2010-12-10  Andreas Schwab  <schwab@redhat.com>
+
+	* wcsmbs/wchar.h (wcpcpy, wcpncpy): Add __restrict.
+	* wcsmbs/bits/wchar2.h (__wmemmove_chk_warn, wmemmove, wmemset):
+	Remove __restrict.
+	(wcscpy, __wcpcpy_chk, __wcpcpy_alias, wcpcpy, wcsncpy, wcpncpy)
+	(wcscat, wcsncat, __wcrtomb_chk, wcrtomb): Add __restrict.
+
+2010-12-09  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #11655]
+	* stdlib/msort.c (qsort_r): Make sure both phys_pages and pagesize
+	are initialized.
+
+2010-12-09  Jakub Jelinek  <jakub@redhat.com>
+
+	* string/bits/string3.h (memmove, bcopy): Remove __restrict.
+
+2010-11-30  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/i386/fpu/libm-test-ulps: Relax ynf(10,0.75) test expectations.
+
+2010-11-24  Andreas Schwab  <schwab@redhat.com>
+
+	* resolv/nss_dns/dns-host.c (getanswer_r): Don't handle ttl == 0
+	specially.
+	(gaih_getanswer_slice): Likewise.
+
 2010-05-31  Petr Baudis  <pasky@suse.cz>
 
 	[BZ #11149]

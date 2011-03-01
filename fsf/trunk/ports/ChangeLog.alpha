@@ -1,3 +1,22 @@
+2011-03-01  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/alpha/fpu/feupdateenv.c (feupdateenv): Add libm_hidden_def.
+	* sysdeps/alpha/fpu/ftestexcept.c (fetestexcept): Likewise.
+
+2011-02-28  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/statfs.h (struct statfs,
+	struct statfs64): Add f_flags field.
+
+2011-02-28  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/alpha/stackinfo.h: Define DEFAULT_STACK_PERMS with PF_X.
+
+2011-02-28  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/fcntl.h (F_SETPIPE_SZ,
+	F_GETPIPE_SZ): Define.
+
 2010-09-26  Michael Cree  <mcree@orcon.net.nz>
 
 	* sysdeps/alpha/memchr.c: Include <bp-sym.h>
@@ -127,7 +146,7 @@
 	return type correct without warning.
 
 2010-03-23  Matt Turner  <mattst88@gmail.com>
-            Aurelien Jarno  <aurelien@aurel32.net>
+	    Aurelien Jarno  <aurelien@aurel32.net>
 
 	* sysdeps/unix/sysv/linux/alpha/bits/socket.h: New file.
 
@@ -184,8 +203,8 @@
 2009-07-13  Aurelien Jarno  <aurelien@aurel32.net>
 
 	[BZ #10158]
-        * sysdeps/unix/sysv/linux/alpha/getsysstats.c (GET_NPROCS_PARSER):
-        Change parameters and use next_line.
+	* sysdeps/unix/sysv/linux/alpha/getsysstats.c (GET_NPROCS_PARSER):
+	Change parameters and use next_line.
 
 	[BZ #10160]
 	* sysdeps/unix/sysv/linux/alpha/nptl/lowlevellock.h: Define

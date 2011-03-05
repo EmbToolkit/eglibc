@@ -1,6 +1,6 @@
-/* Thread-local storage handling in the ELF dynamic linker.  ARM version.
-   Copyright (C) 2005 Free Software Foundation, Inc.
+/* Copyright (C) 1999, 2002, 2003, 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Andreas Jaeger <aj@suse.de>.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,13 +17,29 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
 
-/* Type used for the representation of TLS information in the GOT.  */
-typedef struct dl_tls_index
+static inline struct ifreq *
+__if_nextreq (struct ifreq *ifr)
 {
-  unsigned long int ti_module;
-  unsigned long int ti_offset;
-} tls_index;
+#ifdef _HAVE_SA_LEN
+  if (ifr->ifr_addr.sa_len > sizeof ifr->ifr_addr)
+    return (struct ifreq *) ((char *) &ifr->ifr_addr + ifr->ifr_addr.sa_len);
+#endif
+  return ifr + 1;
+}
+
+extern void __ifreq (struct ifreq **ifreqs, int *num_ifs, int sockfd);
 
 
-extern void *__tls_get_addr (tls_index *ti);
+static inline void
+__if_freereq (struct ifreq *ifreqs, int num_ifs)
+{
+  munmap (ifreqs, num_ifs * sizeof (struct ifreq));
+}

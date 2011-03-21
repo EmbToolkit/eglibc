@@ -18,6 +18,7 @@
    02111-1307 USA.  */
 
 #include <sysdeps/generic/sysdep.h>
+#include <features.h>
 
 #if (!defined (__ARM_ARCH_2__) && !defined (__ARM_ARCH_3__) \
      && !defined (__ARM_ARCH_3M__) && !defined (__ARM_ARCH_4__))
@@ -89,10 +90,16 @@
 
 /* If compiled for profiling, call `mcount' at the start of each function.  */
 #ifdef	PROF
+#if __GNUC_PREREQ(4,4) && defined(__ARM_EABI__)
+#define CALL_MCOUNT			\
+	str	lr,[sp, #-4]!	;	\
+	bl	PLTJMP(mcount)	;
+#else
 #define CALL_MCOUNT			\
 	str	lr,[sp, #-4]!	;	\
 	bl	PLTJMP(mcount)	;	\
 	ldr	lr, [sp], #4	;
+#endif
 #else
 #define CALL_MCOUNT		/* Do nothing.  */
 #endif
@@ -102,7 +109,11 @@
    on this system, the asm identifier `syscall_error' intrudes on the
    C name space.  Make sure we use an innocuous name.  */
 #define	syscall_error	__syscall_error
+#if __GNUC_PREREQ(4,4) && defined(__ARM_EABI__)
+#define mcount		__gnu_mcount_nc
+#else
 #define mcount		_mcount
+#endif
 #endif
 
 #if defined(__ARM_EABI__)

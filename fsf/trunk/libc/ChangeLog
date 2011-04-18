@@ -1,3 +1,45 @@
+2011-04-17  Ulrich Drepper  <drepper@gmail.com>
+
+	* sunrpc/Makefile ($(rpc-compat-routines.os)): Add before-compile to
+	dependencies.
+
+2011-02-06  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #12653]
+	* sysdeps/i386/i686/multiarch/memcpy-ssse3-rep.S: Only protect
+	MEMCPY_CHK with USE_AS_BCOPY ifdef check.
+	* sysdeps/i386/i686/multiarch/memcpy-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3-back.S: Likewise.
+
+2011-03-28  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/powerpc/powerpc32/power4/strncmp.S: Don't read past
+	differing bytes.
+	* sysdeps/powerpc/powerpc64/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strncmp.S: Likewise.
+
+2011-04-17  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12420]
+	* sysdeps/unix/sysv/linux/x86_64/getcontext.S: Reload context after
+	storing it.
+	* stdlib/bug-getcontext.c: New file.
+	* stdlib/Makefile: Add rules to build and run bug-getcontext.
+
+2011-04-13  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/s390-64/utf16-utf32-z9.c: Wrap the z9-109
+	instructions into .machine "z9-109".
+	* sysdeps/s390/s390-64/utf8-utf16-z9.c: Likewise.
+	* sysdeps/s390/s390-64/utf8-utf32-z9.c: Likewise.
+
+2011-04-11  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/s390-32/elf/start.S (_start): Skip extra zeroes
+	between environment variables and auxiliary vector.
+
 2011-04-16  Ulrich Drepper  <drepper@gmail.com>
 
 	* Makefile: Add rules to build linkobj/libc.so.

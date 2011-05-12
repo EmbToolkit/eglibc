@@ -1,5 +1,11 @@
 2011-05-11  Ulrich Drepper  <drepper@gmail.com>
 
+	[BZ #12052]
+	* sysdeps/posix/spawni.c (__spawni): Fix sched_setscheduler call.
+
+	[BZ #12625]
+	* misc/mntent_r.c (addmntent): Flush the stream after the output
+
 	[BZ #12393]
 	* elf/dl-load.c (is_trusted_path): Remove unnecessary test.
 	(is_trusted_path_normalize): Skip initial colon.  Append slash
@@ -16,7 +22,7 @@
 	* grp/initgroups.c (internal_getgrouplist): When we found the service
 	list through the initgroups entry in nsswitch.conf do not always
 	continue on a successful lookup.  Don't always use the
-	__nss_group_data-ase value if it is set.
+	__nss_group_database value if it is set.
 	* nss/nsswitch.conf (initgroups): Change action for successful db
 	lookup to continue for compatibility.
 

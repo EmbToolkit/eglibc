@@ -1,3 +1,34 @@
+2011-05-14  Ulrich Drepper  <drepper@gmail.com>
+
+	* iconv/loop.c (SINGLE) [STORE_REST]: Add input bytes to bytebuf before
+	storing incomplete byte sequence in state object.  Avoid testing for
+	guaranteed too small input if we know there is enough data available.
+
+2011-05-11  Andreas Schwab  <schwab@redhat.com>
+
+	* Makeconfig (+link-pie): Indent.
+	* Rules (binaries-pie): Define if $(have-fpie) and
+	$(build-shared).
+	(binaries-shared): Also filter out $(binaries-pie).
+	($(addprefix $(objpfx),$(binaries-pie))): New rule.
+	* nscd/Makefile (others-pie): Add nscd.
+	(LDFLAGS-nscd): Set this instead of relro-LDFLAGS.
+	($(objpfx)nscd): Remove command override.
+	* login/Makefile (others-pie): Add pt_chown.
+	($(objpfx)pt_chown): Remove command override.
+	* elf/Makefile: Add PIE tests to tests and tests-pie variables and
+	remove command overrides.
+
+2011-05-13  Ulrich Drepper  <drepper@gmail.com>
+
+	* libio/tst_putwc.c: Fix error messages.
+
+	[BZ #12724]
+	* libio/fileops.c (_IO_new_file_close_it): Always flush when
+	currently writing and seek to current position when not.
+	* libio/Makefile (tests): Add bug-fclose1.
+	* libio/bug-fclose1.c: New file.
+
 2011-05-12  Ulrich Drepper  <drepper@gmail.com>
 
 	[BZ #12511]

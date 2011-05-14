@@ -1,5 +1,24 @@
 2011-05-14  Ulrich Drepper  <drepper@gmail.com>
 
+	[BZ #12601]
+	* iconvdata/cp932.c (BODY to UCS4): Fix incrementing inptr in case of
+	two-byte sequence errors.
+	* iconvdata/Makefile (tests): Add bug-iconv8.
+	* iconvdata/bug-iconv8.c: New file.
+
+	[BZ #12626]
+	* sysdeps/generic/elf/backtracesymsfd.c (__backtrace_symbols_fd): Move
+	buf2 definition.
+
+	* libio/fileops.c (_IO_new_file_close_it): Initialize write_status.
+
+	[BZ #12432]
+	* sysdeps/ia64/backtrace.c (struct trace_reg): Add cfa element.
+	(dummy_getcfa): New function.
+	(init): Get _Unwind_GetCFA address, use dummy if not found.
+	(backtrace_helper): In recursion check, also check whether CFA changes.
+	(__backtrace): Completely initialize arg.
+
 	* iconv/loop.c (SINGLE) [STORE_REST]: Add input bytes to bytebuf before
 	storing incomplete byte sequence in state object.  Avoid testing for
 	guaranteed too small input if we know there is enough data available.

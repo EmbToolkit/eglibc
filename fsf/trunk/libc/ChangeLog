@@ -1,5 +1,49 @@
 2011-05-15  Ulrich Drepper  <drepper@gmail.com>
 
+	* libio/freopen.c (freopen): Don't close old file descriptor
+	before the new one is opened.  Instead dup the new file descriptor
+	to the old one after the new stream is created.
+	* libio/freopen64.c (freopen64): Likewise.
+	* libio/libio.h: Define _IO_FLAGS2_NOCLOSE and _IO_FLAGS2_CLOEXEC.
+	* libio/fileops.c (_IO_new_file_close_it): Handle new
+	_IO_FLAGS2_NOCLOSE flag.
+	(_IO_new_file_fopen): Set _IO_FLAGS2_CLOEXEC for "e" mode.
+	If _IO_file_open didn't set FD_CLOEXEC do it after the call.
+	* libio/oldfileops.c (_IO_old_file_close_it): Handle new
+	_IO_FLAGS2_NOCLOSE flag.
+	* include/unistd.h: Add hidden_proto for dup3.
+	Define __have_dup3.
+	* io/dup3.c: Define hidden symbol.
+	* sysdeps/unix/sysv/linux/kernel-features.h: Define __ASSUME_DUP3.
+
+	[BZ #7101]
+	* posix/getopt.c (_getopt_internal_r): List all ambigious possibilities
+	when an incomplete long option is used.
+	* posix/tst-getopt_long1.c: New file.
+	* posix/Makefile (tests): Add tst-getopt_long1.
+
+	[BZ #10138]
+	* scripts/config.guess: Update from autoconf-2.68.
+	* scripts/config.sub: Likewise.
+
+	[BZ #10157]
+	* sysdeps/unix/sysv/linux/sysconf.c (__sysconf): Split out CPUTIME
+	tests into ...
+	(has_cpuclock): ...this.  New function.
+	* sysdeps/unix/sysv/linux/ia64/sysconf.c: Just define HAS_CPUCLOCK
+	macro here based on has_cpuclock code.
+
+	[BZ #10149]
+	* sysdeps/unix/sysv/linux/dl-osinfo.h (_dl_setup_stack_chk_guard):
+	First byte (not low byte) is now always NUL.
+	* sysdeps/generic/dl-osinfo.h (_dl_setup_stack_chk_guard): Likewise.
+
+	* sysdeps/unix/sysv/linux/dl-osinfo.h (_dl_setup_stack_chk_guard):
+	Use non-cancelable interfaces.
+
+	[BZ #9809]
+	* locale/iso-639.def: Add entry for Sorani.
+
 	[BZ #11901]
 	* include/stdlib.h: Move include protection to the right place.
 	Define abort_msg_s.  Declare __abort_msg with it.

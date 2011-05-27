@@ -1,6 +1,6 @@
-/* isnanf().  PowerPC32 version.
-   Copyright (C) 2008, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 1999, 2002, 2003, 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Andreas Jaeger <aj@suse.de>.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,29 +17,29 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
-#include <math_ldbl_opt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
 
-/* int __isnanf(x)  */
-	.machine power6
-EALIGN (__isnanf, 4, 0)
-	stwu	r1,-32(r1)
-	cfi_adjust_cfa_offset (32)
-	ori	r1,r1,0
-	stfs	fp1,24(r1)	/* copy FPR to GPR */
-	ori	r1,r1,0
-	lwz	r4,24(r1)
-	lis	r0,0x7f80	/* const long r0 0x7f800000 */
-	clrlwi	r4,r4,1		/* x = fabs(x) */
-	cmpw	cr7,r4,r0	/* if (fabs(x) =< inf) */
-	li	r3,0		/* then return 0 */
-	addi	r1,r1,32
-	cfi_adjust_cfa_offset (-32)
-	blelr+	cr7
-L(NaN):
-	li	r3,1		/* else return 1 */
-	blr
-	END (__isnanf)
+static inline struct ifreq *
+__if_nextreq (struct ifreq *ifr)
+{
+#ifdef _HAVE_SA_LEN
+  if (ifr->ifr_addr.sa_len > sizeof ifr->ifr_addr)
+    return (struct ifreq *) ((char *) &ifr->ifr_addr + ifr->ifr_addr.sa_len);
+#endif
+  return ifr + 1;
+}
 
-hidden_def (__isnanf)
-weak_alias (__isnanf, isnanf)
+extern void __ifreq (struct ifreq **ifreqs, int *num_ifs, int sockfd);
+
+
+static inline void
+__if_freereq (struct ifreq *ifreqs, int num_ifs)
+{
+  munmap (ifreqs, num_ifs * sizeof (struct ifreq));
+}

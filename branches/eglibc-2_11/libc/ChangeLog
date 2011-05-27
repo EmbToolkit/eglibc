@@ -1,3 +1,246 @@
+2011-05-17  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #12775]
+	* sysdeps/x86_64/fpu/e_powl.S: Fix a typo.
+	* math/Makefile (tests): Add test-powl.
+	(CFLAGS-test-powl.c): Define.
+	* math/test-powl.c: New file.
+
+2011-05-16  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12766]
+	* misc/error.c (error_at_line): Ensure file_name and old_file_name
+	point to strings before performing equality test for error_one_per_line
+	mode.
+
+	[BZ #11697]
+	* login/programs/pt_chown.c (do_pt_chown): Always call chown.
+
+2011-05-14  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12083]
+	* sysdeps/pthread/aio_misc.c (__aio_init): Compute optim.aio_num
+	correctly.
+
+	* libio/fileops.c (_IO_new_file_close_it): Initialize write_status.
+
+	* iconv/loop.c (SINGLE) [STORE_REST]: Add input bytes to bytebuf before
+	storing incomplete byte sequence in state object.  Avoid testing for
+	guaranteed too small input if we know there is enough data available.
+
+2011-05-13  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12724]
+	* libio/fileops.c (_IO_new_file_close_it): Always flush when
+	currently writing and seek to current position when not.
+	* libio/Makefile (tests): Add bug-fclose1.
+	* libio/bug-fclose1.c: New file.
+
+2011-05-12  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12511]
+	* elf/dl-lookup.c (enter): Don't test for copy relocation here and
+	don't set DF_1_NODELETE here.
+	(do_lookup_x): When entering new entry test for copy relocation
+	and if necessary set DF_1_NODELETE flag.
+	Patch by Piotr Bury <pbury@goahead.com>.
+
+2011-05-11  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12052]
+	* sysdeps/posix/spawni.c (__spawni): Fix sched_setscheduler call.
+
+	[BZ #12625]
+	* misc/mntent_r.c (addmntent): Flush the stream after the output
+
+	[BZ #12393]
+	* elf/dl-load.c (is_trusted_path): Remove unnecessary test.
+	(is_trusted_path_normalize): Skip initial colon.  Append slash
+	to empty buffer.  Duplicate is_trusted_path code but allow
+	constructed patch to be prefix.
+	(is_dst): Allow $ORIGIN followed by /.
+	(_dl_dst_substitute): Correct clearing of check_for_trusted.
+	Correct testing of result of is_trusted_path_normalize
+	(decompose_rpath): Fix warning.
+
+2011-05-07  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12734]
+	* resolv/resolv.h: Define RES_NOTLDQUERY.
+	* resolv/res_init.c (res_setoptions): Recognize no_tld_query and
+	no-tld-query and set RES_NOTLDQUERY.
+	* resolv/res_debug.c (p_option): Handle RES_NOTLDQUERY.
+	* resolv/res_query.c (__libc_res_nsearch): Backport changes from
+	modern BIND to search name as TLD unless forbidden.
+
+2011-05-07  Petr Baudis  <pasky@suse.cz>
+	    Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12393]
+	* elf/dl-load.c (fillin_rpath): Move trusted path check...
+	(is_trusted_path): ...to here.
+	(is_norm_trusted_path): Add wrapper for /../ and /./ normalization.
+	(_dl_dst_substitute): Verify expanded $ORIGIN path elements
+	using is_norm_trusted_path() in setuid scripts.
+
+2011-05-03  Andreas Schwab  <schwab@redhat.com>
+
+	* elf/ldconfig.c (add_dir): Don't crash on empty path.
+
+2011-04-30  Bruno Haible  <bruno@clisp.org>
+
+	[BZ #12717]
+	* conform/data/netdb.h-data (getnameinfo): Make POSIX compliant.
+	* resolv/netdb.h (getnameinfo): Change type of flags parameter
+	to 'int'.
+	* inet/getnameinfo.c (getnameinfo): Likewise.
+
+2011-04-22  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12685]
+	* libio/fileops.c (_IO_new_file_fopen): Scan up to 7 bytes of the
+	mode string.
+	Patch by Eric Blake <eblake@redhat.com>.
+
+2011-04-17  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12420]
+	* sysdeps/unix/sysv/linux/x86_64/getcontext.S: Reload context after
+	storing it.
+	* stdlib/bug-getcontext.c: New file.
+	* stdlib/Makefile: Add rules to build and run bug-getcontext.
+
+2011-04-10  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12650]
+	* sysdeps/i386/dl-tls.h: Define TLS_DTV_UNALLOCATED.
+	* sysdeps/ia64/dl-tls.h: Likewise.
+	* sysdeps/powerpc/dl-tls.h: Likewise.
+	* sysdeps/s390/dl-tls.h: Likewise.
+	* sysdeps/sh/dl-tls.h: Likewise.
+	* sysdeps/sparc/dl-tls.h: Likewise.
+	* sysdeps/x86_64/dl-tls.h: Likewise.
+	* elf/dl-tls.c: Don't define TLS_DTV_UNALLOCATED here.
+
+2011-03-14  Andreas Schwab  <schwab@redhat.com>
+
+	* elf/dl-load.c (_dl_dst_substitute): When skipping the first
+	rpath element also skip the following colon.
+	(expand_dynamic_string_token): Add is_path parameter and pass
+	down to DL_DST_REQUIRED and _dl_dst_substitute.
+	(decompose_rpath): Call expand_dynamic_string_token with
+	non-zero is_path.  Ignore empty rpaths.
+	(_dl_map_object_from_fd): Call expand_dynamic_string_token
+	with zero is_path.
+
+2011-04-07  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/____longjmp_chk.S (CALL_FAIL):
+	Maintain aligned stack.
+	(CHECK_RSP): Remove unused macro.
+
+2011-04-01  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/timex.h
+
+2011-03-18  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12583]
+	* posix/fnmatch.c (fnmatch): Check size of pattern in wide
+	character representation.
+	Partly based on a patch by Tomas Hoger <thoger@redhat.com>.
+
+2011-03-16  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_isnanf.S (isnanf): Fix
+	END(__isnan) to END(__isnanf) to match function entry point/label
+	EALIGN(__isnanf,...).
+
+2011-03-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* wcsmbs/wchar.h (wmemcmp): Remove __restrict qualifiers.
+
+2011-03-10  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12510]
+	* elf/dl-lookup.c (do_lookup_x): For copy relocations of unique objects
+	copy from the symbol referenced in the relocation to initialize the
+	used variable.
+	Patch by Piotr Bury <pbury@goahead.com>.
+
+2011-03-06  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/dl-load.c (_dl_map_object): If we are looking for the first
+	to-be-loaded object along a path to loader is ld.so.
+
+2011-03-03  Andreas Schwab  <schwab@redhat.com>
+
+	* libio/fmemopen.c (fmemopen): Don't read past end of buffer.
+
+2011-02-23  Andreas Schwab  <schwab@redhat.com>
+	    Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12509]
+	* include/link.h (struct link_map): Add l_orig_initfini.
+	* elf/dl-load.c (_dl_map_object_from_fd): Free realname before
+	returning unsuccessfully.
+	* elf/dl-close.c (_dl_close_worker): If this is the last explicit
+	close of a file loaded at startup, restore the original l_initfini
+	list.
+	* elf/dl-deps.c (_dl_map_object_deps): Don't free old l_initfini
+	list, store the pointer.
+	* elf/Makefile ($(objpfx)noload-mem): New rule.
+	(noload-ENV): Define.
+	(tests): Add $(objpfx)noload-mem.
+	* elf/noload.c: Include <memcheck.h>.
+	(main): Call mtrace.  Close all opened handles.
+
+2011-02-17  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #12454]
+	* elf/dl-deps.c (_dl_map_object_deps): Signal error early when
+	dependencies are missing.
+
+2011-02-22  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	Fix __if_freereq crash: Unlike the generic version which uses free,
+	Hurd needs munmap.
+	* sysdeps/mach/hurd/ifreq.h: New file.
+
+2011-01-27  Petr Baudis  <pasky@suse.cz>
+	    Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12445]
+	* stdio-common/vfprintf.c (vfprintf): Pass correct newlen
+	to extend_alloca().
+	* stdio-common/bug23.c: New file.
+	* stdio-common/Makefile (tests): Add bug23.
+
+2011-02-16  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/sysdep.h:
+	(INTERNAL_VSYSCALL_NCS INTERNAL_SYSCALL_NCS): Remove erroneous (int)
+	cast from r3.
+	* sysdeps/wordsize-64/Makefile: New file.  Add tst-writev to
+	'tests' variable.
+	* sysdeps/wordsize-64/tst-writev.c: New file.
+
+2011-02-15  Ryan S. Arnold  <rsa@us.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/power7/Makefile: New file which adds
+	-mno-vsx to the CFLAGS-rtld.c variable to avoid using VSX registers and
+	insns in _dl_start to prevent a TOC reference before relocs are
+	resolved.
+
+2011-02-11  Jakub Jelinek  <jakub@redhat.com>
+
+	* stdio-common/printf-parsemb.c (__parse_one_specmb): Handle
+	arginfo fn returning -1.
+
+	* stdio-common/_i18n_number.h (_i18n_number_rewrite): Ensure decimal
+	and thousands string is zero terminated.
+
 2011-02-02  Ulrich Drepper  <drepper@gmail.com>
 
 	* elf/dl-runtime.c (_dl_call_pltexit): Pass correct address of the

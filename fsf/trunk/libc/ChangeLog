@@ -1,4 +1,25 @@
+2011-05-31  Ulrich Drepper  <drepper@gmail.com>
+
+	* version.h (RELEASE): Bump for 2.14 release.
+	* include/features.h (__GLIBC_MINOR__): Bump to 14.
+
+	* config.make.in (RANLIB): Remove entry.
+
 2011-05-30  Ulrich Drepper  <drepper@gmail.com>
+
+	* po/Makefile (po-sed-cmd): Add ksh to extensions.
+	(libc.pot): Work around missing support for .ksh extension in xgettext.
+
+	[BZ #12684]
+	* resolv/res_send.c (__libc_res_nsend): Only go to the next name server
+	if both request failed.
+	(send_dg): In case of server errors clear resplen or *resplen2.
+
+	[BZ #12454]
+	* elf/dl-deps.c (_dl_map_object_deps): Run initializer sorting only
+	when there are multiple maps.
+	* elf/dl-fini.c (_dl_sort_fini): Check for list of one.
+	(_dl_fini): Remove test here.
 
 	* elf/rtld.c (dl_main): Don't allow the loader to load itself.
 
@@ -10,7 +31,7 @@
 	(gaih_inet): Likewise.
 
 	[BZ #11099]
-	* shadow/sgetspent_r.c (LINE_PARSER): Interpret nymeric field values
+	* shadow/sgetspent_r.c (LINE_PARSER): Interpret numeric field values
 	as signed.
 
 	* resolv/res_init.c (res_setoptions): Make the code more compact.
@@ -32,7 +53,7 @@
 
 	[BZ #11799]
 	* sysdeps/unix/sysv/linux/bits/siginfo.h (SI_USER): Don't mention
-	SI_USER in the comment.
+	raise in the comment.
 	* sysdeps/unix/sysv/linux/s390/bits/siginfo.h: Likewise.
 	* sysdeps/unix/sysv/linux/sparc/bits/siginfo.h: Likewise.
 	* sysdeps/unix/sysv/linux/ia64/bits/siginfo.h: Likewise.

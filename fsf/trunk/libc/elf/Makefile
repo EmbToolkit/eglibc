@@ -150,8 +150,8 @@ install-others	= $(inst_slibdir)/$(rtld-installed-name)
 install-bin-script = ldd
 endif
 
-others		= sprof sln
-install-bin	= sprof
+others		= sprof sln pldd
+install-bin	= sprof pldd
 others-static   = sln
 install-rootsbin = sln
 
@@ -163,6 +163,8 @@ install-rootsbin += ldconfig
 
 ldconfig-modules := cache readlib xmalloc xstrdup chroot_canon
 extra-objs	+= $(ldconfig-modules:=.o)
+
+pldd-modules := xmalloc
 
 # To find xmalloc.c and xstrdup.c
 vpath %.c ../locale/programs
@@ -351,7 +353,7 @@ lib-noranlib: $(objpfx)$(rtld-installed-name) \
 endif
 
 # Command to link into a larger single relocatable object.
-reloc-link = $(LINK.o) -nostdlib -nostartfiles -r
+reloc-link = $(LINK.o) -nostdlib -nostartfiles -Wl,-r
 
 $(objpfx)dl-allobjs.os: $(all-rtld-routines:%=$(objpfx)%.os)
 	$(reloc-link) -o $@ $^
@@ -396,7 +398,8 @@ $(objpfx)rtld-libc.a: $(objpfx)librtld.mk FORCE
 	$(MAKE) -f $< -f rtld-Rules
 
 $(objpfx)librtld.os: $(objpfx)dl-allobjs.os $(objpfx)rtld-libc.a
-	$(LINK.o) -nostdlib -nostartfiles -r -o $@ '-Wl,-(' $^ -lgcc '-Wl,-)' \
+	$(LINK.o) -nostdlib -nostartfiles -Wl,-r -o $@ \
+		  '-Wl,-(' $^ -lgcc '-Wl,-)' \
 		  -Wl,-Map,$@.map
 
 generated += librtld.map librtld.mk rtld-libc.a librtld.os.map
@@ -494,6 +497,9 @@ $(objpfx)ldd: ldd.bash.in $(common-objpfx)soversions.mk \
 $(objpfx)sprof: $(libdl)
 
 $(objpfx)ldconfig: $(ldconfig-modules:%=$(objpfx)%.o)
+
+$(objpfx)pldd: $(pldd-modules:%=$(objpfx)%.o)
+
 SYSCONF-FLAGS := -D'SYSCONFDIR="$(sysconfdir)"'
 CFLAGS-ldconfig.c = $(SYSCONF-FLAGS) -D'LIBDIR="$(libdir)"' \
 		    -D'SLIBDIR="$(slibdir)"' -DIS_IN_ldconfig=1

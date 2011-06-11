@@ -510,6 +510,7 @@ $(common-objpfx)shlib.lds: $(common-objpfx)config.make $(..)Makerules
 		 __libc_thread_subfreeres : { *(__libc_thread_subfreeres) }\
 		 PROVIDE(__stop___libc_thread_subfreeres = .);\
 		 /DISCARD/ : { *(.gnu.glibc-stub.*) }@'
+	test -s $@T
 	mv -f $@T $@
 common-generated += shlib.lds
 
@@ -610,7 +611,7 @@ endif
 # between libc.so and ld.so, which can make it impossible to upgrade.
 ifeq ($(elf),yes)
 $(common-objpfx)libc_pic.os: $(common-objpfx)libc_pic.a
-	$(LINK.o) -nostdlib -nostartfiles -Wl,-r -o $@ \
+	$(LINK.o) -nostdlib -nostartfiles -r -o $@ \
 	$(LDFLAGS-c_pic.os) -Wl,-d -Wl,--whole-archive $^
 # Use our own special initializer and finalizer files for libc.so.
 $(common-objpfx)libc.so: $(elfobjdir)/soinit.os \

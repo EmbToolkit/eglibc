@@ -27,7 +27,6 @@
 #include <dl-hash.h>
 #include <sysdep-cancel.h>
 #include <dl-tls.h>
-#include <dl-irel.h>
 
 
 #ifdef SHARED
@@ -197,7 +196,8 @@ RTLD_NEXT used in code not dynamically loaded"));
 	{
 	  DL_FIXUP_VALUE_TYPE fixup
 	    = DL_FIXUP_MAKE_VALUE (result, (ElfW(Addr)) value);
-	  fixup = elf_ifunc_invoke (DL_FIXUP_VALUE_ADDR (fixup));
+	  fixup =
+	    ((DL_FIXUP_VALUE_TYPE (*) (void)) DL_FIXUP_VALUE_ADDR (fixup)) ();
 	  value = (void *) DL_FIXUP_VALUE_CODE_ADDR (fixup);
 	}
 

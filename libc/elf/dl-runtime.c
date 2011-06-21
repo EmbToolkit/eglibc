@@ -27,7 +27,6 @@
 #include <sysdep-cancel.h>
 #include "dynamic-link.h"
 #include <tls.h>
-#include <dl-irel.h>
 
 
 #if (!defined ELF_MACHINE_NO_RELA && !defined ELF_MACHINE_PLT_REL) \
@@ -147,7 +146,7 @@ _dl_fixup (
 
   if (sym != NULL
       && __builtin_expect (ELFW(ST_TYPE) (sym->st_info) == STT_GNU_IFUNC, 0))
-    value = elf_ifunc_invoke (DL_FIXUP_VALUE_ADDR (value));
+    value = ((DL_FIXUP_VALUE_TYPE (*) (void)) DL_FIXUP_VALUE_ADDR (value)) ();
 
   /* Finally, fix up the plt itself.  */
   if (__builtin_expect (GLRO(dl_bind_not), 0))
@@ -236,7 +235,8 @@ _dl_profile_fixup (
 	  if (defsym != NULL
 	      && __builtin_expect (ELFW(ST_TYPE) (defsym->st_info)
 				   == STT_GNU_IFUNC, 0))
-	    value = elf_ifunc_invoke (DL_FIXUP_VALUE_ADDR (value));
+	    value = ((DL_FIXUP_VALUE_TYPE (*) (void))
+		     DL_FIXUP_VALUE_ADDR (value)) ();
 	}
       else
 	{
@@ -246,7 +246,8 @@ _dl_profile_fixup (
 
 	  if (__builtin_expect (ELFW(ST_TYPE) (refsym->st_info)
 				== STT_GNU_IFUNC, 0))
-	    value = elf_ifunc_invoke (DL_FIXUP_VALUE_ADDR (value));
+	    value = ((DL_FIXUP_VALUE_TYPE (*) (void))
+		     DL_FIXUP_VALUE_ADDR (value)) ();
 
 	  result = l;
 	}

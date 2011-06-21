@@ -470,6 +470,7 @@ this is the first definition"));
 	  else if (strncmp (&this_line[1], "delset", 6) == 0)
 	    {
 	      int cnt = sizeof ("delset");
+	      size_t set_number;
 	      while (isspace (this_line[cnt]))
 		++cnt;
 
@@ -491,8 +492,11 @@ this is the first definition"));
 		    ++cnt;
 
 		  if (cnt == start)
-		    error_at_line (0, 0, fname, start_line,
-				   gettext ("illegal set number"));
+		    {
+		      error_at_line (0, 0, fname, start_line,
+				     gettext ("illegal set number"));
+		      set_number = 0;
+		    }
 		  else
 		    {
 		      const char *symbol;
@@ -505,6 +509,7 @@ this is the first definition"));
 		      /* We have a symbolic set name.  This name must
 			 appear somewhere else in the catalogs read so
 			 far.  */
+		      set_number = 0;
 		      for (runp = current->all_sets; runp != NULL;
 			   runp = runp->next)
 			{
@@ -655,10 +660,12 @@ this is the first definition"));
 	  else if (ident[0] != '\0')
 	    {
 	      struct message_list *runp;
+	      struct message_list *lastp;
 
 	      /* Test whether the symbolic name was not used for
 		 another message in this message set.  */
 	      runp = current->current_set->messages;
+	      lastp = NULL;
 	      while (runp != NULL)
 		if (runp->symbol != NULL && strcmp (ident, runp->symbol) == 0)
 		  break;

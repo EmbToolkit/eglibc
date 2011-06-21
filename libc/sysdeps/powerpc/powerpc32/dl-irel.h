@@ -26,13 +26,6 @@
 
 #define ELF_MACHINE_IRELA	1
 
-static inline Elf32_Addr
-__attribute ((always_inline))
-elf_ifunc_invoke (Elf32_Addr addr)
-{
-  return ((Elf32_Addr (*) (void)) (addr)) ();
-}
-
 static inline void
 __attribute ((always_inline))
 elf_irela (const Elf32_Rela *reloc)
@@ -42,7 +35,7 @@ elf_irela (const Elf32_Rela *reloc)
   if (__builtin_expect (r_type == R_PPC_IRELATIVE, 1))
     {
       Elf32_Addr *const reloc_addr = (void *) reloc->r_offset;
-      Elf32_Addr value = elf_ifunc_invoke(reloc->r_addend);
+      Elf32_Addr value = ((Elf32_Addr (*) (void)) reloc->r_addend) ();
       *reloc_addr = value;
     }
   else

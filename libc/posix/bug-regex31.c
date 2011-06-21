@@ -1,7 +1,6 @@
 #include <mcheck.h>
 #include <regex.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/types.h>
 
 int

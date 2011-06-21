@@ -1,5 +1,4 @@
-/* Copyright (C) 1996-1999,2001-2006,2007,2011
-	Free Software Foundation, Inc.
+/* Copyright (C) 1996-1999, 2001-2006, 2007 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1996.
 
@@ -387,6 +386,9 @@ getpwent_next_nss_netgr (const char *name, struct passwd *result, ent_t *ent,
 
   while (1)
     {
+      char *saved_cursor;
+
+      saved_cursor = ent->netgrdata.cursor;
       status = __internal_getnetgrent_r (&host, &user, &domain,
 					 &ent->netgrdata, buffer, buflen,
 					 errnop);

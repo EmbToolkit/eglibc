@@ -1,5 +1,4 @@
-/* SunRPC program number file parser in nss_files module.
-   Copyright (C) 1996, 1997, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,31 +16,16 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <rpc/netdb.h>
+/* Avoid sendmmsg.c trying to use a definition based on the socketcall
+   syscall and internal_sendmmsg.S.  */
 
+#include <errno.h>
+#include <sys/socket.h>
 
-#define ENTNAME		rpcent
-#define DATABASE	"rpc"
+#include <sysdep-cancel.h>
+#include <sys/syscall.h>
+#include <kernel-features.h>
 
-struct rpcent_data {};
+#undef __NR_socketcall
 
-#define TRAILING_LIST_MEMBER		r_aliases
-#define TRAILING_LIST_SEPARATOR_P	isspace
-#include "files-parse.c"
-LINE_PARSER
-("#",
- STRING_FIELD (result->r_name, isspace, 1);
- INT_FIELD (result->r_number, isspace, 1, 10,);
- )
-
-#include GENERIC
-
-DB_LOOKUP (rpcbyname, '.', 0, ("%s", name),
-	   LOOKUP_NAME (r_name, r_aliases),
-	   const char *name)
-
-DB_LOOKUP (rpcbynumber, '=', 20, ("%zd", (ssize_t) number),
-	   {
-	     if (result->r_number == number)
-	       break;
-	   }, int number)
+#include <sysdeps/unix/sysv/linux/sendmmsg.c>

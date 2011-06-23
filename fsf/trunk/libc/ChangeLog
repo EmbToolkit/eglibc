@@ -1,3 +1,27 @@
+2011-06-22  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12907]
+	* sysdeps/posix/getaddrinfo.c (getaddrinfo): Avoid calling __check_pf
+	until it is clear that the information is realy needed.
+	Patch mostly by David Hanisch <david.hanisch@nsn.com>.
+
+2011-06-22  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Fix last change.
+
+2011-06-22  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/sysv/linux/getsysstats.c (__get_nprocs): Use
+	/sys/devices/system/cpu/online if it is usable.
+
+	* sysdeps/unix/sysv/linux/getsysstats.c (__get_nprocs): Rate limit
+	reading the information from the /proc filesystem to once a second.
+
+2011-06-21  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/sigcontext.h: Fix definition of
+	NULL after inclusion of kernel headers.
+
 2011-06-21  Ulrich Drepper  <drepper@gmail.com>
 
 	* nss/nss_db/db-XXX.c (nss_db_setENT): Only set entidx for successful

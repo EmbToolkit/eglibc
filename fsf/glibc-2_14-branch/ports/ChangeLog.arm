@@ -1,3 +1,7 @@
+2011-06-30  Richard Sandiford  <richard.sandiford@linaro.org>
+
+	* sysdeps/arm/elf/start.S (_start): Align the constant pool to 4 bytes.
+
 2010-06-20  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/eabi/internal_sendmmsg.S: New.

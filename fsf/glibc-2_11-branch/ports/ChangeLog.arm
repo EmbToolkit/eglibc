@@ -1,3 +1,7 @@
+2011-06-30  Richard Sandiford  <richard.sandiford@linaro.org>
+
+	* sysdeps/arm/elf/start.S (_start): Align the constant pool to 4 bytes.
+
 2011-02-16  Manjunath Matti  <manjunath81@gmail.com>
 
 	* sysdeps/arm/sysdep.h (CALL_MCOUNT): Use __gnu_mcount_nc

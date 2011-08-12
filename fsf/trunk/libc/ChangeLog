@@ -1,3 +1,27 @@
+2011-08-11  Ulrich Drepper  <drepper@gmail.com>
+
+	* intl/l10nflist.c: Allow architecture-specific pop function.
+	* sysdeps/x86_64/l10nflist.c: New file.
+
+	* intl/l10nflist.c (_nl_make_l10nflist): Use locale-independent
+	classification.
+
+2011-08-10  Andreas Schwab  <schwab@redhat.com>
+
+	* include/dirent.h: Add libc_hidden_proto for scandirat and
+	scandirat64.  Don't declare __scandirat64.
+	* dirent/scandirat.c: Add libc_hidden_def.
+	* dirent/scandirat64.c (SCANDIRAT): Remove underscores.
+	* sysdeps/unix/sysv/linux/i386/scandir64.c (SCANDIRAT): Likewise.
+
+2011-08-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/unix/sysv/linux/ia64/sys/ptrace.h: Add missing comma in
+	enum.
+	* sysdeps/unix/sysv/linux/powerpc/sys/ptrace.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/sys/ptrace.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/ptrace.h: Likewise.
+
 2011-08-09  Ulrich Drepper  <drepper@gmail.com>
 
 	* Versions.def [libc]: Add GLIBC_2.15.

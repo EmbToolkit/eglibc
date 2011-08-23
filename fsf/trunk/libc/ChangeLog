@@ -1,3 +1,35 @@
+2011-08-22  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/unix/sysv/linux/sparc/sparc32/____longjmp_chk.S: Fix
+	sigaltstack check, add missing cfi directives.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/____longjmp_chk.S: Add
+	missing cfi directives, and sigaltstack handling.
+
+2011-08-16  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #11724]
+	* elf/dl-deps.c (_dl_map_object_deps): Only assume cycle when
+	object is seen twice.
+	* elf/dl-fini.c (_dl_sort_fini): Likewise.
+
+	* elf/Makefile (distribute): Add tst-initorder2.c.
+	(tests): Add tst-initorder2.
+	(modules-names): Add tst-initorder2a tst-initorder2b
+	tst-initorder2c tst-initorder2d.  Add rules to build them.
+	($(objpfx)tst-initorder2.out): New rule.
+	* elf/tst-initorder2.c: New file.
+	* elf/tst-initorder2.exp: New file.
+
+2011-08-22  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/unix/sysv/linux/i386/scandir64.c: Include <string.h>.
+
+	* elf/dl-deps.c (_dl_map_object_deps): Move check for missing
+	dependencies back to end of function.
+
+	* dlfcn/Makefile (LDLIBS-bug-atexit3-lib.so): Readd
+	$(elfobjdir)/ld.so.
+
 2011-08-21  Ulrich Drepper  <drepper@gmail.com>
 
 	* sysdeps/unix/sysv/linux/x86_64/gettimeofday.S: Removed.

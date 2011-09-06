@@ -1,3 +1,29 @@
+2011-05-29  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12350]
+	* sysdeps/posix/getaddrinfo.c (gethosts): Restore only RES_USE_IENT6
+	bit from old_res_options.
+	(gaih_inet): Likewise.
+
+2011-05-28  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #12811]
+	* posix/regex_internal.c (build_wcs_buffer): Don't signal we have to
+	grow the buffers more if it already has to be sufficient.
+	(build_wcs_upper_buffer): Likewise.
+	* posix/regexec.c (check_matching): Likewise.
+	(clean_state_log_if_needed): Likewise.
+	(extend_buffers): Don't enlarge buffers beyond size of the input
+	buffer.
+	Patches mostly by Emil Wojak <emil@wojak.eu>.
+	* posix/bug-regex32.c: New file.
+	* posix/Makefile (tests): Add bug-regex32.
+
+2011-05-14  Ulrich Drepper  <drepper@gmail.com>
+
+	* iconv/loop.c (SINGLE) [STORE_REST]: Add input bytes to bytebuf before
+	storing incomplete byte sequence in state object.
+
 2011-05-17  H.J. Lu  <hongjiu.lu@intel.com>
 
 	[BZ #12775]
@@ -27,14 +53,6 @@
 	* iconv/loop.c (SINGLE) [STORE_REST]: Add input bytes to bytebuf before
 	storing incomplete byte sequence in state object.  Avoid testing for
 	guaranteed too small input if we know there is enough data available.
-
-2011-05-13  Ulrich Drepper  <drepper@gmail.com>
-
-	[BZ #12724]
-	* libio/fileops.c (_IO_new_file_close_it): Always flush when
-	currently writing and seek to current position when not.
-	* libio/Makefile (tests): Add bug-fclose1.
-	* libio/bug-fclose1.c: New file.
 
 2011-05-12  Ulrich Drepper  <drepper@gmail.com>
 
@@ -139,11 +157,6 @@
 	Maintain aligned stack.
 	(CHECK_RSP): Remove unused macro.
 
-2011-04-01  Andreas Schwab  <schwab@redhat.com>
-
-	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
-	bits/timex.h
-
 2011-03-18  Ulrich Drepper  <drepper@gmail.com>
 
 	[BZ #12583]
@@ -177,24 +190,6 @@
 2011-03-03  Andreas Schwab  <schwab@redhat.com>
 
 	* libio/fmemopen.c (fmemopen): Don't read past end of buffer.
-
-2011-02-23  Andreas Schwab  <schwab@redhat.com>
-	    Ulrich Drepper  <drepper@gmail.com>
-
-	[BZ #12509]
-	* include/link.h (struct link_map): Add l_orig_initfini.
-	* elf/dl-load.c (_dl_map_object_from_fd): Free realname before
-	returning unsuccessfully.
-	* elf/dl-close.c (_dl_close_worker): If this is the last explicit
-	close of a file loaded at startup, restore the original l_initfini
-	list.
-	* elf/dl-deps.c (_dl_map_object_deps): Don't free old l_initfini
-	list, store the pointer.
-	* elf/Makefile ($(objpfx)noload-mem): New rule.
-	(noload-ENV): Define.
-	(tests): Add $(objpfx)noload-mem.
-	* elf/noload.c: Include <memcheck.h>.
-	(main): Call mtrace.  Close all opened handles.
 
 2011-02-17  Andreas Schwab  <schwab@redhat.com>
 

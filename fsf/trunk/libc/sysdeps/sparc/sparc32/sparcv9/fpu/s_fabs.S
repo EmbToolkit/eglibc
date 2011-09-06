@@ -1,6 +1,6 @@
-/* Copyright (C) 1995, 1996, 1997 Free Software Foundation, Inc.
+/* Float absolute value, sparc32+v9 version.
+   Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1995.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,31 +17,13 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <wchar.h>
+#include <sysdep.h>
 
-#ifndef WCSCMP
-# define WCSCMP wcscmp
-#endif
-
-/* Compare S1 and S2, returning less than, equal to or
-   greater than zero if S1 is lexicographically less than,
-   equal to or greater than S2.	 */
-int
-WCSCMP (s1, s2)
-     const wchar_t *s1;
-     const wchar_t *s2;
-{
-  wint_t c1, c2;
-
-  do
-    {
-      c1 = (wint_t) *s1++;
-      c2 = (wint_t) *s2++;
-      if (c1 == L'\0')
-	return c1 - c2;
-    }
-  while (c1 == c2);
-
-  return c1 - c2;
-}
-libc_hidden_def (WCSCMP)
+ENTRY (__fabs)
+	st	%o0, [%sp+72]
+	st	%o1, [%sp+76]
+	ldd	[%sp+72], %f0
+	retl
+	 fabsd	%f0, %f0
+END (__fabs)
+weak_alias (__fabs, fabs)

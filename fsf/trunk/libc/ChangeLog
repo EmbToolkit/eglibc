@@ -1,3 +1,40 @@
+2011-09-07  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/init-first.c
+	(_libc_vdso_platform_setup): If vDSO is not present store pointer to
+	syscall wrapper around clock_gettime in __vdso_clock_gettime.
+	* sysdeps/unix/sysv/linux/x86_64/syscalls.list: Add entry for
+	clock_gettime.
+
+2011-09-06  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/clock_gettime.c (INTERNAL_GETTIME):
+	Forgot to demangle the pointer.
+
+	* sysdeps/i386/sysdep.h: Define atom_text_section.
+	* sysdeps/x86_64/sysdep.h: Likewise.
+	* sysdeps/i386/i686/multiarch/strchr-sse2-bsf.S: Place function in
+	section with atom_text_section.
+	* sysdeps/i386/i686/multiarch/strlen-sse2-bsf.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strrchr-sse2-bsf.S: Likewise.
+	* sysdeps/x86_64/multiarch/strchr-sse2-no-bsf.S: Likewise.
+	* sysdeps/x86_64/multiarch/strlen-no-bsf.S: Likewise.
+	* sysdeps/x86_64/multiarch/strrchr-sse2-no-bsf.S: Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/clock_gettime.c: New file.
+	* sysdeps/unix/sysv/linux/clock_gettime.c (SYSCALL_GETTIME): Allow
+	already be defined.  Change to take two parameters and don't assign
+	result to variable.  Adjust all users.
+	Define INTERNAL_GETTIME if not already defined.
+	Use INTERNAL_GETTIME instead of INTERNAL_VSYSCALL got clock_gettime
+	call.
+	* sysdeps/unix/sysv/linux/x86_64/sysdep.h: Don't define
+	HAVE_CLOCK_GETTIME_VSYSCALL.
+	* sysdeps/unix/clock_gettime.c: Adjust use of SYSDEP_GETTIME_CPU.
+
+	* sysdeps/unix/sysv/linux/getsysstats.c (__get_nprocs): Don't use
+	gettimeofday vsyscall, just use time.
+
 2011-09-06  Andreas Schwab  <schwab@redhat.com>
 
 	* sysdeps/unix/sysv/linux/x86_64/gettimeofday.c [!SHARED]: Include

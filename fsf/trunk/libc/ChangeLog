@@ -1,5 +1,77 @@
 2011-09-07  Ulrich Drepper  <drepper@gmail.com>
 
+	* elf/dl-load.c (open_verify): Use O_CLOEXEC.
+
+	* elf/dl-libc.c (dlerror_run): Pass back error code from
+	dl_catch_error.
+
+	[BZ #13123]
+	* elf/dl-load.c (lose): Free l_origin if it is valid.
+
+	* sysdeps/i386/i686/multiarch/strchr-sse2-bsf.S: Fix mixup in section
+	names.
+	* sysdeps/i386/i686/multiarch/strchr-sse2.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strlen-sse2-bsf.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strlen-sse2.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strrchr-sse2-bsf.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strrchr-sse2.S: Likewise.
+	Patch by Liubov Dmitrieva <liubov.dmitrieva@intel.com>.
+
+2011-08-01  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/e_hypot.c: New file.
+	* sysdeps/powerpc/fpu/e_hypotf.c: New file.
+	* sysdeps/powerpc/fpu/e_rem_pio2f.c: New file.
+	* sysdeps/powerpc/fpu/k_rem_pio2f.c: New file.
+	* sysdeps/powerpc/fpu/k_cosf.c: New file.
+	* sysdeps/powerpc/fpu/k_sinf.c: New file.
+	* sysdeps/powerpc/fpu/s_cosf.c: New file.
+	* sysdeps/powerpc/fpu/s_sinf.c: New file.
+	* sysdeps/powerpc/fpu/s_scalbnf.c: New file.
+	* sysdeps/powerpc/fpu/s_float_bitwise.h: New file.
+
+2011-08-15  Alan Modra  <amodra@gmail.com>
+
+	[BZ #13092]
+	* sysdeps/powerpc/Makefile (gmon): Move sysdep_routines to..
+	* sysdeps/powerpc/powerpc64/Makefile (gmon): ..here..
+	* sysdeps/powerpc/powerpc32/Makefile (gmon): ..and here.  Add
+	ppc_mcount to static-only-routines.
+	* sysdeps/powerpc/powerpc32/Versions: Export GLIBC_PRIVATE
+	__mcount_internal.
+	* sysdeps/powerpc/powerpc32/ppc-mcount.S (_mcount): Call
+	__mcount_internal with usual JUMPTARGET.  Remove useless nop.
+
+2011-08-18  David Flaherty  <flaherty@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/s_fmal.c: New file which checks
+	for finite and infinity parameters.
+
+2011-08-04  Will Schmidt  <will_schmidt@vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S: Adjust the alignment
+	and add nop instructions for throughput optimization.
+	* sysdeps/powerpc/powerpc64/power7/strncmp.S: Likewise.
+
+2011-07-28  Will Schmidt  <will_schmidt@vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power7/memcpy.S: Optimize the
+	aligned copy for power7 with vector-scalar instructions.
+	* sysdeps/powerpc/powerpc64/power7/memcpy.S: Likewise.
+
+2011-07-24  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-trampoline.S (_dl_runtime_profile): Simplify
+	AVX check.
+
+2011-09-07  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #13144]
+	* sysdeps/unix/sysv/linux/x86_64/bits/sem.h (semdid_ds): Revert
+	last change.
+
+2011-09-07  Ulrich Drepper  <drepper@gmail.com>
+
 	* sysdeps/unix/sysv/linux/x86_64/init-first.c
 	(_libc_vdso_platform_setup): If vDSO is not present store pointer to
 	syscall wrapper around clock_gettime in __vdso_clock_gettime.

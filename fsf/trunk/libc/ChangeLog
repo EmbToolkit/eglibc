@@ -1,3 +1,59 @@
+2011-09-09  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/i386/fpu/libm-test-ulps: Adjust ULPs for jn tests.
+
+2011-07-03  Andreas Jaeger  <aj@suse.de>
+
+	* math/libm-test.inc (jn_test): Add tests for BZ#11589.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Add new ULPs for jn_test,
+	regenerate with gen-libm-tests.pl.
+
+2010-05-12  Petr Baudis  <pasky@suse.cz>
+
+	[BZ #11589]
+	* sysdeps/ieee754/dbl-64/e_jn.c: Compensate major precision loss
+	around j0() zero points by switching to j1().
+	* sysdeps/ieee754/flt-32/e_jnf.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/e_jnl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_jnl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/e_jnl.c: Likewise.
+
+2011-09-09  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/unix/bsd/bsd4.4/bits/socket.h (__cmsg_nxthdr): Use NULL
+	instead of 0.
+	* sysdeps/unix/sysv/linux/bits/socket.h (__cmsg_nxthdr): Use (void*)0
+	instead of 0.                              .
+	* sysdeps/unix/sysv/linux/sparc/bits/socket.h: Likewise.
+	Patch in part by Pavel Roskin <proski@gnu.org>.
+
+	[BZ #13138]
+	* stdio-common/vfscanf.c (ADDW): Allocate large memory block with
+	realloc.
+	(_IO_vfscanf_internal): Remove reteof.  Use errout after setting done.
+	Free memory block if necessary.
+
+	[BZ #12847]
+	* libio/genops.c (INTDEF): For string streams the _lock pointer can
+	be NULL.  Don't lock in this case.
+
+2011-09-09  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/elf.h (ELFOSABI_GNU): New macro.
+	(ELFOSABI_LINUX): Define to that.
+
+2011-07-29  Denis Zaitceff  <zaitceff@gmail.com>
+
+	* string/strncat.c (strncat): Undef the symbol in case it has been
+	defined in bits/string.h.
+
+2011-09-09  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/sotruss.ksh: Clean up, fix, and complete help messages.
+
+	* elf/dl-iteratephdr.c (__dl_iterate_phdr): Fill in data from the real
+	link map.
+
 2011-08-17  Andreas Jaeger  <aj@suse.de>
 
 	* elf/sprof.c (load_shobj): Remove unused variable log_hashfraction.

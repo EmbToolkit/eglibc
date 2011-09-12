@@ -1,14 +1,48 @@
+2011-09-11  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* elf/Makefile (gen-ldd): Prepend $(..) to $(ldd-rewrite-script)
+	if non-absolute.
+	* sysdeps/unix/sysv/linux/configure.in: Remove leading ../ from
+	ldd_rewrite_script.
+
+2011-09-11  Ulrich Drepper  <drepper@gmail.com>
+
+	* configure.in: Remove --with-tls option.
+	* config.h.in: Remove HAVE_TLS_SUPPORT entry.
+	* sysdeps/i386/elf/configure.in: Always test for TLS support and err
+	out in case it is missing.
+	* sysdeps/ia64/elf/configure.in: Likewise.
+	* sysdeps/powerpc/powerpc32/elf/configure.in: Likewise.
+	* sysdeps/powerpc/powerpc64/elf/configure.in: Likewise.
+	* sysdeps/s390/s390-32/elf/configure.in: Likewise.
+	* sysdeps/s390/s390-64/elf/configure.in: Likewise.
+	* sysdeps/sh/elf/configure.in: Likewise.
+	* sysdeps/sparc/sparc32/elf/configure.in: Likewise.
+	* sysdeps/sparc/sparc64/elf/configure.in: Likewise.
+	* sysdeps/x86_64/elf/configure.in: Likewise.
+	* sysdeps/mach/hurd/i386/tls.h: Remove test for HAVE_TLS_SUPPORT.
+	* sysdeps/mach/hurd/tls.h: Likewise.
+
+	[BZ #13067]
+	* malloc/obstack.h [!GNUC] (obstack_free): Avoid cast to int.
+
+	[BZ #13090]
+	* configure.in: Fix use of AC_INIT.
+
+	* elf/dl-support.c (_dl_pagesize): Initialize to EXEC_PAGESIZE.
+
 2011-09-10  Ulrich Drepper  <drepper@gmail.com>
 
-	* malloc/malloc.c: Replace MALLOC_FAILURE_ACTION with use of __set_errno.
+	* malloc/malloc.c: Replace MALLOC_FAILURE_ACTION with use of
+	__set_errno.
 	* malloc/hooks.c: Likewise.
 
 	* malloc/arena.c (ptmalloc_init_minimal): Removed.  Initialize all
 	variables statically.
 	(narenas): Initialize.
 	(list_lock): Initialize.
-	(ptmalloc_init): Don't call ptmalloc_init_minimal.  Remove initializtion
-	of main_arena and list_lock.  Small cleanups.
+	(ptmalloc_init): Don't call ptmalloc_init_minimal.  Remove
+	initializtion of main_arena and list_lock.  Small cleanups.
 	Replace all uses of malloc_getpagesize with GLRO(dl_pagesize).
 	* malloc/malloc.c: Remove malloc_getpagesize.  Include <ldsodefs.h>.
 	Add initializers to main_arena and mp_.

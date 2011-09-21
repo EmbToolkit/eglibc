@@ -34,6 +34,7 @@ AC_CHECK_HEADERS([byteswap.h ctype.h dirent.h endian.h features.h \
 LOCAL_CHECK_TYPE([off64_t])
 LOCAL_CHECK_TYPE([blksize_t])
 LOCAL_CHECK_TYPE([int_fast32_t])
+LOCAL_CHECK_TYPE([locale_t], [#include <locale.h>])
 LOCAL_CHECK_TYPE([__compar_fn_t], [#include <stdlib.h>])
 LOCAL_CHECK_TYPE([comparison_fn_t], [#include <stdlib.h>])
 LOCAL_CHECK_FUNC([readdir64], [#include <dirent.h>])

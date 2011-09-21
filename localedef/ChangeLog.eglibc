@@ -1,3 +1,13 @@
+2011-09-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.ac: Test for locale_t.
+	* Makefile.in (DEFINES): Add -DNOT_IN_libc.
+	(INCLUDES): Move -I$(srcdir)/include before -Iglibc/locale.
+	* include/locale.h: New.
+	* include/ctype.h (__isalnum_l, __isalpha_l, __isdigit_l)
+	(__tolower_l): Define.
+	* configure, config.h.in: Regenerate.
+
 2010-06-29  Maxim Kuvyrkov  <maxim@codesourcery.com>
 
 	* include/sys/cdefs.h (__REDIRECT_NTH): Define if not present in host

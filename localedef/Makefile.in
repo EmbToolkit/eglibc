@@ -25,10 +25,11 @@ DEFINES		= -DNO_SYSCONF \
 		  -DLOCALE_ALIAS_PATH='"$(msgcatdir)"' \
 		  -DCHARMAP_PATH='"$(i18ndir)/charmaps"' \
 		  -DREPERTOIREMAP_PATH='"$(i18ndir)/repertoiremaps"' \
-		  -DLOCSRCDIR='"$(i18ndir)/locales"'
+		  -DLOCSRCDIR='"$(i18ndir)/locales"' \
+		  -DNOT_IN_libc
 INCLUDES	= -Iglibc/locale/programs \
-		  -Iglibc/locale \
 		  -I$(srcdir)/include \
+		  -Iglibc/locale \
 		  -I$(srcdir) \
 		  -I$(objdir) \
 		  -include $(srcdir)/include/always.h

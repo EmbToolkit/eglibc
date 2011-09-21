@@ -19,3 +19,10 @@
 #  define _ISbit(bit)	((bit) < 8 ? ((1 << (bit)) << 8) : ((1 << (bit)) >> 8))
 # endif
 #endif
+
+#ifndef HAVE_LOCALE_T
+#define __isalnum_l(c, l) isalnum (c)
+#define __isalpha_l(c, l) isalpha (c)
+#define __isdigit_l(c, l) isdigit (c)
+#define __tolower_l(c, l) tolower (c)
+#endif

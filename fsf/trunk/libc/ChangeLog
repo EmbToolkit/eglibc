@@ -1,3 +1,61 @@
+2011-10-23  Ulrich Drepper  <drepper@gmail.com>
+
+	* string/strnlen.c: Don't define STRNLEN, reverse logic.
+	Remove unused variable magic_bits.
+	* sysdeps/i386/i686/multiarch/rtld-strnlen.c: New file.
+
+	* string/strnlen.c: Define and use STRNLEN macro.
+	* sysdeps/i386/i686/multiarch/Makefile [string] (sysdep_routines):
+	Add strnlen-sse2, strnlen-c, wcslen-sse2, and wcslen-c.
+	* sysdeps/i386/i686/multiarch/strlen-sse2.S: Add support for strnlen.
+	* wcsmbs/wcslen.c: Define and use WCSLEN.
+	* sysdeps/i386/i686/multiarch/strnlen-c.c: New file.
+	* sysdeps/i386/i686/multiarch/strnlen-sse2.S: New file.
+	* sysdeps/i386/i686/multiarch/strnlen.S: New file.
+	* sysdeps/i386/i686/multiarch/wcslen-c.c: New file.
+	* sysdeps/i386/i686/multiarch/wcslen-sse2.S: New file.
+	* sysdeps/i386/i686/multiarch/wcslen.S: New file.
+	Patch by Liubov Dmitrieva <liubov.dmitrieva@gmail.com>.
+
+2011-10-20  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
+
+	* sysdeps/x86_64/multiarch/Makefile (sysdep_routines): Add
+	strnlen-sse2-no-bsf.
+	Rename strlen-no-bsf to strlen-sse2-no-bsf.
+	* sysdeps/x86_64/multiarch/strlen-no-bsf.S: Rename to
+	* sysdeps/x86_64/multiarch/strlen-sse2-no-bsf.S:
+	Add strnlen support.
+	(USE_AS_STRNLEN): New macro.
+	* sysdeps/x86_64/multiarch/strnlen-sse2-no-bsf.S: New file.
+	* sysdeps/x86_64/multiarch/strcat-ssse3.S: Update.
+	Rename strlen-no-bsf.S to strlen-sse2-no-bsf.S
+	* sysdeps/x86_64/wcslen.S: New file.
+
+2011-10-20  Michael Zolotukhin  <michael.v.zolotukhin@gmail.com>
+
+	* sysdeps/i386/i686/multiarch/memcpy-ssse3.S: Update.
+	XMM-moves are used for copying on small sizes.
+
+2011-10-19  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
+
+	* wcsmbs/Makefile (strop-tests): Add wcschr.
+	* wcsmbs/test-wcschr.c: New file.
+	* string/test-strchr.c: Update.
+	Add wcschr support.
+	(WIDE): New macro.
+
+2011-10-18  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
+
+	* wcsmbs/Makefile (strop-tests): Add wcslen.
+	* wcsmbs/test-wcslen.c: New file.
+	* string/test-strlen.c: Update.
+	Add wcslen support.
+	(WIDE): New macro.
+
+2011-10-23  Ulrich Drepper  <drepper@gmail.com>
+
+	* po/it.po: Update from translation team.
+
 2011-09-22  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
 
 	* sysdeps/x86_64/wcscmp.S: Update.

@@ -1,7 +1,94 @@
+2011-10-21  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/sys/procfs.h: Update copyright year.
+	Do not include signal.h and sys/ucontext.h. 
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/nptl/sysdep-cancel.h: Update copyright 
+	year. 
+	(PSEUDO): Define __*_nocancel version. Add CFI directives to __*_nocancel
+	and normal version.
+	(PUSHARGS_1): Add CFI directive.
+	(PUSHARGS_2): Likewise.
+	(PUSHARGS_3): Likewise.
+	(PUSHARGS_4): Likewise.
+	(PUSHARGS_5): Likewise.
+	(PUSHARGS_6): Likewise.
+	(POPARGS_1): Likewise.
+	(POPARGS_2): Likewise.
+	(POPARGS_3): Likewise.
+	(POPARGS_4): Likewise.
+	(POPARGS_5): Likewise.
+	(POPARGS_6): Likewise.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/aio_cancel.c: Remove.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/initspin.h: Remove.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/pthreadtypes.h: Remove.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/malloc-machine.h: Remove.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/pt-initfini.c: Remove.
+	* sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h: Remove.
+	* sysdeps/hppa/linuxthreads/pspinlock.c: Remove.
+	* sysdeps/hppa/linuxthreads/pt-machine.h: Remove.
+	* sysdeps/hppa/linuxthreads/tls.h: Remove.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/stackinfo.h: Update copyright year.
+	Include elf.h and define DEFAULT_STACK_PERMS.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h: Synchronize
+	with canonical fcntl.h.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/fpu/fegetenv.c: Add hidden alias.
+	* sysdeps/hppa/fpu/feupdateenv.c: Likewise.
+	* sysdeps/hppa/fpu/ftestexcept.c: Likewise.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/dl-tls.h: Update copyright year.
+	Define TLS_DTV_UNALLOCATED.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/elf/configure.in: Always test for TLS support
+	and error out if missing.
+	* sysdeps/hppa/elf/configure: Regenerate.
+	* sysdeps/hppa/configure: Regenerate.
+
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/nptl/tls.h: Update copyright year.
+	Remove HAVE_TLS_SUPPORT check.
+
+2011-10-17  Guy Martin  <gmsoft@tuxicoman.be>
+
+	* sysdeps/unix/sysv/linux/hppa/sys/epoll.h
+	Fix EPOLL_CLOEXEC and EPOLL_NONBLOCK to match kernel definition.
+	* sysdeps/unix/sysv/linux/hppa/sys/eventfd.h
+	Fix EFD_CLOEXEC and EFD_NONBLOCK to match kernel definition.
+	* sysdeps/unix/sysv/linux/hppa/sys/inotify.h
+	Fix IN_CLOEXEC and IN_NONBLOCK to match kernel definition.
+	* sysdeps/unix/sysv/linux/hppa/sys/signalfd.h
+	Fix SFD_CLOEXEC and SFD_NONBLOCK to match kernel definition.
+	* sysdeps/unix/sysv/linux/hppa/sys/timerfd.h
+	Fix TFD_CLOEXEC and TFD_NONBLOCK to match kernel definition.
+
+2011-10-05  Andreas Schwab  <schwab@redhat.com>
+
+	* sysdeps/hppa/dl-machine.h (elf_machine_rela)
+	(elf_machine_lazy_rel): Add parameter skip_ifunc.
+
 2010-06-24  Carlos O'Donell  <carlos@codesourcery.com>
 
-	* sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S: Only create stack 
-	frame around call to SYSCALL_ERROR_HANDLER. Do not restore %rp 
+	* sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S: Only create stack
+	frame around call to SYSCALL_ERROR_HANDLER. Do not restore %rp
 	from the stack frame on successfull return.
 
 2010-06-23  Carlos O'Donell  <carlos@codesourcery.com>
@@ -10,12 +97,12 @@
 	Document that this function is a non-standard calling ABI.
 	Document register usage.
 	(__getcontext): Use normal %sp without adjustment. Use named
-	resgister %sp. 
+	resgister %sp.
 	* sysdeps/unix/sysv/linux/hppa/makecontext.c: Remove FRAME_SIZE.
 	Define FRAME_SIZE_UL, FRAME_SIZE_BYTES, ARGS.
-	(__makecontext): Create and setup a stack frame. 
+	(__makecontext): Create and setup a stack frame.
 	* sysdeps/unix/sysv/linux/hppa/setcontext.S (__setcontext):
-	Use named register %sp. Do not use oSS_SP. 
+	Use named register %sp. Do not use oSS_SP.
 
 2010-06-07  Andreas Schwab  <schwab@redhat.com>
 

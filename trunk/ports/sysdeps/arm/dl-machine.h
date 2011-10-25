@@ -1,6 +1,6 @@
 /* Machine-dependent ELF dynamic relocation inline functions.  ARM version.
    Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,
-	2006, 2009, 2010 Free Software Foundation, Inc.
+	2006, 2009, 2010, 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -242,18 +242,12 @@ _dl_start_user:\n\
    define the value.
    ELF_RTYPE_CLASS_NOCOPY iff TYPE should not be allowed to resolve to one
    of the main executable's symbols, as for a COPY reloc.  */
-#if defined USE_TLS && (!defined RTLD_BOOTSTRAP || USE___THREAD)
-# define elf_machine_type_class(type) \
+#define elf_machine_type_class(type) \
   ((((type) == R_ARM_JUMP_SLOT || (type) == R_ARM_TLS_DTPMOD32		\
      || (type) == R_ARM_TLS_DTPOFF32 || (type) == R_ARM_TLS_TPOFF32	\
      || (type) == R_ARM_TLS_DESC)					\
     * ELF_RTYPE_CLASS_PLT)						\
    | (((type) == R_ARM_COPY) * ELF_RTYPE_CLASS_COPY))
-#else
-#define elf_machine_type_class(type) \
-  ((((type) == R_ARM_JUMP_SLOT) * ELF_RTYPE_CLASS_PLT)	\
-   | (((type) == R_ARM_COPY) * ELF_RTYPE_CLASS_COPY))
-#endif
 
 /* A reloc type used for ld.so cmdline arg lookups to reject PLT entries.  */
 #define ELF_MACHINE_JMP_SLOT	R_ARM_JUMP_SLOT
@@ -341,7 +335,7 @@ auto inline void
 __attribute__ ((always_inline))
 elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 		 const Elf32_Sym *sym, const struct r_found_version *version,
-		 void *const reloc_addr_arg)
+		 void *const reloc_addr_arg, int skip_ifunc)
 {
   Elf32_Addr *const reloc_addr = reloc_addr_arg;
   const unsigned int r_type = ELF32_R_TYPE (reloc->r_info);
@@ -375,9 +369,9 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
       Elf32_Addr value = sym_map == NULL ? 0 : sym_map->l_addr + sym->st_value;
 
       if (sym != NULL
-	  && __builtin_expect (ELFW(ST_TYPE) (sym->st_info) == STT_GNU_IFUNC,
-			       0)
-	  && __builtin_expect (sym->st_shndx != SHN_UNDEF, 1))
+	  && __builtin_expect (ELFW(ST_TYPE) (sym->st_info) == STT_GNU_IFUNC, 0)
+	  && __builtin_expect (sym->st_shndx != SHN_UNDEF, 1)
+	  && __builtin_expect (!skip_ifunc, 1))
 	value = ((Elf32_Addr (*) (void)) value) ();
 
       switch (r_type)
@@ -436,7 +430,7 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	  }
 	case R_ARM_TLS_DESC:
 	  {
-            struct tlsdesc volatile *td =
+	    struct tlsdesc volatile *td =
 	      (struct tlsdesc volatile *)reloc_addr;
 
 # ifndef RTLD_BOOTSTRAP
@@ -460,10 +454,10 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 		else
 #  endif
 # endif
-	        {
+		{
 		  td->argument.value = value + sym_map->l_tls_offset;
 		  td->entry = _dl_tlsdesc_return;
-	        }
+		}
 	      }
 	    }
 	    break;
@@ -494,7 +488,6 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	  }
 	  break;
 #if !defined RTLD_BOOTSTRAP
-#if defined USE_TLS
 	case R_ARM_TLS_DTPMOD32:
 	  /* Get the information from the link map returned by the
 	     resolv function.  */
@@ -514,7 +507,6 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	      *reloc_addr += sym->st_value + sym_map->l_tls_offset;
 	    }
 	  break;
-#endif
 	case R_ARM_IRELATIVE:
 	  value = map->l_addr + *reloc_addr;
 	  value = ((Elf32_Addr (*) (void)) value) ();
@@ -533,7 +525,7 @@ auto inline void
 __attribute__ ((always_inline))
 elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 		  const Elf32_Sym *sym, const struct r_found_version *version,
-		  void *const reloc_addr_arg)
+		  void *const reloc_addr_arg, int skip_ifunc)
 {
   Elf32_Addr *const reloc_addr = reloc_addr_arg;
   const unsigned int r_type = ELF32_R_TYPE (reloc->r_info);
@@ -551,9 +543,9 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
       Elf32_Addr value = sym_map == NULL ? 0 : sym_map->l_addr + sym->st_value;
 
       if (sym != NULL
-	  && __builtin_expect (ELFW(ST_TYPE) (sym->st_info) == STT_GNU_IFUNC,
-			       0)
-	  && __builtin_expect (sym->st_shndx != SHN_UNDEF, 1))
+	  && __builtin_expect (ELFW(ST_TYPE) (sym->st_info) == STT_GNU_IFUNC, 0)
+	  && __builtin_expect (sym->st_shndx != SHN_UNDEF, 1)
+	  && __builtin_expect (!skip_ifunc, 1))
 	value = ((Elf32_Addr (*) (void)) value) ();
 
       switch (r_type)
@@ -608,7 +600,6 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 	  }
 	  break;
 #if !defined RTLD_BOOTSTRAP
-#if defined USE_TLS
 	case R_ARM_TLS_DTPMOD32:
 	  /* Get the information from the link map returned by the
 	     resolv function.  */
@@ -628,7 +619,6 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 			     + reloc->r_addend);
 	    }
 	  break;
-#endif
 	case R_ARM_IRELATIVE:
 	  value = map->l_addr + *reloc_addr;
 	  value = ((Elf32_Addr (*) (void)) value) ();
@@ -666,7 +656,8 @@ elf_machine_rela_relative (Elf32_Addr l_addr, const Elf32_Rela *reloc,
 auto inline void
 __attribute__ ((always_inline))
 elf_machine_lazy_rel (struct link_map *map,
-		      Elf32_Addr l_addr, const Elf32_Rel *reloc)
+		      Elf32_Addr l_addr, const Elf32_Rel *reloc,
+		      int skip_ifunc)
 {
   Elf32_Addr *const reloc_addr = (void *) (l_addr + reloc->r_offset);
   const unsigned int r_type = ELF32_R_TYPE (reloc->r_info);
@@ -678,20 +669,18 @@ elf_machine_lazy_rel (struct link_map *map,
       else
 	*reloc_addr = map->l_mach.plt;
     }
-#ifdef USE_TLS
   else if (__builtin_expect (r_type == R_ARM_TLS_DESC, 1))
     {
       struct tlsdesc volatile *td =
 	(struct tlsdesc volatile *)reloc_addr;
 
       /* The linker must have given us the parameter we need in the
-         first GOT entry, and left the second one empty. We fill the
-         last with the resolver address */
+	 first GOT entry, and left the second one empty. We fill the
+	 last with the resolver address */
       assert (td->entry == 0);
       td->entry = (void*)(D_PTR (map, l_info[ADDRIDX (DT_TLSDESC_PLT)])
 			  + map->l_addr);
     }
-#endif
   else
     _dl_reloc_bad_type (map, r_type, 1);
 }

@@ -1,3 +1,41 @@
+2011-10-29  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13276]
+	* malloc/malloc.c (munmap_chunk): Don't use assertion to check munmap
+	return value.
+
+	* posix/sys/wait.h: Mark wait and wait4 with __THROWNL.
+	* libio/stdio.h: Mark sprintf, vsprintf snprintf, vsnprintf, vasprintf,
+	asprintf, __asprintf, obstack_printf, obstack_vprintf with __THROWNL.
+
+2011-07-03  Andreas Jaeger  <aj@suse.de>
+
+	[BZ #10709]
+	* sysdeps/ieee754/dbl-64/s_sin.c (__sin): Fix incorrect rounding
+	of sin. Patch suggested by Paul Zimmermann <zimmerma+gcc@loria.fr>.
+	* math/libm-test.inc (sin_test): Add test case.
+
+2011-10-29  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13337]
+	* elf/sprof.c (load_shobj): Correctly NUL-terminate link name.
+	Patch by Thomas Jarosch <thomas.jarosch@intra2net.com>.
+
+	* elf/chroot_canon.c (chroot_canon): Cleanups.
+
+	* elf/dl-lookup.c (_dl_setup_hash): Avoid warning.
+
+	[BZ #13335]
+	* elf/chroot_canon.c (chroot_canon): Fix readlink call.
+	Patch by Thomas Jarosch <thomas.jarosch@intra2net.com>.
+
+	* string/test-strchr.c: Make usable for strchrnul testing.
+	* string/test-strchrnul.c: New file.
+	* string/Makefile (strop-tests): Add strchrnul.
+
+	* po/it.po: Update from translation team.
+	* po/es.po: Likewise.
+
 2011-10-28  Ulrich Drepper  <drepper@gmail.com>
 
 	* sysdeps/x86_64/multiarch/strstr.c (__m128i_strloadu_tolower): Take

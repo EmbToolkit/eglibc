@@ -1,3 +1,12 @@
+2011-11-04  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #10103]
+	* math/math.h [__NO_LONG_DOUBLE_MATH && !_LIBC]: Provide
+	declarations for long double functions.
+	* math/complex.h [__NO_LONG_DOUBLE_MATH && !_LIBC]: Likewise.
+
+	* elf/sprof.c (load_shobj): Fix off-by-one when reading link name.
+
 2011-11-03  Andreas Schwab  <schwab@redhat.com>
 
 	* nscd/nscd.c (main): Don't start AVC thread until credentials are

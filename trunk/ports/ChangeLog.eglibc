@@ -1,3 +1,8 @@
+2011-12-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/Makefile (CFLAGS-tst-backtrace3.c)
+	(CFLAGS-tst-backtrace4.c, CFLAGS-tst-backtrace5.c): Define.
+
 2011-07-06  David Kuehling  <dvdkhlng@gmx.de>
 
 	* ports/sysdeps/powerpc/powerpc32/e500/fpu/s_fma.c,

@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,21 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+/* Define the machine-dependent type `jmp_buf'.  TILE version.  */
+#ifndef _BITS_SETJMP_H
+#define _BITS_SETJMP_H	1
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+#if !defined _SETJMP_H && !defined _PTHREAD_H
+# error "Never include <bits/setjmp.h> directly; use <setjmp.h> instead."
+#endif
 
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+#ifndef _ASM
+
+#define __need_int_reg_t
+#include <arch/abi.h>
+
+typedef __uint_reg_t __jmp_buf[32];
+
+#endif
+
+#endif /* bits/setjmp.h */

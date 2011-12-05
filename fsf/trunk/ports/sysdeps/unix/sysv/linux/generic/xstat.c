@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,33 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+/* Ignore prototype to avoid error if we alias __xstat and __xstat64. */
+#define __xstat64 __xstat64_disable
+
+#include <errno.h>
+#include <stddef.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <kernel_stat.h>
+
 #include <sysdep.h>
+#include <sys/syscall.h>
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+/* Get information about the file NAME in BUF.  */
+int
+__xstat (int vers, const char *name, struct stat *buf)
+{
+  if (vers == _STAT_VER_KERNEL)
+    return INLINE_SYSCALL (newfstatat, 4, AT_FDCWD, name, buf, 0);
 
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+  errno = EINVAL;
+  return -1;
+}
+
+hidden_def (__xstat)
+weak_alias (__xstat, _xstat);
+#ifdef XSTAT_IS_XSTAT64
+#undef __xstat64
+strong_alias (__xstat, __xstat64);
+hidden_ver (__xstat, __xstat64)
+#endif

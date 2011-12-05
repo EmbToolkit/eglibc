@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,20 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+/* Provide a mask based on the pointer alignment that
+   sets up non-zero bytes before the beginning of the string.
+   The MASK expression works because shift counts are taken mod 64.
+   Also, specify how to count "first" and "last" bits
+   when the bits have been read as a word.  */
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
-
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+#ifndef __BIG_ENDIAN__
+#define MASK(x) (__insn_shl(1ULL, (x << 3)) - 1)
+#define NULMASK(x) ((2ULL << x) - 1)
+#define CFZ(x) __insn_ctz(x)
+#define REVCZ(x) __insn_clz(x)
+#else
+#define MASK(x) (__insn_shl(-2LL, ((-x << 3) - 1)))
+#define NULMASK(x) (-2LL << (63 - x))
+#define CFZ(x) __insn_clz(x)
+#define REVCZ(x) __insn_ctz(x)
+#endif

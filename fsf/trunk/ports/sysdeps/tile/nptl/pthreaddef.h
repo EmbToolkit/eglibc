@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,26 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+#include <stdlib.h>
+#include <string.h>
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+/* Default stack size.  */
+#define ARCH_STACK_DEFAULT_SIZE	(2 * 1024 * 1024)
 
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+/* Required stack pointer alignment at beginning.  */
+#define STACK_ALIGN		16
+
+/* Minimal stack size after allocating thread descriptor and guard size.  */
+#define MINIMAL_REST_STACK	2048
+
+/* Alignment requirement for TCB.  */
+#define TCB_ALIGNMENT		16
+
+
+/* Location of current stack frame.  */
+#define CURRENT_STACK_FRAME	__builtin_frame_address (0)
+
+/* XXX Until we have a better place keep the definitions here.  */
+
+#define __exit_thread_inline(val) \
+  INLINE_SYSCALL (exit, 1, (val))

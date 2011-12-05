@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,22 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <unistd.h>
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+/* Duplicate FD to FD2, closing the old FD2 and making FD2 be
+   open the same file as FD is.  Return FD2 or -1.  */
+int
+__dup2 (int fd, int fd2)
+{
+  /* For the degenerate case, check if the fd is valid (by trying to
+     get the file status flags) and return it, or else return EBADF.  */
+  if (fd == fd2)
+    return __libc_fcntl (fd, F_GETFL, 0) < 0 ? -1 : fd;
 
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+  return INLINE_SYSCALL (dup3, 3, fd, fd2, 0);
+}
+libc_hidden_def (__dup2)
+weak_alias (__dup2, dup2)

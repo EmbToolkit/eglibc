@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,17 +18,30 @@
    02111-1307 USA.  */
 
 #include <sysdep.h>
-
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+#include <jmpbuf-offsets.h>
 
 	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+
+	/* Keep traditional entry points in with sigsetjmp(). */
+ENTRY(setjmp)
+	{ movei r1, 1; j 1f }
+END(setjmp)
+
+ENTRY(_setjmp)
+	{ movei r1, 0; j 1f }
+END(_setjmp)
+libc_hidden_def (_setjmp)
+
+ENTRY(__sigsetjmp)
+	FEEDBACK_ENTER(__sigsetjmp)
+1:
+	move r2, r0
+
+#define SAVE(r) { ST r2, r ; ADDI_PTR r2, r2, REGSIZE }
+	FOR_EACH_CALLEE_SAVED_REG(SAVE)
+
+	mfspr r3, INTERRUPT_CRITICAL_SECTION
+	ST r2, r3
+	j plt(__sigjmp_save)
+	jrp lr   /* Keep the backtracer happy. */
+END(__sigsetjmp)

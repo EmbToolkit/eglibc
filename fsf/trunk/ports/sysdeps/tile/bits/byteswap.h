@@ -1,5 +1,6 @@
-/* Copyright (C) 1996, 1998, 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +17,20 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <sysdep.h>
+#if !defined _BYTESWAP_H && !defined _NETINET_IN_H && !defined _ENDIAN_H
+# error "Never use <bits/byteswap.h> directly; include <byteswap.h> instead."
+#endif
 
-/* Please consult the file sysdeps/unix/sysv/linux/m68k/sysdep.h for
-   more information about the value -4095 used below.*/
+#ifndef _BITS_BYTESWAP_H
+#define _BITS_BYTESWAP_H 1
 
-	.text
-ENTRY (syscall)
-	move.l 4(%sp), %d0	/* Load syscall number.  */
-	_DOARGS_6 (28)		/* Frob arguments.  */
-	trap &0			/* Do the system call.  */
-	UNDOARGS_6		/* Unfrob arguments.  */
-	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-	rts			/* Return to caller.  */
-PSEUDO_END (syscall)
+/* gcc __builtin_bswap64() can constant-fold, etc, so always use it. */
+#define __bswap_16(x) ((unsigned short)(__builtin_bswap32(x) >> 16))
+#define __bswap_32(x) ((unsigned int)__builtin_bswap32(x))
+#define __bswap_64(x) ((unsigned long long)__builtin_bswap64(x))
+
+#define __bswap_constant_16(x) __bswap_16(x)
+#define __bswap_constant_32(x) __bswap_32(x)
+#define __bswap_constant_64(x) __bswap_64(x)
+
+#endif /* _BITS_BYTESWAP_H */

@@ -1,6 +1,7 @@
 /* Round to int floating-point values.  PowerPC32 version.
-   Copyright (C) 2004, 2006, 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Adhemerval Zanella <azanella@br.ibm.com>, 2011
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -21,21 +22,24 @@
    when it's coded in C.  */
 
 #include <sysdep.h>
-#include <math_ldbl_opt.h>
+
+
+/* float [fp1] nearbyintf(float [fp1] x) */
 
 	.section	.rodata.cst4,"aM",@progbits,4
 	.align	2
-.LC0:	/* 2**52 */
-	.long 0x59800000
+.LC0:
+	.long 0x4B000000	/* TWO23: 2**23 */
 
 	.section	".text"
-ENTRY (__rint)
+ENTRY (__nearbyintf)
 #ifdef SHARED
 	mflr	r11
 	cfi_register(lr,r11)
-	SETUP_GOT_ACCESS(r9,got_label)
-	addis	r9,r9,.LC0-got_label@ha
-	lfs	fp13,.LC0-got_label@l(r9)
+	bcl	20,31,1f
+1:	mflr	r9
+	addis	r9,r9,.LC0-1b@ha
+	lfs	fp13,.LC0-1b@l(r9)
 	mtlr	r11
 	cfi_same_value (lr)
 #else
@@ -43,29 +47,24 @@ ENTRY (__rint)
 	lfs	fp13,.LC0@l(r9)
 #endif
 	fabs	fp0,fp1
-	fsub	fp12,fp13,fp13	/* generate 0.0  */
-	fcmpu	cr7,fp0,fp13	/* if (fabs(x) > TWO52)  */
-	fcmpu	cr6,fp1,fp12	/* if (x > 0.0)  */
-	bnllr-	cr7
-	bng-	cr6,.L4
-	fadd	fp1,fp1,fp13	/* x+= TWO52;  */
-	fsub	fp1,fp1,fp13	/* x-= TWO52;  */
-	fabs	fp1,fp1		/* if (x == 0.0)  */
-	blr			/* x = 0.0; */
-.L4:
-	bnllr-	cr6		/* if (x < 0.0)  */
-	fsub	fp1,fp1,fp13	/* x-= TWO52;  */
-	fadd	fp1,fp1,fp13	/* x+= TWO52;  */
-	fnabs	fp1,fp1		/* if (x == 0.0)  */
-	blr			/* x = -0.0; */
-	END (__rint)
+	fsub    fp12,fp13,fp13		/* generate 0.0  */
+	fcmpu	cr7,fp0,fp13		/* if (fabs(x) > TWO23 */
+	bgelr	cr7
+	fcmpu	cr7,fp1,fp12		/* if (x > 0.0 */
+	ble	cr7,L(lessthanzero)
+	mtfsb0	4*cr7+lt		/* Disable FE_INEXACT exception */
+	fadds	fp0,fp1,fp13		/* x += TWO23 */
+	fsubs	fp1,fp0,fp13		/* x -= TWO23 */
+	mtfsb0	4*cr1+eq		/* Clear any FE_INEXACT exception */
+	blr
+L(lessthanzero):
+	bgelr	cr7
+	mtfsb0	4*cr7+lt		/* Disable FE_INEXACT exception */
+	fsubs	fp0,fp13,fp1		/* x -= TWO23 */
+	fsubs	fp0,fp0,fp13		/* x += TWO23 */
+	fneg	fp1,fp0			/* if (x == 0.0) */
+	mtfsb0	4*cr1+eq		/* Clear any FE_INEXACT exception */
+	blr
+END (__nearbyintf)
 
-weak_alias (__rint, rint)
-
-#ifdef NO_LONG_DOUBLE
-weak_alias (__rint, rintl)
-strong_alias (__rint, __rintl)
-#endif
-#if LONG_DOUBLE_COMPAT(libm, GLIBC_2_0)
-compat_symbol (libm, __rint, rintl, GLIBC_2_0)
-#endif
+weak_alias (__nearbyintf, nearbyintf)

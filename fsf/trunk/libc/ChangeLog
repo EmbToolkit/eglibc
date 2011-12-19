@@ -1,3 +1,32 @@
+2011-12-17  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13446]
+	* stdio-common/vfprintf.c (vfprintf): Fix extension of specs array.
+
+2011-11-22  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/Makefile: Added locale-defines.sym generation.
+	* sysdeps/powerpc/locale-defines.sym: Locale definitions for strcasecmp
+	optimized code.
+	* sysdeps/powerpc/powerpc32/power7/Makefile: New file.
+	* sysdeps/powerpc/powerpc32/power7/strcasecmp.S: New file.
+	* sysdeps/powerpc/powerpc32/power7/strcasecmp_l.S: New file.
+	* sysdeps/powerpc/powerpc64/power7/Makefile: Added unroll-loop option
+	for strncasecmp/strncasecmp_l compilation.
+	* sysdeps/powerpc/powerpc64/power7/strcasecmp.S: New file.
+	* sysdeps/powerpc/powerpc64/power7/strcasecmp_l.S: New file.
+
+2011-12-08  Marek Polacek  <mpolacek@redhat.com>
+
+	[BZ #13484]
+	* math/bits/math-finite.h: Use __REDIRECT_NTH and __NTH instead
+	of __asm__.
+
+2011-12-17  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13506]
+	* time/tzfile.c (__tzfile_read): Check values from file header.
+
 2011-11-21  Will Schmidt  <will_schmidt@vnet.ibm.com>
 
 	* powerpc/powerpc32/sysdep.h: Define SETUP_GOT_ACCESS() macro.

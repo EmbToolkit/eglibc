@@ -1,3 +1,22 @@
+2011-12-21  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13439]
+	* iconv/gconv.h: Define __GCONV_SWAP.
+	* iconvdata/unicode.c: The swap bit must be stored in __flags.
+	* iconvdata/utf-16.c: Likewise.
+	* iconvdata/utf-32.c: Likewise.
+
+2011-12-21  Andreas Schwab  <schwab@linux-m68k.org>
+
+	[BZ #13524]
+	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Clear lowest limb of
+	numerator after shifting it by one limb.
+
+2011-12-19  Rafael Ávila de Espíndola  <rafael.espindola@gmail.com>
+
+	* sysdeps/x86_64/fpu/bits/fenv.h (feraiseexcept): Define it only
+	under [__USE_EXTERN_INLINES].
+
 2011-12-17  Ulrich Drepper  <drepper@gmail.com>
 
 	[BZ #13446]

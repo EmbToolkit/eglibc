@@ -1,3 +1,8 @@
+2011-10-20  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* sysdeps/hppa/dl-tls.h: Update copyright year.
+	Define TLS_DTV_UNALLOCATED.
+
 2009-11-15  Carlos O'Donell  <carlos@codesourcery.com>
 
 	[BZ #6676]

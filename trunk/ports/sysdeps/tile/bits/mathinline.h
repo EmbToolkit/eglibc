@@ -1,5 +1,6 @@
-/* Copyright (C) 1995, 1996, 1997, 2003 Free Software Foundation, Inc.
+/* Copyright (C) 2011 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,27 +17,29 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef _SYSCALL_H
-#define _SYSCALL_H	1
+#ifndef _MATH_H
+# error "Never use <bits/mathinline.h> directly; include <math.h> instead."
+#endif
 
-/* This file should list the numbers of the system the system knows.
-   But instead of duplicating this we use the information available
-   from the kernel sources.  */
-#ifdef _LIBC
-/* Since the kernel doesn't define macro names in a way usable for
-   glibc, we preprocess this header, and use it during the glibc build
-   process.  */
-# include <asm-unistd.h>
+#ifndef __extern_always_inline
+# define __MATH_INLINE __inline
 #else
-# include <asm/unistd.h>
+# define __MATH_INLINE __extern_always_inline
 #endif
 
-#ifndef _LIBC
-/* The Linux kernel header file defines macros `__NR_<name>', but some
-   programs expect the traditional form `SYS_<name>'.  So in building libc
-   we scan the kernel's list and produce <bits/syscall.h> with macros for
-   all the `SYS_' names.  */
-# include <bits/syscall.h>
-#endif
+
+#if defined __USE_ISOC99 && defined __GNUC__
+
+/* Test for negative number.  Used in the signbit() macro.  */
+__MATH_INLINE int
+__NTH (__signbitf (float __x))
+{
+  return __builtin_signbitf (__x);
+}
+__MATH_INLINE int
+__NTH (__signbit (double __x))
+{
+  return __builtin_signbit (__x);
+}
 
 #endif

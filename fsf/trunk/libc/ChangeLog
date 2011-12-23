@@ -1,3 +1,18 @@
+2011-12-22  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/i386/fpu/bits/fenv.h [__SSE_MATH__]: Add feraiseexcept
+	optimization.
+
+	[BZ #13185]
+	* sysdeps/i386/fpu/fgetexcptflg.c (__fegetexceptflag): Also return
+	SSE flags if possible.
+
+2011-12-22  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
+
+	[BZ #13540]
+	* sysdeps/i386/i686/multiarch/strcpy-ssse3.S: Fix wrong copying
+	processing for last bytes.
+
 2011-12-22  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/Makefile (syscall-list-variants)

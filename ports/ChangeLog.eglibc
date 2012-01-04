@@ -1,3 +1,8 @@
+2012-01-04  Tom de Vries  <tom@codesourcery.com>
+
+	* sysdeps/mips/Makefile: Compile tst-backtrace{2,3,4,5,6} with
+	-funwind-tables.
+
 2011-12-07  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/eabi/Makefile (CFLAGS-tst-backtrace6.c): Define.

@@ -20,4 +20,12 @@ CFLAGS-tst-backtrace5.c += -funwind-tables
 CFLAGS-tst-backtrace6.c += -funwind-tables
 endif
 
+ifeq ($(subdir),csu)
+CFLAGS-initfini.s += -fno-unwind-tables
+endif
+
+ifeq ($(subdir),nptl)
+CFLAGS-pt-initfini.s += -fno-unwind-tables
+endif
+
 ASFLAGS-.os += $(pic-ccflag)

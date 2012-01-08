@@ -142,11 +142,6 @@ AC_ARG_ENABLE([profile],
 			     [build profiled library @<:@default=no@:>@]),
 	      [profile=$enableval],
 	      [profile=no])
-AC_ARG_ENABLE([omitfp],
-	      AC_HELP_STRING([--enable-omitfp],
-			     [build undebuggable optimized library @<:@default=no@:>@]),
-	      [omitfp=$enableval],
-	      [omitfp=no])
 AC_ARG_ENABLE([bounded],
 	      AC_HELP_STRING([--enable-bounded],
 			     [build with runtime bounds checking @<:@default=no@:>@]),
@@ -532,13 +527,8 @@ changequote(,)dnl
 # type and particular chip.  If an add-on configure fragment already set
 # base_machine, we don't change it.
 test -n "$base_machine" || case "$machine" in
-a29k | am29000)	base_machine=a29k machine=a29k ;;
-c3[012])	base_machine=cx0 machine=cx0/c30 ;;
-c4[04])		base_machine=cx0 machine=cx0/c40 ;;
 i[34567]86)	base_machine=i386 machine=i386/$machine ;;
 ia64)		base_machine=ia64 machine=ia64 ;;
-m88???)		base_machine=m88k machine=m88k/$machine ;;
-m88k)		base_machine=m88k machine=m88k/m88100 ;;
 powerpc)	base_machine=powerpc machine=powerpc/powerpc32 ;;
 powerpc64)	base_machine=powerpc machine=powerpc/powerpc64 ;;
 s390)           base_machine=s390 machine=s390/s390-32 ;;
@@ -2372,7 +2362,6 @@ rm -f conftest.*])
 AC_SUBST(libc_cv_pic_default)
 
 AC_SUBST(profile)
-AC_SUBST(omitfp)
 AC_SUBST(bounded)
 AC_SUBST(static_nss)
 AC_SUBST(nopic_initfini)

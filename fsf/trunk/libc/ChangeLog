@@ -1,3 +1,44 @@
+2012-01-26  Joseph Myers  <joseph@codesourcery.com>
+
+	* crypt/md5.h: Remove __STDC__ conditionals.
+	* libio/libioP.h: Likewise.
+	* locale/programs/config.h: Likewise.
+	* sysdeps/generic/sysdep.h: Likewise.
+	* sysdeps/i386/asm-syntax.h: Likewise.
+	* sysdeps/s390/asm-syntax.h: Likewise.
+	* sysdeps/unix/sysdep.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/sysdep.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/sysdep.h: Likewise.
+
+2012-01-26  Joseph Myers  <joseph@codesourcery.com>
+
+	* libio/libio.h: Remove __STDC__ conditionals.
+	* malloc/obstack.h: Likewise.
+	* math/complex.h: Likewise.
+	* math/math.h: Likewise.
+	* sysdeps/generic/_G_config.h: Likewise.
+	* sysdeps/gnu/_G_config.h: Likewise.
+	* sysdeps/mach/hurd/_G_config.h: Likewise.
+	* sysdeps/powerpc/bits/mathdef.h: Likewise.
+	* sysdeps/sh/sh4/bits/mathdef.h: Likewise.
+	* sysdeps/sparc/bits/mathdef.h: Likewise.
+
+2012-01-26  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13583]
+	* sysdeps/x86_64/multiarch/init-arch.h: Define bit_OSXSAVE.
+	Clean up HAS_* macros.
+	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features): If
+	bit_AVX is set also check OSXAVE/XCR0 and set bit_YMM_Usable if
+	possible.
+	* sysdeps/x86_64/fpu/multiarch/e_atan2.c: Use HAS_YMM_USABLE, not
+	HAS_AVX.
+	* sysdeps/x86_64/fpu/multiarch/e_exp.c: Likewise.
+	* sysdeps/x86_64/fpu/multiarch/e_log.c: Likewise.
+	* sysdeps/x86_64/fpu/multiarch/s_atan.c: Likewise.
+	* sysdeps/x86_64/fpu/multiarch/s_sin.c: Likewise.
+	* sysdeps/x86_64/fpu/multiarch/s_tan.c: Likewise.
+
 2012-01-25  Joseph Myers  <joseph@codesourcery.com>
 
 	* elf/tst-unique3.cc (gets): Remove declaration.

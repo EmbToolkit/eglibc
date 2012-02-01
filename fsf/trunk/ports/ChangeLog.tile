@@ -1,3 +1,21 @@
+2012-01-31  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/bits/fenv.h: Use const instead of __const.
+	* sysdeps/unix/sysv/linux/tile/sys/cachectl.h: Likewise.
+
+2012-01-31  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/sysdep.h: Use <feedback.h> not <feedback-asm.h>
+	to reflect change from gcc community giveback.
+
+2012-01-31  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/math_private.h: Ignore feraiseexcept() internally.
+
+2012-01-30  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/sysdep.h: Don't check HAVE_ELF or NO_UNDERSCORES.
+
 2012-01-07  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/tile/backtrace.c: Use x86_64 version of backtrace.c.

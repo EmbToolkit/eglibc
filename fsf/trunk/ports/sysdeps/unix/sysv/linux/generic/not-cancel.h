@@ -1,6 +1,7 @@
-/* Copyright (C) 2011, 2012 Free Software Foundation, Inc.
+/* Uncancelable versions of cancelable interfaces.  Linux asm-generic version.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2012.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,13 +18,13 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#include <stddef.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/epoll.h>
+#include <sysdeps/unix/sysv/linux/not-cancel.h>
+#include <fcntl.h>
 
-int
-epoll_wait (int epfd, struct epoll_event *events, int maxevents, int timeout)
-{
-  return epoll_pwait (epfd, events, maxevents, timeout, NULL);
-}
+/* Uncancelable open with openat.  */
+#undef open_not_cancel
+#define open_not_cancel(name, flags, mode) \
+  INLINE_SYSCALL (openat, 4, AT_FDCWD, (const char *) (name), (flags), (mode))
+#undef open_not_cancel_2
+#define open_not_cancel_2(name, flags) \
+  INLINE_SYSCALL (openat, 3, AT_FDCWD, (const char *) (name), (flags))

@@ -1,3 +1,37 @@
+2012-01-31  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/bits/mathdef.h (float_t): Always define as
+	float.
+	* sysdeps/sh/sh4/bits/mathdef.h: Likewise.
+	* sysdeps/sparc/bits/mathdef.h: Likewise.
+
+2012-01-31  Marek Polacek  <polacek@redhat.com>
+
+	* libio/libio.h: Don't define _PARAMS.
+	* locale/programs/config.h: Don't define PARAMS.
+	* stdlib/strtol_l.c: Likewise.
+	(__strtol_l): Remove PARAMS from the prototype.
+
+2012-01-31  Ulrich Drepper  <drepper@gmail.com>
+
+	* malloc/malloc.c: Remove name translation.  Don't use mixed-cap
+	names.  Just use the correct names.  Remove unnecessary wrapper
+	functions.
+	* malloc/arena.c: Likewise.
+	* malloc/hooks.c: Likewise.
+
+	* malloc/arena.c (arena_get2): Really don't call __get_nprocs if
+	ARENA_TEST says not to.  Simplify test for creation of a new arena.
+	Partially based on a patch by Siddhesh Poyarekar <siddhesh@redhat.com>.
+
+2012-01-30  Ulrich Drepper  <drepper@gmail.com>
+
+	* elf/dl-tls.c (__tls_get_addr): Optimize by transforming all calls
+	into tail calls.
+	(update_get_addr): New function.
+	(tls_get_addr_tail): Take GET_ADDR_ARGS parameter, remove
+	GET_ADDR_MODULE parameter.
+
 2012-01-30  Joseph Myers  <joseph@codesourcery.com>
 
 	* crypt/cert.c: Remove __STDC__ conditionals.
@@ -33,7 +67,6 @@
 2012-01-30  Joseph Myers  <joseph@codesourcery.com>
 
 	* configure.in (libc_cv_cc_sse2avx): AC_SUBST.
-	* configure: Regenerate.
 	* config.make.in (config-cflags-sse2avx): Define.
 	* sysdeps/x86_64/fpu/multiarch/Makefile (CFLAGS-slowexp-avx.c):
 	Fix typo.

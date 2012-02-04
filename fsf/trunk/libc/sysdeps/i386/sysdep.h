@@ -20,6 +20,12 @@
 
 #include <sysdeps/generic/sysdep.h>
 
+#ifdef __ASSEMBLER__
+# define GET_PC_THUNK(reg) __i686.get_pc_thunk.reg
+#else
+# define GET_PC_THUNK_STR(reg) "__i686.get_pc_thunk." #reg
+#endif
+
 #ifdef	__ASSEMBLER__
 
 /* Syntactic details of assembler.  */
@@ -109,6 +115,24 @@ lose: SYSCALL_PIC_SETUP							      \
 #define	PSEUDO_END(name)						      \
   END (name)
 
+# define SETUP_PIC_REG(reg) \
+  .ifndef GET_PC_THUNK(reg);						      \
+  .section .gnu.linkonce.t.GET_PC_THUNK(reg),"ax",@progbits;		      \
+  .globl GET_PC_THUNK(reg);						      \
+  .hidden GET_PC_THUNK(reg);						      \
+  .p2align 4;								      \
+  .type GET_PC_THUNK(reg),@function;					      \
+GET_PC_THUNK(reg):							      \
+  movl (%esp), %e##reg;							      \
+  ret;									      \
+  .size GET_PC_THUNK(reg), . - GET_PC_THUNK(reg);			      \
+  .previous;								      \
+  .endif;								      \
+  call GET_PC_THUNK(reg)
+
+# define LOAD_PIC_REG(reg) \
+  SETUP_PIC_REG(reg); addl $_GLOBAL_OFFSET_TABLE_, %e##reg
+
 #undef JUMPTARGET
 #ifdef PIC
 #define JUMPTARGET(name)	name##@PLT
@@ -119,23 +143,6 @@ lose: SYSCALL_PIC_SETUP							      \
 0:  popl %ebx;								      \
     cfi_adjust_cfa_offset (-4);						      \
     addl $_GLOBAL_OFFSET_TABLE+[.-0b], %ebx;
-
-# define SETUP_PIC_REG(reg) \
-  .ifndef __i686.get_pc_thunk.reg;					      \
-  .section .gnu.linkonce.t.__i686.get_pc_thunk.reg,"ax",@progbits;	      \
-  .globl __i686.get_pc_thunk.reg;					      \
-  .hidden __i686.get_pc_thunk.reg;					      \
-  .type __i686.get_pc_thunk.reg,@function;				      \
-__i686.get_pc_thunk.reg:						      \
-  movl (%esp), %e##reg;							      \
-  ret;									      \
-  .size __i686.get_pc_thunk.reg, . - __i686.get_pc_thunk.reg;		      \
-  .previous;								      \
-  .endif;								      \
-  call __i686.get_pc_thunk.reg
-
-# define LOAD_PIC_REG(reg) \
-  SETUP_PIC_REG(reg); addl $_GLOBAL_OFFSET_TABLE_, %e##reg
 
 #else
 #define JUMPTARGET(name)	name

@@ -20,10 +20,29 @@
 
 #include <sysdeps/generic/sysdep.h>
 
-#ifdef __ASSEMBLER__
-# define GET_PC_THUNK(reg) __i686.get_pc_thunk.reg
+#include <features.h> /* For __GNUC_PREREQ.  */
+
+/* It is desirable that the names of PIC thunks match those used by
+   GCC so that multiple copies are eliminated by the linker.  Because
+   GCC 4.6 and earlier use __i686 in the names, it is necessary to
+   override that predefined macro.  */
+#if defined __i686 && defined __ASSEMBLER__
+#undef __i686
+#define __i686 __i686
+#endif
+
+#ifdef	__ASSEMBLER__
+# if __GNUC_PREREQ (4, 7)
+#  define GET_PC_THUNK(reg) __x86.get_pc_thunk.reg
+# else
+#  define GET_PC_THUNK(reg) __i686.get_pc_thunk.reg
+# endif
 #else
-# define GET_PC_THUNK_STR(reg) "__i686.get_pc_thunk." #reg
+# if __GNUC_PREREQ (4, 7)
+#  define GET_PC_THUNK_STR(reg) "__x86.get_pc_thunk." #reg
+# else
+#  define GET_PC_THUNK_STR(reg) "__i686.get_pc_thunk." #reg
+# endif
 #endif
 
 #ifdef	__ASSEMBLER__

@@ -26,7 +26,8 @@ DEFINES		= -DNO_SYSCONF \
 		  -DCHARMAP_PATH='"$(i18ndir)/charmaps"' \
 		  -DREPERTOIREMAP_PATH='"$(i18ndir)/repertoiremaps"' \
 		  -DLOCSRCDIR='"$(i18ndir)/locales"' \
-		  -DNOT_IN_libc
+		  -DNOT_IN_libc \
+		  -DIN_GLIBC_LOCALEDEF
 INCLUDES	= -Iglibc/locale/programs \
 		  -I$(srcdir)/include \
 		  -Iglibc/locale \

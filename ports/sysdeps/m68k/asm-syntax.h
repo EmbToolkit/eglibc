@@ -1,5 +1,5 @@
 /* Definitions for 68k syntax variations.
-   Copyright (C) 1992, 1994, 1996, 1997 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1994, 1996, 1997, 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.  Its master source is NOT part of
    the C library, however.  The master source lives in the GNU MP Library.
 
@@ -18,32 +18,15 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifdef HAVE_ELF
-
 /* ELF uses byte-counts for .align, most others use log2 of count of bytes.  */
 #define ALIGNARG(log2) 1<<log2
 /* For ELF we need the `.type' directive to make shared libs work right.  */
 #define PROLOG(name) .type name,@function
 #define EPILOG(name) .size name,.-name
 /* For ELF we need to prefix register names and local labels.  */
-#ifdef __STDC__
 #define R_(r) %##r
 #define R(r) R_(r)
 #define L(label) .##label
-#else
-#define R(r) %/**/r
-#define L(label) ./**/label
-#endif
-
-#else
-
-#define ALIGNARG(log2) log2
-#define PROLOG(name) /* Nothing.  */
-#define EPILOG(name) /* Nothing.  */
-#define R(r) r
-#define L(label) label
-
-#endif
 
 #ifdef MIT_SYNTAX
 #define MEM(base)R(base)@
@@ -69,15 +52,10 @@
 #define MEM_DISP(base,displacement)(displacement,R(base))
 #define MEM_PREDEC(memory_base)-(R(memory_base))
 #define MEM_POSTINC(memory_base)(R(memory_base))+
-#ifdef __STDC__
 #define MEM_INDX_(base,idx,size_suffix)(R(base),R(idx##.##size_suffix))
 #define MEM_INDX(base,idx,size_suffix)MEM_INDX_(base,idx,size_suffix)
 #define MEM_INDX1_(base,idx,size_suffix,scale)(R(base),R(idx##.##size_suffix*scale))
 #define MEM_INDX1(base,idx,size_suffix,scale)MEM_INDX1_(base,idx,size_suffix,scale)
-#else
-#define MEM_INDX(base,idx,size_suffix)(R(base),R(idx).size_suffix)
-#define MEM_INDX1(base,idx,size_suffix,scale)(R(base),R(idx).size_suffix*scale)
-#endif
 #define TEXT .text
 #define ALIGN .align ALIGNARG(2)
 #define GLOBL .globl

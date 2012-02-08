@@ -57,8 +57,7 @@ END (__vdso_read_tp_stub)
 	.hidden __m68k_read_tp
 # endif
 ENTRY (__m68k_read_tp)
-	move.l	#_GLOBAL_OFFSET_TABLE_@GOTPC, %a0
-	lea	(-6, %pc, %a0), %a0
+	LOAD_GOT (%a0)
 	move.l	M68K_VDSO_SYMBOL (__vdso_read_tp)@GOT(%a0), %a0
 	move.l	(%a0), %a0
 	jmp	(%a0)

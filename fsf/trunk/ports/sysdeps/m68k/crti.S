@@ -1,6 +1,6 @@
-/* Copyright (C) 2010, 2012 Free Software Foundation, Inc.
+/* Special .init and .fini section support for m68k.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Maxim Kuvyrkov <maxim@codesourcery.com>, 2010.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -34,62 +34,50 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+/* crti.S puts a function prologue at the beginning of the .init and
+   .fini sections and defines global symbols for those addresses, so
+   they can be called as functions.  The symbols _init and _fini are
+   magic and cause the linker to emit DT_INIT and DT_FINI.  */
+
+#include <libc-symbols.h>
 #include <sysdep.h>
-#include <bits/m68k-vdso.h>
 
-	.text
+#ifndef PREINIT_FUNCTION
+# define PREINIT_FUNCTION __gmon_start__
+#endif
 
-	.hidden __vdso_read_tp_stub
-ENTRY (__vdso_read_tp_stub)
-	move.l	#__NR_get_thread_area, %d0
-	trap	#0
-	move.l	%d0, %a0
-	rts
-END (__vdso_read_tp_stub)
+#ifndef PREINIT_FUNCTION_WEAK
+# define PREINIT_FUNCTION_WEAK 1
+#endif
 
-# ifdef SHARED
-/* GCC will emit calls to this routine.  Linux has an
-   equivalent helper function (which clobbers fewer registers than
-   a normal function call) in a vdso; tail call to the
-   helper.  */
-# ifdef IS_IN_rtld
-/* rtld gets a hidden copy of __m68k_read_tp.  */
-	.hidden __m68k_read_tp
-# endif
-ENTRY (__m68k_read_tp)
-	lea	_GLOBAL_OFFSET_TABLE_@GOTPC(%pc), %a0
-	move.l	M68K_VDSO_SYMBOL (__vdso_read_tp)@GOT(%a0), %a0
-	jmp	([%a0])
-END (__m68k_read_tp)
+#if PREINIT_FUNCTION_WEAK
+	weak_extern (PREINIT_FUNCTION)
+#else
+	.hidden PREINIT_FUNCTION
+#endif
 
-/* The following two stubs are for macros in atomic.h, they can't
-   clobber anything.  */
+	.section .init,"ax",@progbits
+	.align	2
+	.globl	_init
+	.type	_init, @function
+_init:
+	link.w %fp, #0
+	move.l	%a5, -(%sp)
+	LOAD_GOT (%a5)
+#if PREINIT_FUNCTION_WEAK
+	tst.l	PREINIT_FUNCTION@GOT(%a5)
+	jeq	1f
+	jbsr 	PREINIT_FUNCTION@PLTPC
+1:
+#else
+	jbsr 	PREINIT_FUNCTION
+#endif
 
-	.hidden __vdso_atomic_cmpxchg_32_stub
-ENTRY (__vdso_atomic_cmpxchg_32_stub)
-	move.l	%d2, -(%sp)
-	cfi_adjust_cfa_offset (4)
-	cfi_rel_offset (%d2, 0)
-	move.l	%d0, %d2
-	move.l	#SYS_ify (atomic_cmpxchg_32), %d0
-	trap	#0
-	move.l	(%sp)+, %d2
-	cfi_adjust_cfa_offset (-4)
-	cfi_restore (%d2)
-	rts
-END (__vdso_atomic_cmpxchg_32_stub)
-
-	.hidden __vdso_atomic_barrier_stub
-ENTRY (__vdso_atomic_barrier_stub)
-	move.l	%d0, -(%sp)
-	cfi_adjust_cfa_offset (4)
-	move.l	#SYS_ify (atomic_barrier), %d0
-	trap	#0
-	move.l	(%sp)+, %d0
-	cfi_adjust_cfa_offset (-4)
-	rts
-END (__vdso_atomic_barrier_stub)
-# else /* !SHARED */
-/* If the vDSO is not available, use a syscall to get TP.  */
-	strong_alias (__vdso_read_tp_stub, __m68k_read_tp)
-# endif /* SHARED */
+	.section .fini,"ax",@progbits
+	.align	2
+	.globl	_fini
+	.type	_fini, @function
+_fini:
+	link.w %fp, #0
+	move.l	%a5, -(%sp)
+	LOAD_GOT (%a5)

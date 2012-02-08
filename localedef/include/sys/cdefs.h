@@ -46,3 +46,10 @@
      name proto __asm__ (__ASMNAME (#alias)) __THROW
 # endif
 #endif
+
+#if defined(__GNUC__) \
+    && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
+# define __attribute_alloc_size(...) __attribute__ ((alloc_size (__VA_ARGS__)))
+#else
+# define __attribute_alloc_size(...)
+#endif

@@ -1,3 +1,8 @@
+2012-02-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makefile.in (DEFINES): Add -DIN_GLIBC_LOCALEDEF.
+	* include/sys/cdefs.h (__attribute_alloc_size): Define.
+
 2011-09-21  Joseph Myers  <joseph@codesourcery.com>
 
 	* configure.ac: Test for locale_t.

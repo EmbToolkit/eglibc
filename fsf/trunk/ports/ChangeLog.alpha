@@ -1,3 +1,44 @@
+2012-02-09  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/alpha/preconfigure (libc_cv_gcc_unwind_find_fde): New.
+	(libc_commonpagesize, libc_relro_required): New.
+
+2012-02-08  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/alpha/ldsodefs.h: New file.
+	* sysdeps/alpha/tst-audit.h: New file.
+	* sysdeps/alpha/tls-macros.h: New file.
+
+	* sysdeps/unix/sysv/linux/alpha/getitimer.S: Don't check HAVE_ELF.
+	* sysdeps/unix/sysv/linux/alpha/getrusage.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/gettimeofday.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/select.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/setitimer.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/settimeofday.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/utimes.S: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/wait4.S: Likewise.
+
+	* sysdeps/alpha/elf/crti.S, sysdeps/alpha/elf/crtn.S: New files...
+	* sysdeps/alpha/elf/initfini.c: ... split from here.  Remove file.
+	* sysdeps/alpha/nptl/elf/pt-initfini.c: Remove file.
+
+	* sysdeps/unix/alpha/sysdep.h (INTERNAL_SYSCALL_DECL): Mark unused.
+
+	* sysdeps/unix/sysv/linux/alpha/bits/stat.h (_STAT_VER_LINUX): New.
+
+	* sysdeps/alpha/dl-tls.h (TLS_DTV_UNALLOCATED): New.
+
+	* sysdeps/unix/sysv/linux/alpha/configure.in: New file.
+	* sysdeps/unix/sysv/linux/alpha/configure: Build.
+	* sysdeps/unix/sysv/linux/alpha/kernel-features.h: Protect from
+	multiple includes.  Disable statfs64 entirely.
+
+	* sysdeps/alpha/nptl/tls.h: Don't test HAVE_TLS_SUPPORT.
+	* sysdeps/unix/alpha/sysdep.h: Don't test HAVE___THREAD.
+	* sysdeps/alpha/elf/configure.in (libc_cv_alpha_tls): Error out if
+	the test fails.  Don't set HAVE_TLS_SUPPORT.
+	* sysdeps/alpha/elf/configure: Rebuild.
+
 2012-01-07  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/alpha/backtrace.c: Use x86_64 version of backtrace.c.

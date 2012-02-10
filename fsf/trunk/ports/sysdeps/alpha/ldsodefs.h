@@ -1,5 +1,5 @@
-/* Thread-local storage handling in the ELF dynamic linker.  Alpha version.
-   Copyright (C) 2002 Free Software Foundation, Inc.
+/* Run-time dynamic linker data structures for loaded ELF shared objects.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,15 +17,27 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#ifndef __LDSODEFS_H
 
-/* Type used for the representation of TLS information in the GOT.  */
-typedef struct
-{
-  unsigned long int ti_module;
-  unsigned long int ti_offset;
-} tls_index;
+#include <elf.h>
 
-extern void *__tls_get_addr (tls_index *ti);
+struct La_alpha_regs;
+struct La_alpha_retval;
 
-/* Value used for dtv entries for which the allocation is delayed.  */
-#define TLS_DTV_UNALLOCATED	((void *) -1l)
+#define ARCH_PLTENTER_MEMBERS						\
+    Elf64_Addr (*alpha_gnu_pltenter) (Elf64_Sym *, unsigned int,	\
+				     uintptr_t *, uintptr_t *,		\
+				     const struct La_alpha_regs *,	\
+				     unsigned int *, const char *name,  \
+				     long int *framesizep);
+
+#define ARCH_PLTEXIT_MEMBERS						\
+    unsigned int (*alpha_gnu_pltexit) (Elf64_Sym *, unsigned int,	\
+				      uintptr_t *, uintptr_t *,		\
+				      const struct La_alpha_regs *,	\
+				      struct La_alpha_retval *,		\
+				      const char *);
+
+#include_next <ldsodefs.h>
+
+#endif

@@ -1,5 +1,6 @@
-/* Thread-local storage handling in the ELF dynamic linker.  Alpha version.
-   Copyright (C) 2002 Free Software Foundation, Inc.
+/* Definitions for testing PLT entry/exit auditing.  Alpha version.
+   Copyright (C) 2012 Free Software Foundation, Inc.
+
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,15 +18,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-
-/* Type used for the representation of TLS information in the GOT.  */
-typedef struct
-{
-  unsigned long int ti_module;
-  unsigned long int ti_offset;
-} tls_index;
-
-extern void *__tls_get_addr (tls_index *ti);
-
-/* Value used for dtv entries for which the allocation is delayed.  */
-#define TLS_DTV_UNALLOCATED	((void *) -1l)
+#define pltenter la_alpha_gnu_pltenter
+#define pltexit la_alpha_gnu_pltexit
+#define La_regs La_alpha_regs
+#define La_retval La_alpha_retval

@@ -1,3 +1,44 @@
+2012-02-15  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	* sysdeps/sh/crti.S, sysdeps/sh/crtn.S: New files, based on
+	compiler output for sysdeps/generic/initfini.c.
+	* sysdeps/sh/elf/initfini.c: Remove file.
+
+2012-02-16  David S. Miller  <davem@davemloft.net>
+
+	[BZ #11494]
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (O_FSYNC): Define.
+
+	* sysdeps/sparc/Makefile: Add -fPIC when building crt{i,n}.S
+	* sysdeps/sparc/crti.S: New file.
+	* sysdeps/sparc/crtn.S: New file.
+	* sysdeps/sparc/sparc32/Makefile: Remove initfini handling.
+	* sysdeps/sparc/sparc64/Makefile: Likewise.
+
+2012-02-15  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/getcwd.c: Include sys/param.h.
+
+2012-02-15  Roland McGrath  <roland@hack.frob.com>
+
+	[BZ #4822]
+	* sysdeps/mach/hurd/malloc-machine.h (madvise): New macro.
+
+	* mach/devstream.c (cookie_io_functions_t): Macro removed.
+	(write, read, close): Likewise.
+	Patch by Aurelien Jarno <aurelien@aurel32.net>.
+
+2012-02-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/bits/signalfd.h: New file.
+	* sysdeps/unix/sysv/linux/sparc/bits/signalfd.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/signalfd.h: Remove.
+	* sysdeps/unix/sysv/linux/sys/signalfd.h: Get flags from
+	<bits/signalfd.h>.
+	(SFD_CLOEXEC, SFD_NONBLOCK): Don't define here.
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/signalfd.h.
+
 2012-02-14  Marek Polacek  <polacek@redhat.com>
 
 	* sysdeps/x86_64/crti.S: New file.

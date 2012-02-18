@@ -6,7 +6,6 @@ aeabi_routines = aeabi_assert aeabi_errno_addr \
 ifeq (y,$(OPTION_EGLIBC_LOCALE_CODE))
 aeabi_routines += aeabi_localeconv
 endif
-CFLAGS-initfini.s += -fno-asynchronous-unwind-tables -fno-unwind-tables
 
 sysdep_routines += $(aeabi_constants) $(aeabi_routines)
 static-only-routines += $(aeabi_constants)
@@ -36,8 +35,4 @@ endif
 
 ifeq ($(subdir),math)
 $(objpfx)libm.so: $(elfobjdir)/ld.so
-endif
-
-ifeq ($(subdir),nptl)
-CFLAGS-pt-initfini.s += -fno-asynchronous-unwind-tables -fno-unwind-tables
 endif

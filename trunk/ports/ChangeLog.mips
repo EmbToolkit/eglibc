@@ -1,3 +1,75 @@
+2012-02-17  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/mips/dl-procinfo.h(_DL_PLATFORMS_COUNT): define to 4,
+	matching the array in dl-procinfo.c.
+
+2012-02-17  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/mips/fpu/libm-test-ulps: Adjust ULPs for jn tests.
+	* sysdeps/mips/mips64/n32/fpu/libm-test-ulps: Likewise.
+	* sysdeps/mips/mips64/n64/fpu/libm-test-ulps: Likewise.
+
+2012-02-15  Robert Millan  <rmh@gnu.org>
+
+	[BZ #12301]
+	* sysdeps/unix/sysv/linux/mips/mips32/sysdep.h [__ASSEMBLER__]
+	[__PIC__] (SYSCALL_ERROR_LABEL): New macro.
+
+2012-02-15  Robert Millan  <rmh@gnu.org>
+
+	[BZ #12298]
+	* sysdeps/unix/sysv/linux/mips/sys/tas.h: Moved to ...
+	* sysdeps/mips/sys/tas.h: ... here.
+
+2012-02-15  Robert Millan  <rmh@gnu.org>
+
+	[BZ #12297]
+	* sysdeps/mips/dl-machine.h: Fix a comment regarding __start.
+	* sysdeps/unix/sysv/linux/mips/entry.h: Moved to ...
+	* sysdeps/unix/mips/entry.h: ... here.
+
+2012-02-15  Robert Millan  <rmh@gnu.org>
+
+	[BZ #12193]
+	* sysdeps/mips/dl-machine.h (DL_PLATFORM_INIT, dl_platform_init):
+	Define.
+	* sysdeps/mips/dl-procinfo.c: New file.
+	* sysdeps/mips/dl-procinfo.h: Likewise.
+
+2012-02-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/signalfd.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/signalfd.h: Remove.
+
+2012-02-15  Viju Vincent  <vijuvince@gmail.com>
+
+	* sysdeps/mips/dl-trampoline.c (__dl_runtime_resolve): Use locking
+	around calls to _dl_lookup_symbol_x.
+
+2012-02-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/inotify.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/inotify.h: Remove.
+
+2012-02-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/eventfd.h: New file.
+	* sysdeps/unix/sysv/linux/mips/sys/eventfd.h: Remove.
+
+2012-02-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/mips32/crti.S: New file, based on compiler output
+	for sysdeps/generic/initfini.c.
+	* sysdeps/mips/mips32/crtn.S: Likewise.
+	* sysdeps/mips/mips64/n32/crti.S: Likewise.
+	* sysdeps/mips/mips64/n32/crtn.S: Likewise.
+	* sysdeps/mips/mips64/n64/crti.S: Likewise.
+	* sysdeps/mips/mips64/n64/crtn.S: Likewise.
+	* sysdeps/mips/Makefile (CFLAGS-initfini.s): Remove variable.
+	(CFLAGS-pt-initfini.s): Likewise.
+	(CPPFLAGS-crti.S, CPPFLAGS-crtn.S, CPPFLAGS-pt-crti.S): Define
+	variables.
+
 2012-01-26  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/mips/sys/asm.h: Remove __STDC__ conditionals.

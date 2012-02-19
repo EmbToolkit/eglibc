@@ -1,3 +1,44 @@
+2012-02-18  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #5993]
+	* manual/install.texi: Do not document upgrading from libc5.
+
+2012-02-18  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #4596]
+	* manual/conf.texi (_POSIX_VERSION): Do not mention __POSIX__.
+
+2012-02-18  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/unix/sparc/sysdep.h (SPARC_PIC_THUNK): New macro.
+	(SETUP_PIC_REG): Use SPARC_PIC_THUNK and don't save and restore
+	%o7 across the call.
+	(SETUP_PIC_REG_LEAF): Do %o7 save/restore in this new macro
+	instead.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/sysdep.h: Use
+	SETUP_PIC_REG_LEAF.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/sysdep.h: Likewise.
+	* sysdeps/sparc/crti.S: Use SETUP_PIC_REG.
+	* sysdeps/sparc/crtn.S: Likewise.
+
+2012-02-17  Ulrich Drepper  <drepper@gmail.com>
+
+	* aout/Makefile: Remove.
+
+2012-02-18  Rafe Kettler  <rafe.kettler@gmail.com>
+
+	[BZ #13058]
+	* manual/examples/argp-ex1.c (main): Format definition in GNU
+	style.
+	* manual/examples/argp-ex2.c (main): Likewise.
+	* manual/examples/argp-ex3.c (main): Likewise.
+	* manual/examples/argp-ex4.c (main): Likewise.
+	* manual/examples/longopt.c (main): Use new-style prototype
+	definition.
+	* manual/examples/strncat.c (main): Specify return type and use
+	(void) for arguments.
+	* manual/examples/subopt.c (main): Use char **argv argument.
+
 2012-02-17  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #5077]

@@ -1,3 +1,117 @@
+2012-02-21  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/fpu/libm-test-ulps: More jn test ULP updates.
+	* sysdeps/sparc/sparc64/fpu/libm-test-ulps: Likewise.
+
+2012-02-20  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/__longjmp.S: Unwind in the 'thread' path
+	using a normal save/restore sequence, rather than allocating a
+	dummy stack frame just to store a frame pointer and restore.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/____longjmp_chk.S: Likewise.
+
+2012-02-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/install.texi: Fix stray word in line-wrapped comment.
+
+2012-02-20  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/elf/configure.in (PI_STATIC_AND_HIDDEN): Define if
+	both binutils and gcc support GOTDATA.
+
+	* sysdeps/unix/sparc/sysdep.h: Document why we don't use
+	"rd %pc" in the PIC register setup sequences.
+
+	* sysdeps/sparc/crti.S: Try to use GOTDATA relocs.
+	* sysdeps/sparc/sparc32/dl-machine.h (RTLD_START): Likewise.
+	* sysdeps/sparc/sparc32/elf/start.S: Likewise.
+	* sysdeps/sparc/sparc64/dl-machine.h (RTLD_START): Likewise.
+	* sysdeps/sparc/sparc64/elf/start.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memset.S: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/____longjmp_chk.S: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/sysdep.h
+	(SYSCALL_ERROR_HANDLER): Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/____longjmp_chk.S: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/brk.S: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/sysdep.h
+	(SYSCALL_ERROR_HANDLER): Likewise.
+
+	* config.h.in (HAVE_BINUTILS_GOTDATA): New.
+	(HAVE_GCC_GOTDATA): New.
+	* sysdeps/sparc/elf/configure.in: Test for GOTDATA
+	relocation support in both binutils and gcc.
+	* sysdeps/sparc/elf/configure: Regenerate.
+
+	* sysdeps/sparc/sparc32/elf/configure.in: Delete.
+	* sysdeps/sparc/sparc32/elf/configure: Delete.
+	* sysdeps/sparc/sparc64/elf/configure.in: Delete.
+	* sysdeps/sparc/sparc64/elf/configure: Delete.
+	* sysdeps/sparc/elf/configure.in: New file.
+	* sysdeps/sparc/elf/configure: Generate.
+
+	* sysdeps/sparc/sparc32/elf/configure.in: Delete WDISP22 check.
+	* sysdeps/sparc/sparc32/elf/configure: Regenerate.
+	* sysdeps/sparc/sparc64/elf/configure.in: Likewise.
+	* sysdeps/sparc/sparc64/elf/configure: Regenerate.
+	* config.h.in (BROKEN_SPARC_WDISP22): Remove.
+
+2012-02-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/install.texi: Do not mention specific glibc version
+	numbers.
+	* manual/libc.texinfo (VERSION, UPDATED): Update.
+	(@copying): Use @copyright{} and range of years.
+
+2012-02-21  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13695]
+	* csu/Makefile (distribute): Remove initfini.c and defs.awk.
+	[crti.S not in sysdirs] (generated): Do not append.
+	[crti.S not in sysdirs] (omit-deps): Likewise.
+	[crti.S not in sysdirs] ($(crtstuff:%=$(objpfx)%.o)): Remove rule.
+	[crti.S not in sysdirs] ($(objpfx)initfini.s): Likewise.
+	[crti.S not in sysdirs] ($(objpfx)crti.S): Likewise.
+	[crti.S not in sysdirs] ($(objpfx)crtn.S): Likewise.
+	[crti.S not in sysdirs] ($(patsubst %,$(objpfx)crt%.o,i n)):
+	Likewise.
+	[crti.S not in sysdirs] ($(objpfx)defs.h): Likewise.
+	[crti.S not in sysdirs] (CFLAGS-initfini.s): Remove variable.
+	[crti.S not in sysdirs] (initfini.c): Remove vpath directive.
+	* csu/defs.awk: Remove file.
+	* sysdeps/generic/initfini.c: Likewise.
+	* sysdeps/powerpc/powerpc32/Makefile (CFLAGS-initfini.s): Remove
+	variable.
+	* sysdeps/powerpc/powerpc64/Makefile (CFLAGS-initfini.s):
+	Likewise.
+
+2012-02-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/bits/epoll.h: New file.
+	* sysdeps/unix/sysv/linux/sparc/bits/epoll.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/epoll.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/epoll.h: Remove
+	* sysdeps/unix/sysv/linux/x86_64/sys/epoll.h: Likewise.
+	* sysdeps/unix/sysv/linux/sys/epoll.h: Get flags from
+	<bits/epoll.h>.
+	(EPOLL_CLOEXEC, EPOLL_NONBLOCK): Don't define here.
+	(__EPOLL_PACKED): Define to empty if not defined by
+	<bits/epoll.h>.
+	(struct epoll_event): Use __EPOLL_PACKED to make possibly packed.
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/epoll.h.
+
+2012-02-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/bits/timerfd.h: New file.
+	* sysdeps/unix/sysv/linux/sparc/bits/timerfd.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/timerfd.h: Remove.
+	* sysdeps/unix/sysv/linux/sys/timerfd.h: Get flags from
+	<bits/timerfd.h>.
+	(TFD_CLOEXEC, TFD_NONBLOCK): Don't define here.
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/timerfd.h.
+
 2012-02-20  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/i386/fpu/libm-test-ulps: Resort with gen-libm-test.pl -n

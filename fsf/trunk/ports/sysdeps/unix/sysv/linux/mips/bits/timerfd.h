@@ -1,4 +1,4 @@
-/* Copyright (C) 2001 Free Software Foundation, Inc.
+/* Copyright (C) 2008-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,29 +12,18 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
+#ifndef	_SYS_TIMERFD_H
+# error "Never use <bits/timerfd.h> directly; include <sys/timerfd.h> instead."
+#endif
 
-	.syntax no_register_prefix
-
-/* Make syscall (callno, ...) into a system call.  */
-
-ENTRY (syscall)
-	move.d	r10,r9
-	move.d	r11,r10
-	move.d	r12,r11
-	move.d	r13,r12
-	move.d	[sp],r13
-	move	srp,[sp]
-	move	[sp+4],mof
-	move	[sp+8],srp
-	break	13
-	cmps.w	-4096,r10
-	bhs	0f
-	move	[sp],srp
-	Ret
-	nop
-PSEUDO_END (syscall)
+/* Bits to be set in the FLAGS parameter of `timerfd_create'.  */
+enum
+  {
+    TFD_CLOEXEC = 02000000,
+#define TFD_CLOEXEC TFD_CLOEXEC
+    TFD_NONBLOCK = 00000200
+#define TFD_NONBLOCK TFD_NONBLOCK
+  };

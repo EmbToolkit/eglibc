@@ -1,4 +1,4 @@
-/* Copyright (C) 2002 Free Software Foundation, Inc.
+/* Copyright (C) 2008-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,17 +12,18 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
-/* This file contains a bit of information about the stack allocation
-   of the processor.  */
+#ifndef	_SYS_TIMERFD_H
+# error "Never use <bits/timerfd.h> directly; include <sys/timerfd.h> instead."
+#endif
 
-#ifndef _STACKINFO_H
-#define _STACKINFO_H	1
-
-/* On cris the stack grows down.  */
-#define _STACK_GROWS_DOWN	1
-
-#endif	/* stackinfo.h */
+/* Bits to be set in the FLAGS parameter of `timerfd_create'.  */
+enum
+  {
+    TFD_CLOEXEC  = 010000000,
+#define TFD_CLOEXEC TFD_CLOEXEC
+    TFD_NONBLOCK = 000000004
+#define TFD_NONBLOCK TFD_NONBLOCK
+  };

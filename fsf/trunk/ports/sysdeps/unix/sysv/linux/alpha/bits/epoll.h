@@ -1,5 +1,4 @@
-/* Low-level statistical profiling support function.  Linux/CRIS version.
-   Copyright (C) 2001 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -13,14 +12,18 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
-#include <signal.h>
+#ifndef	_SYS_EPOLL_H
+# error "Never use <bits/epoll.h> directly; include <sys/epoll.h> instead."
+#endif
 
-static void
-profil_counter (int signo, struct sigcontext *scp)
-{
-  profil_count ((void *) scp->regs.irp);
-}
+/* Flags to be passed to epoll_create1.  */
+enum
+  {
+    EPOLL_CLOEXEC  = 010000000,
+#define EPOLL_CLOEXEC EPOLL_CLOEXEC
+    EPOLL_NONBLOCK = 000000004
+#define EPOLL_NONBLOCK EPOLL_NONBLOCK
+  };

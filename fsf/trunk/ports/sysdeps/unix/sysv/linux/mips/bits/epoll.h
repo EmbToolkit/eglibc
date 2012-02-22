@@ -1,5 +1,4 @@
-/* PowerPC-specific implementation of profiling support.
-   Copyright (C) 1997, 2001 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -13,16 +12,18 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
-void __mcount_internal (unsigned long frompc, unsigned long selfpc);
+#ifndef	_SYS_EPOLL_H
+# error "Never use <bits/epoll.h> directly; include <sys/epoll.h> instead."
+#endif
 
-#define _MCOUNT_DECL(frompc, selfpc) \
-void __mcount_internal (unsigned long frompc, unsigned long selfpc)
-
-
-/* Define MCOUNT as empty since we have the implementation in another
-   file.  FIXME: Just stubs, currently.  */
-#define MCOUNT
+/* Flags to be passed to epoll_create1.  */
+enum
+  {
+    EPOLL_CLOEXEC = 02000000,
+#define EPOLL_CLOEXEC EPOLL_CLOEXEC
+    EPOLL_NONBLOCK = 00000200
+#define EPOLL_NONBLOCK EPOLL_NONBLOCK
+  };

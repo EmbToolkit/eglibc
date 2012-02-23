@@ -1,3 +1,45 @@
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+	    Roland McGrath  <roland@hack.frob.com>
+
+	[BZ #5461]
+	* manual/arith.texi (strtoll): Refer to LLONG_MAX and LLONG_MIN,
+	not LONG_LONG_MAX and LONG_LONG_MIN.
+	* manual/lang.texi (LONG_LONG_MIN): Document first as ISO
+	LLONG_MIN.  Refer to LONG_LONG_MIN only as older GCC-specific
+	name.
+	(LONG_LONG_MAX, LLONG_MAX, ULONG_LONG_MAX, ULLONG_MAX): Likewise.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #2547]
+	[BZ #11365]
+	* sysdeps/ieee754/flt-32/s_nearbyintf.c (__nearbyintf): Do not
+	manipulate bits before adding and subtracting TWO23[sx].
+	* math/libm-test.inc (nearbyint_test): Add more tests.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #2548]
+	* sysdeps/ieee754/flt-32/s_rintf.c (__rintf): Do not manipulate
+	bits before adding and subtracting TWO23[sx].
+	* math/libm-test.inc (rint_test): Add more tests.
+	(rint_test_tonearest): Likewise.
+	(rint_test_towardzero): Likewise.
+	(rint_test_downward): Likewise.
+	(rint_test_upward: Likewise.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #10110]
+	* include/stdc-predef.h: New file.  Extracted from features.h.
+	* include/features.h: Include stdc-predef.h.
+	* Makefile (headers): Add stdc-predef.h.
+	* CONFORMANCE (Compiler limitations): Update.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/libc.texinfo (VERSION, UPDATED): Revert.
+
 2012-02-21  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/sparc32/fpu/libm-test-ulps: More jn test ULP updates.

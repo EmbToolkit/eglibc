@@ -1,3 +1,9 @@
+2012-02-15  Khem Raj  <raj.khem@gmail.com>
+
+	[BZ #12097]
+	* sysdeps/unix/sysv/linux/arm/eabi/libc-do-syscall.S: Disable
+	contents unless __thumb__.
+
 2012-01-03  Mike Frysinger  <vapier@gentoo.org>
 
 	[BZ #12354]

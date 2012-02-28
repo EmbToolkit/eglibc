@@ -1,4 +1,115 @@
+2012-02-27  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_ceil.S: Fix comment formatting.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_ceilf.S: Likewise.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_rint.S: Likewise.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_rintf.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/s_ceil.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/s_ceilf.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/s_rint.S: Likewise.
+	* sysdeps/sparc/sparc64/fpu/s_rintf.S: Likewise.
+
+2012-02-27  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.in (CC): Restrict allowed GCC versions to 4.3 and
+	later.  Allow versions 5-9.
+	* configure: Regenerated.
+	* manual/install.texi (Tools for Compilation): Give GCC 4.3 as
+	required minimum version and 4.6 as recommended version.  Do not
+	mention bugs in GCC 2.7 and 2.8.
+	* INSTALL: Regenerated.
+
+2012-02-27  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_ceil.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_ceilf.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_rint.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_rintf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_ceil.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_ceilf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_rint.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_rintf.S: New file.
+
+	* sysdeps/ieee754/ldbl-128/s_nearbyintl.c (__nearbyintl): Do not
+	manipulate bits before adding and subtracting TWO112[sx].
+	* sysdeps/ieee754/ldbl-128/s_rintl.c (__rintl): Likewise.
+
+2012-02-27  Roland McGrath  <roland@hack.frob.com>
+
+	[BZ #13775]
+	* libio/bits/stdio-ldbl.h (vdprintf, dprintf): Put these under
+	[__USE_XOPEN2K8] rather than [__USE_GNU], to match the stdio.h decls.
+	* libio/stdio.h (vdprintf, dprintf): Remove comment about these not
+	being in POSIX, because they are in 1003.1-2008.
+
+	* rt/tst-aio.c: Include <fcntl.h>.
+	* rt/tst-aio7.c: Likewise.
+	* rt/tst-aio64.c: Likewise.
+
+	* stdio-common/tst-fmemopen.c (main): Remove spurious const.
+
+2012-02-27  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/install.texi (--with-headers): Describe headers as
+	interface headers, not private headers.
+	(Specific advice for GNU/Linux systems): Describe use of headers
+	from "make headers_install", not private headers from older
+	kernels.
+	* INSTALL: Regenerated.
+	* sysdeps/unix/sysv/linux/configure.in (LIBC_LINUX_VERSION):
+	Change to 2.6.19.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+
+	* manual/llio.texi (fclean): Remove documentation.
+
+	* manual/Makefile (libc-texi-generated): New variable.  Include
+	version.texi.
+	(libc.dvi, libc.pdf, libc.info, libc/index.html): Depend on
+	$(libc-texi-generated), not duplicated list of files.
+	(version.texi, stamp-version): New rules.
+	(realclean): Remove $(libc-texi-generated), not individual files
+	from that list.  Do not remove dir-add.texinfo.
+	* manual/libc.texinfo: Comment out uses of edition numbers and
+	references to printed manual.  Remove last-updated dates.
+	(EDITION): Comment out.
+	(ISBN): Likewise.
+	(VERSION, UPDATED): Remove.
+	(version.texi): Include.
+
+2012-02-27  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/posix/spawni.c: Include <signal.h>.
+	* sysdeps/pthread/aio_cancel.c: Include <fcntl.h>.
+	* sysdeps/pthread/aio_fsync.c: Likewise.
+
 2012-02-26  Ulrich Drepper  <drepper@gmail.com>
+
+	* conform/Makefile (tests): Run only when not cross-compiling and
+	when fast-check is not defined.
+
+	* conform/conformtest.pl: XPG7 and POSIX2008 require C99.
+	* conform/data/limits.h-data: Fixes for POSIX2008.
+	* conform/run-conformtest.sh: Run all tests.
+	* include/arpa/inet.h: Changes to allow conformtest.pl to use the
+	headers.
+	* include/bits/dlfcn.h: Likewise.
+	* include/langinfo.h: Likewise.
+	* include/monetary.h: Likewise.
+	* include/sys/poll.h: Likewise.
+
+	* io/fcntl.h: Define AT_NO_AUTOMOUNT and AT_EMPTY_PATH only
+	for __USE_GNU.
+	* posix/spawn.h: Define __need_sigset_t.
+	* posix/sys/wait.h: Don't include <sys/resource.h>, define id_t here.
+	* posix/unistd.h: Declare ctermid only for XPG before XPG6.
+	* rt/aio.h: Don't include fcntl.h and signal.h.  Use bits/siginfo.h
+	to get sigevent_t only.
+	* sysdeps/unix/sysv/linux/bits/socket.h: Declare sendmmsg and recvmmsg
+	only for __USE_GNU.
+	* sysdeps/unix/sysv/linux/sparc/bits/socket.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/uio.h: Declare process_vm_readv and
+	process_vm_writev only for __USE_GNU.
+	* termios/termios.h: Declare tcgetsid also for POSIX2008.
 
 	* conform/Makefile: For now ignore errors from run-conformtest.
 	* conform/conformtest.pl: Simplify code.  Add -ansi to CFLAGS for

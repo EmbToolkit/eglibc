@@ -1,4 +1,4 @@
-/* ceil function, sparc64 version.
+/* floor function, sparc64 version.
    Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by David S. Miller <davem@davemloft.net>, 2012.
@@ -49,7 +49,7 @@
 #define ZERO		%f10			/* 0.0 */
 #define SIGN_BIT	%f12			/* -0.0 */
 
-ENTRY (__ceil)
+ENTRY (__floor)
 	sethi	%hi(TWO_FIFTYTWO), %o2
 	sethi	%hi(ONE_DOT_ZERO), %o3
 	fzero	ZERO
@@ -74,10 +74,10 @@ ENTRY (__ceil)
 	stx	%o3, [%sp + STACK_BIAS + 128]
 
 	ldd	[%sp + STACK_BIAS + 128], %f20
-	fmovduge %fcc2, ZERO, %f20
-	faddd	%f18, %f20, %f0
+	fmovdule %fcc2, ZERO, %f20
+	fsubd	%f18, %f20, %f0
 	fabsd	%f0, %f0
 	retl
 	 for	%f0, SIGN_BIT, %f0
-END (__ceil)
-weak_alias (__ceil, ceil)
+END (__floor)
+weak_alias (__floor, floor)

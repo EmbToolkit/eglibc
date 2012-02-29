@@ -1,4 +1,4 @@
-/* ceil function, sparc64 version.
+/* floor function, sparc32 v9 version.
    Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by David S. Miller <davem@davemloft.net>, 2012.
@@ -49,19 +49,23 @@
 #define ZERO		%f10			/* 0.0 */
 #define SIGN_BIT	%f12			/* -0.0 */
 
-ENTRY (__ceil)
+ENTRY (__floor)
 	sethi	%hi(TWO_FIFTYTWO), %o2
+	sllx	%o0, 32, %o0
 	sethi	%hi(ONE_DOT_ZERO), %o3
-	fzero	ZERO
-
+	or	%o0, %o1, %o0
+	stx	%o0, [%sp + 72]
 	sllx	%o2, 32, %o2
+	fzero	ZERO
+	sllx	%o3, 32, %o3
+
+	ldd	[%sp + 72], %f0
 	fnegd	ZERO, SIGN_BIT
 
-	sllx	%o3, 32, %o3
-	stx	%o2, [%sp + STACK_BIAS + 128]
+	stx	%o2, [%sp + 72]
 	fabsd	%f0, %f14
 
-	ldd	[%sp + STACK_BIAS + 128], %f16
+	ldd	[%sp + 72], %f16
 	fcmpd	%fcc3, %f14, %f16
 
 	fmovduge %fcc3, ZERO, %f16
@@ -71,13 +75,13 @@ ENTRY (__ceil)
 	faddd	%f0, %f16, %f18
 	fsubd	%f18, %f16, %f18
 	fcmpd	%fcc2, %f18, %f0
-	stx	%o3, [%sp + STACK_BIAS + 128]
+	stx	%o3, [%sp + 72]
 
-	ldd	[%sp + STACK_BIAS + 128], %f20
-	fmovduge %fcc2, ZERO, %f20
-	faddd	%f18, %f20, %f0
+	ldd	[%sp + 72], %f20
+	fmovdule %fcc2, ZERO, %f20
+	fsubd	%f18, %f20, %f0
 	fabsd	%f0, %f0
 	retl
 	 for	%f0, SIGN_BIT, %f0
-END (__ceil)
-weak_alias (__ceil, ceil)
+END (__floor)
+weak_alias (__floor, floor)

@@ -2602,6 +2602,10 @@ expm1_test (void)
   TEST_f_f (expm1, 1, M_El - 1.0);
   TEST_f_f (expm1, 0.75L, 1.11700001661267466854536981983709561L);
 
+#if defined TEST_LDOUBLE && LDBL_MAX_EXP >= 16384
+  TEST_f_f (expm1, 11356.25L, 9.05128237311923300051376115753226014206e+4931L);
+#endif
+
   errno = 0;
   TEST_f_f (expm1, 100000.0, plus_infty);
   check_int ("errno for expm1(large) == ERANGE", errno, ERANGE, 0, 0, 0);
@@ -4395,7 +4399,7 @@ lround_test (void)
   TEST_f_l (lround, 1073741824.01, 1073741824);
 # if LONG_MAX > 281474976710656
   TEST_f_l (lround, 281474976710656.025, 281474976710656);
-  TEST_f_l (llround, -3.65309740835E17, -365309740835000000);
+  TEST_f_l (lround, 18014398509481974, 18014398509481974);
 # endif
   TEST_f_l (lround, 2097152.5, 2097153);
   TEST_f_l (lround, -2097152.5, -2097153);
@@ -4438,6 +4442,7 @@ llround_test (void)
   TEST_f_L (llround, -2097152.5, -2097153);
   TEST_f_L (llround, 34359738368.5, 34359738369ll);
   TEST_f_L (llround, -34359738368.5, -34359738369ll);
+  TEST_f_L (llround, -3.65309740835E17, -365309740835000000LL);
 #endif
 
   /* Test boundary conditions.  */

@@ -1,3 +1,55 @@
+2012-02-29  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13786]
+	* sysdeps/i386/i686/multiarch/strcmp.S [USE_AS_STRCASECMP_L]: Do
+	not include ../strcmp.S.
+	[USE_AS_STRNCASECMP_L]: Likewise.
+	* sysdeps/i386/i686/multiarch/strcasecmp_l-c.c
+	(__strcasecmp_l_ia32): Define as alias to __strcasecmp_l_nonascii.
+	* sysdeps/i386/i686/multiarch/strncase_l-c.c
+	(__strncasecmp_l_ia32): Define as alias to
+	__strncasecmp_l_nonascii.
+
+	[BZ #5794]
+	* math/libm-test.inc (expm1_test): Add test for bug 5794.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* sysdeps/i386/fpu/libm-test-ulps: Reduce some expected errors.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2012-02-29  Jeff Law  <law@redhat.com>
+
+	* resolv/res_query.c (__libc_res_nquerydomain): Avoid
+	out of bounds read.
+
+2012-02-29  Marek Polacek  <polacek@redhat.com>
+
+	[BZ #13706]
+	* elf/rtld.c (dl_main): Always set l_used to 1 for vDSO.
+	* elf/Makefile: Add rules to run tst-unused-dep.out.
+
+2012-02-28  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/fpu/w_sqrt.S: New file.
+	* sysdeps/sparc/sparc32/fpu/w_sqrtf.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/w_sqrt.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/w_sqrtf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/w_sqrt.S: New file.
+	* sysdeps/sparc/sparc64/fpu/w_sqrtf.S: New file.
+
+2012-02-29  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (llround_test): Move one test from
+	lround_test.  Use TEST_f_L in moved test.
+	(lround_test): Move misplaced test to llround_test.  Add testcase
+	from bug 2561.
+
+2012-02-28  Ulrich Drepper  <drepper@gmail.com>
+
+	* sysdeps/x86_64/fpu/e_expf.S: New file.
+	Contributed by Dmitrieva Liubov <liubov.dmitrieva@gmail.com>.
+
 2012-02-28  Stanislav Brabec  <sbrabec@suse.cz>
 
 	[BZ #13637]

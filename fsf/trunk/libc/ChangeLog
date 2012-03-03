@@ -1,4 +1,112 @@
+2012-03-02  Roland McGrath  <roland@hack.frob.com>
+
+	[BZ #13792]
+	* manual/time.texi (Elapsed Time): Move timeval_subtract example
+	function to ...
+	* manual/timeval_subtract.c.texi: ... here, new file.
+
+2012-03-02  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update for recently added tests.
+
+2012-03-02  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #3976]
+	* sysdeps/ieee754/dbl-64/s_sin.c: Include <fenv.h>
+	(__sin): Save and restore rounding mode and use round-to-nearest
+	for all computations.
+	(__cos): Save and restore rounding mode and use round-to-nearest
+	for all computations.
+	* sysdeps/ieee754/dbl-64/s_tan.c: Include "math_private.h" and
+	<fenv.h>.
+	(tan): Save and restore rounding mode and use round-to-nearest for
+	all computations.
+	* math/libm-test.inc (cos_test_tonearest): New function.
+	(cos_test_towardzero): Likewise.
+	(cos_test_downward): Likewise.
+	(cos_test_upward): Likewise.
+	(sin_test_tonearest): Likewise.
+	(sin_test_towardzero): Likewise.
+	(sin_test_downward): Likewise.
+	(sin_test_upward): Likewise.
+	(tan_test_tonearest): Likewise.
+	(tan_test_towardzero): Likewise.
+	(tan_test_downward): Likewise.
+	(tan_test_upward): Likewise.
+	(main): Call the new functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #10135]
+	* sysdeps/ieee754/dbl-64/s_scalbln.c (__scalbln): First test for
+	small n, then large n, before computing and testing k+n.
+	* sysdeps/ieee754/dbl-64/s_scalbn.c (__scalbn): Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_scalbln.c (__scalbln):
+	Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_scalbn.c (__scalbn):
+	Likewise.
+	* sysdeps/ieee754/flt-32/s_scalblnf.c (__scalblnf): Likewise.
+	* sysdeps/ieee754/flt-32/s_scalbnf.c (__scalbnf): Likewise.
+	* sysdeps/ieee754/ldbl-128/s_scalblnl.c (__scalblnl): Likewise.
+	* sysdeps/ieee754/ldbl-128/s_scalbnl.c (__scalbnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalblnl.c (__scalblnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalbnl.c (__scalbnl): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_scalblnl.c (__scalblnl): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_scalbnl.c (__scalbnl): Likewise.
+	* math/libm-test.inc (scalbn_test): Add more tests.
+	(scalbln_test): Likewise.
+
+	* manual/filesys.texi (mode_t): Describe constraints on size and
+	signedness, not exact equivalence to a particular type.
+	(ino_t): Likewise.
+	(ino64_t): Likewise.
+	(dev_t): Likewise.
+	(nlink_t): Likewise.
+	(blkcnt_t): Likewise.
+	(blkcnt64_t): Likewise.
+	* manual/llio.texi (off_t): Likewise.
+
+	[BZ #3976]
+	* sysdeps/ieee754/dbl-64/e_exp.c: Include <fenv.h>.
+	(__ieee754_exp): Save and restore rounding mode and use
+	round-to-nearest for all computations.
+	* math/libm-test.inc (exp_test_tonearest): New function.
+	(exp_test_towardzero): Likewise.
+	(exp_test_downward): Likewise.
+	(exp_test_upward): Likewise.
+	(main): Call the new functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2012-03-01  Chris Demetriou  <cgd@google.com>
+
+	* sysdeps/gnu/errlist-compat.awk: Don't depend on AWK internals to
+	have predictable order.
+
 2012-03-01  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/unix/sysv/linux/sparc/sparc32/getpagesize.c: Delete.
+
+	* sysdeps/sparc/sparc64/fpu/s_finite.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_finitef.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_isinf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_isinff.S: New file.
+
+	* sysdeps/sparc/sparc32/fpu/s_signbit.S: New file.
+	* sysdeps/sparc/sparc32/fpu/s_signbitf.S: New file.
+	* sysdeps/sparc/sparc32/fpu/s_signbitl.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/s_isnan.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_isnan.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_isnanf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_signbit.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_signbitf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/s_signbitl.S: New file.
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+	* sysdeps/sparc/sparc32/fpu/libm-test-ulps: Move...
+	* sysdeps/sparc/fpu/libm-test-ulps: to here.
+	* sysdeps/sparc/sparc64/fpu/libm-test-ulps: Delete.
 
 	* sysdeps/sparc/crti.S: Remove HAVE_BINUTILS_GOTDATA checks.
 	* sysdeps/sparc/sparc32/dl-machine.h: Likewise.

@@ -1,3 +1,37 @@
+2012-02-27  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/socket.h [!__USE_GNU]: Do not
+	declare recvmmsg and sendmmsg.
+
+2012-02-27  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/siginfo.h (pthread_attr_t):
+	Change union tag to pthread_attr_t.  Only define typedef if not
+	already defined.
+	* sysdeps/unix/sysv/linux/mips/nptl/bits/pthreadtypes.h
+	(pthread_attr_t): Change union tag to pthread_attr_t.  Only define
+	typedef if not already defined.
+
+2012-02-26  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/siginfo.h: Don't name
+	siginfo_t struct.  Add forward declaration of pthread_attr_t and
+	use it in sigevent.
+	* sysdeps/unix/sysv/linux/mips/nptl/bits/pthreadtypes.h: Name
+	pthread_attr_t union.
+
+2012-02-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/epoll.h: New file.
+	* sysdeps/unix/sysv/linux/mips/bits/timerfd.h: Likewise.
+	* sysdeps/unix/sysv/linux/mips/sys/epoll.h: Remove.
+	* sysdeps/unix/sysv/linux/mips/sys/timerfd.h: Likewise.
+
+2012-02-20  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/unix/sysv/linux/mips/bits/errno.h (EHWPOISON): Define if
+	not defined.
+
 2012-02-17  Aurelien Jarno  <aurelien@aurel32.net>
 
 	* sysdeps/mips/dl-procinfo.h(_DL_PLATFORMS_COUNT): define to 4,

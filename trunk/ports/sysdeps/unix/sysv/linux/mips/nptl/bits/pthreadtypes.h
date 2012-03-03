@@ -1,5 +1,5 @@
 /* Machine-specific pthread type layouts.  MIPS version.
-   Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+   Copyright (C) 2005-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -50,11 +50,15 @@
 typedef unsigned long int pthread_t;
 
 
-typedef union
+union pthread_attr_t
 {
   char __size[__SIZEOF_PTHREAD_ATTR_T];
   long int __align;
-} pthread_attr_t;
+};
+#ifndef __have_pthread_attr_t
+typedef union pthread_attr_t pthread_attr_t;
+# define __have_pthread_attr_t	1
+#endif
 
 
 #if _MIPS_SIM == _ABI64

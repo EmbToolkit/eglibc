@@ -1,3 +1,76 @@
+2012-03-05  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+	* sysdeps/ieee754/ldbl-128ibm/e_coshl.c: Drop exp(-x) term
+	only for |x| >= 40.
+	* sysdeps/ieee754/ldbl-128ibm/e_sinhl.c: Likewise.
+
+2012-03-05  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/gettimeofday.c (gettimeofday_ifunc):
+	Replace gettimeofday with __vdso_gettimeofday.
+
+	* sysdeps/unix/sysv/linux/x86_64/init-first.c
+	(_libc_vdso_platform_setup): Replace clock_gettime and getcpu with
+	__vdso_clock_gettime and __vdso_getcpu.
+
+	* sysdeps/unix/sysv/linux/x86_64/time.c (time_ifunc): Replace
+	time with __vdso_time.
+
+2012-03-05  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/lang.texi (size_t): Note types to which size_t may be
+	equivalent with the GNU C Library, but do not describe when
+	differences between them are significant.
+
+2012-03-05  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+
+2012-03-05  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #3976]
+	* sysdeps/ieee754/dbl-64/e_pow.c: Include <fenv.h>.
+	(__ieee754_pow): Save and restore rounding mode and use
+	round-to-nearest for main computations.
+	* math/libm-test.inc (pow_test_tonearest): New function.
+	(pow_test_towardzero): Likewise.
+	(pow_test_downward): Likewise.
+	(pow_test_upward): Likewise.
+	(main): Call the new functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #3976]
+	* math/libm-test.inc (cosh_test_tonearest): New function.
+	(cosh_test_towardzero): Likewise.
+	(cosh_test_downward): Likewise.
+	(cosh_test_upward): Likewise.
+	(sinh_test_tonearest): Likewise.
+	(sinh_test_towardzero): Likewise.
+	(sinh_test_downward): Likewise.
+	(sinh_test_upward): Likewise.
+	(main): Call the new functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2012-03-05  Tom de Vries  <tom@codesourcery.com>
+
+	* sysdeps/generic/dl-osinfo.h (_dl_setup_stack_chk_guard): Ensure
+	default stack guard is set in last bytes.
+	* sysdeps/unix/sysv/linux/dl-osinfo.h (_dl_setup_stack_chk_guard): Same.
+
+2012-03-05  Kees Cook  <keescook@chromium.org>
+
+	* stdio-common/vfprintf.c (vfprintf): add missing errno settings.
+
+	[BZ #13656]
+	* stdio-common/vfprintf.c (vfprintf): Check for nargs overflow and
+	possibly allocate from heap instead of stack.
+	* stdio-common/bug-vfprintf-nargs.c: New file.
+	* stdio-common/Makefile (tests): Add nargs overflow test.
+
 2012-03-03  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/powerpc/fpu/libm-test-ulps: Update.

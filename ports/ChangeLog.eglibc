@@ -1,3 +1,9 @@
+2012-03-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/eabi/bits/predefs.h: Test _STDC_PREDEF_H, not
+	_FEATURES_H.
+	* sysdeps/arm/bits/predefs.h: Remove.
+
 2012-01-04  Tom de Vries  <tom@codesourcery.com>
 
 	* sysdeps/mips/Makefile: Compile tst-backtrace{2,3,4,5,6} with

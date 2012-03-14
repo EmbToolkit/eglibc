@@ -1,3 +1,30 @@
+2012-03-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/ieee754/dbl-64/s_nearbyint.c (__nearbyint): Do not
+	manipulate bits before adding and subtracting TWO52[sx].
+	* sysdeps/ieee754/dbl-64/s_rint.c (__rint): Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_nearbyint.c (__nearbyint):
+	Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_rint.c (__rint): Likewise.
+
+2012-03-13  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/Makefile: Remove rtld-global-offsets.sym handling.
+	* sysdeps/sparc/elf/rtld-global-offsets.sym: Delete.
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Don't include
+	rtld-global-offsets.h
+	* sysdeps/sparc/sparc64/multiarch/memset.S: Likewise.
+
+	* sysdeps/ieee754/ldbl-128/s_expm1l.c (__expm1l): Use expl for
+	large parameters.
+
+	* sysdeps/unix/sysv/linux/sparc/sparc64/dl-fxstatat64.c: New file.
+
+	* sysdeps/unix/sysv/linux/openat.c (OPENAT_NOT_CANCEL): Declare syscall
+	'err' in the ifdef scope in which it is actually used.
+
+	* nss/nss_db/db-init.c: Include string.h
+
 2012-03-12  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/generic/dl-osinfo.h (_dl_setup_stack_chk_guard): Fix

@@ -1,3 +1,66 @@
+2012-03-14  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/configure.in: New file.
+	* sysdeps/sparc/configure: Generate.
+	* configure.in (libc_cv_sparc_as_vis3): Substitute.
+	* configure: Regenerate.
+	* config.h.in (HAVE_AS_VIS3_SUPPORT): New.
+	* config.make.in (have-as-vis3): New.
+	* sysdeps/sparc/sparc32/sparcv9/Makefile (ASFLAGS-*): If VIS3 is
+	available use -Av9d instead of -Av9a.
+	* sysdeps/sparc/sparc64/Makefile: Likewise.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/multiarch/Makefile: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/multiarch/s_copysign-vis3.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/multiarch/s_copysign.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/multiarch/s_copysignf-vis3.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/fpu/multiarch/s_copysignf.S: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/Makefile: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbit-vis3.S: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbit.S: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbitf-vis3.S: New file.
+	* sysdeps/sparc/sparc64/fpu/multiarch/s_signbitf.S: New file.
+
+	* sysdeps/sparc/sparc64/fpu/s_copysign.S (__copysign): Use fzeros/fnegs
+	to load 0x80000000 into a float register instead of using the stack.
+	* sysdeps/sparc/sparc64/fpu/s_copysignf.S (__copysignf): Likewise.
+
+2012-03-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/syscall.h.
+	($(objpfx)syscall-%.h): Rename rule to $(objpfx)bits/syscall%h.
+	($(objpfx)syscall-%.d): Rename rule to $(objpfx)bits/syscall%d.
+	($(inst_includedir)/bits/syscall.h): Remove rule.
+	($(objpfx)bits/syscall.d): Include instead of
+	$(objpfx)syscall-list.d.
+	(generated): Change syscall-list.h and syscall-list.d to
+	bits/syscall.h and bits/syscall.d.
+
+2012-03-14  Roland McGrath  <roland@hack.frob.com>
+
+	[BZ #13846]
+	* manual/llio.texi (Memory-mapped I/O): Fix wrong function name.
+
+2012-03-14  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13841]
+	* math/s_csqrt.c: Include <float.h>.
+	(__csqrt): Scale large or subnormal inputs.
+	* math/s_csqrtf.c: Likewise.
+	* math/s_csqrtl.c: Likewise.
+	* math/libm-test.inc (csqrt_test): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #13840]
+	* math/libm-test.inc (hypot_test): Add more tests.
+
+2012-03-13  David S. Miller  <davem@davemloft.net>
+
+	[BZ #13840]
+	* sysdeps/ieee754/flt-32/e_hypotf.c (__ieee754_hypotf): Rewrite to use
+	double-precision for the calculation instead of scaling.
+
 2012-03-13  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/ieee754/dbl-64/s_nearbyint.c (__nearbyint): Do not

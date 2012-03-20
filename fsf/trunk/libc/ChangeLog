@@ -1,3 +1,210 @@
+2012-03-19  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/mathdef.h: Don't include <bits/wordsize.h>.
+	(fenv_t): Check __x86_64__ instead of __WORDSIZE.
+
+2012-03-19  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/mathdef.h: Don't include <bits/wordsize.h>.
+	Check __x86_64__ instead of __WORDSIZE.
+
+2012-03-19  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/ldd-rewrite.sed: Support x32.
+
+2012-03-19  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+	* sysdeps/sparc/fpu/fenv_private.h: New file.
+	* sysdeps/sparc/fpu/math_private.h: Use it.
+	(libc_feholdexcept, libc_feholdexceptf, libc_feholdexceptl):
+	Remove.
+	(libc_feholdexcept_setround, libc_feholdexcept_setroundf,
+	(libc_feholdexcept_setroundl): Remove.
+	(libc_fetestexcept, libc_fetestexceptf, libc_fetestexceptl):
+	Remove.
+	(libc_fesetenv, libc_fesetenvf, libc_fesetenvl): Remove.
+	(libc_feupdateenv, libc_feupdateenvf, libc_feupdateenvf): Remove.
+
+2012-03-19  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/fpu/math_private.h (EXTRACT_WORDS64): Use
+	int64_t instead of long int.
+	(INSERT_WORDS64): Likwise.
+
+2012-03-19  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/jmpbuf-unwind.h (_JMPBUF_CFA_UNWINDS_ADJ): Cast
+	_Unwind_GetCFA return to _Unwind_Ptr first.
+
+2012-03-19  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13629]
+	* math/s_clog.c: Include <float.h>.
+	(__clog): Scale large or subnormal inputs.
+	* math/s_clogf.c: Likewise.
+	* math/s_clogl.c: Likewise.
+	* math/s_clog10.c: Include <float.h>.
+	(M_LOG10_2): Define.
+	(__clog10): Scale large or subnormal inputs.
+	* math/s_clog10f.c: Likewise.
+	* math/s_clog10l.c: Likewise.
+	* math/libm-test.inc (clog_test): Add more tests.
+	(clog10_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #11451]
+	* sysdeps/ieee754/dbl-64/e_atan2.c (__ieee754_atan2): Scale large
+	x and y.
+	* math/libm-test.inc (atan2_test): Add another test.
+
+	* Makerules (common-objdir-compile): Remove.
+	* sysdeps/unix/Makefile (config-generated): Do not add
+	$(unix-generated) to variable.
+	[generic bits/local_lim.h] (mk-local_lim-CFLAGS): Remove variable.
+	[generic bits/local_lim.h] ($(common-objpfx)bits/local_lim.h):
+	Remove rule.
+	[generic bits/local_lim.h] ($(common-objpfx)mk-local_lim):
+	Likewise.
+	[generic bits/local_lim.h] (before-compile): Do not append to
+	variable.
+	[generic bits/local_lim.h] (common-generated): Likewise.
+	[generic sys/param.h] (before-compile): Do not append to variable.
+	[generic sys/param.h] ($(common-objpfx)sys/param.h): Remove rule.
+	[generic sys/param.h] ($(common-objpfx)param.h.c): Likewise.
+	[generic sys/param.h] ($(common-objpfx)param.h.dep): Likewise.
+	[generic sys/param.h] ($(common-objpfx)param.h.dep): Do not
+	include.
+	[generic sys/param.h] (sys/param.h-includes): Remove variable.
+	[generic sys/param.h] (sys/param.h-includes): Remove rule.
+	[generic sys/param.h] ($(addprefix
+	$(common-objpfx),$(sys/param.h-includes))): Likewise.
+	[generic sys/param.h] (common-generated): Do not append to
+	variable.
+	[generic sys/param.h] (sysdep_headers): Likewise.
+	[generic bits/errno.h] (before-compile): Do not append to
+	variable.
+	[generic bits/errno.h] ($(common-objpfx)bits/errno.h): Remove
+	rule.
+	[generic bits/errno.h] ($(common-objpfx)make-errnos): Likewise.
+	[generic bits/errno.h] ($(common-objpfx)make-errnos.c): Likewise.
+	[generic bits/errno.h] ($(common-objpfx)errnos): Likewise.
+	[generic bits/errno.h] (common-generated): Do not append to
+	variable.
+	[generic bits/ioctls.h] (before-compile): Do not append to
+	variable.
+	[generic bits/ioctls.h] ($(common-objpfx)bits/ioctls.h): Remove
+	rule.
+	[generic bits/ioctls.h] (ioctl-includes): Remove variable.
+	[generic bits/ioctls.h] (make-ioctls-CFLAGS): Likewise.
+	[generic bits/ioctls.h] ($(common-objpfx)make-ioctls): Remove
+	rule.
+	[generic bits/ioctls.h] ($(common-objpfx)make-ioctls.c): Likewise.
+	[generic bits/ioctls.h] (bits_termios.h): Remove variable.
+	[generic bits/ioctls.h] ($(common-objpfx)ioctls): Remove rule.
+	[generic bits/ioctls.h] (common-generated): Do not append to
+	variable.
+	[generic sys/syscall.h] (syscall.h): Remove variable.
+	[generic sys/syscall.h] ($(common-objpfx)sys/syscall.h): Remove
+	rule.
+	[generic sys/syscall.h] (before-compile): Do not append to
+	variable.
+	[generic sys/syscall.h] (common-generated): Likewise.
+	* sysdeps/unix/errnos-tmpl.c: Remove file.
+	* sysdeps/unix/errnos.awk: Likewise.
+	* sysdeps/unix/ioctls-tmpl.c: Likewise.
+	* sysdeps/unix/ioctls.awk: Likewise.
+	* sysdeps/unix/mk-local_lim.c: Likewise.
+	* sysdeps/unix/snarf-ioctls: Likewise.
+
+2012-03-19  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/i386/fpu/fenv_private.h: New file.
+	* sysdeps/i386/fpu/math_private.h: Use it.
+	(math_opt_barrier, math_force_eval): Remove.
+	(libc_feholdexcept_setround_53bit): Remove.
+	(libc_feupdateenv_53bit): Remove.
+	* sysdeps/x86_64/fpu/math_private.h: Likewise.
+	(math_opt_barrier, math_force_eval): Remove.
+	(libc_feholdexcept): Remove.
+	(libc_feholdexcept_setround): Remove.
+	(libc_fetestexcept, libc_fesetenv): Remove.
+	(libc_feupdateenv_test): Remove.
+	(libc_feupdateenv, libc_feholdsetround): Remove.
+	(libc_feresetround): Remove.
+
+	* sysdeps/i386/fpu/feholdexcpt.c (feholdexcept): Avoid the fldenv.
+	* sysdeps/x86_64/fpu/feholdexcpt.c (feholdexcept): Likewise.
+
+	* sysdeps/generic/math_private.h (default_libc_feupdateenv_test): New.
+	(libc_feupdateenv_test, libc_feupdateenv_testf): New.
+	(libc_feupdateenv_testl): New.
+	* sysdeps/x86_64/fpu/math_private.h (libc_feupdateenv_test): New.
+	(libc_feupdateenv_testf): New.
+	(libc_feupdateenv): Use libc_feupdateenv_test.
+	* sysdeps/ieee754/dbl-64/s_fma.c (__fma): Use libc_feupdateenv_test.
+	* sysdeps/ieee754/dbl-64/s_fmaf.c (__fmaf): Likewise.
+
+	* sysdeps/generic/math_private.h (libc_feholdsetround): New.
+	(libc_feholdsetroundf, libc_feholdsetroundl): New.
+	(libc_feresetround, libc_feresetroundf, libc_feresetroundl): New.
+	(libc_feresetround_noex): New.
+	(libc_feresetround_noexf): New.
+	(libc_feresetround_noexl): New.
+	(SET_RESTORE_ROUND, SET_RESTORE_ROUNDF, SET_RESTORE_ROUNDL): New.
+	(SET_RESTORE_ROUND_NOEX, SET_RESTORE_ROUND_NOEXF): New.
+	(SET_RESTORE_ROUND_NOEXL, SET_RESTORE_ROUND_53BIT): New.
+	* sysdeps/ieee754/dbl-64/e_exp.c (__ieee754_exp): Use
+	SET_RESTORE_ROUND.
+	* sysdeps/ieee754/dbl-64/e_pow.c (__ieee754_pow): Likewise.
+	* sysdeps/ieee754/dbl-64/s_sin.c (__sin): Use SET_RESTORE_ROUND_53BIT.
+	(__cos): Likewise.
+	* sysdeps/ieee754/dbl-64/s_tan.c (__tan): Likewise.
+	* sysdeps/ieee754/dbl-64/e_exp2.c (__ieee754_exp2): Use
+	SET_RESTORE_ROUND_NOEX.
+	* sysdeps/ieee754/dbl-64/e_exp2f.c (__ieee754_exp2f): Use
+	SET_RESTORE_ROUND_NOEXF.
+	* sysdeps/ieee754/flt-32/e_expf.c (__ieee754_expf): Likewise.
+	* sysdeps/x86_64/fpu/math_private.h (libc_feholdsetround): New.
+	(libc_feholdsetroundf): New.
+	(libc_feresetround, libc_feresetroundf): New.
+
+	* sysdeps/i386/fpu/math_private.h: Include <fenv.h>, <fpu_control.h>.
+	(libc_feholdexcept_setround_53bit): Convert from macro to function.
+	(libc_feupdateenv_53bit): Likewise.  Don't force _FPU_EXTENDED.
+
+	* sysdeps/generic/math_private.h: Include <fenv.h>.
+	(default_libc_feholdexcept): New.
+	(default_libc_feholdexcept_setround): New.
+	(default_libc_fesetenv, default_libc_feupdateenv): New.
+	(libc_feholdexcept): Only define if undefined.
+	(libc_feholdexceptf, libc_feholdexceptl): Likewise.
+	(libc_feholdexcept_setround, libc_feholdexcept_setroundf): Likewise.
+	(libc_feholdexcept_setroundl): Likewise.
+	(libc_feholdexcept_setround_53bit): Likewise.
+	(libc_fetestexcept, libc_fetestexceptf, libc_fetestexceptl): Likewise.
+	(libc_fesetenv, libc_fesetenvf, libc_fesetenvl): Likewise.
+	(libc_feupdateenv, libc_feupdateenvf, libc_feupdateenvl): Likewise.
+	(libc_feupdateenv_53bit): Likewise.
+	* sysdeps/x86_64/fpu/math_private.h: Include <fenv.h>.
+	(libc_feholdexcept): Convert from macro to inline function.
+	(libc_feholdexcept_setround, libc_fetestexcept): Likewise.
+	(libc_fesetenv, libc_feupdateenv): Likewise.
+
+	* sysdeps/generic/math_private.h (GET_HIGH_WORD): Define only if
+	not previously defined.
+	(GET_LOW_WORD, EXTRACT_WORDS64, INSERT_WORDS): Likewise.
+	(INSERT_WORDS64, SET_HIGH_WORD, SET_LOW_WORD): Likewise.
+	(GET_FLOAT_WORD, SET_FLOAT_WORD): Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/math_private.h: New file.
+	* sysdeps/ieee754/flt-32/math_private.h: New file.
+	* sysdeps/x86_64/fpu/math_private.h: Move the include_next of
+	math_private.h below SET_FLOAT_WORD.
+	(__isnan, __isinf_ns, __finite): Remove.
+	(__isnanf, __isinf_nsf, __finitef): Remove.
+
 2012-03-18  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/powerpc/fpu/libm-test-ulps: Update.

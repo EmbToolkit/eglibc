@@ -1,3 +1,17 @@
+2012-03-21  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/alpha/hp-timing.h: Include <_itoa.h> instead
+	of <stdio-common/_itoa.h>.
+
+2012-03-19  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/alpha/fpu/math_private.h: New file.
+
+2012-03-11  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/unix/sysv/linux/alpha/bits/socket.h: Remove file.
+	* sysdeps/unix/sysv/linux/alpha/bits/socket_type.h: New file.
+
 2012-03-09  Paul Eggert  <eggert@cs.ucla.edu>
 
 	[BZ #13673]

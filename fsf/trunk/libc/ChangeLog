@@ -1,3 +1,35 @@
+2012-03-23  Jeff Law  <law@redhat.com>
+
+	* nss/getnssent.c (__nss_getent): Fix typo.
+
+2012-03-23  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2012-03-23  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-tlsdesc.h (tlsdesc): Use anonymous union
+	to pad to uint64_t for each field.
+	(dl_tls_index): Replace unsigned long with uint64_t.
+
+2012-03-23  Daniel Jacobowitz  <dmj@google.com>
+	Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	[BZ #6528]
+	* grp/Makefile (otherlibs): Don't set it.
+	* inet/Makefile (otherlibs): Likewise.
+	* login/Makefile (otherlibs): Likewise.
+	* nscd/Makefile (otherlibs): Likewise.
+	* posix/Makefile (otherlibs): Likewise.
+	* pwd/Makefile (otherlibs): Likewise.
+	* rt/Makefile (otherlibs): Likewise.
+	* sunrpc/Makefile (otherlibs): Likewise.
+	* nss/Makefile (otherlibs): Likewise.
+	Add libnss_files to routines and static-only-routines.
+	($(objpfx)getent): Remove rule.
+	* resolv/Makefile: Add libnss_dns and libresolv to routines and
+	static-only-routines.
+
 2012-03-22  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #13892]

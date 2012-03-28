@@ -81,13 +81,13 @@ $as_echo X/"$0" |
 }
 
 # This file is generated from configure.in by Autoconf.  DO NOT EDIT!
- # Local configure fragment for sysdeps/arm/elf.
+ # Local configure fragment for sysdeps/mips.
 
 # Check for support of thread-local storage handling in assembler and
 # linker.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ARM TLS support" >&5
-$as_echo_n "checking for ARM TLS support... " >&6; }
-if ${libc_cv_arm_tls+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for MIPS TLS support" >&5
+$as_echo_n "checking for MIPS TLS support... " >&6; }
+if ${libc_cv_mips_tls+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat > conftest.s <<\EOF
@@ -98,8 +98,10 @@ foo:	.long	1
 	.globl bar
 bar:	.skip	4
 	.text
-.word	foo(tpoff)
-.word	foo(tlsgd)
+
+	lw	$25, %call16(__tls_get_addr)($28)
+	jalr	$25
+	addiu	$4, $28, %tlsgd(x)
 EOF
 if { ac_try='${CC-cc} -c $CFLAGS conftest.s 1>&5'
   { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
@@ -107,16 +109,15 @@ if { ac_try='${CC-cc} -c $CFLAGS conftest.s 1>&5'
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; }; then
-  libc_cv_arm_tls=yes
+  libc_cv_mips_tls=yes
 else
-  libc_cv_arm_tls=no
+  libc_cv_mips_tls=no
 fi
 rm -f conftest*
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $libc_cv_arm_tls" >&5
-$as_echo "$libc_cv_arm_tls" >&6; }
-if test $libc_cv_arm_tls = no; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $libc_cv_mips_tls" >&5
+$as_echo "$libc_cv_mips_tls" >&6; }
+if test $libc_cv_mips_tls = no; then
   as_fn_error $? "the assembler must support TLS" "$LINENO" 5
 fi
 
-#AC_DEFINE(PI_STATIC_AND_HIDDEN)

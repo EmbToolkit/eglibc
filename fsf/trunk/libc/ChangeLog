@@ -1,4 +1,44 @@
+2012-03-29  David S. Miller  <davem@davemloft.net>
+
+	* libio/fileops.c (_IO_new_file_xsputn): Don't try to optimize
+	small copies by hand.
+
+2012-03-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #13761]
+	* nis/nss_compat/compat-initgroups.c (getgrent_next_nss,
+	_nss_compat_initgroups_dyn): Fall back to malloc/free
+	for large group memberships.
+
 2012-03-28  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/memcpy.S: Implement mempcpy using a stub
+	that branches into memcpy.
+	* sysdeps/sparc/sparc64/memcpy.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy-niagara1.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy-niagara2.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy-ultra3.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Add mempcpy multiarch
+	bits.
+	* sysdeps/sparc/sparc64/rtld-memcpy.c: Include generic mempcpy
+	implementation too.
+	* sysdeps/sparc/mempcpy.S: New file.
+
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Provide a hidden def to
+	the IFUNC routine in the libc case.
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Likewise.
+
+	* sysdeps/sparc/sparc32/sparcv9/multiarch/rtld-memset.c: New file.
+	* sysdeps/sparc/sparc32/sparcv9/multiarch/rtld-memcpy.c: New file.
+	* sysdeps/sparc/sparc32/sparcv9/rtld-memset.c: New file.
+	* sysdeps/sparc/sparc32/sparcv9/rtld-memcpy.c: New file.
+	* sysdeps/sparc/sparc64/multiarch/rtld-memset.c: New file.
+	* sysdeps/sparc/sparc64/multiarch/rtld-memcpy.c: New file.
+	* sysdeps/sparc/sparc64/rtld-memset.c: New file.
+	* sysdeps/sparc/sparc64/rtld-memcpy.c: New file.
+
+	* sysdeps/sparc/sparc64/multiarch/memset-niagara1.S: Unroll main
+	loop to 256 bytes instead of 64 bytes and fix test signedness.
 
 	* sysdeps/sparc/Makefile: Add -fPIC to ASFLAGS-.os here....
 	* sysdeps/sparc/sparc32/Makefile: rather than here...

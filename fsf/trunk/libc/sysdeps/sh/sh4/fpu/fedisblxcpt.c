@@ -1,6 +1,7 @@
-/* Store current floating-point environment.
-   Copyright (C) 1997, 1998, 1999, 2000, 2012 Free Software Foundation, Inc.
+/* Disable floating-point exceptions.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Nobuhiro Iwamatsu <iwamatsu@nigauri.org>, 2012.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -20,16 +21,19 @@
 #include <fpu_control.h>
 
 int
-fegetenv (fenv_t *envp)
+fedisableexcept (int excepts)
 {
-  unsigned long int temp;
+  unsigned int temp, old_exc;
+
+  /* Get the current control register contents.  */
   _FPU_GETCW (temp);
-  /* When read fpscr, this was initialized.
-     We need to rewrite value of temp. */
+
+  old_exc = (temp >> 5) & FE_ALL_EXCEPT;
+
+  excepts &= FE_ALL_EXCEPT;
+
+  temp &= ~(excepts << 5);
   _FPU_SETCW (temp);
 
-  envp->__fpscr = temp;
-
-  return 0;
+  return old_exc;
 }
-libm_hidden_def (fegetenv)

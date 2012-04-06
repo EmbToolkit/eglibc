@@ -1,6 +1,7 @@
-/* Store current floating-point environment.
-   Copyright (C) 1997, 1998, 1999, 2000, 2012 Free Software Foundation, Inc.
+/* Install given floating-point environment and raise exceptions.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Nobuhiro Iwamatsu <iwamatsu@nigauri.org>, 2012.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -20,16 +21,19 @@
 #include <fpu_control.h>
 
 int
-fegetenv (fenv_t *envp)
+feupdateenv (const fenv_t *envp)
 {
-  unsigned long int temp;
-  _FPU_GETCW (temp);
-  /* When read fpscr, this was initialized.
-     We need to rewrite value of temp. */
-  _FPU_SETCW (temp);
+  unsigned int temp;
 
-  envp->__fpscr = temp;
+  _FPU_GETCW (temp);
+  temp = (temp & FE_ALL_EXCEPT);
+
+  /* Raise the saved exception. Incidently for us the implementation
+    defined format of the values in objects of type fexcept_t is the
+    same as the ones specified using the FE_* constants. */
+  fesetenv (envp);
+  feraiseexcept ((int) temp);
 
   return 0;
 }
-libm_hidden_def (fegetenv)
+libm_hidden_def (feupdateenv)

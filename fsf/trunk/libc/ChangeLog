@@ -1,4 +1,41 @@
+2012-04-06  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* bits/byteswap.h (__bswap_16): Removed.
+	Include <bits/byteswap-16.h> to get __bswap_16.
+	* sysdeps/i386/bits/byteswap.h: Likewise.
+	* sysdeps/s390/bits/byteswap.h: Likewise.
+	* sysdeps/x86_64/bits/byteswap.h: Likewise.
+	* bits/byteswap-16.h: New file.
+	* sysdeps/i386/bits/byteswap-16.h: Likewise.
+	* sysdeps/s390/bits/byteswap-16.h: Likewise.
+	* sysdeps/x86_64/bits/byteswap-16.h: Likewise.
+	* string/Makefile (headers): Add bits/byteswap-16.h.
+
+2012-04-06  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	[BZ #13895]
+	* nss/nsswitch.c (nss_load_library, __nss_lookup_function): Avoid
+	extra indirection.
+	* nss/Makefile (tests-static, tests): Add tst-nss-static.
+	* nss/tst-nss-static.c: New.
+
+2012-04-06  Robert Millan  <rmh@gnu.org>
+
+	[BZ #6486]
+	* manual/llio.texi (File Position Primitive): lseek
+	refers to WHENCE when it really means OFFSET.
+
+2012-04-06  Andreas Jaeger  <aj@suse.de>
+
+	* nss/nss_db/db-initgroups.c: Include <string.h> for strlen and
+	strncmp	declarations.
+
+	* abilist/libc.abilist: Add __poll and __ppoll.
+
 2012-04-05  David S. Miller  <davem@davemloft.net>
+
+	* scripts/check-local-headers.sh: Accept a host triplet in the
+	path matched by the exclude regexp.
 
 	* elf/dynamic-link.h (_ELF_DYNAMIC_DO_RELOC): Reduce down to one
 	definition.

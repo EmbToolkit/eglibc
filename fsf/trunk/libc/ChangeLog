@@ -1,3 +1,43 @@
+2012-04-08  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13705]
+	* math/libm-test.inc (exp_test): Do not allow overflow exception
+	on underflow test.
+
+2012-04-08  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #13705]
+	* sysdeps/ieee754/dbl-64/w_exp.c (__exp): Use __kernel_standard
+	instead of __kernel_standard_f.
+
+2012-04-08  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/i386/i686/memset_chk.S: Update copyright year.
+	* sysdeps/x86_64/memset_chk.S: Likewise.
+
+2012-04-08  Andreas Jaeger  <aj@suse.de>
+
+	[BZ #10153]
+	* manual/startup.texi (Environment Access): Describe return value
+	for putenv and setenv.
+
+	[BZ #6895]
+	* manual/filesys.texi (Directory Entries): Add description for
+	DT_LNK.
+
+	[BZ #6890]
+	* manual/filesys.texi (Directory Entries): Clarify that it's file
+	system not operating system in the description of DT_UNKNOWN.
+
+	[BZ #6578]
+	* manual/syslog.texi (closelog): Fix reference, it's openlog.
+
+2012-04-08  Stephen Compall  <s11@member.fsf.org>
+
+	[BZ #6649]
+	* manual/llio.texi (Opening and Closing Files): Add cross
+	reference to explain mode argument.
+
 2012-04-07  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/i386/i686/memset_chk.S: Change PIC to SHARED.

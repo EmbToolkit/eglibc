@@ -1,3 +1,72 @@
+2012-04-18  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/generic/memcopy.h (reg_char): Delete.
+	* debug/strcat_chk.c: Use char, not reg_char.
+	* debug/strcpy_chk.c: Likewise.
+	* debug/strncat_chk.c: Likewise.
+	* debug/strncpy_chk.c: Likewise.
+	* string/memchr.c: Likewise.
+	* string/memrchr.c: Likewise.
+	* string/rawmemchr.c: Likewise.
+	* string/strcat.c: Likewise.
+	* string/strchr.c: Likewise.
+	* string/strchrnul.c: Likewise.
+	* string/strcmp.c: Likewise.
+	* string/strcpy.c: Likewise.
+	* string/strncat.c: Likewise.
+	* string/strncmp.c: Likewise.
+	* string/strncpy.c: Likewise.
+
+2012-04-18  Will Schmidt  <will_schmidt@vnet.ibm.com>
+
+	* sysdeps/powerpc/memmove.c: New file based on string/memmove.c where
+	__builtin_memcopy is called when src and dest ranges are known to not
+	overlap.
+
+2012-04-18  Will Schmidt  <will_schmidt@vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/power6/wordcopy.c
+	(_wordcopy_fwd_dest_aligned): Replace switch with a parameterized
+	fwd_align_merge macro call.
+	(_wordcopy_bwd_dest_aligned): Replace switch with a parameterized
+	bwd_align_merge macro call.
+	* sysdeps/powerpc/powerpc32/power6/wordcopy.c: Likewise.
+
+2012-04-18  Will Schmidt  <will_schmidt@vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/power6/wordcopy.c: Add fwd_align_merge and
+	bwd_align_merge macros.
+	(_wordcopy_fwd_dest_aligned): Use fwd_align_merge macro calls.
+	(_wordcopy_bwd_dest_aligned): Use bwd_align_merge macro calls.
+	* sysdeps/powerpc/powerpc32/power6/wordcopy.c: Likewise.
+
+2012-04-18  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc64/memcopy.h: Delete.
+
+2012-04-18  Andreas Jaeger  <aj@suse.de>
+
+	[BZ# 6794]
+	* sysdeps/ieee754/ldbl-96/s_ilogbl.c: Moved to ...
+	* sysdeps/ieee754/ldbl-96/e_ilogbl.c: ... here.
+	Rename __ilogbl to __ieee754_ilogbl and remove weak_alias.
+
+	* sysdeps/ieee754/ldbl-128/s_ilogbl.c: Moved to ...
+	* sysdeps/ieee754/ldbl-128/e_ilogbl.c: ... here.
+	Rename __ilogbl to __ieee754_ilogbl and remove weak_alias.
+
+	* sysdeps/ieee754/ldbl-64-128/s_ilogbl.c: Moved to ...
+	* sysdeps/ieee754/ldbl-64-128/e_ilogbl.c: ... here.
+	Adjust for changed ldbl-128 files.
+
+	* sysdeps/sparc/sparc64/soft-fp/s_ilogbl.c: Moved to ...
+	* sysdeps/sparc/sparc64/soft-fp/e_ilogbl.c: ... here.
+	Rename __ilogbl to __ieee754_ilogbl and remove weak_alias.
+
+2012-04-17  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/memcopy.h: Delete.
+
 2012-04-17  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/i386/fpu/e_ilogb.S: Remove __ilogb*_finite alias.
@@ -30,7 +99,7 @@
 	exception being thrown with 0.0 as argument.
 	* sysdeps/ieee754/dbl-64/s_ilogb.c: Moved to ...
 	* sysdeps/ieee754/dbl-64/e_ilogb.c: ... here.
-	* sysdeps/ieee754/flt-32/e_ilogbf.c: Moved to ...
+	* sysdeps/ieee754/flt-32/s_ilogbf.c: Moved to ...
 	* sysdeps/ieee754/flt-32/e_ilogbf.c: ... here.
 	* sysdeps/ieee754/ldbl-128ibm/s_ilogbl.c: Moved to ...
 	* sysdeps/ieee754/ldbl-128ibm/e_ilogbl.c: ... here.

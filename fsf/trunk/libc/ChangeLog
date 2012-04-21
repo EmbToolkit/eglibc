@@ -1,3 +1,56 @@
+2012-04-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/common/lxstat.c: Remove file.
+	* sysdeps/unix/common/syscalls.list (sys_lstat): Remove.
+
+	* sysdeps/unix/sysv/Makefile: Remove file.
+
+	* sysdeps/unix/sysv/direct.h: Remove file.
+
+	* sysdeps/unix/sysv/bits/dirent.h: Remove file.
+	* sysdeps/unix/sysv/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/bits/local_lim.h: Likewise.
+	* sysdeps/unix/sysv/bits/signum.h: Likewise.
+	* sysdeps/unix/sysv/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/bits/utmp.h: Likewise.
+	* sysdeps/unix/sysv/bits/utsname.h: Likewise.
+
+	* sysdeps/unix/sysv/setrlimit.c: Remove file.
+
+	* sysdeps/unix/xmknod.c: Remove file.
+	* sysdeps/unix/syscalls.list (sys_mknod): Remove.
+
+	* sysdeps/unix/sysv/settimeofday.c: Remove file.
+
+	* sysdeps/unix/sysv/i386/time.S: Remove file.
+
+	* sysdeps/unix/fxstat.c: Remove file.
+	* sysdeps/unix/xstat.c: Likewise.
+	* sysdeps/unix/syscalls.list (sys_fstat, sys_stat): Remove.
+
+	* sysdeps/unix/sysv/sigaction.c: Remove file.
+
+	* sysdeps/unix/sysv/Makefile [termio.h not in sysdep_headers]
+	(sysdep_headers): Remove variable.
+	[termio.h not in sysdep_headers] (generated): Likewise.
+	[termio.h not in sysdep_headers] ($(objpfx)termio.h): Remove rule.
+	* sysdeps/unix/sysv/sysv_termio.h: Remove file.
+	* sysdeps/unix/sysv/tcdrain.c: Likewise.
+	* sysdeps/unix/sysv/tcflow.c: Likewise.
+	* sysdeps/unix/sysv/tcflush.c: Likewise.
+	* sysdeps/unix/sysv/tcgetattr.c: Likewise.
+	* sysdeps/unix/sysv/tcgetpgrp.c: Likewise.
+	* sysdeps/unix/sysv/tcsendbrk.c: Likewise.
+	* sysdeps/unix/sysv/tcsetattr.c: Likewise.
+	* sysdeps/unix/sysv/tcsetpgrp.c: Likewise.
+
+	* sysdeps/unix/siglist.c: Remove file.
+
+	* sysdeps/unix/getppid.S: Remove file.
+
+	* sysdeps/unix/mkdir.c: Remove file.
+	* sysdeps/unix/rmdir.c: Likewise.
+
 2012-04-19  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/gnu/errlist-compat.awk (END): Correct computation of

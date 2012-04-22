@@ -1,3 +1,8 @@
+2012-04-21  Andreas Jaeger  <aj@suse.de>
+
+	[BZ #13739]
+	* sysdeps/s390/s390-64/Makefile (distribute): Remove variable.
+
 2012-04-21  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/Versions (GLIBC_2.0): Add sysinfo.
@@ -8,7 +13,7 @@
 	[BZ #13927]
 	* sysdeps/x86_64/fpu/libm-test-ulps: Update.
 
-2012-04-21  Nix  <nix@esperi.org.uk>
+2012-04-21  Nick Alcock  <nick.alcock@oracle.com>
 
 	[BZ #7064]
 	* sysdeps/unix/sysv/linux/i386/syscalls.list: Omit explicit

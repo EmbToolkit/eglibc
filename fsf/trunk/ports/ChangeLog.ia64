@@ -1,3 +1,126 @@
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/s_ilogbl.S: Move to ...
+	* sysdeps/ia64/fpu/e_ilogbl.S: ... here.
+	(__ieee754_ilogbl): Rename from ilogbl.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/kernel-features.h (__ASSUME_ACCEPT4):
+	Define.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/dl-tls.h (GET_ADDR_PARAM): Define.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/bits/byteswap.h (__bswap_16): Removed.
+	Include <bits/byteswap-16.h> to get __bswap_16.
+	* sysdeps/ia64/bits/byteswap-16.h: New file.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/sys/ucontext.h: Delete __cplusplus
+	define check.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/nptl/bits/pthreadtypes.h
+	(pthread_attr_t): Change union tag to pthread_attr_t.  Only define
+	typedef if not already defined.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/bits/mman.h (MAP_STACK): Define.
+	(MAP_HUGETLB): Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/s_scalbn.c (__scalbn): Rename from scalbn.
+	Add weak alias from scalbn to __scalbn.
+	* sysdeps/ia64/fpu/s_scalbnf.c (__scalbnf): Rename from scalbnf.
+	Add weak alias from scalbnf to __scalbnf.
+	* sysdeps/ia64/fpu/s_scalbnl.c (__scalbnl): Rename from scalbnl.
+	Add weak alias from scalbnl to __scalbnl.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/s_matherrf.c: Delete __STDC__.
+	* sysdeps/ia64/fpu/s_matherrl.c,
+	sysdeps/unix/sysv/linux/ia64/sysdep.h: Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/e_rem_pio2l.c: New file.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/bits/fenv.h: Change __const to const.
+	* sysdeps/unix/sysv/linux/ia64/swapcontext.c: Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/s_matherrf.c: Change "math.h" and "math_private.h"
+	to <math.h> and <math_private.h>.
+	* sysdeps/ia64/fpu/s_matherrl.c: Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/hp-timing.h: Change stdio-common/_itoa.h to _itoa.h.
+	* sysdeps/unix/sysv/linux/ia64/register-dump.h: Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/crti.S: New file.
+	* sysdeps/ia64/crtn.S: Likewise.
+	* sysdeps/ia64/elf/initfini.c: Delete.
+	* sysdeps/unix/sysv/linux/ia64/nptl/pt-initfini.c: Likewise.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/elf/configure.in: Merge contents to ...
+	* sysdeps/ia64/configure.in: ... here.
+	* sysdeps/ia64/elf/configure: Delete.
+	* sysdeps/ia64/configure: Regenerate.
+	* sysdeps/ia64/elf/entry.h: Move to ...
+	* sysdeps/ia64/entry.h: ... here.
+	* sysdeps/ia64/elf/start.S: Move to ...
+	* sysdeps/ia64/start.S: ... here.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/elf/stackguard-macros.h: New stub include file.
+	* sysdeps/ia64/ldsodefs.h: Move ia64 logic from
+	sysdeps/generic/ldsodefs.h.
+	* sysdeps/ia64/nptl/shlib-versions: Move ia64 logic from
+	nptl/shlib-versions.
+	* sysdeps/ia64/preconfigure: Move ia64 logic from configure.in.
+	* sysdeps/ia64/shlib-versions: Move ia64 logic from shlib-versions.
+	* sysdeps/ia64/stackguard-macros.h: Move ia64 logic from
+	elf/stackguard-macros.h.
+	* sysdeps/ia64/tls-macros.h: Move ia64 logic from elf/tls-macros.h.
+	* sysdeps/ia64/tst-audit.h: Move ia64 logic from elf/tst-auditmod1.c.
+	* sysdeps/unix/sysv/linux/ia64/configure.in: Move ia64 logic from
+	sysdeps/unix/sysv/linux/configure.
+	* sysdeps/unix/sysv/linux/ia64/configure: Generate.
+	* sysdeps/unix/sysv/linux/ia64/kernel-features.h: Move ia64 logic
+	from sysdeps/unix/sysv/linux/kernel-features.h.
+
+2012-04-27  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/backtrace.c: Replace all contents with a single
+	include of sysdeps/x86_64/backtrace.c.
+	* sysdeps/unix/sysv/linux/ia64/nptl/fork.c: Change include path
+	prefix from ../ to sysdeps/unix/sysv/linux/, and "..." to <...>.
+	* sysdeps/unix/sysv/linux/ia64/nptl/timer_create.c,
+	sysdeps/unix/sysv/linux/ia64/nptl/timer_delete.c,
+	sysdeps/unix/sysv/linux/ia64/nptl/timer_getoverr.c,
+	sysdeps/unix/sysv/linux/ia64/nptl/timer_gettime.c,
+	sysdeps/unix/sysv/linux/ia64/nptl/timer_settime.c,
+	sysdeps/unix/sysv/linux/ia64/sysconf.c,
+	sysdeps/unix/sysv/linux/ia64/system.c: Likewise.
+
 2012-04-25  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/unix/sysv/linux/ia64/nptl/bits/local_lim.h: Replace

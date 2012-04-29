@@ -11,20 +11,13 @@
  */
 
 
-#include "math.h"
-#include "math_private.h"
+#include <math.h>
+#include <math_private.h>
 #include "libm_support.h"
 
-#ifdef __STDC__
-	int
-	weak_function
-	 __matherrl(struct exceptionl *x)
-#else
-	int
-	weak_function
-	__matherrl(x)
-	struct exceptionl *x;
-#endif
+int
+weak_function
+__matherrl(struct exceptionl *x)
 {
 	int n=0;
 	if(x->arg1!=x->arg1) return 0;

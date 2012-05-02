@@ -1,12 +1,85 @@
+2012-02-27  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/ieee754/ldbl-128/s_nearbyintl.c (__nearbyintl): Do not
+	manipulate bits before adding and subtracting TWO112[sx].
+	* sysdeps/ieee754/ldbl-128/s_rintl.c (__rintl): Likewise.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #2547]
+	[BZ #11365]
+	* sysdeps/ieee754/flt-32/s_nearbyintf.c (__nearbyintf): Do not
+	manipulate bits before adding and subtracting TWO23[sx].
+	* math/libm-test.inc (nearbyint_test): Add more tests.
+
+2012-02-22  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #2548]
+	* sysdeps/ieee754/flt-32/s_rintf.c (__rintf): Do not manipulate
+	bits before adding and subtracting TWO23[sx].
+	* math/libm-test.inc (rint_test): Add more tests.
+	(rint_test_tonearest): Likewise.
+	(rint_test_towardzero): Likewise.
+	(rint_test_downward): Likewise.
+	(rint_test_upward: Likewise.
+
 2012-02-21  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/sparc32/fpu/libm-test-ulps: More jn test ULP updates.
 	* sysdeps/sparc/sparc64/fpu/libm-test-ulps: Likewise.
 
+2012-02-19  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* math/w_acos.c: Use non-signaling floating-point comparisons.
+	* math/w_acosf.c: Likewise.
+	* math/w_acosh.c: Likewise.
+	* math/w_acoshf.c: Likewise.
+	* math/w_acoshl.c: Likewise.
+	* math/w_acosl.c: Likewise.
+	* math/w_asin.c: Likewise.
+	* math/w_asinf.c: Likewise.
+	* math/w_asinl.c: Likewise.
+	* math/w_atanh.c: Likewise.
+	* math/w_atanhf.c: Likewise.
+	* math/w_atanhl.c: Likewise.
+	* math/w_exp2.c: Likewise.
+	* math/w_exp2f.c: Likewise.
+	* math/w_exp2l.c: Likewise.
+	* math/w_j0.c: Likewise.
+	* math/w_j0f.c: Likewise.
+	* math/w_j0l.c: Likewise.
+	* math/w_j1.c: Likewise.
+	* math/w_j1f.c: Likewise.
+	* math/w_j1l.c: Likewise.
+	* math/w_jn.c: Likewise.
+	* math/w_jnf.c: Likewise.
+	* math/w_log.c: Likewise.
+	* math/w_log10.c: Likewise.
+	* math/w_log10f.c: Likewise.
+	* math/w_log10l.c: Likewise.
+	* math/w_log2.c: Likewise.
+	* math/w_log2f.c: Likewise.
+	* math/w_log2l.c: Likewise.
+	* math/w_logf.c: Likewise.
+	* math/w_logl.c: Likewise.
+	* math/w_sqrt.c: Likewise.
+	* math/w_sqrtf.c: Likewise.
+	* math/w_sqrtl.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_atanh.c: Likewise.
+	* sysdeps/ieee754/dbl-64/w_exp.c: Likewise.
+	* sysdeps/ieee754/flt-32/e_atanhf.c: Likewise.
+	* sysdeps/ieee754/flt-32/w_expf.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/w_expl.c: Likewise.
+
 2012-02-22  Carlos O'Donell  <carlos_odonell@mentor.com>
 
 	[BZ #411]
 	* sysdeps/unix/sysv/linux/i386/sysdep.h: Redefine __i686.
+
+2012-02-16  David S. Miller  <davem@davemloft.net>
+
+	[BZ #11494]
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (O_FSYNC): Define.
 
 2012-02-08  Andreas Schwab  <schwab@linux-m68k.org>
 

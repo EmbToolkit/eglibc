@@ -1,3 +1,31 @@
+2012-05-02  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2012-05-02  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	[BZ #14055]
+	* elf/dl-sysdep.c (_dl_show_auxv): Add bounds check.
+
+2012-05-02  Andreas Jaeger  <aj@suse.de>
+
+	* math/Makefile (CPPFLAGS-test-ildoubl.c): Add -frounding-math
+	since we manipulate rounding mode.
+	(CPPFLAGS-test-idouble.c): Likewise.
+	(CPPFLAGS-test-ifloat.c): Likewise.
+	(CFLAGS-test-ldouble.c): Likewise.
+	(CFLAGS-test-double.c): Likewise.
+	(CFLAGS-test-float.c): Likewise.
+	(CFLAGS-test-misc.c): Likewise.
+	(CFLAGS-test-test-fenv.c): Likewise.
+
+2012-05-02  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+        [BZ #2550]
+        [BZ #2570]
+        * sysdeps/ieee754/ldbl-128ibm/s_nexttoward.c: Use floating-point
+        comparisons to determine direction to adjust input.
+
 2012-05-01  Roland McGrath  <roland@hack.frob.com>
 
 	* elf/Makefile ($(objpfx)check-localplt.out): Redirect the test's

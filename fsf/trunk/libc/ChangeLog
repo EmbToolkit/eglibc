@@ -1,3 +1,26 @@
+2012-05-02  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_acosl.c (__ieee754_acosl): Fix
+	long double comparison inaccuracies.
+	* sysdeps/ieee754/ldbl-128ibm/e_asinl.c (__ieee754_asinl): Likewise.
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2012-05-04  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/unix/make-syscalls.sh: Fix check for version aliases.
+	* sysdeps/unix/sysv/linux/i386/syscalls.list: Revert last change.
+
+2012-05-04  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14049]
+	* stdlib/strtod_l.c (____STRTOF_INTERNAL): Check for trailing
+	nonzero digits before rounding a hex value.
+	* stdlib/tst-strtod.c (tests): Add another test.
+
+2012-05-03  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/fpu/libm-test-ulps: Update.
+
 2012-05-03  Andreas Jaeger  <aj@suse.de>
 
 	* malloc/mcheck.c (mcheck): Add barrier so that malloc/free pair

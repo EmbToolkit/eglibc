@@ -1,6 +1,5 @@
-/* Copyright (C) 2003 Free Software Foundation, Inc.
+/* Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Jakub Jelinek <jakub@redhat.com>, 2003.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,18 +15,14 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include "pthreadP.h"
+#include <sysdep.h>
 
-int
-pthread_spin_trylock (pthread_spinlock_t *lock)
-{
-  int res;
-  __asm __volatile
-    ("ldstub [%1], %0\n"
-     "membar #StoreLoad | #StoreStore"
-     : "=r" (res)
-     : "r" (lock)
-     : "memory");
-  return res == 0 ? 0 : EBUSY;
-}
+	.text
+ENTRY(pthread_spin_unlock)
+	membar		#StoreStore | #LoadStore
+	stb		%g0, [%o0]
+	retl
+	 clr		%o0
+END(pthread_spin_unlock)
+
+strong_alias (pthread_spin_unlock, pthread_spin_init)

@@ -1,3 +1,52 @@
+2012-05-10  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-trampoline.S: Check if RTLD_SAVESPACE_SSE
+	is 32-byte aligned.
+
+2012-05-11  Andreas Schwab  <schwab@linux-m68k.org>
+
+	[BZ #11837]
+	* iconvdata/gb18030.c: Update tables.
+	(BODY for FROM_LOOP): Update.  Handle two-byte encoded non-BMP
+	characters specially.
+	(BODY for TO_LOOP): Add encoding of missing ranges.
+
+2012-05-11  Thomas Schwinge  <thomas@codesourcery.com>
+
+	[BZ #13673]
+	* sysdeps/mach/hurd/accept4.c: Replace FSF snail mail address with URL.
+	* sysdeps/mach/hurd/dup3.c: Likewise.
+	* sysdeps/mach/hurd/readlinkat.c: Likewise.
+	* sysdeps/powerpc/memmove.c:: Likewise.
+
+2012-05-10  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-machine.h (elf_machine_rela_relative): Handle
+	R_X86_64_RELATIVE64 only if RTLD_BOOTSTRAP isn't defined.
+
+2012-05-10  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/elf.h (R_X86_64_RELATIVE64): New.
+	(R_X86_64_NUM): Updated.
+	* sysdeps/x86_64/dl-machine.h (elf_machine_rela): Handle
+	R_X86_64_RELATIVE64.  Always use Elf64_Addr with R_X86_64_64.
+	(elf_machine_rela_relative): Handle R_X86_64_RELATIVE64.
+	* sysdeps/x86_64/Makefile (tests): Add tst-quad1 tst-quad2
+	tst-quad1pie tst-quad2pie
+	(modules-names): Add tst-quadmod1 tst-quadmod2.
+	($(objpfx)tst-quad1): New dependency.
+	($(objpfx)tst-quad2): Likewise.
+	($(objpfx)tst-quad1pie): Likewise.
+	($(objpfx)tst-quad2pie): Likewise.
+	* sysdeps/x86_64/tst-quad1.c: New file.
+	* sysdeps/x86_64/tst-quad1pie.c: New file.
+	* sysdeps/x86_64/tst-quad2.c: Likewise.
+	* sysdeps/x86_64/tst-quad2pie.c: Likewise.
+	* sysdeps/x86_64/tst-quadmod1.S: Likewise.
+	* sysdeps/x86_64/tst-quadmod1pie.S: Likewise.
+	* sysdeps/x86_64/tst-quadmod2.S: Likewise.
+	* sysdeps/x86_64/tst-quadmod2pie.S: Likewise.
+
 2012-05-10  Samuel Thibault  <samuel.thibault@ens-lyon.org>
 
 	* io/fcntl.h (mode_t, off_t, pid_t): Define types.

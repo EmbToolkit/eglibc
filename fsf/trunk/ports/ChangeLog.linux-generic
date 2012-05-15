@@ -1,3 +1,19 @@
+2012-05-14  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/generic/bits/stat.h,
+	sysdeps/unix/sysv/linux/generic/bits/statfs.h:
+	Use "__aligned__" instead of "aligned" in public headers.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/generic/wordsize-32/syscalls.list:
+	Add entries for prlimit64 and fanotify_mark.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/generic/bits/typesizes.h
+	(__SNSECONDS_T_TYPE): New macro.
+
 2012-03-09  Paul Eggert  <eggert@cs.ucla.edu>
 
 	[BZ #13673]

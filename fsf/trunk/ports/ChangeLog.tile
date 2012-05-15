@@ -1,3 +1,140 @@
+2012-05-14  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/ld.abilist:
+        New file.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libBrokenLocale.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libanl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libc.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libcrypt.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libdl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libm.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libnsl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libresolv.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/librt.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libthread_db.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libutil.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/ld.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libBrokenLocale.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libanl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libc.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libcrypt.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libdl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libm.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libnsl.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libresolv.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/librt.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libthread_db.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libutil.abilist:
+        Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/ld.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libBrokenLocale.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libanl.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libcrypt.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libdl.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libm.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libnsl.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libresolv.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/librt.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libthread_db.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libutil.abilist: Likewise.
+
+2012-05-14  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/dl-start.S: Align stack for tilegx32.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/sys/dataplane.h: Add <features.h>.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/nptl/clone.S: Add missing CFI.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/tls-macros.h: Fix buggy TLS_GD, etc., macros.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/tilegx/memchr.c: Use new copy_byte() function
+	to efficiently generate a large constant for masking.
+	* sysdeps/tile/tilegx/memset.c: Likewise.
+	* sysdeps/tile/tilegx/rawmemchr.c: Likewise.
+	* sysdeps/tile/tilegx/strchr.c: Likewise.
+	* sysdeps/tile/tilegx/strchrnul.c: Likewise.
+	* sysdeps/tile/tilegx/strrchr.c: Likewise.
+	* sysdeps/tile/tilegx/string-endian.h (copy_byte): New function.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/tilegx/memcpy.c: Allow memcpy(p, p, n)
+	without corrupting memory at "p".
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/__tls_get_addr.S: Use __WORDSIZE, not _LP64.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/stackguard-macros.h: New file.
+	* sysdeps/tile/elf/stackguard-macros.h: New stub include file.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/Makefile (ELF_MACHINE_PLTREL_OVERLAP):
+	Remove variable no longer used by core.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/bits/siginfo.h: Don't name
+	siginfo_t struct.  Add forward declaration of pthread_attr_t and
+	use it in sigevent.
+	* sysdeps/unix/sysv/linux/tile/nptl/bits/pthreadtypes.h: Name
+	pthread_attr_t union.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/crti.S: New file, based on compiler output
+	for sysdeps/generic/initfini.c.
+	* sysdeps/tile/crtn.S: Likewise.
+	* sysdeps/tile/Makefile (CFLAGS-initfini.s): Remove variable.
+	* sysdeps/unix/sysv/linux/tile/nptl/Makefile
+	(CFLAGS-pt-initfini.s): Likewise.
+	* sysdeps/tile/elf/start.S: Moved to ...
+	* sysdeps/tile/start.S: ...here.
+
 2012-04-15  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/unix/sysv/linux/tile/tilegx/register-dump.h: Include

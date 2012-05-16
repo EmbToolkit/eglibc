@@ -1,3 +1,178 @@
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/Makefile (gen-as-const-headers):
+	Add sigaltstack-offsets.sym.
+	* sysdeps/unix/sysv/linux/x86_64/____longjmp_chk.S: Include
+	<sigaltstack-offsets.h>.
+	(CALL_FAIL): Use RSP_LP to operate on stack.  Use RDI_LP on
+	longjmp_msg pointer.
+	(____longjmp_chk): Use R8_LP and RDX_LP on SP and PC.  Use
+	R*_LP, sizeSS, oSS_FLAGS, oSS_SP and oSS_SIZE for alternate
+	signal stack.
+	* sysdeps/unix/sysv/linux/x86_64/sigaltstack-offsets.sym: New.
+
+2012-05-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* elf/stackguard-macros.h: Remove file.
+	* sysdeps/generic/stackguard-macros.h: New file.
+	* sysdeps/i386/stackguard-macros.h: Likewise.
+	* sysdeps/powerpc/powerpc32/stackguard-macros.h: Likewise.
+	* sysdeps/powerpc/powerpc64/stackguard-macros.h: Likewise.
+	* sysdeps/s390/s390-32/stackguard-macros.h: Likewise.
+	* sysdeps/s390/s390-64/stackguard-macros.h: Likewise.
+	* sysdeps/sparc/sparc32/stackguard-macros.h: Likewise.
+	* sysdeps/sparc/sparc64/stackguard-macros.h: Likewise.
+	* sysdeps/x86_64/stackguard-macros.h: Likewise.
+	* nptl/tst-stackguard1.c: Include <stackguard-macros.h> not
+	<elf/stackguard-macros.h>.
+
+	[BZ #14109]
+	* sysdeps/unix/sysv/linux/powerpc/sys/procfs.h (elf_vrreg_t): Use
+	__aligned__ in attribute.
+	* sysdeps/unix/sysv/linux/s390/sys/ucontext.h (__psw_t): Likewise.
+	(gregset_t): Likewise.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/Implies (wordsize-64): Moved to ....
+	* sysdeps/x86_64/64/Implies-after: Here.  New file.
+	* sysdeps/x86_64/x32/Implies-after: New file.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-trampoline.h: Use R*_LP to pass arguments
+	and access return value for _dl_profile_fixup.  Use R10_LP to
+	load frame size.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/init-first.c: New.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/sysdep.h: Allowed to be include more than once.
+	* sysdeps/x86_64/x32/sysdep.h: New file.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/__longjmp.S: Use R*_LP on SP and PC.
+	* sysdeps/x86_64/setjmp.S: Likewise.
+
+2012-05-15  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_log10.c: New file.
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_log2.c: New file.
+	* sysdeps/ieee754/dbl-64/e_log2.c: Fixing indents.
+	* sysdeps/ieee754/dbl-64/e_log10.c: Likewise and also
+	remove unused global constant.
+
+2012-05-15  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/getsysstats.c: Remove duplicate
+	include of <not-cancel.h>.
+
+2012-05-15  Roland McGrath  <roland@hack.frob.com>
+
+	* nscd/nscd-client.h (__nscd_acquire_maplock): Fix formatting.
+
+2012-05-15  Jeff Law  <law@redhat.com>
+	    Andreas Jaeger  <aj@suse.de>
+
+	[BZ #13594]
+	* nscd/nscd-client.h (__nscd_acquire_maplock): New function, split
+	out from...
+	* nscd/nscd_helper.c (__nscd_get_map_ref): ... here.
+	* nscd/nscd-client.h: Add __nscd_acquire_maplock.
+	* nscd/nscd_gethst_r.c (__nscd_get_nl_timestamp): Add locking to
+	code changing __hst_map_handle.map.
+
+2012-05-15  Roland McGrath  <roland@hack.frob.com>
+
+	* configure.in (sysnames): Look for Implies-before and Implies-after
+	files.
+	* configure: Regenerated.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sigaction.c (RESTORE2): Replace
+	8-byte data alignment with LP_SIZE alignment.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/clone.S: Load pointer to TID
+	into R10_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/dl-cache.h: New.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/Makefile: New file.
+	* sysdeps/unix/sysv/linux/x86_64/x32/getcpu.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/sched_getcpu-static.c:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/sched_getcpu.S: Likewise.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/stackinfo.h (stackinfo_get_sp): Use RSP_LP.
+	(stackinfo_sub_sp): Likewise.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/strcmp-sse42.S: Load pointers into
+	RAX_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcpy-ssse3.S: Load cache sizes
+	into R*_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcpy-ssse3-back.S: Load cache
+	sizes into R*_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/strcmp.S: Load pointers into R*_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/memcpy.S: Load __x86_64_data_cache_size_half
+	into R11_LP and load __x86_64_shared_cache_size_half into
+	R8_LP.
+
+2012-05-15  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcmp-sse4.S: Load cache size into
+	R8_LP.
+
+2012-05-15  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logb.c: New file. Optimized
+	logb for POWER7.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logbf.c: New file. Optimized
+	logbf for POWER7.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logbl.c: New file. Optimized
+	logbl for POWER7.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_logb.c: New file. Use
+	powerpc32/power7/fpu/s_logb.c via #include.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_logbf.c: New file. Use
+	powerpc32/power7/fpu/s_logbf.c via #include.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_logbl.c: New file. Use
+	powerpc32/power7/fpu/s_logbl.c via #include.
+
+2012-05-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* README.libm: Remove file.
+
+2012-05-14  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/start.S: Simulate popping 4-byte argument
+	count for x32.  Use R*_LP and omit operand-size suffix.
+
 2012-05-14  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* shlib-versions: Move x86_64-.*-linux.* entries to ...

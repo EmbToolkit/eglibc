@@ -1,3 +1,118 @@
+2012-05-18  Andreas Jaeger  <aj@suse.de>
+	    Carlos O'Donell  <carlos_odonell@mentor.com>
+
+	* manual/install.texi (Configuring and compiling): Update
+	description about files modified in the source directory.
+        * INSTALL: Regenerated.
+
+2012-05-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/x86_64/sysdep.S: Use RAX_LP to access return
+	value.  Use "or" to set return value to -1.
+	* sysdeps/unix/sysv/linux/x86_64/sysdep.S: Use RAX_LP to
+	negate return value.
+
+2012-05-18  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power4/Makefile (CFLAGS-wordcopy.c,
+	CFLAGS-memmove.c): remove -ftree-loop-linear which causes a build
+	failure if the compiler has Graphite support disabled.
+	* sysdeps/powerpc/powerpc32/power4/fpu/Makefile (CFLAGS-mpa.c):
+	Likewise.
+	* sysdeps/powerpc/powerpc64/power4/Makefile (CFLAGS-wordcopy.c,
+	CFLAGS-memmove.c): Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/Makefile (CFLAGS-mpa.c):
+	Likewise.
+
+2012-05-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/x32/_itoa.h: New file.
+
+	* sysdeps/unix/sysv/linux/getdents.c (__GETDENTS): Use
+	getdents system call only if kernel and user dirents have the
+	same d_ino and d_off.
+
+	* stdio-common/_itoa.c: Check _ITOA_NEEDED instead of
+	LLONG_MAX != LONG_MAX.
+	(_itoa_word): Use _ITOA_WORD_TYPE on value.
+	(_fitoa_word): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/sigcontextinfo.h: Fold copyright
+	years.
+	* sysdeps/unix/sysv/linux/x86_64/sys/debugreg.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/sys/procfs.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/sys/reg.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/sigcontext.h: Don't
+	include <bits/wordsize.h>.  Check __x86_64__ instead of
+	__WORDSIZE.
+	(sigcontext): Use "__uint64_t" instead of "unsigned long int"
+	if __x86_64__ is defined.  Use anonymous union on fpstate.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/user.h (user): Use
+	anonymous union.
+
+2012-05-18  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/powerpc/powerpc32/dl-start.S (_dl_start_user): Use
+	INTUSE on _dl_argv, and _rtld_local instead of _rtld_global.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp-common.S [IS_IN_rtld]:
+	Refer to _rtld_local_ro instead of _rtld_global_ro.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp-common.S [IS_IN_rtld]:
+	Likewise.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S [IS_IN_rtld]:
+	Likewise.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S [IS_IN_rtld]:
+	Likewise.
+	* sysdeps/powerpc/powerpc64/dl-trampoline.S [SHARED]: Likewise.
+	* sysdeps/powerpc/powerpc64/dl-machine.h: Use _rtld_local instead
+	of _rtld_global, and rtld_progname instead of _dl_argv[0].
+
+	* sysdeps/powerpc/powerpc32/dl-machine.c
+	(__elf_machine_runtime_setup) [PROF]: Don't reference
+	_dl_prof_resolve.
+
+2012-05-18  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/x86_64/fpu/bits/mathinline.h (lrintf): Make inline
+	function only available for GCCs before 3.4 since GCC 3.4
+	introduced a builtin.
+	(lrint): Likewise.
+	(llrintf): Likewise.
+	(llrint): Likewise.
+	(fmaxf): Likewise.
+	(fmax): Likewise.
+	(fminf): Likewise.
+	(fmin): Likewise.
+	(rint): Likewise.
+	(rintf): Likewise.
+	(nearbyint): Likewise.
+	(nearbyintf): Likewise.
+	(ceil): Likewise.
+	(ceilf): Likewise.
+	(floor): Likewise.
+	(floorf): Likewise.
+
+2012-05-17  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/pselect.c (data): Use __syscall_ulong_t
+	on both fields and cast pointer to __syscall_ulong_t.
+
+	* bits/types.h (__fsword_t): New type.
+	* bits/typesizes.h (__FSWORD_T_TYPE): New macro.
+	sysdeps/mach/hurd/bits/typesizes.h (__FSWORD_T_TYPE): Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/bits/typesizes.h
+	(__FSWORD_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/typesizes.h
+	(__FSWORD_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/typesizes.h
+	(__FSWORD_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/typesizes.h
+	(__FSWORD_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/bits/statfs.h (statfs): Replace
+	__SWORD_TYPE with __fsword_t.
+	(statfs64): Likewise.
+
 2012-05-17  David S. Miller  <davem@davemloft.net>
 
 	* crypt/sha512c-test.c (TIMEOUT): Increase to 32.

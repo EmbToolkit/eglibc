@@ -1,5 +1,4 @@
-/* Optimized, inlined string functions.  ARM version.
-   Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,15 +15,22 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _STRING_H
-# error "Never use <bits/string.h> directly; include <string.h> instead."
-#endif
+#include <sys/types.h>
+#include <endian.h>
+#include <errno.h>
+#include <unistd.h>
 
-/* We must defeat the generic optimized versions of these functions in
-   <bits/string2.h> since they don't work on the ARM.  This is because
-   the games they play with the __STRING2_COPY_ARR# structures fail
-   when structs are always 32-bit aligned.
-   XXX Should provide suitably optimal replacements.  */
-#define _HAVE_STRING_ARCH_strcpy 1
-#define _HAVE_STRING_ARCH_stpcpy 1
-#define _HAVE_STRING_ARCH_mempcpy 1
+#include <sysdep.h>
+#include <sys/syscall.h>
+#include <bp-checks.h>
+
+/* Truncate the file FD refers to to LENGTH bytes.  */
+int
+truncate64 (const char *path, off64_t length)
+{
+  unsigned int low = length & 0xffffffff;
+  unsigned int high = length >> 32;
+  int result = INLINE_SYSCALL (truncate64, 4, CHECK_STRING (path), 0,
+			       __LONG_LONG_PAIR (high, low));
+  return result;
+}

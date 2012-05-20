@@ -1,3 +1,49 @@
+2012-05-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/bits/endian.h (__FLOAT_WORD_ORDER): Remove
+	definitions.
+	* sysdeps/arm/bits/huge_val.h: Remove file.
+	* sysdeps/arm/bits/string.h: Remove file.
+	* sysdeps/unix/sysv/linux/arm/readahead.c [__NR_readahead]: Make
+	code unconditional.
+	[!__NR_readahead]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/sigaction.c [__NR_rt_sigreturn]:
+	Make code unconditional.
+	[!__NR_rt_sigreturn]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/sigrestorer.S [__NR_rt_sigreturn]:
+	Make code unconditional.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h [__NR_SYSCALL_BASE != 0]:
+	Remove conditional #error.
+	(__NR_stime): Remove #undef.
+	(__NR_alarm): Likewise.
+	(SWI_BASE): Remove.
+
+	* sysdeps/unix/sysv/linux/arm/ftruncate64.c (kernel-features.h):
+	Don't include.
+	[__NR_ftruncate64]: Make code unconditional.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/arm/mmap.S (kernel-features.h): Don't
+	include.
+	[__ASSUME_MMAP2_SYSCALL]:
+	Make code unconditional.
+	[!__ASSUME_MMAP2_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/posix_fadvise64.c
+	(kernel-features.h): Don't include.
+	[__NR_arm_fadvise64_64]: Make code unconditional.
+	[!__ASSUME_FADVISE64_64_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/truncate64.c (kernel-features.h):
+	Don't include.
+	[__NR_truncate64]: Make code unconditional.
+	[!__NR_truncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/arm/vfork.S (kernel-features.h): Don't
+	include.
+	[__NR_vfork]: Make code unconditional.
+	[__ASSUME_VFORK_SYSCALL]: Likewise.
+	[!__ASSUME_VFORK_SYSCALL]: Remove conditional code.
+	[!__NR_vfork]: Likewise.
+
 2012-05-16  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/kernel-features.h

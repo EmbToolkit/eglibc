@@ -1,5 +1,4 @@
-/* Access to the auxiliary vector.
-   Copyright (C) 2012 Free Software Foundation, Inc.
+/* Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,21 +15,11 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _SYS_AUXV_H
-#define _SYS_AUXV_H 1
+#ifndef _LINUX_X32_SYSDEP_H
+#define _LINUX_X32_SYSDEP_H 1
 
-#include <elf.h>
-#include <sys/cdefs.h>
-#include <bits/hwcap.h>
+/* There is some commonality.  */
+#include <sysdeps/unix/sysv/linux/x86_64/sysdep.h>
+#include <sysdeps/x86_64/x32/sysdep.h>
 
-__BEGIN_DECLS
-
-/* Return the value associated with an Elf*_auxv_t type from the auxv list
-   passed to the program on startup.  If TYPE was not present in the auxv
-   list, returns zero.  */
-extern unsigned long int getauxval (unsigned long int __type)
-  __THROW __attribute_const__;
-
-__END_DECLS
-
-#endif /* sys/auxv.h */
+#endif /* linux/x86_64/x32/sysdep.h */

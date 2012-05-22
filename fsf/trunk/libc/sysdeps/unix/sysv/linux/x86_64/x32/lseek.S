@@ -1,4 +1,4 @@
-/* Access to the auxiliary vector.
+/* The lseek system call with 64-bit offset.  Linux/x32 version.
    Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,21 +16,28 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _SYS_AUXV_H
-#define _SYS_AUXV_H 1
+#include <sysdep-cancel.h>
 
-#include <elf.h>
-#include <sys/cdefs.h>
-#include <bits/hwcap.h>
+/* Return -1LL in a full 64 bits.  */
+#undef SYSCALL_ERROR_HANDLER
+#define SYSCALL_ERROR_HANDLER	\
+0:				\
+	SYSCALL_SET_ERRNO;	\
+	orq $-1, %rax;		\
+	ret;
 
-__BEGIN_DECLS
+/* Always use our own error handler.  */
+#undef SYSCALL_ERROR_LABEL
+#define SYSCALL_ERROR_LABEL 0f
 
-/* Return the value associated with an Elf*_auxv_t type from the auxv list
-   passed to the program on startup.  If TYPE was not present in the auxv
-   list, returns zero.  */
-extern unsigned long int getauxval (unsigned long int __type)
-  __THROW __attribute_const__;
+PSEUDO (__libc_lseek64, lseek, 3)
+	ret
+PSEUDO_END (__libc_lseek64)
 
-__END_DECLS
-
-#endif /* sys/auxv.h */
+weak_alias (__libc_lseek64, __lseek64)
+libc_hidden_weak (__lseek64)
+weak_alias (__libc_lseek64, lseek64)
+libc_hidden_weak (lseek64)
+weak_alias (__libc_lseek64, __lseek)
+libc_hidden_weak (__lseek)
+weak_alias (__libc_lseek64, lseek)

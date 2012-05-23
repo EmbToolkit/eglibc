@@ -1,3 +1,119 @@
+2012-05-22  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/unix/sysv/linux/dl-vdso.h (CHECK_HASH): Macro removed.
+	(PREPARE_VERSION): Just use assert instead, it will be elided
+	under [NDEBUG] anyway.
+
+2012-05-22  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/Makefile: Include
+	$(firstword $(wildcard $(sysdirs:=/sysctl.mk))).
+	(sysdep_routines): Remove sysctl.
+	* sysdeps/unix/sysv/linux/bits/sysctl.h: New file.
+	* sysdeps/unix/sysv/linux/sysctl.mk: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/sysctl.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/sysctl.mk: Likewise.
+	* sysdeps/unix/sysv/linux/sys/sysctl.h: Include <bits/sysctl.h>.
+
+2012-05-22  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/x86_64/sched_getcpu.S: Rearrange code so
+	that pseudo_end is just ret and the stack pointer is correct also
+	for static library in error case.
+
+2012-05-22  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	[BZ #14122]
+	* nss/nsswitch.c (defconfig_entries): New variable.
+	(__nss_database_lookup): Don't leak defconfig entries.
+	(nss_parse_service_list): Don't leak on error paths.
+	(free_database_entries): New function.
+	(free_defconfig): New function.
+	(free_mem): Move common code to free_database_entries.
+
+2012-05-22  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/Makefile (sysdep_routines):
+	Add arch_prctl.
+	* sysdeps/unix/sysv/linux/x86_64/x32/arch_prctl.c: New file.
+
+	* sysdeps/unix/sysv/linux/wordsize-64/posix_fallocate.c
+	(posix_fallocate): Use INTERNAL_SYSCALL_TYPES if it is defined.
+	* sysdeps/unix/sysv/linux/x86_64/sysdep.h (INLINE_SYSCALL_TYPES):
+	New macro.
+	(INTERNAL_SYSCALL_NCS_TYPES): Likewise.
+	(INTERNAL_SYSCALL_TYPES): Likewise.
+	(LOAD_ARGS_TYPES_[1-6]): Likewise.
+	(LOAD_REGS_TYPES_[1-6]): Likewise.
+	(LOAD_ARGS_[1-6]): Use LOAD_ARGS_TYPES_[1-6].
+	(LOAD_REGS_[1-6]): Use LOAD_REGS_TYPES_[1-6].
+
+2012-05-22  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_copysign.S: Add compat symbol
+	copysignl for GLIBC_2_0.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_finite.S: Add compat symbol
+	finitel for GLIBC_2.0 and __finitel for GLIBC_2_1.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logb.c: Add compat symbol
+	logbl for GLIBC_2_0.
+	* sysdeps/powerpc/powerpc64/power6/fpu/s_copysign.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_finite.S: Likewise.
+
+2012-05-22  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/fcntl.h: Don't include
+	<bits/wordsize.h>.  Check __x86_64__ instead of __WORDSIZE.
+
+	* sysdeps/unix/sysv/linux/i386/sysdep.h (SYSCALL_ERROR_HANDLER):
+	Use "neg %eax".
+
+	* time/mktime.c: Update copyright years.
+
+2012-05-22  Paul Eggert  <eggert@cs.ucla.edu>
+
+	mktime: merge comment-quoting-style change from gnulib
+	* time/mktime.c: Quote 'like this' in comments.
+	The GNU coding standards suggest that we no longer quote `like this',
+	as "`" and "'" are typically rendered asymmetrically nowadays.
+	The typical gnulib style is to quote 'like this' when quoting
+	code, and "like this" when quoting English.
+
+	* time/mktime.c (compile-command): Add "-I.".
+
+	mktime: merge mktime-internal.h change from gnulib
+	* time/mktime.c [!_LIBC]: Include "mktime-internal.h".
+
+	mktime: merge time_r change from gnulib
+	* time/mktime.c [!_LIBC]: Do not include "time_r.h".
+
+	mktime: merge DEBUG change from gnulib
+	* time/mktime.c (mktime) [DEBUG]: #undef before #define-ing, in
+	case system <time.h> has a #define.
+
+	mktime: merge <sys/types.h> change from gnulib
+	* time/mktime.c: Do not include <sys/types.h>; no longer needed,
+	since <time.t> is now guaranteed to define time_t.
+
+	mktime: merge HAVE_CONFIG_H change from gnulib
+	* time/mktime.c: Include <config.h> if !_LIBC, not if HAVE_CONFIG_H.
+
+2012-05-22  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sysdep.h (SYSCALL_SET_ERRNO):
+	Use "neg %eax".
+
+	* sysdeps/unix/sysv/linux/bits/resource.h (RLIM_INFINITY): Use
+	__rlim_t cast.
+	(struct rusage): Use anonymous union to pad each field to
+	__syscall_slong_t.
+
+2012-05-21  David S. Miller  <davem@davemloft.net>
+
+	* Makefules (o-iterator): Remove .s cases.
+	(compile-command.s): Delete.
+	(COMPILE.s): Delete.
+	* sysdeps/unix/make-syscalls.sh: Remove .s file tests.
+
 2012-05-21  Joseph Myers  <joseph@codesourcery.com>
 
 	* configure.in (libc_cv_predef_stack_protector): Only consider

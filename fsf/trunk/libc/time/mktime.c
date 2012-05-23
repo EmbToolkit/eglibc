@@ -1,5 +1,5 @@
-/* Convert a `struct tm' to a time_t value.
-   Copyright (C) 1993-1999, 2002-2007, 2008 Free Software Foundation, Inc.
+/* Convert a 'struct tm' to a time_t value.
+   Copyright (C) 1993-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Paul Eggert <eggert@twinsun.com>.
 
@@ -21,18 +21,17 @@
    mktime.  */
 /* #define DEBUG 1 */
 
-#ifdef HAVE_CONFIG_H
+#ifndef _LIBC
 # include <config.h>
 #endif
 
 /* Assume that leap seconds are possible, unless told otherwise.
-   If the host has a `zic' command with a `-L leapsecondfilename' option,
+   If the host has a 'zic' command with a '-L leapsecondfilename' option,
    then it supports leap seconds; otherwise it probably doesn't.  */
 #ifndef LEAP_SECONDS_POSSIBLE
 # define LEAP_SECONDS_POSSIBLE 1
 #endif
 
-#include <sys/types.h>		/* Some systems define `time_t' here.  */
 #include <time.h>
 
 #include <limits.h>
@@ -43,6 +42,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 /* Make it work even if the system's libc has its own mktime routine.  */
+# undef mktime
 # define mktime my_mktime
 #endif /* DEBUG */
 
@@ -141,14 +141,14 @@ const unsigned short int __mon_yday[2][13] =
 
 
 #ifndef _LIBC
-/* Portable standalone applications should supply a "time_r.h" that
+/* Portable standalone applications should supply a <time.h> that
    declares a POSIX-compliant localtime_r, for the benefit of older
    implementations that lack localtime_r or have a nonstandard one.
    See the gnulib time_r module for one way to implement this.  */
-# include "time_r.h"
 # undef __localtime_r
 # define __localtime_r localtime_r
 # define __mktime_internal mktime_internal
+# include "mktime-internal.h"
 #endif
 
 /* Return an integer value measuring (YEAR1-YDAY1 HOUR1:MIN1:SEC1) -
@@ -509,7 +509,7 @@ mktime (struct tm *tp)
 {
 #ifdef _LIBC
   /* POSIX.1 8.1.1 requires that whenever mktime() is called, the
-     time zone names contained in the external variable `tzname' shall
+     time zone names contained in the external variable 'tzname' shall
      be set as if the tzset() function had been called.  */
   __tzset ();
 #endif
@@ -662,6 +662,6 @@ main (int argc, char **argv)
 
 /*
 Local Variables:
-compile-command: "gcc -DDEBUG -Wall -W -O -g mktime.c -o mktime"
+compile-command: "gcc -DDEBUG -I. -Wall -W -O2 -g mktime.c -o mktime"
 End:
 */

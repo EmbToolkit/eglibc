@@ -1,3 +1,16 @@
+2012-05-22  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/bits/libm-test-ulps: Update.
+
+	* sysdeps/tile/bits/wordsize.h (__WORDSIZE_COMPAT32): Rename to
+	__WORDSIZE_TIME64_COMPAT32.
+
+	* sysdeps/unix/sysv/linux/tile/tilepro/nptl/libc.abilist: Update.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx32/nptl/libc.abilist:
+	Update.
+	* sysdeps/unix/sysv/linux/tile/tilegx/tilegx64/nptl/libc.abilist:
+	Update.
+
 2012-05-17  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/tile/fegetenv.c: Version fegetenv() like fesetenv().

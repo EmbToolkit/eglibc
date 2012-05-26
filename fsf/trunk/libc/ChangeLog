@@ -1,3 +1,230 @@
+2012-05-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	(__ASSUME_NEW_GETRLIMIT_SYSCALL): Remove all definitions.
+	* sysdeps/unix/sysv/linux/i386/getrlimit.c: Do not include
+	kernel-features.h.
+	[!__ASSUME_NEW_GETRLIMIT_SYSCALL]: Remove conditional code.
+	[__ASSUME_NEW_GETRLIMIT_SYSCALL]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/i386/setrlimit.c Do not include
+	kernel-features.h.
+	[!__ASSUME_NEW_GETRLIMIT_SYSCALL]: Remove conditional code.
+	[__ASSUME_NEW_GETRLIMIT_SYSCALL]: Make code unconditional.
+
+2012-05-25  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* configure.in: Define the default includes to being none.
+	* configure: Regenerated.
+
+2012-05-25  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/x86_64/__longjmp.S: Add a static probe here.
+	* sysdeps/x86_64/setjmp.S: Likewise.
+	* sysdeps/i386/bsd-setjmp.S: Likewise.
+	* sysdeps/i386/bsd-_setjmp.S: Likewise.
+	* sysdeps/i386/setjmp.S: Likewise.
+	* sysdeps/i386/__longjmp.S: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/____longjmp_chk.S: Likewise.
+	* sysdeps/unix/sysv/linux/i386/____longjmp_chk.S: Likewise.
+
+	* include/stap-probe.h: New file.
+	* configure.in: Handle --enable-systemtap.
+	* configure: Regenerated.
+	* config.h.in (USE_STAP_PROBE): New #undef.
+	* extra-lib.mk (CPPFLAGS-$(lib)): Add -DIN_LIB=$(lib).
+	* elf/Makefile (CPPFLAGS-.os): Add -DIN_LIB=rtld.
+	* elf/rtld-Rules (rtld-CPPFLAGS): Likewise.
+
+2012-05-25  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13717]
+	* sysdeps/unix/sysv/linux/configure.in (arch_minimum_kernel): Set
+	to 2.4.0 where earlier.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/i386/chown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/fchown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/fchownat.c (fchownat)
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	(fchownat) [!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getegid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/geteuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getgid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getgroups.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getresgid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getresuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/getuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/lchown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/msgctl.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/semctl.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setegid.c: Do not include
+	<kernel-features.h>.
+	[__NR_setresgid] (__setresgid): Do not declare.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/seteuid.c: Do not include
+	<kernel-features.h>.
+	[__NR_setresuid] (__setresuid): Do not declare.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setfsgid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setfsuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setgid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setgroups.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setregid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setresgid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setresuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setreuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/setuid.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/i386/shmctl.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	(__ASSUME_SETRESUID_SYSCALL): Remove.
+	(__ASSUME_SETRESGID_SYSCALL): Likewise.
+	(__ASSUME_32BITUIDS): Likewise.
+	(__ASSUME_LDT_WORKS): Likewise.
+	(__ASSUME_O_DIRECTORY): Likewise.
+	(__ASSUME_NEW_GETRLIMIT_SYSCALL): Define conditional on
+	architecture but not kernel version.
+	(__ASSUME_TRUNCATE64_SYSCALL): Likewise.
+	(__ASSUME_MMAP2_SYSCALL): Likewise.
+	(__ASSUME_STAT64_SYSCALL): Likewise.
+	(__ASSUME_IPC64): Likewise.
+	* sysdeps/unix/sysv/linux/local-setxid.h: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/opendir.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_O_DIRECTORY]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/opensock.c [__LINUX_KERNEL_VERSION <
+	132096]: Remove conditional code.
+	[__LINUX_KERNEL_VERSION >= 132096]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/s390/s390-32/chown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/s390/s390-32/lchown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/setegid.c: Do not include
+	<kernel-features.h>.
+	[__NR_setresgid || __ASSUME_SETRESGID_SYSCALL]: Make code
+	unconditional.
+	(__setresgid): Do not declare.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/seteuid.c: Do not include
+	<kernel-features.h>.
+	[__NR_setresuid || __ASSUME_SETRESUID_SYSCALL]: Make code
+	unconditional.
+	(__setresuid): Do not declare.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/sh/chown.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/semctl.c: Do not include
+	<kernel-features.h>.
+	[__ASSUME_32BITUIDS]: Make code unconditional.
+	[!__ASSUME_32BITUIDS]: Remove conditional code.
+
+2012-05-25  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/powerpc/powerpc32/dl-irel.h (elf_ifunc_invoke): Pass
+	dl_hwcap to ifunc resolver.
+	* sysdeps/powerpc/powerpc32/dl-machine.h (elf_machine_rela): Use
+	elf_ifunc_invoke.
+	* sysdeps/powerpc/powerpc64/dl-irel.h (elf_ifunc_invoke): Pass
+	dl_hwcap to ifunc resolver.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (resolve_ifunc): Likewise.
+
+2012-05-24  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14153]
+	* sysdeps/ieee754/flt-32/e_acosf.c (__ieee754_acosf): Return pi/2
+	for |x| <= 2**-26, not 2**-57.
+	* math/libm-test.inc (acos_test): Do not allow spurious underflow
+	exception.
+
+2012-05-24  Jeff Law  <law@redhat.com>
+
+	* stdio-common/Makefile (tests): Add bug25.
+	* stdio-common/bug25.c: New test.
+
+2012-05-24  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #13576]
+	* malloc/malloc.c (sYSMALLOc): Free the old top chunk with a
+	multiple of MALLOC_ALIGNMENT in size.
+	(_int_free): Check chunk size is a multiple of MALLOC_ALIGNMENT.
+
 2012-05-24  Joseph Myers  <joseph@codesourcery.com>
 
 	* conform/data/stdio.h-data (BUFSIZ): Use macro-int-constant.

@@ -1,3 +1,107 @@
+2012-05-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h
+	(__ASSUME_NEW_GETRLIMIT_SYSCALL): Remove.
+
+2012-05-25  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/arm/dl-irel.h (elf_ifunc_invoke): Pass dl_hwcap.
+	* sysdeps/arm/dl-machine.h (elf_machine_rel): Use elf_ifunc_invoke.
+	(elf_machine_rela): Likewise.
+
+2012-05-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/bits/mman.h (MADV_DONTDUMP): Define.
+	(MADV_DODUMP): Likewise.
+
+2012-05-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/bits/hwcap.h: New file.  Macros
+	taken from sysdeps/unix/sysv/linux/arm/sysdep.h.
+	(HWCAP_ARM_TLS): New macro.
+	(HWCAP_ARM_VFPv4): Likewise.
+	(HWCAP_ARM_IDIVA): Likewise.
+	(HWCAP_ARM_IDIVT): Likewise.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h: Include <bits/hwcap.h>.
+	(HWCAP_ARM_SWP): Remove macro.  Moved to <bits/hwcap.h>.
+	(HWCAP_ARM_HALF): Likewise.
+	(HWCAP_ARM_THUMB): Likewise.
+	(HWCAP_ARM_26BIT): Likewise.
+	(HWCAP_ARM_FAST_MULT): Likewise.
+	(HWCAP_ARM_FPA): Likewise.
+	(HWCAP_ARM_VFP): Likewise.
+	(HWCAP_ARM_EDSP): Likewise.
+	(HWCAP_ARM_JAVA): Likewise.
+	(HWCAP_ARM_IWMMXT): Likewise.
+	(HWCAP_ARM_CRUNCH): Likewise.
+	(HWCAP_ARM_THUMBEE): Likewise.
+	(HWCAP_ARM_NEON): Likewise.
+	(HWCAP_ARM_VFPv3): Likewise.
+	(HWCAP_ARM_VFPv3D16): Likewise.
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.c (_dl_arm_cap_flags):
+	Add "tls", "vfpv4", "idiva" and "idivt".
+	* sysdeps/unix/sysv/linux/arm/dl-procinfo.h (_DL_HWCAP_COUNT):
+	Increase to 19.
+
+	* sysdeps/unix/sysv/linux/arm/nptl/libc.abilist: Update.
+
+2012-05-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/arm/bits/endian.h (__FLOAT_WORD_ORDER): Remove
+	definitions.
+	* sysdeps/arm/bits/huge_val.h: Remove file.
+	* sysdeps/arm/bits/string.h: Remove file.
+	* sysdeps/unix/sysv/linux/arm/readahead.c [__NR_readahead]: Make
+	code unconditional.
+	[!__NR_readahead]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/sigaction.c [__NR_rt_sigreturn]:
+	Make code unconditional.
+	[!__NR_rt_sigreturn]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/sigrestorer.S [__NR_rt_sigreturn]:
+	Make code unconditional.
+	* sysdeps/unix/sysv/linux/arm/sysdep.h [__NR_SYSCALL_BASE != 0]:
+	Remove conditional #error.
+	(__NR_stime): Remove #undef.
+	(__NR_alarm): Likewise.
+	(SWI_BASE): Remove.
+
+	* sysdeps/unix/sysv/linux/arm/ftruncate64.c (kernel-features.h):
+	Don't include.
+	[__NR_ftruncate64]: Make code unconditional.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/arm/mmap.S (kernel-features.h): Don't
+	include.
+	[__ASSUME_MMAP2_SYSCALL]:
+	Make code unconditional.
+	[!__ASSUME_MMAP2_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/posix_fadvise64.c
+	(kernel-features.h): Don't include.
+	[__NR_arm_fadvise64_64]: Make code unconditional.
+	[!__ASSUME_FADVISE64_64_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/arm/truncate64.c (kernel-features.h):
+	Don't include.
+	[__NR_truncate64]: Make code unconditional.
+	[!__NR_truncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/arm/vfork.S (kernel-features.h): Don't
+	include.
+	[__NR_vfork]: Make code unconditional.
+	[__ASSUME_VFORK_SYSCALL]: Likewise.
+	[!__ASSUME_VFORK_SYSCALL]: Remove conditional code.
+	[!__NR_vfork]: Likewise.
+
+2012-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020624] (__ASSUME_ACCEPT4): Define.
+
+2012-05-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/sigaction.c
+	[!__ASSUME_REALTIME_SIGNALS]: Remove conditional code.
+	[__ASSUME_REALTIME_SIGNALS]: Make code unconditional.
+
 2012-05-07  Carlos O'Donell  <carlos_odonell@mentor.com>
 
 	* sysdeps/arm/configure.in: Set libc_cv_arm_pcs_vfp.

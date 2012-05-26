@@ -1,3 +1,33 @@
+2012-05-25  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/nptl/libc.abilist: Update.
+
+2012-05-24  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/bits/mman.h (MADV_DONTDUMP): Define.
+	(MADV_DODUMP): Likewise.
+
+2012-05-23  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/bits/siginfo.h: Add forward
+	declaration of pthread_attr_t and use it in sigevent.
+
+2012-05-15  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/elf/stackguard-macros.h: Delete unused file.
+
+2012-05-14  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #14109]
+	* sysdeps/unix/sysv/linux/ia64/bits/setjmp.h (__jmp_buf): Use
+	__aligned__ in attribute.
+	* sysdeps/unix/sysv/linux/ia64/bits/sigcontext.h (ia64_fpreg):
+	Likewise.
+
+2012-05-14  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/ia64/fpu/libm-symbols.h: Delete __ELF__ checks.
+
 2012-05-07  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/unix/sysv/linux/ia64/sysdep.h: Include errno.h.

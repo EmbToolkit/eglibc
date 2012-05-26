@@ -1,5 +1,5 @@
 /* bits/typesizes.h -- underlying types for *_t.  For the generic Linux ABI.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
@@ -45,6 +45,7 @@
 #define	__FSBLKCNT64_T_TYPE	__UQUAD_TYPE
 #define	__FSFILCNT_T_TYPE	__ULONGWORD_TYPE
 #define	__FSFILCNT64_T_TYPE	__UQUAD_TYPE
+#define	__FSWORD_T_TYPE		__SWORD_TYPE
 #define	__ID_T_TYPE		__U32_TYPE
 #define __CLOCK_T_TYPE		__SLONGWORD_TYPE
 #define __TIME_T_TYPE		__SLONGWORD_TYPE
@@ -58,6 +59,8 @@
 #define __BLKSIZE_T_TYPE	__S32_TYPE
 #define __FSID_T_TYPE		struct { int __val[2]; }
 #define __SSIZE_T_TYPE		__SWORD_TYPE
+#define __SYSCALL_SLONG_TYPE	__SLONGWORD_TYPE
+#define __SYSCALL_ULONG_TYPE	__ULONGWORD_TYPE
 
 /* Number of descriptors that can fit in an `fd_set'.  */
 #define	__FD_SETSIZE		1024

@@ -1,3 +1,81 @@
+2012-05-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/kernel-features.h
+	(__ASSUME_32BITUIDS): Remove.
+
+2012-05-23  Steve Ellcey  <sellcey@mips.com>
+
+	* sysdeps/unix/sysv/linux/mips/Makefile
+	(syscall-list-o32-options): Use -D_MIPS_SIM=1.
+	(syscall-list-n32-options): Use -D_MIPS_SIM=2.
+	(syscall-list-n64-options): Use -D_MIPS_SIM=3.
+
+2012-05-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/mman.h (MADV_DONTDUMP):
+	Define.
+	(MADV_DODUMP): Likewise.
+
+2012-05-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/mips/bits/wordsize.h (__WORDSIZE_COMPAT32): Rename to
+	__WORDSIZE_TIME64_COMPAT32.
+
+	* sysdeps/unix/sysv/linux/mips/mips32/nptl/libc.abilist: Update.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/nptl/libc.abilist: Update.
+	* sysdeps/unix/sysv/linux/mips/mips64/n64/nptl/libc.abilist: Update.
+
+2012-05-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/ftruncate64.c: Move to ...
+	* sysdeps/unix/sysv/linux/mips/mips32/ftruncate64.c: ... here.
+	(kernel-features.h): Don't include.
+	[__NR_ftruncate64]: Make code unconditional.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/mips/truncate64.c: Move to ...
+	* sysdeps/unix/sysv/linux/mips/mips32/truncate64.c: ... here.
+	(kernel-features.h): Don't include.
+	[__NR_truncate64]: Make code unconditional.
+	[!__NR_truncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/syscalls.list (ftruncate):
+	Add syscall.
+	(truncate): Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/syscalls.list
+	(ftruncate): Remove syscall.
+	(truncate): Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/ftruncate64.c: Move to ...
+	* sysdeps/unix/sysv/linux/mips/mips64/ftruncate64.c: ... here.
+	* sysdeps/unix/sysv/linux/mips/mips64/n32/truncate64.c: Move to ...
+	* sysdeps/unix/sysv/linux/mips/mips64/truncate64.c: ... here.
+
+2012-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/bits/stat.h (struct stat)
+	[!__USE_MISC && !__USE_XOPEN2K8]: Declare nanoseconds fields with
+	type unsigned long and names st_atimensec, st_mtimensec and
+	st_ctimensec.
+	(struct stat64) [!__USE_MISC && !__USE_XOPEN2K8]: Likewise.
+
+2012-05-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/pread.c [!__ASSUME_PREAD_SYSCALL]:
+	Remove conditional code.
+	[__ASSUME_PREAD_SYSCALL]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/mips/pread64.c
+	[!__ASSUME_PREAD_SYSCALL]: Remove conditional code.
+	[__ASSUME_PREAD_SYSCALL]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/mips/pwrite.c
+	[!__ASSUME_PWRITE_SYSCALL]: Remove conditional code.
+	[__ASSUME_PWRITE_SYSCALL]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/mips/pwrite64.c
+	[!__ASSUME_PWRITE_SYSCALL]: Remove conditional code.
+	[__ASSUME_PWRITE_SYSCALL]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/mips/sigaction.c
+	[!__ASSUME_REALTIME_SIGNALS]: Remove conditional code.
+	[__ASSUME_REALTIME_SIGNALS]: Make code unconditional.
+
 2012-05-11  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/mips/dl-lookup.c: Update from generic version.

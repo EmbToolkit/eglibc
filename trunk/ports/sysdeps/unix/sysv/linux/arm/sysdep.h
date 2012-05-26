@@ -28,16 +28,6 @@
 
 #include <tls.h>
 
-#if __NR_SYSCALL_BASE != 0
-# error Kernel headers are too old
-#endif
-
-/* Don't use stime, even if the kernel headers define it.  We have
-   settimeofday, and some EABI kernels have removed stime.  Similarly
-   use setitimer to implement alarm.  */
-#undef __NR_stime
-#undef __NR_alarm
-
 /* In order to get __set_errno() definition in INLINE_SYSCALL.  */
 #ifndef __ASSEMBLER__
 #include <errno.h>
@@ -48,26 +38,10 @@
    of the kernel.  But these symbols do not follow the SYS_* syntax
    so we have to redefine the `SYS_ify' macro here.  */
 #undef SYS_ify
-#define SWI_BASE  (0x900000)
 #define SYS_ify(syscall_name)	(__NR_##syscall_name)
 
-
-/* The following must match the kernel's <asm/procinfo.h>.  */
-#define HWCAP_ARM_SWP		1
-#define HWCAP_ARM_HALF		2
-#define HWCAP_ARM_THUMB		4
-#define HWCAP_ARM_26BIT		8
-#define HWCAP_ARM_FAST_MULT	16
-#define HWCAP_ARM_FPA		32
-#define HWCAP_ARM_VFP		64
-#define HWCAP_ARM_EDSP		128
-#define HWCAP_ARM_JAVA		256
-#define HWCAP_ARM_IWMMXT	512
-#define HWCAP_ARM_CRUNCH	1024
-#define HWCAP_ARM_THUMBEE	2048
-#define HWCAP_ARM_NEON		4096
-#define HWCAP_ARM_VFPv3		8192
-#define HWCAP_ARM_VFPv3D16	16384
+#define _SYS_AUXV_H 1
+#include <bits/hwcap.h>
 
 #ifdef __ASSEMBLER__
 

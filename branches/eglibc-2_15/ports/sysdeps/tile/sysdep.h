@@ -31,7 +31,7 @@
 
 #if defined __ASSEMBLER__ || defined REQUEST_ASSEMBLER_MACROS
 
-#include <feedback-asm.h>
+#include <feedback.h>
 
 /* Make use of .type and .size directives.  */
 #define ASM_TYPE_DIRECTIVE(name,typearg) .type name,typearg;

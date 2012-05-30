@@ -657,8 +657,10 @@ elf
 ldd_rewrite_script
 use_ldconfig
 libc_cv_as_i686
+libc_cv_cc_nofma
 libc_cv_cc_fma4
 libc_cv_cc_novzeroupper
+libc_cv_cc_sse2avx
 libc_cv_cc_avx
 libc_cv_cc_sse4
 libc_cv_cpp_asm_debuginfo
@@ -7723,6 +7725,19 @@ $as_echo "$as_me: error: support for the tls_model attribute is required" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+{ $as_echo "$as_me:$LINENO: checking for compiler option to disable generation of FMA instructions" >&5
+$as_echo_n "checking for compiler option to disable generation of FMA instructions... " >&6; }
+if test "${libc_cv_cc_nofma+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  libc_cv_cc_nofma=
+for opt in -ffp-contract=off -mno-fused-madd; do
+  LIBC_TRY_CC_OPTION($opt, libc_cv_cc_nofma=$opt; break)
+done
+fi
+{ $as_echo "$as_me:$LINENO: result: $libc_cv_cc_nofma" >&5
+$as_echo "$libc_cv_cc_nofma" >&6; }
+
 if test -n "$submachine"; then
   { $as_echo "$as_me:$LINENO: checking for compiler option for CPU variant" >&5
 $as_echo_n "checking for compiler option for CPU variant... " >&6; }
@@ -8926,6 +8941,8 @@ $as_echo "$as_me: WARNING: *** During \"make install\" old headers from glibc 2.
   { $as_echo "$as_me:$LINENO: WARNING: *** be removed." >&5
 $as_echo "$as_me: WARNING: *** be removed." >&2;}
 fi
+
+
 
 
 

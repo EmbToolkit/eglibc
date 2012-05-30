@@ -1,4 +1,4 @@
-/* Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+/* Copyright (C) 2004-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -86,13 +86,4 @@ __pthread_once (pthread_once_t *once_control, void (*init_routine) (void))
   return 0;
 }
 weak_alias (__pthread_once, pthread_once)
-strong_alias (__pthread_once, __pthread_once_internal)
-
-#if defined(__USING_SJLJ_EXCEPTIONS__) && !defined(__PIC__)
-/* When statically linked, if pthread_create is used, this file
-   will be brought in.  The exception handling code in GCC assumes
-   that if pthread_create is available, so are these.  */
-const void *include_pthread_getspecific attribute_hidden = pthread_getspecific;
-const void *include_pthread_setspecific attribute_hidden = pthread_setspecific;
-const void *include_pthread_key_create attribute_hidden = pthread_key_create;
-#endif
+hidden_def (__pthread_once)

@@ -1,45 +1,95 @@
-2012-05-30  Andreas Schwab  <schwab@linux-m68k.org>
+2012-05-30  H.J. Lu  <hongjiu.lu@intel.com>
 
-	[BZ #14132]
-	* nptl-init.c (pthread_functions): Remove use of INTUSE and
-	_internal aliases.
-	(__pthread_initialize_minimal_internal): Likewise.
-	* sem_open.c: Likewise.
-	* sem_unlink.c: Likewise.
-	* pthreadP.h: Replace _internal aliases by hidden_proto
-	declarations.
-	* pthread_getspecific.c: Replace _internal alias by hidden_def.
-	* pthread_key_create.c: Likewise.
-	* pthread_mutex_destroy.c: Likewise.
-	* pthread_mutex_init.c: Likewise.
-	* pthread_mutex_lock.c: Likewise.
-	* pthread_mutex_unlock.c: Likewise.
-	* pthread_once.c: Likewise.
-	* pthread_rwlock_rdlock.c: Likewise.
-	* pthread_rwlock_unlock.c: Likewise.
-	* pthread_rwlock_wrlock.c: Likewise.
-	* pthread_setspecific.c: Likewise.
-	* sysdeps/unix/sysv/linux/i386/i486/pthread_rwlock_rdlock.S:
-	Likewise.
-	* sysdeps/unix/sysv/linux/i386/i486/pthread_rwlock_unlock.S:
-	Likewise.
-	* sysdeps/unix/sysv/linux/i386/i486/pthread_rwlock_wrlock.S:
-	Likewise.
-	* sysdeps/unix/sysv/linux/i386/pthread_once.S: Likewise.
-	* sysdeps/unix/sysv/linux/powerpc/pthread_once.c: Likewise.
-	* sysdeps/unix/sysv/linux/s390/pthread_once.c: Likewise.
-	* sysdeps/unix/sysv/linux/sh/pthread_once.S: Likewise.
-	* sysdeps/unix/sysv/linux/sh/pthread_rwlock_rdlock.S: Likewise.
-	* sysdeps/unix/sysv/linux/sh/pthread_rwlock_unlock.S: Likewise.
-	* sysdeps/unix/sysv/linux/sh/pthread_rwlock_wrlock.S: Likewise.
-	* sysdeps/unix/sysv/linux/sparc/pthread_once.c: Likewise.
-	* sysdeps/unix/sysv/linux/x86_64/pthread_once.S: Likewise.
-	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_rdlock.S:
-	Likewise.
-	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_unlock.S:
-	Likewise.
-	* sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_wrlock.S:
-	Likewise.
+	[BZ #14183]
+	* sysdeps/unix/sysv/linux/x86_64/bits/typesizes.h (__NLINK_T_TYPE):
+	Defined with __UWORD_TYPE if __x86_64__ isn't defined.
+
+2012-05-30  Richard Henderson  <rth@twiddle.net>
+
+	* sysdeps/unix/make-syscalls.sh: Protect symbol_version output
+	with #ifndef NOT_IN_libc.
+
+	* scripts/abilist.awk: Accept 8 fields.  Handle Alpha functions
+	marked to avoid plt entry.
+
+2012-05-30  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14112]
+	* Makeconfig (default-abi): New macro.
+	(abi-includes): Likewise.
+	($(common-objpfx)soversions.mk): Remove WORDSIZE check.  Use
+	$(abi-$(default-abi)-lib-soname) for soname if defined.
+	($(common-objpfx)gnu/lib-names.stmp): Generate from
+	abi-variants.
+	* Makefile (installed-stubs): Likewise.
+	* include/stubs-biarch.h: Removed.
+	* scripts/lib-names.awk: Only handle one library at a time.
+	* scripts/soversions.awk: Remove WORDSIZE support.
+	* shlib-versions: Remove WORDSIZE and i.86/s390x/powerpc64 ld
+	entries.
+	* sysdeps/unix/sysv/linux/Makefile (syscall-list-variants):
+	Removed.
+	(syscall-list-default-condition): Likewise.
+	(syscall-list-default-condition): Likewise.
+	(syscall-list-includes): Likewise.
+	($(objpfx)bits/syscall%h $(objpfx)bits/syscall%d): Replace
+	syscall-list-* with abi-*.  Handle undefined abi-variants.
+	* sysdeps/unix/sysv/linux/i386/Makefile (default-abi): New macro.
+	* sysdeps/unix/sysv/linux/i386/Implies: New file.
+	* sysdeps/unix/sysv/linux/x86/Makefile: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/Makefile: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/Implies: Add unix/sysv/linux/x86.
+	* sysdeps/unix/sysv/linux/x86_64/Makefile (syscall-list-variants):
+	Removed.
+	(syscall-list-32-options): Likewise.
+	(syscall-list-32-condition): Likewise.
+	(syscall-list-64-options): Likewise.
+	(syscall-list-64-condition): Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/Makefile (default-abi): New
+	macro.
+	* sysdeps/unix/sysv/linux/powerpc/Makefile (syscall-list-*):
+	Renamed to ...
+	(abi-*): This.
+	(abi-64-ld-soname): New macro.
+	* sysdeps/unix/sysv/linux/s390/Makefile: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/Makefile (syscall-list-*):
+	Renamed to ...
+	(abi-*): This.
+	* sysdeps/x86_64/64/shlib-versions: Remove ld entry.
+	* sysdeps/x86_64/x32/shlib-versions: Likewise.
+
+2012-05-30  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	(__ASSUME_TRUNCATE64_SYSCALL): Remove all definitions.
+	* sysdeps/unix/sysv/linux/ftruncate64.c: Do not
+	include <kernel-features.h>.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	[__NR_ftruncate64]: Make code unconditional.
+	[__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/truncate64.c: Do not
+	include <kernel-features.h>.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	[__NR_ftruncate64]: Make code unconditional.
+	[__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/ftruncate64.c: Do not
+	include <kernel-features.h>.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	[__NR_ftruncate64]: Make code unconditional.
+	[__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/truncate64.c: Do not
+	include <kernel-features.h>.
+	[!__NR_ftruncate64]: Remove conditional code.
+	[!__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+	[__NR_ftruncate64]: Make code unconditional.
+	[__ASSUME_TRUNCATE64_SYSCALL]: Likewise.
+
+	* configure.in (libc_cv_fpie): Weaken to a compile test using
+	LIBC_TRY_CC_OPTION.
+	* configure: Regenerated.
 
 2012-05-29  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
 

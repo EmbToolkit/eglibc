@@ -1,6 +1,29 @@
+2012-05-31  Marek Polacek  <polacek@redhat.com>
+
+	[BZ #14132]
+	* include/mntent.h (__setmntent_internal, __getmntent_r_internal
+	__endmntent_internal): Remove declaration.
+	(__setmntent, __endmntent, __getmntent_r) [NOT_IN_libc]: Remove macro.
+	(__setmntent, __endmntent, __getmntent_r): Declare hidden proto.
+	* misc/mntent_r.c: Replace INTDEF with libc_hidden_def.
+
+2012-05-30  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/soft-fp/q_util.c
+	(___Q_simulate_exceptions): Use real FP ops rather than writing
+	into the %fsr.
+	* sysdeps/sparc/sparc32/soft-fp/q_util.c (__Qp_handle_exceptions):
+	Likewise.
+
 2012-05-30  H.J. Lu  <hongjiu.lu@intel.com>
 
 	[BZ #14117]
+	* sysdeps/x86_64/bits/xtitypes.h: Renamed to ...
+	* sysdeps/x86/bits/xtitypes.h: This.
+
+	* sysdeps/x86_64/bits/wordsize.h: Renamed to ...
+	* sysdeps/x86/bits/wordsize.h: This.
+
 	* sysdeps/i386/bits/huge_vall.h: Renamed to ...
 	* sysdeps/x86/bits/huge_vall.h: This.
 

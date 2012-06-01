@@ -1,6 +1,27 @@
+2012-06-01  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/k_cosf.c: Fix underflow generation.
+	* sysdeps/powerpc/fpu/k_sinf.c: Likewise.
+
 2012-05-31  H.J. Lu  <hongjiu.lu@intel.com>
 
 	[BZ #14117]
+	* sysdeps/unix/sysv/linux/i386/bits/wchar.h: Include
+	<bits/wordsize.h>.
+	(__WCHAR_MIN): Support __WORDSIZE == 64.
+	(__WCHAR_MAX): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/typesizes.h: Renamed to ...
+	* sysdeps/unix/sysv/linux/x86/bits/typesizes.h: This.
+
+	[BZ #14183]
+	* sysdeps/unix/sysv/linux/x86_64/bits/typesizes.h (__FSWORD_T_TYPE):
+	Defined with __SWORD_TYPE if __x86_64__ isn't defined.
+
+	[BZ #14117]
+	* sysdeps/unix/sysv/linux/x86_64/bits/siginfo.h: Renamed to ...
+	* sysdeps/unix/sysv/linux/x86/bits/siginfo.h: This.
+
 	* sysdeps/unix/sysv/linux/x86_64/bits/stat.h: Renamed to ...
 	* sysdeps/unix/sysv/linux/x86/bits/stat.h: This.
 

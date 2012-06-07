@@ -1,4 +1,4 @@
-/* Copyright (C) 1996, 1997, 2002 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2012 Free Software Foundation, Inc.
    Contributed by Richard Henderson (rth@tamu.edu)
    This file is part of the GNU C Library.
 
@@ -52,22 +52,18 @@
 	.set noreorder
 
 	.text
+	.type	__stxncpy, @function
+	.globl	__stxncpy
+	.usepv	__stxncpy, no
 
-/* There is a problem with either gdb (as of 4.16) or gas (as of 2.7) that
-   doesn't like putting the entry point for a procedure somewhere in the
-   middle of the procedure descriptor.  Work around this by putting the
-   aligned copy in its own procedure descriptor */
-
-	.ent stxncpy_aligned
-	.align 3
-stxncpy_aligned:
-	.frame sp, 0, t9, 0
-	.prologue 0
+	cfi_startproc
+	cfi_return_column (t9)
 
 	/* On entry to this basic block:
 	   t0 == the first destination word for masking back in
 	   t1 == the first source word.  */
-
+	.align 3
+stxncpy_aligned:
 	/* Create the 1st output word and detect 0's in the 1st input word.  */
 	lda	t2, -1		# e1    : build a mask against false zero
 	mskqh	t2, a1, t2	# e0    :   detection in the src word
@@ -81,7 +77,6 @@ stxncpy_aligned:
 
 	/* On entry to this basic block:
 	   t0 == a source word not containing a null.  */
-
 $a_loop:
 	stq_u	t0, 0(a0)	# e0    :
 	addq	a0, 8, a0	# .. e1 :
@@ -98,7 +93,6 @@ $a_loop:
 	   On entry to this basic block we have:
 	   t0 == the source word containing the null
 	   t7 == the cmpbge mask that found it.  */
-
 $a_eos:
 	negq	t7, t8		# e0    : find low bit set
 	and	t7, t8, t8	# e1 (stall)
@@ -126,26 +120,22 @@ $a_eoc:
 	or	t10, t7, t7
 	br	$a_eos
 
-	.end stxncpy_aligned
-
 	.align 3
-	.ent __stxncpy
-	.globl __stxncpy
 __stxncpy:
-	.frame sp, 0, t9, 0
-	.prologue 0
-
 	/* Are source and destination co-aligned?  */
-	xor	a0, a1, t1	# e0    :
-	and	a0, 7, t0	# .. e1 : find dest misalignment
-	and	t1, 7, t1	# e0    :
-	addq	a2, t0, a2	# .. e1 : bias count by dest misalignment
-	subq	a2, 1, a2	# e0    :
-	and	a2, 7, t2	# e1    :
-	srl	a2, 3, a2	# e0    : a2 = loop counter = (count - 1)/8
-	addq	zero, 1, t10	# .. e1 :
-	sll	t10, t2, t10	# e0    : t10 = bitmask of last count byte
-	bne	t1, $unaligned	# .. e1 :
+	lda	t2, -1
+	xor	a0, a1, t1
+	srl	t2, 1, t2
+	and	a0, 7, t0		# find dest misalignment
+	cmovlt	a2, t2, a2		# bound neg count to LONG_MAX
+	and	t1, 7, t1
+	addq	a2, t0, a2		# bias count by dest misalignment
+	subq	a2, 1, a2
+	and	a2, 7, t2
+	srl	a2, 3, a2		# a2 = loop counter = (count - 1)/8
+	addq	zero, 1, t10
+	sll	t10, t2, t10		# t10 = bitmask of last count byte
+	bne	t1, $unaligned
 
 	/* We are co-aligned; take care of a partial first word.  */
 
@@ -359,4 +349,4 @@ $unaligned:
 	stq_u	t0, 0(a0)	# e0    :
 	ret	(t9)		# .. e1 :
 
-	.end __stxncpy
+	cfi_endproc

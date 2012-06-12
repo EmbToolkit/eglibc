@@ -1,4 +1,4 @@
-/* Copyright (C) 1998 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,31 +12,15 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _SYS_REG_H
-#define _SYS_REG_H	1
+#include <sysdep.h>
 
-/* Index into an array of 4 byte integers returned from ptrace for
- * location of the users' stored general purpose registers. */
 
-#define EBX 0
-#define ECX 1
-#define EDX 2
-#define ESI 3
-#define EDI 4
-#define EBP 5
-#define EAX 6
-#define DS 7
-#define ES 8
-#define FS 9
-#define GS 10
-#define ORIG_EAX 11
-#define EIP 12
-#define CS  13
-#define EFL 14
-#define UESP 15
-#define SS   16
+PSEUDO (__getppid, getxpid, 0)
+	MOVE (r1, r0)
+	ret
+PSEUDO_END (__getppid)
 
-#endif	/* _SYS_REG_H */
+weak_alias (__getppid, getppid)

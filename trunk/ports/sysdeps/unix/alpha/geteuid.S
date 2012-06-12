@@ -1,5 +1,4 @@
-/* Optimized, inlined string functions.  AMD x86-64 version.
-   Copyright (C) 2001 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -13,13 +12,15 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _STRING_H
-# error "Never use <bits/string.h> directly; include <string.h> instead."
-#endif
+#include <sysdep.h>
 
-/* Currently the only purpose of this file is to tell the generic inline
-   macros that unaligned memory access is possible for x86-64.  */
-#define _STRING_ARCH_unaligned	1
+
+PSEUDO (__geteuid, getxuid, 0)
+	MOVE (r1, r0)
+	ret
+PSEUDO_END (__geteuid)
+
+weak_alias (__geteuid, geteuid)

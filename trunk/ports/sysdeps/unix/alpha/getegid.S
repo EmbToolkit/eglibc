@@ -1,4 +1,4 @@
-/* Copyright (C) 1996, 1999 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,24 +12,15 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _SYS_PERM_H
-
-#define _SYS_PERM_H	1
-#include <features.h>
-
-__BEGIN_DECLS
-
-/* Set port input/output permissions.  */
-extern int ioperm (unsigned long int __from, unsigned long int __num,
-		   int __turn_on) __THROW;
+#include <sysdep.h>
 
 
-/* Change I/O privilege level.  */
-extern int iopl (int __level) __THROW;
+PSEUDO (__getegid, getxgid, 0)
+	MOVE (r1, r0)
+	ret
+PSEUDO_END (__getegid)
 
-__END_DECLS
-
-#endif	/* _SYS_PERM_H */
+weak_alias (__getegid, getegid)

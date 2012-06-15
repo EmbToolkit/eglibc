@@ -1,3 +1,28 @@
+2012-06-14  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14229]
+	* string/Makefile (tests): Add tst-strtok_r.
+	* string/tst-strtok_r.c: New file.
+	* sysdeps/x86_64/strtok.S: Use LP_SIZE on save_ptr and use
+	RAX_LP/RDX_LP on SAVE_PTR.
+
+2012-06-14  Roland McGrath  <roland@hack.frob.com>
+
+	* manual/Makefile ($(objpfx)texis): Do $(make-target-directory).
+
+2012-06-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* libm_test.inc (csqrt_test): Allow more spurious underflow
+	exceptions.
+	(j0_test): Likewise.
+	(j1_test): Likewise.
+	(y0_test): Likewise.
+	(y1_test): Likewise.
+
+2012-06-13  Carlos O'Donell  <carlos_odonell@mentor.com>
+
+	* po/Makefile (libc.pot): Use UTF-8 charset.
+
 2012-06-13  Paul Pluzhnikov  <ppluzhnikov@google.com>
 
 	[BZ #14210]

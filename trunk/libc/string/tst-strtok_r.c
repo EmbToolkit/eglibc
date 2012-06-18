@@ -1,6 +1,6 @@
-/* Copyright (C) 2000, 2012 Free Software Foundation, Inc.
+/* Test strtok_r regression for BZ #14229.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Richard Henderson.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -13,15 +13,26 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library.  If not, see
+   License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <math.h>
+#define TEST_MAIN
+#define BUF1PAGES 1
+#include "test-string.h"
 
-float
-__fabsf (float x)
+int
+test_main (void)
 {
-  return __builtin_fabsf (x);
+  char line[] = "udf 75868 1 - Live 0xffffffffa0bfb000\n";
+  char **saveptrp;
+  char *tok;
+
+  test_init ();
+
+  /* Check strtok_r won't write beyond the size of (*saveptrp).  */
+  saveptrp = (char **) (buf1 + page_size - sizeof (*saveptrp));
+  tok = strtok_r (line, " \t", saveptrp);
+  return strcmp (tok, "udf") != 0;
 }
 
-weak_alias (__fabsf, fabsf)
+#include "../test-skeleton.c"

@@ -1,3 +1,7 @@
+2012-06-21  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/alpha/elf/configure: Regenerated.
+
 2011-10-05  Andreas Schwab  <schwab@redhat.com>
 
 	* sysdeps/alpha/dl-machine.h (elf_machine_rela)

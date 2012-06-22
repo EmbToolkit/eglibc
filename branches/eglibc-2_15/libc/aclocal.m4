@@ -117,6 +117,12 @@ AC_CACHE_CHECK(whether $LD is GNU ld, libc_cv_prog_ld_gnu,
 gnu_ld=$libc_cv_prog_ld_gnu
 ])
 
+dnl Test a compiler option or options with an empty input file.
+dnl LIBC_TRY_CC_OPTION([options], [action-if-true], [action-if-false])
+AC_DEFUN([LIBC_TRY_CC_OPTION],
+[AS_IF([AC_TRY_COMMAND([${CC-cc} $1 -xc /dev/null -S -o /dev/null])],
+	[$2], [$3])])
+
 # These two macros are taken from GCC's config/acx.m4.
 dnl Support the --with-pkgversion configure option.
 dnl ACX_PKGVERSION(default-pkgversion)

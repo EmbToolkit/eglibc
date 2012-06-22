@@ -84,7 +84,7 @@ $as_echo X/"$0" |
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for assembler line separator" >&5
 $as_echo_n "checking for assembler line separator... " >&6; }
-if test "${libc_cv_asm_line_sep+set}" = set; then :
+if ${libc_cv_asm_line_sep+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat > conftest.s <<EOF

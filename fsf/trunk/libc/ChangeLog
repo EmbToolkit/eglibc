@@ -1,3 +1,49 @@
+2012-06-23  Andreas Schwab  <schwab@linux-m68k.org>
+	    Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/sh/syscalls.list: Add fanotify_mark.
+	* sysdeps/unix/sysv/linux/sh/Versions (GLIBC_2.16): Add fanotify_mark.
+	* sysdeps/unix/sysv/linux/sh/nptl/libc.abilist (GLIBC_2.16): Add
+	fanotify_mark.
+
+2012-06-23  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/mach/start.c: Remove file.
+	* sysdeps/mach/hurd/i386/static-start.S: Fix start.S include.
+	* sysdeps/i386/init-first.c: Fix comment regarding start.S.
+	* sysdeps/sh/init-first.c: Likewise.
+
+	* sysdeps/sh/____longjmp_chk.S (CALL_FAIL): Preserve r12 and pr
+	registers for frame unwinding purposes, add CFI directives.
+	* sysdeps/unix/sysv/linux/sh/____longjmp_chk.S (CALL_FAIL): Likewise.
+	* sysdeps/unix/sysv/linux/sh/makecontext.S (.Lexitcode): Likewise
+	* sysdeps/unix/sysv/linux/sh/sysdep.h (SYSCALL_ERROR_HANDLER):
+	Likewise.
+
+	* sysdeps/sh/____longjmp_chk.S (CALL_FAIL): Don't plan for the call to
+	__fortify_fail returning.
+	* sysdeps/unix/sysv/linux/sh/____longjmp_chk.S (CALL_FAIL): Likewise.
+
+	* sysdeps/unix/sysv/linux/sh/____longjmp_chk.S: New file, based on
+	sysdeps/sh/____longjmp_chk.S.
+	* sysdeps/unix/sysv/linux/sh/sigaltstack-offsets.sym: New file, based
+	on sysdeps/unix/sysv/linux/x86_64/sigaltstack-offsets.sym.
+	* sysdeps/unix/sysv/linux/sh/Makefile [subdir=misc]
+	(gen-as-const-headers): Append sigaltstack-offsets.sym.
+
+	* sysdeps/sh/abort-instr.h: New file.
+	* sysdeps/unix/sysv/linux/sh/makecontext.S (.Lexitcode): Terminate the
+	process in case exit returns.
+
+	* sysdeps/unix/sysv/linux/sh/makecontext.S (.Lexitcode): Always
+	initialize the GOT register before use.
+
+	* sysdeps/unix/sysv/linux/sh/makecontext.S (__makecontext): Fix
+	calculation of ARGC > 4.
+
+	* sysdeps/unix/sysv/linux/sh/makecontext.S: Add comments and give more
+	meaningful names to some local labels.
+
 2012-06-22  Nobuhiro Iwamatsu  <iwamatsu@nigauri.org>
 	    Kaz Kojima  <kkojima@rr.iij4u.or.jp>
 

@@ -1,3 +1,34 @@
+2012-05-17  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/fegetenv.c: Version fegetenv() like fesetenv().
+
+2012-05-16  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/ucontext_i: Fix tilegx32 offset bug.
+	* sysdeps/unix/sysv/linux/tile/getcontext.S: Fix tilegx32 bug
+	where we accessed "uc_flags" as an 8-byte field.
+	* sysdeps/unix/sysv/linux/tile/setcontext.S: Likewise,
+	and also fix frame code not to access stack below "sp".
+	* sysdeps/unix/sysv/linux/tile/swapcontext.S: Fix frame code not
+	to access stack below "sp", and add frame unwind to error path.
+
+2012-05-14  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/dl-start.S: Align stack for tilegx32.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/sys/dataplane.h: Add <features.h>.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/nptl/clone.S: Add missing CFI.
+
+2012-05-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/tilegx/memcpy.c: Allow memcpy(p, p, n)
+	without corrupting memory at "p".
+
 2012-01-31  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/tile/math_private.h: Ignore feraiseexcept() internally.

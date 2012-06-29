@@ -18,6 +18,7 @@
    02111-1307 USA.  */
 
 #include <fenv.h>
+#include <shlib-compat.h>
 
 int
 __fegetenv (fenv_t *envp)
@@ -26,3 +27,4 @@ __fegetenv (fenv_t *envp)
   return 0;
 }
 libm_hidden_ver (__fegetenv, fegetenv)
+versioned_symbol (libm, __fegetenv, fegetenv, GLIBC_2_2);

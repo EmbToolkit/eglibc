@@ -1,3 +1,24 @@
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* include/sys/epoll.h: New file.
+	* sysdeps/unix/sysv/linux/epoll_pwait.c (epoll_pwait): Mark as
+	libc_hidden_def.
+
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/grantpt.c: Use <> brackets for not-cancel.h.
+
+2012-01-29  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* scripts/config.guess: Update from upstream config git repository.
+	* scripts/config.sub: Likewise.
+
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* elf/elf.h (EM_TILEPRO, EM_TILEGX): New macros.
+	(EM_NUM): Update.
+	(R_TILEPRO_*, R_TILEGX_*): New macros.
+
 2012-06-24  Carlos O'Donell  <carlos@systemhalted.org>
 
 	* scripts/list-sources.sh: Scan PORTS for translations.
@@ -9,12 +30,35 @@
 
 2012-06-21  Joseph Myers  <joseph@codesourcery.com>
 
+	[BZ #14273]
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_cosh.c (__ieee754_cosh):
+	Clear sign bit of 64-bit integer value before comparing against
+	overflow value.
+
 	[BZ #14167]
 	* aclocal.m4 (LIBC_TRY_CC_OPTION): New macro.
 	* configure: Regenerated.
 	* sysdeps/ia64/configure: Likewise.
 	* sysdeps/mach/configure: Likewise.
 	* sysdeps/mach/hurd/configure: Likewise.
+
+2012-06-05  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_fmodl.c: Fix for wrong ldbl128-ibm
+	fmodl commit.
+
+2012-06-04  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_fmodl.c (__ieee754_fmodl): Fix
+	subnormal exponent extraction and add some __builtin_expect.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h (ldbl_extract_mantissa):
+	Fix for subnormal mantissa calculation.
+
+2012-06-01  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14048]
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_fmod.c (__ieee754_fmod):
+	Use int64_t for variable i.
 
 2012-05-17  Andreas Jaeger  <aj@suse.de>
 	    Carlos O'Donell  <carlos_odonell@mentor.com>
@@ -61,6 +105,18 @@
 	define.
 	* sysdeps/x86_64/fpu/multiarch/s_tan-fma4.c (__branred): Don't
 	define.
+
+2012-02-29  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13786]
+	* sysdeps/i386/i686/multiarch/strcmp.S [USE_AS_STRCASECMP_L]: Do
+	not include ../strcmp.S.
+	[USE_AS_STRNCASECMP_L]: Likewise.
+	* sysdeps/i386/i686/multiarch/strcasecmp_l-c.c
+	(__strcasecmp_l_ia32): Define as alias to __strcasecmp_l_nonascii.
+	* sysdeps/i386/i686/multiarch/strncase_l-c.c
+	(__strncasecmp_l_ia32): Define as alias to
+	__strncasecmp_l_nonascii.
 
 2012-02-27  David S. Miller  <davem@davemloft.net>
 

@@ -1,3 +1,24 @@
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* include/sys/epoll.h: New file.
+	* sysdeps/unix/sysv/linux/epoll_pwait.c (epoll_pwait): Mark as
+	libc_hidden_def.
+
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/grantpt.c: Use <> brackets for not-cancel.h.
+
+2012-01-29  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* scripts/config.guess: Update from upstream config git repository.
+	* scripts/config.sub: Likewise.
+
+2012-01-28  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* elf/elf.h (EM_TILEPRO, EM_TILEGX): New macros.
+	(EM_NUM): Update.
+	(R_TILEPRO_*, R_TILEGX_*): New macros.
+
 2012-06-24  Carlos O'Donell  <carlos@systemhalted.org>
 
 	* scripts/list-sources.sh: Scan PORTS for translations.
@@ -8,6 +29,11 @@
 	* po/Makefile (libc.pot): Use UTF-8 charset.
 
 2012-06-21  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14273]
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_cosh.c (__ieee754_cosh):
+	Clear sign bit of 64-bit integer value before comparing against
+	overflow value.
 
 	[BZ #14167]
 	* aclocal.m4 (LIBC_TRY_CC_OPTION): New macro.

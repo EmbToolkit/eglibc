@@ -1,3 +1,46 @@
+2012-07-12  Marek Polacek  <polacek@redhat.com>
+
+	[BZ #14173]
+	* math/libm-test.inc (yn_test): Add test for BZ #14173.
+	* sysdeps/ieee754/ldbl-96/e_jnl.c (__ieee754_ynl): Correct
+	loop condition.
+
+2012-07-12  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13717]
+	* sysdeps/unix/sysv/linux/configure.in (arch_minimum_kernel):
+	Change to 2.4.1 where previously 2.4.0.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/kernel-features.h [!__sh__]
+	(__ASSUME_ST_INO_64_BIT): Do not condition definition on kernel
+	version.
+	[__i386__ || __sparc__] (__ASSUME_FCNTL64): Likewise.
+	(__ASSUME_AT_CLKTCK): Remove.
+	(__ASSUME_AT_PAGESIZE): Likewise.
+	(__ASSUME_AT_XID): Likewise.
+	(__ASSUME_GETDENTS64_SYSCALL): Define unconditionally.
+	[__i386__] (__ASSUME_VFORK_SYSCALL): Define unconditionally.
+	* sysdeps/unix/sysv/linux/ldsodefs.h (HAVE_AUX_XID): Define
+	unconditionally.
+	(HAVE_AUX_PAGESIZE): Likewise.
+	* sysdeps/unix/sysv/linux/prof-freq.c (__profile_frequency)
+	[__ASSUME_AT_CLKTCK]: Make code unconditional.
+	[!__ASSUME_AT_CLKTCK]: Remove conditional code.
+
+2012-07-12  Jeroen van Bemmel  <jvb127@gmail.com>
+
+	[BZ #14307]
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Increase the size of
+	the temporary buffer used to invoke __gethostbyname2_r,
+	__gethostbyaddr_r and gethostbyname4_r to make room for struct
+	host_data / struct gaih_addrtuple.
+	* resolv/nss_dns/dns-host.c (global scope): Move definition of
+	implementation constants MAX_NR_ALIASES and MAX_NR_ADDRS to
+	header file nss/nsswitch.h.
+	* nss/nsswitch.h (global scope): Add definition of implementation
+	constants MAX_NR_ALIASES and MAX_NR_ADDRS (moved from
+	resolv/nss_dns/dns-host.c).
+
 2012-07-11  Andreas Jaeger  <aj@suse.de>
 
 	* po/fr.po: Update from translation team.

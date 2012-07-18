@@ -1,3 +1,89 @@
+2012-07-17  Marek Polacek  <polacek@redhat.com>
+
+	[BZ #14349]
+	* sysdeps/s390/s390-32/configure.in: Remove TLS check.
+	* sysdeps/s390/s390-64/configure.in: Likewise.
+	* sysdeps/sparc/configure.in: Likewise.
+	* sysdeps/powerpc/powerpc32/configure.in: Likewise.
+	* sysdeps/powerpc/powerpc64/configure.in: Likewise.
+	* sysdeps/i386/configure.in: Likewise.
+	* sysdeps/x86_64/configure.in: Likewise.
+	* sysdeps/sh/configure.in: Likewise.
+	* sysdeps/s390/s390-32/configure: Regenerated.
+	* sysdeps/s390/s390-64/configure: Likewise.
+	* sysdeps/x86_64/configure: Likewise.
+	* sysdeps/sh/configure: Likewise.
+	* sysdeps/powerpc/powerpc64/configure: Likewise.
+	* sysdeps/powerpc/powerpc32/configure: Likewise.
+	* sysdeps/sparc/configure: Likwise.
+	* sysdeps/i386/configure: Likewise.
+
+2012-07-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makefile [CXX] (check-data): Remove.
+	[CXX] (c++-types.data): New vpath directive.
+	[CXX] ($(objpfx)c++-types-check.out): Use c++-types.data from
+	vpath.  Do not allow for C++ type data being missing.
+	* scripts/data/c++-types-alpha-linux-gnu.data: Move to
+	ports/sysdeps/unix/sysv/linux/alpha/nptl/c++-types.data.
+	* scripts/data/c++-types-ia64-linux-gnu.data: Move to
+	ports/sysdeps/unix/sysv/linux/ia64/nptl/c++-types.data.
+	* scripts/data/c++-types-i386-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/i386/nptl/c++-types.data: ... here.
+	* scripts/data/c++-types-powerpc-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-powerpc64-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-s390-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/s390/s390-32/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-s390x-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/s390/s390-64/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-sparc-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/sparc/sparc32/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-sparc64-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/sparc/sparc64/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-x32-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/x86_64/x32/nptl/c++-types.data:
+	... here.
+	* scripts/data/c++-types-x86_64-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/x86_64/64/nptl/c++-types.data: ... here.
+
+	* elf/tls-macros.h (TLS_LE): Move architecture-specific
+	definitions to architecture-specific files.
+	(TLS_IE): Likewise.
+	(TLS_LD): Likewise.
+	(TLS_GD): Likewise.
+	* sysdeps/i386/tls-macros.h: New file.
+	* sysdeps/powerpc/tls-macros.h: Likewise.
+	* sysdeps/s390/s390-32/tls-macros.h: Likewise.
+	* sysdeps/s390/s390-64/tls-macros.h: Likewise.
+	* sysdeps/sh/tls-macros.h: Likewise.
+	* sysdeps/sparc/sparc32/tls-macros.h: Likewise.
+	* sysdeps/sparc/sparc64/tls-macros.h: Likewise.
+	* sysdeps/x86_64/tls-macros.h: Likewise.
+
+2012-07-17  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/sh/makecontext.S (.Lexitcode): Preserve
+	zero value for regular exit case.
+
+	* sysdeps/unix/sysv/linux/x86_64/__start_context.S
+	(__start_context): Preserve zero value for regular exit case.
+
+2012-07-17  Thomas Schwinge  <thomas@codesourcery.com>
+	    Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* manual/setjmp.texi (setcontext): Clarify normal process
+	termination when uc_link is the null pointer.
+	* stdlib/tst-makecontext.c (cf): Exercise this: remove explicit
+	exit call.
+
 2012-07-16  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* stdlib/bug-getcontext.c (do_test): Don't test FE_ALL_EXCEPT in

@@ -1,5 +1,5 @@
-/* Reentrant function to return the current login name.  Hurd version.
-   Copyright (C) 1996, 2002 Free Software Foundation, Inc.
+/* Access to extended attributes on files.  Hurd version.
+   Copyright (C) 2005-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,32 +17,19 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <errno.h>
-#include <unistd.h>
+#include <sys/xattr.h>
 #include <hurd.h>
-#include <string.h>
+#include <hurd/xattr.h>
+#include <fcntl.h>
 
-/* Return at most NAME_LEN characters of the login name of the user in NAME.
-   If it cannot be determined or some other error occurred, return the error
-   code.  Otherwise return 0.  */
-int
-getlogin_r (name, name_len)
-     char *name;
-     size_t name_len;
+ssize_t
+lremovexattr (const char *path, const char *name)
 {
-  string_t login;
   error_t err;
-
-  if (err = __USEPORT (PROC, __proc_getlogin (port, login)))
-    return errno = err;
-
-  size_t len = __strnlen (login, sizeof login - 1) + 1;
-  if (len > name_len)
-    {
-      errno = ERANGE;
-      return errno;
-    }
-
-  memcpy (name, login, len);
-  return 0;
+  file_t port = __file_name_lookup (path, O_NOLINK, 0);
+  if (port == MACH_PORT_NULL)
+    return -1;
+  err = _hurd_xattr_remove (port, name);
+  __mach_port_deallocate (__mach_task_self (), port);
+  return __hurd_fail (err);
 }
-libc_hidden_def (getlogin_r)

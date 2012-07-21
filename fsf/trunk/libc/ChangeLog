@@ -1,3 +1,59 @@
+2012-07-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/lang.texi (__va_copy): Document primarily as ISO C99
+	va_copy.  Document allowing for unavailable va_copy only as
+	pre-C99 compatibility.
+	* manual/string.texi (Copying and Concatenation): Use va_copy
+	instead of __va_copy in concat example.
+
+2012-07-20  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* sysdeps/mach/hurd/sendto.c (create_address_port): New subroutine.
+	(__sendto): Use create_address_port.  Initialize APORT and deallocate
+	it if not null.
+
+	* sysdeps/mach/hurd/llistxattr.c: New file, copied from listxattr.c
+	with O_NOLINK passed to __file_name_lookup.
+
+	* sysdeps/mach/hurd/lremovexattr.c: New file, copied from removexattr.c
+	with O_NOLINK passed to __file_name_lookup.
+
+	* sysdeps/mach/hurd/getgroups.c: Return -1 and set EINVAL for
+	negative N or less than NGIDS.
+
+	* sysdeps/mach/hurd/getlogin_r.c: Make LOGIN non-static and change its
+	type to string_t.  Set ERANGE as errno and return it if NAME is not big
+	enough.  Use memcpy instead of strncpy.
+
+2012-07-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* elf/Makefile (check-data): Remove.
+	(localplt.data): New vpath directive.
+	($(objpfx)check-localplt.out): Use localplt.data from vpath
+	instead of $(check-data).
+	* scripts/data/localplt-generic.data: Move to ...
+	* sysdeps/generic/localplt.data: ... here.
+	* scripts/data/localplt-i386-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/i386/nptl/localplt.data: ... here.
+	* scripts/data/localplt-powerpc-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/localplt.data:
+	... here.
+	* scripts/data/localplt-powerpc64-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/localplt.data:
+	... here.
+	* scripts/data/localplt-s390-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/s390/s390-32/nptl/localplt.data:
+	... here.
+	* scripts/data/localplt-s390x-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/s390/s390-64/nptl/localplt.data:
+	... here.
+	* scripts/data/localplt-sparc-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/sparc/sparc32/nptl/localplt.data:
+	... here.
+	* scripts/data/localplt-sparc64-linux-gnu.data: Move to ...
+	* sysdeps/unix/sysv/linux/sparc/sparc64/nptl/localplt.data:
+	... here.
+
 2012-07-19 Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
 	* sysdeps/powerpc/tls-macros.h: Split PowerPC definitions in

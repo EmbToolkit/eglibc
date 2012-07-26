@@ -1,5 +1,5 @@
-/* Operating system support for run-time dynamic linker.  Linux/PPC version.
-   Copyright (C) 1997-2012 Free Software Foundation, Inc.
+/* Run-time dynamic linker data structures for loaded ELF shared objects.
+   Copyright (C) 1995-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,19 +16,25 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <config.h>
-#include <kernel-features.h>
-#include <ldsodefs.h>
+#ifndef	_I386_LDSODEFS_H
+#define	_I386_LDSODEFS_H	1
 
-int __cache_line_size attribute_hidden;
+#include <elf.h>
 
-/* Scan the Aux Vector for the "Data Cache Block Size" entry.  If found
-   verify that the static extern __cache_line_size is defined by checking
-   for not NULL.  If it is defined then assign the cache block size
-   value to __cache_line_size.  */
-#define DL_PLATFORM_AUXV						      \
-      case AT_DCACHEBSIZE:						      \
-	__cache_line_size = av->a_un.a_val;				      \
-	break;
+struct La_i86_regs;
+struct La_i86_retval;
 
-#include <sysdeps/unix/sysv/linux/dl-sysdep.c>
+#define ARCH_PLTENTER_MEMBERS						\
+    Elf32_Addr (*i86_gnu_pltenter) (Elf32_Sym *, unsigned int, uintptr_t *, \
+				    uintptr_t *, struct La_i86_regs *,	\
+				    unsigned int *, const char *name,	\
+				    long int *framesizep)
+
+#define ARCH_PLTEXIT_MEMBERS						\
+    unsigned int (*i86_gnu_pltexit) (Elf32_Sym *, unsigned int, uintptr_t *, \
+				     uintptr_t *, const struct La_i86_regs *, \
+				     struct La_i86_retval *, const char *)
+
+#include_next <ldsodefs.h>
+
+#endif

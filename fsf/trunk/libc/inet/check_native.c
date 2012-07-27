@@ -1,6 +1,5 @@
-/* Definitions for testing PLT entry/exit auditing.  Alpha version.
+/* Determine whether interfaces use native transport.  Generic version.
    Copyright (C) 2012 Free Software Foundation, Inc.
-
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -14,11 +13,15 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library.  If not, see
+   License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#define pltenter la_alpha_gnu_pltenter
-#define pltexit la_alpha_gnu_pltexit
-#define La_regs La_alpha_regs
-#define La_retval La_alpha_retval
-#define int_retval lrv_r0
+#include <ifaddrs.h>
+
+
+void
+attribute_hidden
+__check_native (uint32_t a1_index, int *a1_native,
+		uint32_t a2_index, int *a2_native)
+{
+}

@@ -1,3 +1,113 @@
+2012-07-26  Roland McGrath  <roland@hack.frob.com>
+
+	* sunrpc/rpc_hout.c (pdeclaration): Call f_print with a "%s" format
+	rather than a string variable.
+	* sunrpc/rpc_main.c (h_output): Likewise.
+	* sunrpc/rpc_svcout.c (write_real_program): Likewise.
+
+2012-07-26  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* inet/check_native.c: New file.
+
+2012-07-26  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13629]
+	* math/s_clog.c (__clog): Use __log1p or direct log1p calculation
+	if larger part has absolute value 1.0.
+	* math/s_clog10.c (__clog10): Likewise.
+	* math/s_clog10f.c (__clog10f): Likewise.
+	* math/s_clog10l.c (__clog10l): Likewise.
+	* math/s_clogf.c (__clogf): Likewise.
+	* math/s_clogl.c (__clogl): Likewise.
+	* math/libm-test.inc (clog_test): Add more tests.
+	(clog10_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* elf/tst-auditmod1.c (pltenter): Remove all definitions of macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	Update #error for removed macros to refer only to definitions in
+	tst-audit.h.
+	* elf/tst-auditmod3b.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* elf/tst-auditmod4b.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* elf/tst-auditmod5b.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* elf/tst-auditmod6b.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* elf/tst-auditmod6c.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* elf/tst-auditmod7b.c (pltenter): Remove all definitions of
+	macro.
+	(pltexit): Likewise.
+	(La_regs): Likewise.
+	(La_retval): Likewise.
+	(int_retval): Likewise.
+	* sysdeps/generic/tst-audit.h: Update comment to refer only to
+	macro definitions in tst-audit.h.
+	* sysdeps/i386/tst-audit.h: New file.
+	* sysdeps/powerpc/powerpc32/tst-audit.h: Likewise.
+	* sysdeps/powerpc/powerpc64/tst-audit.h: Likewise.
+	* sysdeps/s390/s390-32/tst-audit.h: Likewise.
+	* sysdeps/s390/s390-64/tst-audit.h: Likewise.
+	* sysdeps/sh/tst-audit.h: Likewise.
+	* sysdeps/sparc/sparc32/tst-audit.h: Likewise.
+	* sysdeps/sparc/sparc64/tst-audit.h: Likewise.
+	* sysdeps/x86_64/tst-audit.h: Likewise.
+
+2012-07-26  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/s390/sys/ptrace.h: Add __THROW for
+	ptrace.
+
+	* sysdeps/unix/sysv/linux/sys/ptrace.h (__ptrace_eventcodes): Add
+	new value PTRACE_EVENT_SECCOMP from Linux 3.5.
+	(__ptrace_setoptions): Add new value PTRACE_O_TRACESECCOMP, adjust
+	PTRACE_O_MASK.
+	* sysdeps/unix/sysv/linux/s390/bits/ptrace.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/ptrace.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/ptrace.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/sys/epoll.h (EPOLLWAKEUP): Add new
+	value.
+
+	* sysdeps/unix/sysv/linux/bits/siginfo.h (siginfo_t): Add
+	_sigsys.
+	(si_call_addr, si_syscall, si_arch): Define new macro.
+	* sysdeps/unix/sysv/linux/s390/bits/siginfo.h (siginfo_t): Add
+	_sigsys.
+	(si_call_addr, si_syscall, si_arch): Define new marcro.
+	* sysdeps/unix/sysv/linux/sparc/bits/siginfo.h (siginfo_t): Add
+	_sigsys.
+	(si_call_addr, si_syscall, si_arch): Define new macro.
+	* sysdeps/unix/sysv/linux/x86/bits/siginfo.h (struct): Add
+	_sigsys.
+	(si_call_addr, si_syscall, si_arch): Define new macro.
+
 2012-07-25  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #13717]

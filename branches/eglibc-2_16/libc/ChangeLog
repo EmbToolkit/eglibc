@@ -1,3 +1,42 @@
+2012-07-16  Andreas Jaeger  <aj@suse.de>
+
+	* po/ru.po: Update from translation team.
+
+2012-07-13  Andreas Jaeger  <aj@suse.de>
+
+	* po/fr.po: Update from translation team.
+
+2012-07-11  Andreas Jaeger  <aj@suse.de>
+
+	* po/fr.po: Update from translation team.
+
+	* po/sv.po: Update from translation team
+	* po/fr.po: Another update from translation team.
+
+2012-07-04  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* catgets/Makefile ($(objpfx)de.msg): Use xopen-msg.awk instead of
+	xopen-msg.sed.
+	* catgets/xopen-msg.awk: New file.
+	* catgets/xopen-msg.sed: Removed.
+
+2012-07-04  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* intl/Makefile ($(objpfx)msgs.h): Use po2test.awk instead of
+	po2text.sed.
+	* intl/po2test.awk: New file.
+	* intl/po2test.sed: Removed.
+
+2012-07-03  Andreas Jaeger  <aj@suse.de>
+
+	* po/bg.po: Update from translation team.
+	* po/cs.po: Likewise.
+	* po/de.po: Likewise.
+	* po/hr.po: Likewise.
+	* po/nl.pl: Likewise.
+	* po/pl.po: Likewise.
+	* po/vi.po: Likewise.
+
 2012-06-30  Carlos O'Donell  <carlos_odonell@mentor.com>
 
 	* NEWS: Update copyright. Remove last-updated date.

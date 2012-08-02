@@ -1,3 +1,103 @@
+2012-08-01  Roland McGrath  <roland@hack.frob.com>
+
+	* libio/iofopen.c: Include <fcntl.h>.
+	[_LIBC] [!defined O_LARGEFILE || O_LARGEFILE == 0]
+	(_IO_fopen64, fopen64): Define as aliases.
+	* libio/iofopen64.c: Include <fcntl.h>.
+	[!defined _LIBC || (defined O_LARGEFILE && O_LARGEFILE != 0)]:
+	Conditionalize body on this.
+	* sysdeps/wordsize-64/iofopen.c: File removed.
+	* sysdeps/wordsize-64/iofopen64.c: File removed.
+
+2012-08-01  Marek Polacek  <polacek@redhat.com>
+
+	* libc/Makeconfig: Use elf in place of binfmt-subdir.
+	Use dlfcn directly instead of a variable.
+	(binfmt-subdir): Do not define.
+	(dlfcn): Likewise.
+
+2012-08-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/kernel-features.h (__ASSUME_FCNTL64):
+	Remove all definitions.
+	* sysdeps/unix/sysv/linux/i386/fcntl.c: Do not include
+	<kernel-features.h>.
+	[!__ASSUME_FCNTL64] (__have_no_fcntl64): Remove.
+	(miss_F_GETOWN_EX): Remove all definitions.
+	[NO_CANCELLATION && !__ASSUME_FCNTL64] (__fcntl_nocancel): Remove
+	macro definition.
+	[!__ASSUME_FCNTL64]: Remove conditional code.
+	[__ASSUME_FCNTL64]: Make code unconditional.
+	* sysdeps/unix/sysv/linux/i386/lockf64.c: Do not include
+	<kernel-features.h>.
+	[__NR_fcntl64 && !__ASSUME_FCNTL64] (__have_no_fcntl64): Remove.
+	(lockf64) [!__ASSUME_FCNTL64]: Remove conditional code.
+	(lockf64) [__NR_fcntl64]: Make code unconditional.
+	(lockf64) [__ASSUME_FCNTL64]: Likewise.
+
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	(__ASSUME_VFORK_SYSCALL): Remove all definitions.
+	* sysdeps/unix/sysv/linux/i386/vfork.S (__vfork) [__NR_vfork]:
+	Make code unconditional.
+	(__vfork) [__ASSUME_VFORK_SYSCALL]: Likewise.
+	(__vfork) [!__ASSUME_VFORK_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/vfork.S (__vfork)
+	[__NR_vfork]: Make code unconditional.
+	(__vfork) [__ASSUME_VFORK_SYSCALL]: Likewise.
+	(__vfork) [!__ASSUME_VFORK_SYSCALL]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/vfork.S (__vfork)
+	[__NR_vfork]: Make code unconditional.
+	(__vfork) [__ASSUME_VFORK_SYSCALL]: Likewise.
+	(__vfork) [!__ASSUME_VFORK_SYSCALL]: Remove conditional code.
+
+2012-08-01  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/generic/sys/param.h (NGROUPS): Define only if [NGROUPS_MAX].
+	(MAXSYMLINKS): Define only if [SYMLOOP_MAX].
+
+	* misc/mkstemp.c [!defined O_LARGEFILE || O_LARGEFILE == 0]:
+	Define mkstemp64 as an alias.
+	* misc/mkstemps.c [!defined O_LARGEFILE || O_LARGEFILE == 0]:
+	Define mkstemps64 as an alias.
+	* misc/mkostemp.c [!defined O_LARGEFILE || O_LARGEFILE == 0]:
+	Define mkostemp64 as an alias.
+	* misc/mkostemps.c [!defined O_LARGEFILE || O_LARGEFILE == 0]:
+	Define mkostemps64 as an alias.
+	* misc/mkstemp64.c [defined O_LARGEFILE && O_LARGEFILE != 0]:
+	Conditionalize body on this.
+	* misc/mkostemp64.c: Likewise.
+	* misc/mkostemps64.c: Likewise.
+	* misc/mkstemps64.c: Likewise.
+	* sysdeps/wordsize-64/mkstemp64.c: File removed.
+	* sysdeps/wordsize-64/mkostemp64.c: File removed.
+	* sysdeps/wordsize-64/mkostemp.c: File removed.
+	* sysdeps/wordsize-64/mkstemp.c: File removed.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkstemp64.c: File removed.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkostemp64.c: File removed.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkostemp.c: File removed.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkstemp.c: File removed.
+
+	[BZ #14138]
+	* sysdeps/unix/sysv/linux/syscalls.list: Add getrlimit/ugetrlimit line.
+	* sysdeps/unix/sysv/linux/i386/getrlimit.c: File removed.
+	* sysdeps/unix/sysv/linux/powerpc/getrlimit.c: File removed.
+	* sysdeps/unix/sysv/linux/sh/getrlimit.c: File removed.
+
+	* sysdeps/unix/make-syscalls.sh: Emit uses of the versioned_symbol and
+	compat_symbol macros from <shlib-compat.h> rather than the underlying
+	default_symbol_version and symbol_version macros, so that DEFAULT
+	lines in shlib-versions are respected.
+	* sysdeps/unix/Makefile ($(objpfx)stub-syscalls.c): Likewise.
+
+2012-08-01  Florian Weimer  <fweimer@redhat.com>
+
+	* posix/unistd.h (setuid, setreuid, seteuid, setresuid):
+	Declare with warn_unused_result.
+	(setgid, setregid, setegid, setresgid): Likewise.
+	* sysdeps/unix/sysv/linux/sys/fsuid.h (setfsuid, setfsgid):
+	Likewise.
+	* WUR-REPORT: Remove set*id functions.
+
 2012-07-31  Pino Toscano  <toscano.pino@tiscali.it>
 
 	* sysdeps/mach/hurd/renameat.c: New file, mostly copied from rename.c.

@@ -82,29 +82,9 @@
 # define __ASSUME_ST_INO_64_BIT		1
 #endif
 
-/* To support locking of large files a new fcntl() syscall was introduced
-   in 2.4.0-test7.  */
-#if defined __i386__ || defined __sparc__
-# define __ASSUME_FCNTL64		1
-#endif
-
-/* Arm got fcntl64 in 2.4.4, PowerPC and SH have it also in 2.4.4 (I
-   don't know when it got introduced).  But PowerPC64 does not support
-   separate FCNTL64 call, FCNTL is already 64-bit */
-#if (defined __powerpc__ || defined __sh__) \
-    && !defined __powerpc64__
-# define __ASSUME_FCNTL64		1
-#endif
-
 /* The getdents64 syscall was introduced in 2.4.0-test7 (but later for
    MIPS n32).  */
 #define __ASSUME_GETDENTS64_SYSCALL	1
-
-/* Starting with 2.4.5 kernels the vfork syscall made it into the
-   official kernel for PPC.  */
-#ifdef __powerpc__
-# define __ASSUME_VFORK_SYSCALL		1
-#endif
 
 /* Starting with 2.4.5 kernels the mmap2 syscall made it into the official
    kernel.  But PowerPC64 does not support a separate MMAP2 call.  */
@@ -116,11 +96,6 @@
    semantics was changed in 2.5.30, and again after 2.5.31.  */
 #if __LINUX_KERNEL_VERSION >= 132384 && defined __i386__
 # define __ASSUME_SET_THREAD_AREA_SYSCALL	1
-#endif
-
-/* The vfork syscall on x86 and arm was definitely available in 2.4.  */
-#ifdef __i386__
-# define __ASSUME_VFORK_SYSCALL		1
 #endif
 
 /* The late 2.5 kernels saw a lot of new CLONE_* flags.  Summarize

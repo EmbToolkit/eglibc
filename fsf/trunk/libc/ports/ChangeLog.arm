@@ -1,3 +1,20 @@
+2012-08-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h
+	(__ASSUME_FCNTL64): Remove.
+
+	* sysdeps/unix/sysv/linux/arm/kernel-features.h
+	(__ASSUME_VFORK_SYSCALL): Remove.
+
+2012-08-01  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/arm/dl-machine.h (CLEAR_CACHE): Don't define it.
+	Instead, #error if it's not defined.
+	* sysdeps/unix/sysv/linux/arm/dl-machine.h: New file.
+
+	[BZ #14138]
+	* sysdeps/unix/sysv/linux/arm/getrlimit.c: File removed.
+
 2012-07-30  Roland McGrath  <roland@hack.frob.com>
 
 	* sysdeps/arm/preconfigure: Don't refuse configurations with

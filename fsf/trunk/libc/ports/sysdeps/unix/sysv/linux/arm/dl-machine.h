@@ -1,4 +1,5 @@
-/* Copyright (C) 1999-2012 Free Software Foundation, Inc.
+/* Machine-dependent ELF dynamic relocation inline functions.  ARM/Linux version
+   Copyright (C) 1995-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,27 +13,16 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <sys/resource.h>
+#ifndef dl_machine_h
 
-#include <sysdep.h>
-#include <sys/syscall.h>
-#include <shlib-compat.h>
-#include <bp-checks.h>
+/* This definition is Linux-specific.  */
+#define CLEAR_CACHE(BEG,END)                                            \
+  INTERNAL_SYSCALL_ARM (cacheflush, , 3, (BEG), (END), 0)
 
-extern int __new_getrlimit (enum __rlimit_resource resource,
-			    struct rlimit *__unbounded rlimits);
+/* The rest is just machine-specific.  */
+#include <sysdeps/arm/dl-machine.h>
 
-/* Consider moving to syscalls.list.  */
-
-int
-__new_getrlimit (enum __rlimit_resource resource, struct rlimit *rlimits)
-{
-  return INLINE_SYSCALL (ugetrlimit, 2, resource, CHECK_1 (rlimits));
-}
-
-weak_alias (__new_getrlimit, __getrlimit);
-versioned_symbol (libc, __new_getrlimit, getrlimit, GLIBC_2_2);
+#endif

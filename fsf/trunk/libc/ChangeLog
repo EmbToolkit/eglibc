@@ -1,3 +1,54 @@
+2012-08-03  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/kernel-features.h (__ASSUME_AT_SECURE):
+	Remove.
+	(__ASSUME_CORRECT_SI_PID): Likewise.
+	(__ASSUME_BRK_PAGE_ROUNDED): Likewise.
+	(__ASSUME_TMPFS_NAME): Likewise.
+	* sysdeps/unix/sysv/linux/dl-sysdep.c (frob_brk)
+	[!__ASSUME_BRK_PAGE_ROUNDED]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/ldsodefs.h [__ASSUME_AT_SECURE]
+	(HAVE_AUX_SECURE): Make definition unconditional.
+	* sysdeps/unix/sysv/linux/shm_open.c (where_is_shmfs)
+	[!__ASSUME_TMPFS_NAME]: Remove conditional code.
+
+2012-08-03  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/mach/hurd/sys/param.h (MAXSYMLINKS): Macro removed.
+	* sysdeps/mach/hurd/bits/local_lim.h (SYMLOOP_MAX): Macro removed.
+	* sysdeps/mach/hurd/eloop-threshold.h: New file.
+	* hurd/lookup-retry.c (__hurd_file_name_lookup_retry): Use
+	__eloop_threshold instead of SYMLOOP_MAX.
+
+	* sysdeps/generic/eloop-threshold.h: New file.
+	* stdlib/canonicalize.c (__realpath): Use __eloop_threshold instead
+	of MAXSYMLINKS.
+	* elf/chroot_canon.c (chroot_canon): Likewise.
+
+2012-08-03  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13717]
+	* sysdeps/unix/sysv/linux/configure.in (arch_minimum_kernel):
+	Change to 2.6.0 everywhere.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	(__ASSUME_SET_THREAD_AREA_SYSCALL): Remove.
+	(__ASSUME_CLONE_THREAD_FLAGS): Condition on architectures, not
+	kernel versions.
+	(__ASSUME_POSIX_TIMERS): Define unconditionally.
+	(__ASSUME_FUTEX_REQUEUE): Remove.
+	(__ASSUME_STATFS64): Define unconditionally.
+	(__ASSUME_AT_SECURE): Likewise.
+	(__ASSUME_CORRECT_SI_PID): Likewise.
+	(__ASSUME_TGKILL): Define without depending on kernel version for
+	i386.
+	(__ASSUME_UTIMES): Likewise.
+	(__ASSUME_SWAPCONTEXT_SYSCALL): Condition on architecture, not
+	kernel version.
+	(__ASSUME_BRK_PAGE_ROUNDED): Define unconditionally.
+	(__ASSUME_TMPFS_NAME): Likewise.
+	* README: Update reference to Linux kernel versions.
+
 2012-08-02  Marek Polacek  <polacek@redhat.com>
 
 	[BZ#14150]

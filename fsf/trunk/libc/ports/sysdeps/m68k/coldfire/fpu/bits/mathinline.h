@@ -1,6 +1,5 @@
-/* Set flags signalling availability of kernel features based on given
-   kernel version number.
-   Copyright (C) 2008, 2009, 2012 Free Software Foundation, Inc.
+/* Inline math functions for Coldfire.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,18 +16,29 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-/* These features were surely available with 2.4.12.  */
-#define __ASSUME_MMAP2_SYSCALL		1
-#define __ASSUME_STAT64_SYSCALL	1
+#ifndef _MATH_H
+# error "Never use <bits/mathinline.h> directly; include <math.h> instead."
+#endif
 
-/* Many syscalls were added in 2.6.10 for m68k.  */
-#define __ASSUME_UTIMES	1
-#define __ASSUME_FADVISE64_64_SYSCALL	1
+#ifndef __extern_always_inline
+# define __MATH_INLINE __inline
+#else
+# define __MATH_INLINE __extern_always_inline
+#endif
 
-#include_next <kernel-features.h>
+#if defined __USE_ISOC99 && defined __GNUC__
 
-/* These syscalls were added only in 3.0 for m68k.  */
-#if __LINUX_KERNEL_VERSION < 0x030000
-# undef __ASSUME_PSELECT
-# undef __ASSUME_PPOLL
+/* Test for negative number.  Used in the signbit macro.  */
+__MATH_INLINE int
+__NTH (__signbitf (float __x))
+{
+  return __builtin_signbitf (__x);
+}
+
+__MATH_INLINE int
+__NTH (__signbit (double __x))
+{
+  return __builtin_signbit (__x);
+}
+
 #endif

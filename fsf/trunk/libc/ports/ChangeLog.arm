@@ -1,3 +1,23 @@
+2012-08-08  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/arm/sotruss-lib.c: New file.
+
+	* sysdeps/arm/ldsodefs.h (ARCH_PLTEXIT_MEMBERS): Use const on
+	`struct La_arm_regs *' parameter.
+
+	* sysdeps/unix/sysv/linux/arm/dl-machine.h: Move #include outside of
+	[!dl_machine_h].
+
+	* sysdeps/unix/sysv/linux/arm/nptl/bits/atomic.h
+	[!__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4]
+	(__arch_compare_and_exchange_val_32_acq): Use uint32_t rather than
+	__typeof (...) for non-pointer variables derived from the arguments.
+
+	* sysdeps/arm/dl-irel.h: Include <ldsodefs.h>.
+
+	* sysdeps/arm/dl-machine.h (elf_machine_load_address): Use proper type
+	for __dl_start declaration.
+
 2012-08-07  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/arm/configure.in (arch_minimum_kernel):

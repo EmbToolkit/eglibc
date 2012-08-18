@@ -1,4 +1,83 @@
+2012-08-17  Marek Polacek  <polacek@redhat.com>
+
+	* sysdeps/ieee754/ldbl-96/s_sincosl.c (__sincosl): Use __attribute__
+	((unused)) on I1, which is set by GET_LDOUBLE_WORDS but never used.
+
 2012-08-17  Roland McGrath  <roland@hack.frob.com>
+
+	* configure.in: Add AC_SUBST for sysheaders.
+	* configure: Regenerated.
+	* config.make.in (sysheaders): New substituted variable.
+
+	* sysdeps/unix/mkfifo.c: Moved ...
+	* sysdeps/posix/mkfifo.c: ... here.
+	* sysdeps/unix/mkfifoat.c: Moved ...
+	* sysdeps/posix/mkfifoat.c: ... here.
+
+	* sysdeps/unix/utime.c: Moved ...
+	* sysdeps/posix/utime.c: ... here.
+
+	* sysdeps/unix/time.c: Moved ...
+	* sysdeps/posix/time.c: ... here.
+	* sysdeps/unix/sysv/linux/time.c: Adjust #include.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/time.c: Likewise.
+
+	* sysdeps/unix/nice.c: Moved ...
+	* sysdeps/posix/nice.c: ... here.
+
+	* sysdeps/unix/alarm.c: Moved ...
+	* sysdeps/posix/alarm.c: ... here.
+
+	* intl/Makefile ($(codeset_mo)): Depend on the input file.
+
+2012-08-17  Jeff Law <law@redhat.com>
+
+	* intl/Makefile (codeset_mo): New variable.
+	($(codeset_mo)): New target.
+	(tst-codeset.out): Depend on that.  Remove explicit rule.
+	(tst-gettext3.out, tst-gettext5.out): Likewise.
+	(LOCPATH-ENV, tst-codeset-ENV): New variables.
+	(tst-gettext3-ENV, tst-gettext5-ENV): Likewise.
+	* intl/tst-codeset.sh: Remove.
+	* intl/tst-gettext3.sh: Likewise.
+	* intl/tst-gettext5.sh: Likewise.
+
+2012-08-17  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/unix/inet/syscalls.list: File removed.  Move contents into ...
+	* sysdeps/unix/syscalls.list: ... here.
+
+	* sysdeps/posix/getaddrinfo.c
+	(save_gaiconf_mtime, check_gaiconf_mtime): New functions.
+	(gaiconf_init, gaiconf_reload): Use them.
+	[!_STATBUF_ST_NSEC]
+	(gaiconf_mtime, save_gaiconf_mtime, check_gaiconf_mtime):
+	Define using time_t rather than struct timespec.
+
+	* sysdeps/generic/malloc-machine.h (MUTEX_INITIALIZER): New macro.
+	(atomic_full_barrier, atomic_read_barrier, atomic_write_barrier):
+	Macros removed.
+	* malloc/arena.c (save_malloc_hook, save_free_hook): Conditionalize on
+	[!NO_THREADS].
+	(malloc_atfork, free_atfork, atfork_recursive_cntr): Likewise.
+	(ptmalloc_lock_all, ptmalloc_unlock_all, ptmalloc_unlock_all2):
+	Likewise.
+
+	* elf/dl-iteratephdr.c (__dl_iterate_phdr): Use NULL rather than 0 for
+	__libc_cleanup_push argument.
+
+	* bits/param.h: New file.
+	* misc/sys/param.h: New file.
+	* include/sys/param.h: New file.
+	* misc/Makefile (headers): Add bits/param.h.
+	* sysdeps/generic/sys/param.h: File removed.
+	* sysdeps/unix/sysv/linux/bits/param.h: New file.
+	* sysdeps/unix/sysv/linux/sys/param.h: File removed.
+	* sysdeps/mach/hurd/bits/param.h: New file.
+	* sysdeps/mach/hurd/sys/param.h: New file.
+
+	* elf/dl-close.c (_dl_close_worker): Add a cast and a comment to the
+	last change.
 
 	* libio/genops.c (_IO_unbuffer_write): Conditionalize locking code on
 	[_IO_MTSAFE_IO].

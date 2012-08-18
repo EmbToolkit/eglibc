@@ -1,4 +1,5 @@
-/* Copyright (C) 2005-2012 Free Software Foundation, Inc.
+/* Old-style Unix parameters and limits.  Stub version.
+   Copyright (C) 1995-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -15,28 +16,18 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <stddef.h>
-#include <time.h>
-
-#include <sysdep.h>
-
-#ifdef __NR_time
-
-time_t
-time (t)
-     time_t *t;
-{
-  INTERNAL_SYSCALL_DECL (err);
-  time_t res = INTERNAL_SYSCALL (time, err, 1, NULL);
-  /* There cannot be any error.  */
-  if (t != NULL)
-    *t = res;
-  return res;
-}
-libc_hidden_def (time)
-
-#else
-
-# include <sysdeps/posix/time.c>
-
+#ifndef _SYS_PARAM_H
+# error "Never use <bits/param.h> directly; include <sys/param.h> instead."
 #endif
+
+/* This header is expected to define a few particular macros.
+
+   The traditional BSD macros that correspond directly to POSIX <limits.h>
+   macros don't need to be defined here if <bits/local_lim.h> defines the
+   POSIX limit macro, as the common <sys/param.h> code will define each
+   traditional name to its POSIX name if available.
+
+   This file should define at least:
+
+        EXEC_PAGESIZE
+*/

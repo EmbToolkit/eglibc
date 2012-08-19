@@ -1,3 +1,27 @@
+2012-08-18  Andreas Jaeger  <aj@suse.de>
+
+	* stdio-common/_itoa.c (_itoa): Add missing DUMMY variable.
+
+2012-08-18  Mike Frysinger  <vapier@gentoo.org>
+
+	* include/sys/socket.h (__have_sock_cloexec): Add attribute_hidden.
+	* include/unistd.h (__have_sock_cloexec): Likewise.
+	(__have_pipe2): Likewise.
+	(__have_dup3): Likewise.
+
+2012-08-18  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #9685]
+	* include/unistd.h (__have_pipe2): Change define into an extern int.
+	(__have_dup3): Likewise.
+	* socket/have_sock_cloexec.c: Include fcntl.h.
+	(__have_pipe2): New variable.
+	(__have_dup3): Likewise.
+
+2012-08-17  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/nice.c: Adjust #include.
+
 2012-08-17  Marek Polacek  <polacek@redhat.com>
 
 	* sysdeps/ieee754/ldbl-96/s_sincosl.c (__sincosl): Use __attribute__

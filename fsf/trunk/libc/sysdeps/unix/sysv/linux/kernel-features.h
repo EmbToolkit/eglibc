@@ -40,20 +40,14 @@
 /* The sendfile syscall was introduced in 2.2.0.  */
 #define __ASSUME_SENDFILE		1
 
-/* On x86 the mmap2 syscall was introduced in 2.3.31.  */
-#ifdef __i386__
-# define __ASSUME_MMAP2_SYSCALL	1
-#endif
-
 /* On x86 the stat64/lstat64/fstat64 syscalls were introduced in 2.3.34.  */
 #ifdef __i386__
 # define __ASSUME_STAT64_SYSCALL	1
 #endif
 
-/* On sparc the mmap2/stat64/lstat64/fstat64 syscalls were introduced
-   in 2.3.35.  */
+/* On sparc the stat64/lstat64/fstat64 syscalls were introduced in
+   2.3.35.  */
 #if defined __sparc__ && !defined __arch64__
-# define __ASSUME_MMAP2_SYSCALL		1
 # define __ASSUME_STAT64_SYSCALL	1
 #endif
 
@@ -70,9 +64,8 @@
 # define __ASSUME_IPC64		1
 #endif
 
-/* SH kernels got stat64 and mmap2 during 2.4.0-test.  */
+/* SH kernels got stat64 during 2.4.0-test.  */
 #ifdef __sh__
-# define __ASSUME_MMAP2_SYSCALL		1
 # define __ASSUME_STAT64_SYSCALL	1
 #endif
 
@@ -86,12 +79,6 @@
    MIPS n32).  */
 #define __ASSUME_GETDENTS64_SYSCALL	1
 
-/* Starting with 2.4.5 kernels the mmap2 syscall made it into the official
-   kernel.  But PowerPC64 does not support a separate MMAP2 call.  */
-#if defined __powerpc__ && !defined __powerpc64__
-# define __ASSUME_MMAP2_SYSCALL		1
-#endif
-
 /* Beginning with 2.6.12 the clock and timer supports CPU clocks.  */
 #define __ASSUME_POSIX_CPU_TIMERS	1
 
@@ -100,12 +87,14 @@
 
 /* The utimes syscall has been available for some architectures
    forever.  For x86 it was introduced after 2.5.75, for x86-64,
-   ppc, and ppc64 it was introduced in 2.6.0-test3.  */
+   ppc, and ppc64 it was introduced in 2.6.0-test3, for s390 it was
+   introduced in 2.6.21-rc5.  */
 #if defined __sparc__ \
     || defined __i386__ \
     || defined __x86_64__ \
     || defined __powerpc__ \
-    || defined __sh__
+    || defined __sh__ \
+    || (defined __s390__ && __LINUX_KERNEL_VERSION >= 0x020616)
 # define __ASSUME_UTIMES	1
 #endif
 
@@ -115,13 +104,6 @@
 #if (defined __i386__ || defined __sparc__			\
      || (defined __powerpc__ && !defined __powerpc64__))
 # define __ASSUME_FADVISE64_64_SYSCALL	1
-#endif
-
-/* Starting with 2.6.0 PowerPC adds signal/swapcontext support for Vector
-   SIMD (AKA Altivec, VMX) instructions and register state.  This changes
-   the overall size of the sigcontext and adds the swapcontext syscall.  */
-#ifdef __powerpc__
-# define __ASSUME_SWAPCONTEXT_SYSCALL	1
 #endif
 
 /* On sparc64 stat64/lstat64/fstat64 syscalls were introduced in 2.6.12.  */

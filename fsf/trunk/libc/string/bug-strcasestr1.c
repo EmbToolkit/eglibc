@@ -1,6 +1,6 @@
-/* Copyright (C) 1996-2012 Free Software Foundation, Inc.
+/* Test for non-submitted strcasestr bug.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,19 +16,24 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <netdb.h>
-#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
+#define TEST_FUNCTION do_test ()
+static int
+do_test (void)
+{
+  const char haystack[] = "AOKB";
+  const char needle[] = "OK";
+  const char *sub = strcasestr (haystack, needle);
 
-#define LOOKUP_TYPE	struct netent
-#define FUNCTION_NAME	getnetbyaddr
-#define DATABASE_NAME	networks
-#define ADD_PARAMS	uint32_t net, int type
-#define ADD_VARIABLES	net, type
-#define BUFLEN		1024
-#define NEED_H_ERRNO	1
+  if (sub == NULL)
+    {
+      fprintf (stderr, "BUG: didn't find \"%s\" in \"%s\"\n", needle, haystack);
+      return 1;
+    }
 
-/* There is no nscd support for the networks file.  */
-#undef	USE_NSCD
+  return 0;
+}
 
-#include "../nss/getXXbyYY.c"
+#include "../test-skeleton.c"

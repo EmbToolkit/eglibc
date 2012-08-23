@@ -1,6 +1,6 @@
-/* Copyright (C) 1996-2012 Free Software Foundation, Inc.
+/* lxstat64 using 64-bit MIPS lstat system call.
+   Copyright (C) 1997-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,19 +16,29 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <netdb.h>
-#include <stdint.h>
+#include <errno.h>
+#include <stddef.h>
+#include <sys/stat.h>
+#include <kernel_stat.h>
 
+#include <sysdep.h>
+#include <sys/syscall.h>
+#include <bp-checks.h>
 
-#define LOOKUP_TYPE	struct netent
-#define FUNCTION_NAME	getnetbyaddr
-#define DATABASE_NAME	networks
-#define ADD_PARAMS	uint32_t net, int type
-#define ADD_VARIABLES	net, type
-#define BUFLEN		1024
-#define NEED_H_ERRNO	1
+#include <xstatconv.h>
 
-/* There is no nscd support for the networks file.  */
-#undef	USE_NSCD
+/* Get information about the file NAME in BUF.  */
+int
+__lxstat64 (int vers, const char *name, struct stat64 *buf)
+{
+  int result;
+  struct kernel_stat kbuf;
 
-#include "../nss/getXXbyYY.c"
+  result = INLINE_SYSCALL (lstat, 2, CHECK_STRING (name), __ptrvalue (&kbuf));
+  if (result == 0)
+    result = __xstat64_conv (vers, &kbuf, buf);
+
+  return result;
+}
+
+hidden_def (__lxstat64)

@@ -20,11 +20,13 @@
 #
 subdir	:= nscd
 
+include ../Makeconfig
+
+ifneq ($(use-nscd),no)
 routines := nscd_getpw_r nscd_getgr_r nscd_gethst_r nscd_getai \
 	    nscd_initgroups nscd_getserv_r nscd_netgroup
 aux	:= nscd_helper
-
-include ../Makeconfig
+endif
 
 # To find xmalloc.c
 vpath %.c ../locale/programs
@@ -36,7 +38,7 @@ nscd-modules := nscd connections pwdcache getpwnam_r getpwuid_r grpcache \
 		xmalloc xstrdup aicache initgrcache gai res_hconf \
 		netgroupcache
 
-ifeq ($(have-thread-library),yes)
+ifeq ($(build-nscd)$(have-thread-library),yesyes)
 
 others += nscd
 others-pie += nscd

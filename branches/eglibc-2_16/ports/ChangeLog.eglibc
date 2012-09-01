@@ -1,3 +1,9 @@
+2012-08-31  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	Backport from trunk:
+	* sysdeps/powerpc/powerpc32/e500/fpu/math_private.h: Update path
+	after file was moved.
+
 2012-03-08  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/arm/eabi/bits/predefs.h: Test _STDC_PREDEF_H, not

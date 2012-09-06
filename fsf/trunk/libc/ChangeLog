@@ -1,3 +1,69 @@
+2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* malloc/arena.c: Fold copyright years.
+	* malloc/mcheck.c, malloc/memusage.c: Likewise.
+
+2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* malloc/malloc.c (__libc_mallopt) <M_MMAP_MAX>: Fix indentation.
+
+2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* manual/contrib.texi (Contributors): Fix typo.  Complete entry.
+
+2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* malloc/malloc.c (__libc_mallopt) <M_MMAP_THRESHOLD>: Do not
+	change internal state upon failure.
+
+2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
+
+	* malloc/mcheck.c (mcheck_check_all): Fix typo.
+	* malloc/memusage.c (mmap): Likewise.
+	(mmap64, mremap): Likewise.  Adjust name in comment.
+
+2012-09-05  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* libio/fileops.c: Fix typos in comments.
+	* libio/oldfileops.c: Likewise.
+	* libio/wfileops.c: Likewise.
+
+2012-09-05  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #1349]
+	* malloc/Makefile (tests): Add tst-malloc-usable test case.
+	(tst-malloc-usable-ENV): Set environment for test case.
+	* malloc/hooks.c (malloc_check_get_size): New function to get
+	requested size.
+	* malloc/malloc.c (musable): Use malloc_check_get_size.
+	* malloc/tst-malloc-usable.c: New test case.
+
+2012-09-05  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* stdlib/tst-strtod-overflow.c (TIMEOUT): Define.
+
+2012-09-05  Allan McRae  <allan@archlinux.org>
+
+	[BZ #13966]
+	* configure.in (CXX_SYSINCLUDES): Use compiler output to
+	determine header location.
+	* configure: Regenerated.
+
+2012-09-05  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* stdlib/gen-tst-strtod-round.c (formats): Add Motorola extended
+	float format.
+	* stdlib/tst-strtod-round.c (TEST) [LDBL_MANT_DIG == 64 &&
+	LDBL_MAX_EXP == 16384]: Add case for Motorola extended float
+	format.
+	(test): Regenerate.
+
+2012-09-04  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/sparcv9/addmul_1.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/submul_1.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/mul_1.S: New file.
+
 2012-09-04  Florian Weimer  <fweimer@redhat.com>
 
 	* stdlib/tst-secure-getenv.c (alternative_main): Only warn on SGID

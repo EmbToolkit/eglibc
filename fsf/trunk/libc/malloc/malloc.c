@@ -1,5 +1,5 @@
 /* Malloc implementation for multiple threads without lock contention.
-   Copyright (C) 1996-2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+   Copyright (C) 1996-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Wolfram Gloger <wg@malloc.de>
    and Doug Lea <dl@cs.oswego.edu>, 2001.
@@ -4563,6 +4563,9 @@ musable(void* mem)
   mchunkptr p;
   if (mem != 0) {
     p = mem2chunk(mem);
+
+    if (__builtin_expect(using_malloc_checking == 1, 0))
+      return malloc_check_get_size(p);
     if (chunk_is_mmapped(p))
       return chunksize(p) - 2*SIZE_SZ;
     else if (inuse(p))
@@ -4766,13 +4769,15 @@ int __libc_mallopt(int param_number, int value)
     if((unsigned long)value > HEAP_MAX_SIZE/2)
       res = 0;
     else
-      mp_.mmap_threshold = value;
-      mp_.no_dyn_threshold = 1;
+      {
+	mp_.mmap_threshold = value;
+	mp_.no_dyn_threshold = 1;
+      }
     break;
 
   case M_MMAP_MAX:
-      mp_.n_mmaps_max = value;
-      mp_.no_dyn_threshold = 1;
+    mp_.n_mmaps_max = value;
+    mp_.no_dyn_threshold = 1;
     break;
 
   case M_CHECK_ACTION:

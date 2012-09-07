@@ -1,3 +1,73 @@
+2012-09-06  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/dl-tls.c (DL_INITIAL_DTV): Removed.
+	(_dl_initial_dtv): New.  Defined if SHARED isn't defined.
+	(_dl_deallocate_tls): Restore GL(dl_initial_dtv).
+
+2012-09-06  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* csu/libc-tls.c (static_dtv): Renamed to ...
+	(_dl_static_dtv): This.  Make it global.
+	(_dl_initial_dtv): Removed.
+	(__libc_setup_tls): Updated.
+	* elf/dl-tls.c (DL_INITIAL_DTV): New macro.
+	(_dl_deallocate_tls): Replace GL(dl_initial_dtv) with
+	DL_INITIAL_DTV.
+
+2012-09-06  Petr Machata  <pmachata@redhat.com>
+
+	* elf/elf.h (NT_S390_HIGH_GPRS): New macro.
+	(NT_S390_TIMER, NT_S390_TODCMP, NT_S390_TODPREG): Likewise.
+	(NT_S390_CTRS, NT_S390_PREFIX, NT_S390_LAST_BREAK): Likewise.
+	(NT_S390_SYSTEM_CALL, NT_ARM_VFP): Likewise.
+
+2012-09-06  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14545]
+	* csu/libc-tls.c (_dl_initial_dtv): New variable.
+	* elf/dl-tls.c (_dl_deallocate_tls): Always check dtv before
+	freeing dtv[-1].
+
+2012-09-06  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14544]
+	* Makeconfig (link-static-before-libc): Replace $(+prector)
+	with $(+prectorT).
+	(link-static-after-libc): Replace $(+postctor) with
+	$(+postctorT).
+	(link-bounded): Replace $(+prector)/$(+postctor) with
+	$(+prectorT)/$(+postctorT).
+	(+prectorT): New macro.
+	(+postctorT): Likewise.
+
+2012-09-06  Joseph Myers  <joseph@codesourcery.com>
+
+	* stdlib/gen-tst-strtod-round.c: Include <assert.h>.
+	(round_str): Handle values above the maximum for IBM long double
+	as inexact.
+	* stdlib/tst-strtod-round.c (tests): Regenerated.
+
+2012-09-06  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/s390-32/multiarch/Makefile: Remove -mzarch
+	assembler flag.
+	* sysdeps/s390/s390-32/multiarch/memcmp.S: Use .machinemode
+	zarch_nohighgprs around the zarch optimized routines.
+	* sysdeps/s390/s390-32/multiarch/memcpy.S: Likewise.
+	* sysdeps/s390/s390-32/multiarch/memset.S: Likewise.
+	* sysdeps/s390/s390-32/multiarch/ifunc-resolve.c: Explicitly check
+	for zarch.
+
+2012-09-05  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+	* sysdeps/sparc/bits/hwcap.h (HWCAP_SPARC_PAUSE,
+	HWCAP_SPARC_CBCOND, HWCAP_SPARC_CRYPTO): Define.
+	* sysdeps/sparc/dl-procinfo.h (_DL_HWCAP_COUNT): Increase to 27.
+	* sysdeps/sparc/dl-procinfo.c (_dl_sparc_cap_flags): Add new
+	entries.
+
 2012-09-05  Alexandre Oliva  <aoliva@redhat.com>
 
 	* malloc/arena.c: Fold copyright years.

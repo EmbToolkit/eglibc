@@ -1,3 +1,7 @@
+2012-09-06  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/unix/sysv/linux/tile/sys/procfs.h: Fix type of prfpregset_t.
+
 2012-05-30  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/unix/sysv/linux/tile/tilegx/Makefile: Remove test

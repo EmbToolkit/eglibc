@@ -1,3 +1,59 @@
+2012-09-07  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* scripts/check-local-headers.sh: Add "shopt -s nullglob".
+
+	* iconv/gconv_db.c (free_derivation): Check if deriv->steps
+	is NULL.
+
+	* debug/Makefile (LDFLAGS-tst-chk4): Renamed to ...
+	(LDLIBS-tst-chk4): This.
+	(LDFLAGS-tst-chk5): Renamed to ...
+	(LDLIBS-tst-chk5): This.
+	(LDFLAGS-tst-chk6): Renamed to ...
+	(LDLIBS-tst-chk6): This.
+	(LDFLAGS-tst-lfschk4): Renamed to ...
+	(LDLIBS-tst-lfschk4): This.
+	(LDFLAGS-tst-lfschk5): Renamed to ...
+	(LDLIBS-tst-lfschk5): This.
+	(LDFLAGS-tst-lfschk6): Renamed to ...
+	(LDLIBS-tst-lfschk6): This.
+
+	* Makefile ($(inst_includedir)/gnu/stubs.h): Remove dependency
+	on $(common-objpfx)soversions.mk.
+
+2012-09-07  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #10014]
+	* manual/examples/inetcli.c (SERVERHOST): Use www.gnu.org as
+	example host name.
+
+2012-09-07  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* malloc/arena.c (arena_get_retry): New function that gets
+	another arena for the caller to try its request on.
+	* malloc/malloc.c (__libc_malloc): Use get_another_arena if the
+	current arena cannot fulfill the request.
+	(__libc_memalign): Likewise.
+	(__libc_memalign): Likewise.
+	(__libc_pvalloc): Likewise.
+	(__libc_calloc): Likewise.
+
+2012-09-05  John Tobey  <john.tobey@gmail.com>
+
+	[BZ #13542]
+	* manual/arith.texi (Operations on Complex): Fix description
+	of carg branch cut.
+
+2012-09-06  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #10014]
+	* manual/socket.texi (Host Addresses): Use www.gnu.org as example
+	host name.
+
+	[BZ #10038]
+	* manual/memory.texi (Memory): Make order of menu items match
+	order of sections.
+
 2012-09-06  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* elf/dl-tls.c (DL_INITIAL_DTV): Removed.

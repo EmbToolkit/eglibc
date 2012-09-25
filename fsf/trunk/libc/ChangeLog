@@ -1,4 +1,99 @@
+2012-09-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* libio/libio.h (_IO_size_t): Define to size_t, not _G_size_t.
+	(_IO_ssize_t): Define to __ssize_t, not _G_ssize_t.
+	(_IO_off_t): Define to __off_t, not _G_off_t.
+	(_IO_pid_t): Define to __pid_t, not _G_pid_t.
+	(_IO_uid_t): Define to __uid_t, not _G_uid_t.
+	(_IO_wint_t): Define to wint_t, not _G_wint_t.
+	* libio/libioP.h (struct _IO_jump_t): Use size_t not _G_size_t as
+	type of __dummy and __dummy2 fields.
+	* sysdeps/generic/_G_config.h (_G_size_t): Remove.
+	(_G_ssize_t): Likewise.
+	(_G_off_t): Likewise.
+	(_G_pid_t): Likewise.
+	(_G_uid_t): Likewise.
+	(_G_wchar_t): Likewise.
+	(_G_wint_t): Likewise.
+	* sysdeps/gnu/_G_config.h (_G_size_t): Remove.
+	(_G_ssize_t): Likewise.
+	(_G_off_t): Likewise.
+	(_G_pid_t): Likewise.
+	(_G_uid_t): Likewise.
+	(_G_wchar_t): Likewise.
+	(_G_wint_t): Likewise.
+	* sysdeps/mach/hurd/_G_config.h (_G_size_t): Remove.
+	(_G_ssize_t): Likewise.
+	(_G_off_t): Likewise.
+	(_G_pid_t): Likewise.
+	(_G_uid_t): Likewise.
+	(_G_wchar_t): Likewise.
+	(_G_wint_t): Likewise.
+
+2012-09-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* malloc/arena.c: Include malloc-sysdep.h.
+	(shrink_heap): Use check_may_shrink_heap to decide if madvise
+	is sufficient to shrink the heap or an unmap is needed.
+	* sysdeps/generic/malloc-sysdep.h: New file.  Define
+	new function check_may_shrink_heap.
+	* sysdeps/unix/sysv/linux/malloc-sysdep.h: New file.  Define
+	new function check_may_shrink_heap.
+
+2012-09-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* libio/fileops.c (_IO_new_file_seekoff): Fix typos in
+	comments.
+
+2012-09-24  Dmitry V. Levin  <ldv@altlinux.org>
+
+	* catgets/test-gencat.sh: Add "set -e".
+	* elf/tst-pathopt.sh: Likewise.
+	* grp/tst_fgetgrent.sh: Likewise.
+	* iconvdata/run-iconv-test.sh: Likewise.
+	* intl/tst-gettext.sh: Likewise.
+	* intl/tst-gettext2.sh: Likewise.
+	* intl/tst-gettext4.sh: Likewise.
+	* intl/tst-gettext6.sh: Likewise.
+	* intl/tst-translit.sh: Likewise.
+	* io/ftwtest-sh: Likewise.
+	* libio/test-freopen.sh: Likewise.
+	* malloc/tst-mtrace.sh: Likewise.
+	* posix/globtest.sh: Likewise.
+	* posix/tst-getconf.sh: Likewise.
+	* posix/wordexp-tst.sh: Likewise.
+	* stdio-common/tst-printf.sh: Likewise.
+	* stdio-common/tst-unbputc.sh: Likewise.
+	* stdlib/tst-fmtmsg.sh: Likewise.
+	* sysdeps/x86_64/tst-xmmymm.sh: Likewise.
+	* catgets/Makefile: Do not specify -e option when running
+	testsuite shell scripts.
+	* elf/Makefile: Likewise.
+	* grp/Makefile: Likewise.
+	* iconvdata/Makefile: Likewise.
+	* intl/Makefile: Likewise.
+	* io/Makefile: Likewise.
+	* libio/Makefile: Likewise.
+	* malloc/Makefile: Likewise.
+	* posix/Makefile: Likewise.
+	* stdio-common/Makefile: Likewise.
+	* stdlib/Makefile: Likewise.
+	* sysdeps/x86_64/Makefile: Likewise.
+
+	* io/ftwtest-sh: Add copyright header.
+	* posix/globtest.sh: Likewise.
+	* posix/tst-getconf.sh: Likewise.
+	* posix/wordexp-tst.sh: Likewise.
+	* sysdeps/x86_64/tst-xmmymm.sh: Likewise.
+
 2012-09-24  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #13679]
+	* Makeconfig (+link): Defined as $(+link-static) if
+	$(build-shared) isn't yes.
+	(link-tests): Defined as $(+link-static-tests) if $(build-shared)
+	isn't yes.
+	(static-gnulib): Add -lgcc_eh if $(build-shared) isn't yes.
 
 	* Makeconfig (+postctorT): Replace crtendS.o with crtend.o.
 

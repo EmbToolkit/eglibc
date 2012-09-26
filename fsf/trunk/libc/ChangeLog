@@ -1,3 +1,100 @@
+2012-09-25  Roland McGrath  <roland@hack.frob.com>
+
+	* Makefile.in (all, install): Declare with .PHONY.
+	Reported by Michael Hope <michael.hope@linaro.org>.
+
+2012-09-25  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* manual/platform.texi (PowerPC): Document __ppc_get_timebase_freq.
+	* sysdeps/powerpc/sys/platform/ppc.h: Include the operating
+	system header.
+	* sysdeps/unix/sysv/linux/powerpc/Makefile (sysdep_headers):
+	Likewise.
+	(sydep_routines): Add the new and the internal functions.
+	* sysdeps/unix/sysv/linux/powerpc/bits/ppc.h: New file.
+	* sysdeps/unix/sysv/linux/powerpc/get_timebase_freq.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/Versions
+	(GLIBC_2.17): Add the new function.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/libc.abilist
+	(GLIBC_2.17): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/Versions
+	(GLIBC_2.17): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/libc.abilist
+	(GLIBC_2.17): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/test-gettimebasefreq.c: New file.
+
+2012-09-25  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/pthread_once.c (__pthread_once):
+	Add release barrier before setting once_control to say
+	initialisation is done.  Add hints on lwarx.  Use macro in
+	place of isync.
+	(clear_once_control): Add release barrier.
+
+2012-09-25  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13629]
+	* math/s_clog.c (__clog): Handle more values close to |z| = 1
+	specially.
+	* math/s_clog10.c (__clog10): Likewise.
+	* math/s_clog10f.c (__clog10f): Likewise.
+	* math/s_clog10l.c (__clog10l): Likewise.
+	* math/s_clogf.c (__clogf): Likewise.
+	* math/s_clogl.c (__clogl): Likewise.
+	* math/Makefile (libm-calls): Add x2y2m1.
+	* sysdeps/generic/math_private.h (__x2y2m1f): Declare.
+	(__x2y2m1): Likewise.
+	(__x2y2m1l): Likewise.
+	* sysdeps/ieee754/dbl-64/x2y2m1.c: New file.
+	* sysdeps/ieee754/dbl-64/x2y2m1f.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/x2y2m1l.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/x2y2m1l.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/x2y2m1.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/x2y2m1l.c: Likewise.
+	* math/libm-test.inc (clog_test, clog10_test): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #14621]
+	* posix/glob.c (next_brace_sub): Use size_t instead of unsigned
+	int as type of variable DEPTH.
+	(glob): Use size_t instead of int as type of variables NEWCOUNT
+	and OLD_PATHC.
+
+2012-09-25  Liubov Dmitrieva  <liubov.dmitrieva@gmail.com>
+
+	* sysdeps/i386/i686/fpu/multiarch/Makefile (sysdep_routines):
+	Add s_sincosf-sse2.
+	* sysdeps/i386/i686/fpu/multiarch/s_sincosf.c: New file.
+	* sysdeps/i386/i686/fpu/multiarch/s_sincosf-sse2.S: New file.
+	* sysdeps/ieee754/flt-32/s_sincosf.c (SINCOSF, SINCOSF_FUNC): Add
+	macros for using routine as __sincosf_ia32.
+	Use macro for function declaration and weak_alias.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+
+	* sysdeps/x86_64/fpu/s_sincosf.S: New file.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Update.
+
+	* math/s_ccoshf.c (__ccoshf): Fix wrong usage of sincos for
+	subnormal argument.
+	* math/s_cexpf.c (__cexpf): Likewise.
+	* math/s_csinf.c (__csinf): Likewise.
+	* math/s_csinhf.c (__csinhf): Likewise.
+	* math/s_ctanf.c (__ctanf): Likewise.
+	* math/s_ctanhf.c (__ctanhf): Likewise.
+	* math/s_ccosh.c (__ccoshf): Likewise.
+	* math/s_cexp.c (__cexpl): Likewise.
+	* math/s_csin.c (__csin): Likewise.
+	* math/s_csinh.c (__csinh): Likewise.
+	* math/s_ctan.c (__ctan): Likewise.
+	* math/s_ctanh.c (ctanh): Likewise.
+	* math/s_ccoshl.c (__ccoshl): Likewise.
+	* math/s_cexpl.c (__cexpl): Likewise.
+	* math/s_csinl.c (__csinl): Likewise.
+	* math/s_csinhl.c (__csinhl): Likewise.
+	* math/s_ctanl.c (__ctanl): Likewise.
+	* math/s_ctanhl.c (__ctanhl): Likewise.
+
 2012-09-25  Joseph Myers  <joseph@codesourcery.com>
 
 	* libio/libio.h (_IO_size_t): Define to size_t, not _G_size_t.

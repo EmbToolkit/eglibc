@@ -1,3 +1,113 @@
+2012-09-28  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/posix/sleep.c (__sleep): Rewritten using __nanosleep
+	instead of SIGALRM.
+
+	* sysdeps/gnu/_G_config.h: Moved to ...
+	* sysdeps/unix/sysv/linux/_G_config.h: ... here.
+	* sysdeps/mach/hurd/_G_config.h: Moved to ...
+	* sysdeps/generic/_G_config.h: ... here.
+
+	* io/open.c (__open): Renamed to __libc_open.  Make __open an alias.
+
+	* posix/Makefile ($(objpfx)config-name.h): Do $(make-target-directory).
+
+	* nss/Makefile ($(objpfx)/libnss_test1.so$(libnss_test1.so-version)):
+	Conditionalize target on [libnss_test1.so-version].
+
+	* elf/dl-sysdep.c: Conditionalize whole contents on [SHARED].
+
+	* Makeconfig (nssobjdir, resolvobjdir): Remove variables.
+	(elfobjdir): Move out of conditionals.
+
+	* nss/nsswitch.c (nss_new_service): Conditionalize definition and
+	declaration on [!DO_STATIC_NSS || SHARED], matching its only caller.
+	(__nss_lookup_function): Conditionalize label remove_from_tree on
+	[!DO_STATIC_NSS || SHARED], matching its only use.
+
+2012-09-28  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc64/multiarch/memcpy-niagara4.S: New file.
+	* sysdeps/sparc/sparc32/sparcv9/multiarch/memcpy-niagara4.S: New
+	file.
+	* sysdeps/sparc/sparc64/multiarch/Makefile: Add to
+	sysdep_routines.
+	* sysdeps/sparc/sparc32/sparcv9/multiarch/Makefile: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Use Niagara-4 memcpy
+	when HWCAP_SPARC_CRYPTO is present.
+
+2012-09-28  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* io/tst-mknodat.c: Create a FIFO instead of a socket.
+
+2012-09-28  Andreas Schwab  <schwab@linux-m68k.org>
+
+	[BZ #6530]
+	* stdio-common/vfprintf.c (process_string_arg): Revert
+	2000-07-22 change.
+
+2011-09-28  Jonathan Nieder  <jrnieder@gmail.com>
+
+	* stdio-common/Makefile (tst-sprintf-ENV): Set environment
+	for testcase.
+	* stdio-common/tst-sprintf.c: Include <locale.h>
+	(main): Test sprintf's handling of incomplete multibyte
+	characters.
+
+2012-09-28  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/dl-runtime.c (VERSYMIDX): Removed.
+	* elf/dl-version.c (VERSYMIDX): Likewise.
+	* elf/do-rel.h (VERSYMIDX): Likewise.
+	(VALIDX): Likewise.
+	* elf/dynamic-link.h (VERSYMIDX): Likewise.
+	* elf/rtld.c (VALIDX): Likewise.
+	(ADDRIDX): Likewise.
+	* sysdeps/sparc/sparc32/dl-machine.h (VALIDX): Likewise.
+	* sysdeps/sparc/sparc64/dl-machine.h (VALIDX): Likewise.
+	* sysdeps/x86_64/dl-tlsdesc.h (ADDRIDX): Likewise.
+	* sysdeps/generic/ldsodefs.h (VERSYMIDX): New macro.
+	(VALIDX): Likewise.
+	(ADDRIDX): Likewise.
+
+2012-09-28  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* sysdeps/pthread/aio_fsync.c: Fix the file mode checking.
+
+2012-09-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	[BZ #11438]
+	* sysdeps/posix/getaddrinfo.c (default_scopes): Map RFC 1918 addresses
+	to global scope.
+	* posix/tst-rfc3484.c: Verify 10/8, 172.16/12 and 196.128/16
+	addresses are in the same scope as 192.0.2/24.
+	* posix/gai.conf: Document new scope table defaults.
+
+2012-09-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #5298]
+	* libio/fileops.c (_IO_new_file_seekoff): Don't flush buffer
+	for ftell.  Compute offsets from write pointers instead.
+	* libio/wfileops.c (_IO_wfile_seekoff): Likewise.
+
+2012-09-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #14543]
+	* libio/Makefile (tests): New test case tst-fseek.
+	* libio/tst-fseek.c: New test case to verify that fseek/ftell
+	combination works in wide mode.
+	* libio/wfileops.c (_IO_wfile_seekoff): Adjust internal buffer
+	state when the external buffer state changes.
+
+2012-09-27  David S. Miller  <davem@davemloft.net>
+
+	[BZ #14376]
+	* sysdeps/sparc/sparc64/dl-machine.h (elf_machine_rela): Do not
+	pass reloc->r_addend in as the 'high' argument to
+	sparc64_fixup_plt when handling R_SPARC_JMP_IREL relocations.
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
 2012-09-28  Pino Toscano  <toscano.pino@tiscali.it>
 
 	* rt/tst-aio2.c: Include <pthread.h>.
@@ -9,8 +119,8 @@
 
 2012-09-27  H.J. Lu  <hongjiu.lu@intel.com>
 
-	* sysdeps/x86_64/multiarch/strncmp-ssse3.S: Empty if not in
-	libc.a.
+	* sysdeps/x86_64/multiarch/strncmp-ssse3.S: Conditionalize
+	contents on [SHARED].
 
 2012-09-26  Marek Polacek  <polacek@redhat.com>
 

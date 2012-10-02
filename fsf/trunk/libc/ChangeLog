@@ -1,3 +1,53 @@
+2012-10-01  Roland McGrath  <roland@hack.frob.com>
+
+	* bits/types.h (__swblk_t): Type removed.
+	* bits/typesizes.h (__SWBLK_T_TYPE): Macro removed.
+	* sysdeps/mach/hurd/bits/typesizes.h (__SWBLK_T_TYPE): Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/bits/typesizes.h
+	(__SWBLK_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/x86/bits/typesizes.h
+	(__SWBLK_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/typesizes.h
+	(__SWBLK_T_TYPE): Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/typesizes.h
+	(__SWBLK_T_TYPE): Likewise.
+
+2012-10-01  Patsy Franklin <pfrankli@redhat.com>
+            Honza Horak <hhorak@redhat.com>
+
+	* nis/yp_xdr.c (xdr_domainname): Use YPMAXDOMAIN as maxsize.
+	(xdr_mapname): Use YPMAXMAP as maxsize.
+	(xdr_peername): Use YPMAXPEER as maxsize.
+	(xdr_keydat): Use YPAXRECORD as maxsize.
+	(xdr_valdat): Use YPMAXRECORD as maxsize.
+
+2012-10-01  Roland McGrath  <roland@hack.frob.com>
+
+	* io/openat.c [!__ASSUME_ATFCTS] (__have_atfcts): New global variable.
+
+	* sysdeps/unix/sysv/linux/init-first.c: Moved to ...
+	* csu/init-first.c: ... here.
+	* sysdeps/unix/sysv/linux/powerpc/init-first.c: Update #include.
+	* sysdeps/unix/sysv/linux/s390/init-first.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/init-first.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/init-first.c: Likewise.
+	* sysdeps/i386/init-first.c: File removed.
+	* sysdeps/sh/init-first.c: File removed.
+
+2012-10-01  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14645]
+	* sysdeps/ieee754/dbl-64/s_fma.c (__fma): Compute result as x * y
+	if x * y might underflow to zero and z is zero.
+	* sysdeps/ieee754/ldbl-128/s_fmal.c (__fmal): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_fmal.c (__fmal): Likewise.
+	* math/libm-test.inc (min_subnorm_value): New variable.
+	(fma_test): Add more tests.
+	(fma_test_towardzero): Likewise.
+	(fma_test_downward): Likewise
+	(fma_test_upward): Likewise.
+	(initialize): Set min_subnorm_value.
+
 2012-09-29  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #14638]

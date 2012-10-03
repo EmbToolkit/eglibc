@@ -1,3 +1,29 @@
+2012-10-02  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/dl-load.c (_dl_map_object_from_fd: struct loadcmd):
+	Make 'mapoff' field ElfW(Off) rather than off_t.
+
+2012-10-02  Dmitry V. Levin  <ldv@altlinux.org>
+
+	* nscd/Makefile: Remove nscd-cflags and all its users.
+	(CPPFLAGS-nonlib): Add preprocessor flags for nscd modules.
+	(CFLAGS-nonlib): Add compiler flags for nscd modules.
+
+	[BZ #10631]
+	* malloc.c (malloc_printerr): Clarify error message.
+
+2012-10-02  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14648]
+	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features):
+	Set bit_FMA_Usable if FMA is supported.
+	* sysdeps/x86_64/multiarch/init-arch.h (bit_FMA_Usable): New
+	macro.
+	(bit_FMA4_Usable): Updated.
+	(index_FMA_Usable): New macro.
+	(CPUID_FMA): Likewise
+	(HAS_FMA): Defined with bit_FMA_Usable.
+
 2012-10-01  Roland McGrath  <roland@hack.frob.com>
 
 	* bits/types.h (__swblk_t): Type removed.

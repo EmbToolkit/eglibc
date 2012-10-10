@@ -1,3 +1,23 @@
+2012-10-04  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14648]
+	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features):
+	Set bit_FMA_Usable if FMA is supported.
+	* sysdeps/x86_64/multiarch/init-arch.h (bit_FMA_Usable): New
+	macro.
+	(bit_FMA4_Usable): Updated.
+	(index_FMA_Usable): New macro.
+	(CPUID_FMA): Likewise
+	(HAS_FMA): Defined with bit_FMA_Usable.
+
+2012-09-25  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14621]
+	* posix/glob.c (next_brace_sub): Use size_t instead of unsigned
+	int as type of variable DEPTH.
+	(glob): Use size_t instead of int as type of variables NEWCOUNT
+	and OLD_PATHC.
+
 2012-08-27  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #14459]

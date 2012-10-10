@@ -1,3 +1,71 @@
+2012-10-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/gen-libm-test.pl (parse_args): Handle comparison macros as
+	type-generic.
+	* math/libm-test.inc: Update comment listing what functions and
+	macros are tested.
+	(isgreater_test): New function.
+	(isgreaterequal_test): Likewise.
+	(isless_test): Likewise.
+	(islessequal_test): Likewise.
+	(islessgreater_test): Likewise.
+	(isunordered_test): Likewise.
+	(main): Call the new functions.
+
+2012-10-09  Roland McGrath  <roland@hack.frob.com>
+
+	* aclocal.m4 (GLIBC_PROVIDES): Provide _AS_BASENAME_PREPARE,
+	_AS_ME_PREPARE, _AS_VAR_ARITH_PREPARE, AS_SHELL_FN_as_fn_set_status,
+	AS_SHELL_FN_as_fn_exit, AS_SHELL_FN_ac_fn_c_try_compile.
+	* sysdeps/i386/configure: Regenerated.
+	* sysdeps/ieee754/ldbl-opt/configure: Regenerated.
+	* sysdeps/mach/configure: Regenerated.
+	* sysdeps/mach/hurd/configure: Regenerated.
+	* sysdeps/powerpc/configure: Regenerated.
+	* sysdeps/powerpc/powerpc32/configure: Regenerated.
+	* sysdeps/powerpc/powerpc64/configure: Regenerated.
+	* sysdeps/s390/s390-32/configure: Regenerated.
+	* sysdeps/s390/s390-64/configure: Regenerated.
+	* sysdeps/sh/configure: Regenerated.
+	* sysdeps/sparc/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+	* sysdeps/unix/sysv/linux/powerpc/configure: Regenerated.
+	* sysdeps/x86_64/configure: Regenerated.
+
+	* dlfcn/dlerror.c (check_free): Call _dl_addr only if SHARED is
+	defined.  Don't check if MAP is NULL.
+
+2012-10-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/generic/_G_config.h (_G_off64_t): Remove.
+	(_G_stat64): Likewise.
+	* sysdeps/unix/sysv/linux/_G_config.h (_G_off64_t): Remove.
+	(_G_stat64): Likewise.
+	* libio/filedoalloc.c (_IO_file_doallocate): Use struct stat64
+	instead of struct _G_stat64.
+	* libio/fileops.c (mmap_remap_check): Likewise.
+	(decide_maybe_mmap): Likewise.
+	(_IO_new_file_seekoff): Likewise.
+	(_IO_file_stat): Likewise.
+	* libio/libio.h (_IO_off64_t): Define to __off64_t, not
+	_G_off64_t.
+	* libio/oldfileops.c (_IO_old_file_seekoff): Use struct stat64
+	instead of struct _G_stat64.
+	* libio/wfileops.c (_IO_wfile_seekoff): Likewise.
+
+2012-10-08  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	[BZ #14602]
+	* string/str-two-way.h (AVAILABLE1, AVAILABLE2, AVAILABLE1_USES_J):
+	Replace with ...
+	(CHECK_EOL): New macro.
+	(two_way_short_needle): Check beginning of haystack for EOL.  Use
+	CHECK_EOL.
+	* string/strcasestr.c (AVAILABLE1, AVAILABLE2, AVAILABLE1_USES_J):
+	Replace with CHECK_EOL.
+	* string/strstr.c (AVAILABLE1, AVAILABLE2, AVAILABLE1_USES_J):
+	Replace with CHECK_EOL.
+
 2012-10-08  Joseph Myers  <joseph@codesourcery.com>
 
 	* math/gen-libm-test.pl (parse_args): Handle isinf and isnan as

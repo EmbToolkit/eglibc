@@ -1,3 +1,43 @@
+2012-10-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.in: Run $CXX, not cc1plus, to locate C++ headers.
+	* configure: Regenerated.
+
+	* Makeconfig (+link-static-before-libc): Don't include
+	$(link-static-libc).
+
+	* libio/libio.h (_IO_pos_t): Remove.
+
+2012-10-10  Alexandre Oliva <aoliva@redhat.com>
+
+	* NEWS: Add note about FIPS mode.  Wording suggested by Roland
+	McGrath.
+
+2012-10-10  Alexandre Oliva <aoliva@redhat.com>
+
+	* crypt/crypt-entry.c: Include fips-private.h.
+	(__crypt_r, __crypt): Disable MD5 and DES if FIPS is enabled.
+	* crypt/md5c-test.c (main): Tolerate disabled MD5.
+	* sysdeps/unix/sysv/linux/fips-private.h: New file.
+	* sysdeps/generic/fips-private.h: New file, dummy fallback.
+
+2012-10-10  Alexandre Oliva <aoliva@redhat.com>
+
+	* crypt/crypt-private.h: Include stdbool.h.
+	(_ufc_setup_salt_r): Return bool.
+	* crypt/crypt-entry.c: Include errno.h.
+	(__crypt_r): Return NULL with EINVAL for bad salt.
+	* crypt/crypt_util.c (bad_for_salt): New.
+	(_ufc_setup_salt_r): Check that salt is long enough and within
+	the specified alphabet.
+	* crypt/badsalttest.c: New file.
+	* crypt/Makefile (tests): Add it.
+	($(objpfx)badsalttest): New.
+
+2012-10-09  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	* NEWS: Add entry for BZ #14602.
+
 2012-10-09  Joseph Myers  <joseph@codesourcery.com>
 
 	* math/gen-libm-test.pl (parse_args): Handle comparison macros as

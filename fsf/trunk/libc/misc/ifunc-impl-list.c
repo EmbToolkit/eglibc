@@ -1,7 +1,5 @@
-/* Multiple versions of wcschr
-   All versions must be listed in ifunc-impl-list.c.
-   Copyright (C) 2011-2012 Free Software Foundation, Inc.
-   Contributed by Intel Corporation.
+/* Enumerate available IFUNC implementations of a function.  Stub version.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,27 +16,17 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
-#include <init-arch.h>
+#include <ifunc-impl-list.h>
 
-#ifndef NOT_IN_libc
-	.text
-ENTRY(wcschr)
-	.type	wcschr, @gnu_indirect_function
-	pushl	%ebx
-	cfi_adjust_cfa_offset (4)
-	cfi_rel_offset (ebx, 0)
-	LOAD_PIC_REG(bx)
-	cmpl	$0, KIND_OFFSET+__cpu_features@GOTOFF(%ebx)
-	jne	1f
-	call	__init_cpu_features
-1:	leal	__wcschr_ia32@GOTOFF(%ebx), %eax
-	testl	$bit_SSE2, CPUID_OFFSET+index_SSE2+__cpu_features@GOTOFF(%ebx)
-	jz	2f
-	leal	__wcschr_sse2@GOTOFF(%ebx), %eax
-2:	popl	%ebx
-	cfi_adjust_cfa_offset (-4);
-	cfi_restore (ebx)
-	ret
-END(wcschr)
-#endif
+/* Fill ARRAY of MAX elements with IFUNC implementations for function
+   NAME supported on target machine and return the number of valid
+   entries.  */
+
+size_t
+__libc_ifunc_impl_list
+  (const char *name __attribute__ ((unused)),
+   struct libc_ifunc_impl *array __attribute__ ((unused)),
+   size_t max __attribute__ ((unused)))
+{
+  return 0;
+}

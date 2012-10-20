@@ -120,8 +120,7 @@ $(objpfx)globtest.out: globtest.sh $(objpfx)globtest
 	$(SHELL) $< $(common-objpfx) $(elf-objpfx) \
 		 $(rtld-installed-name)
 $(objpfx)wordexp-tst.out: wordexp-tst.sh $(objpfx)wordexp-test
-	$(SHELL) $< $(common-objpfx) $(elf-objpfx) \
-		 $(rtld-installed-name)
+	$(SHELL) $< $(common-objpfx) '$(run-program-prefix)'
 endif
 endif
 
@@ -277,7 +276,7 @@ $(objpfx)tst-boost-mem: $(objpfx)tst-boost.out
 	$(common-objpfx)malloc/mtrace $(objpfx)tst-boost.mtrace > $@
 
 $(objpfx)tst-getconf.out: tst-getconf.sh $(objpfx)getconf
-	$(SHELL) $< $(common-objpfx) $(elf-objpfx) $(rtld-installed-name)
+	$(SHELL) $< $(common-objpfx) '$(built-program-cmd)'
 
 ifeq (yes,$(build-shared))
 $(objpfx)tst-regex: $(common-objpfx)rt/librt.so

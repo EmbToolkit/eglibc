@@ -1,3 +1,35 @@
+2012-10-22  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/fcntl-linux.h (O_RSYNC): Define to
+	__O_RSYNC if it exists, otherwise to O_SYNC.
+
+2012-10-22  Jim Blandy  <jimb@codesourcery.com>
+	    Joseph Myers  <joseph@codesourcery.com>
+
+	* iconvdata/run-iconv-test.sh: Redirect iconv stdin in loops from
+	/dev/null.
+	* iconvdata/tst-tables.sh: Redirect tst-table.sh stdin in loop
+	from /dev/null
+	* posix/tst-getconf.sh: Redirect getconf stdin in loop from
+	/dev/null.
+
+2012-10-22  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (__O_LARGEFILE):
+	Define always.
+	* sysdeps/unix/sysv/linux/s390/bits/fcntl.h (__O_LARGEFILE): Likewise.
+
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/fcntl-linux.h.
+
+	* sysdeps/unix/sysv/linux/bits/fcntl-linux.h (F_GETLK, F_SETLK)
+	(F_SETLKW) [!F_GETLK]: Define values for [!__USE_FILE_OFFSET64].
+
+	* sysdeps/unix/sysv/linux/s390/bits/fcntl.h (O_LARGEFILE): Rename
+	to __O_LARGEFILE.
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (O_LARGEFILE): Rename
+	to __O_LARGEFILE.
+
 2012-10-21  Jim Blandy  <jimb@codesourcery.com>
 	    Joseph Myers  <joseph@codesourcery.com>
 
@@ -188,13 +220,6 @@
 	(rtld_installed_name): Likwise.
 	(runit): Remove function.
 	(run_getconf): New variable,  Use it for running getconf binary.
-
-2012-10-19  Jim Blandy  <jimb@codesourcery.com>
-	    Joseph Myers  <joseph@codesourcery.com>
-
-	* localedata/tst-wctype.sh (run_program_prefix): Remove variable.
-	(tst_wctype): New variable.  Use it directly to run test program
-	instead of passing test program name as argument.
 
 2012-10-18  H.J. Lu  <hongjiu.lu@intel.com>
 

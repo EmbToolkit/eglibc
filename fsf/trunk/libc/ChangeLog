@@ -1,4 +1,171 @@
+2012-10-24  Joseph Myers  <joseph@codesourcery.com>
+	    Jim Blandy  <jimb@codesourcery.com>
+
+	* Makeconfig (test-wrapper): New variable,
+	(test-wrapper-env): Likewise.
+	[$(cross-compiling) = yes && $(test-wrapper) != ""]
+	(run-built-tests): Define to yes.
+	(run-program-prefix): Use $(test-wrapper).
+	(built-program-cmd): Likewise.
+	* Rules (make-test-out): Use $(test-wrapper-env) and
+	$(host-built-program-cmd).
+	* elf/Makefile ($(objpfx)order.out): Use $(test-wrapper).
+	($(objpfx)tst-pathopt.out): Pass $(test-wrapper-env) to
+	tst-pathopt.sh.
+	($(objpfx)tst-rtld-load-self.out): Pass $(test-wrapper) and
+	$(test-wrapper-env) to tst-rtld-load-self.sh.
+	($(objpfx)order2.out): Use $(test-wrapper).
+	($(objpfx)tst-initorder.out): Likewise.
+	($(objpfx)tst-initorder2.out): Likewise.
+	($(objpfx)tst-unused-dep.out): Use $(test-wrapper-env).
+	* elf/tst-pathopt.sh (run_program_prefix): Remove unused variable.
+	(test_wrapper_env): New variable.  Use it to run ld.so.
+	* elf/tst-rtld-load-self.sh (test_wrapper): New variable.
+	Use it to run ld.so.
+	(test_wrapper_env): Likewise.
+	* iconvdata/Makefile ($(objpfx)iconv-test.out): Pass
+	$(test-wrapper) to run-iconv-test.sh.
+	* iconvdata/run-iconv-test.sh (test_wrapper): New variable.
+	(ICONV): Use $test_wrapper.
+	* posix/Makefile ($(objpfx)globtest.out): Pass
+	$(run-via-rtld-prefix), $(test-wrapper) and $(test-wrapper-env) to
+	globtest.sh, not $(run-program-prefix).
+	* posix/globtest.sh (run_via_rtld_prefix): New variable.
+	(test_wrapper): Likewise.
+	(test_wrapper_env): Likewise.  Use it to run globtest with HOME
+	set together with run_via_rtld_prefix.
+	(run_program_prefix): Define in terms of test_wrapper and
+	run_via_rtld_prefix.
+
+2012-10-24  Roland McGrath  <roland@hack.frob.com>
+
+	* nscd/Makefile ($(objpfx)nscd): Remove librt dependency.
+	* posix/Makefile ($(objpfx)tst-regex, $(objpfx)tst-regex2):
+	Targets	removed.
+
+	[BZ #14743]
+	* include/time.h: Remove librt_hidden_proto (clock_gettime).
+	Declare __clock_getres, __clock_gettime, __clock_settime,
+	__clock_nanosleep, and __clock_getcpuclockid.
+	* rt/clock_gettime.c: Define __clock_gettime as an alias.
+	Remove librt_hidden_def (clock_gettime).
+	* sysdeps/unix/clock_gettime.c: Likewise.
+	* rt/clock_getcpuclockid.c: Define __clock_getcpuclockid as an alias.
+	* sysdeps/unix/sysv/linux/clock_getcpuclockid.c: Likewise.
+	* rt/clock_getres.c: Define __clock_getres as an alias.
+	* sysdeps/posix/clock_getres.c: Likewise.
+	* rt/clock_settime.c: Define __clock_settime as an alias.
+	* sysdeps/unix/clock_settime.c: Likewise.
+	* rt/clock_nanosleep.c: Define __clock_nanosleep as an alias.
+	* sysdeps/unix/clock_nanosleep.c: Likewise.
+	* sysdeps/unix/sysv/linux/clock_nanosleep.c: Likewise.
+	* rt/clock-compat.c: New file.
+	* rt/Makefile (librt-routines): Add clock-compat and move
+	$(clock-routines) to ...
+	(routines): ... here, new variable.
+	* sysdeps/unix/sysv/linux/powerpc/Makefile (sysdep_routines):
+	Don't add get_clockfreq here.
+	* rt/Versions (libc: GLIBC_2.17): New version set.
+	Add clock_* symbols here.
+	(libc: GLIBC_PRIVATE): New version set.  Add __clock_* symbols here.
+	* sysdeps/unix/sysv/linux/i386/nptl/libc.abilist
+	(GLIBC_2.17): Add clock_* symbols.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sh/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/nptl/libc.abilist: Likewise.
+	* NEWS: Mention the move.
+
+	* sysdeps/unix/sysv/linux/i386/get_clockfreq.c (__get_clockfreq):
+	Use __open, __read, __close rather than their public counterparts.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/get_clockfreq.c
+	(__get_clockfreq_via_cpuinfo): Likewise.
+	(__get_clockfreq_via_proc_openprom): Likewise, and __getdirentries.
+	(__get_clockfreq_via_dev_openprom): Likewise, and __ioctl.
+
+	* config.h.in (HAVE_IFUNC): New #undef.
+	* configure.in: Define it if libc_cv_ld_gnu_indirect_function
+	was successful.
+	* configure: Regenerated.
+
+2012-10-24  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.in: Move READELF check to start of file.
+	(libc_cv_ld_gnu_indirect_function): Change to a link test. Rename from
+	libc_cv_asm_gnu_indirect_function in the process.
+	* configure: Regenerated.
+
+2012-10-24  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.in (libc_cv_gcc_static_libgcc): Drop -q flag to grep and
+	send the output to /dev/null.
+	(libc_cv_cc_with_libunwind): Likewise.
+	(libc_cv_as_noexecstack): Likewise.
+	* configure: Regenerate.
+
+2012-10-24  Joseph Myers  <joseph@codesourcery.com>
+
+	* io/ftwtest-sh (tmp): Define to ${objpfx}io, not using `pwd`.
+
+	* posix/globtest.sh (TMPDIR): Do not set.
+	(testdir): Define using ${common_objpfx}posix not $TMPDIR.
+	(testout): Likewise.
+
+2012-10-24  Andreas Jaeger  <aj@suse.de>
+
+	* io/fcntl.h: Always define mode_t, off_t, pid_t and use these
+	types for creat, creat64, lockf, posix_fadvise, posix_fallocate.
+	[__USE_LARGEFILE64 && !__off64_t_defined]: Define off64_t.
+	[__USE_LARGEFILE64]: Use off64_t in declaration of lock64,
+	posix_fadvise64, posix_fallocate64.
+
+	* sysdeps/unix/sysv/linux/x86/bits/fcntl.h (F_GETLK, F_SETLK)
+	(F_SETLKW) [__x86_64]: Remove, provided by <bits/fcntl-linux.h>.
+	(F_GETLK, F_SETLK, F_SETLKW) [!__USE_FILE_OFFSET64 && !__x86_64__]:
+	Likewise.
+	(F_GETLK, F_SETLK, F_SETLKW) [__USE_FILE_OFFSET64 && ! __x86_64__]:
+	Likewise.
+	(F_GETLK64, F_SETLK64, F_SETLKW64) [!__x86_64__]: Likewise.
+
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (F_GETLK, F_SETLK)
+	(F_SETLKW) [__USE_FILE_OFFSET64]: Remove, provided by
+	<bits/fcntl-linux.h>.
+	(F_GETLK64, F_SETLK64, F_SETLKW64) [__WORDSIZE == 64]: Likewise.
+
+	* sysdeps/unix/sysv/linux/s390/bits/fcntl.h (F_DUPFD, F_GETFD)
+	(F_SETFD, F_GETFL, F_SETFL): Remove, provided by <bits/fcntl-linux.h>.
+	(F_GETLK, F_SETLK, F_SETLKW) [__WORDSIZE == 64]: Likewise.
+	(F_GETLK, F_SETLK, F_SETLKW, F_GETLK64, F_SETLK64, F_SETLKW64)
+	[__WORDSIZE != 64]: Likewise.
+
 2012-10-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makeconfig (run-built-tests): New variable.
+	* Rules [$(cross-compiling) = yes]: Change condition to
+	[$(run-built-tests) = no].
+	* catgets/Makefile [$(cross-compiling) != yes]: Change condition
+	to [$(run-built-tests) = yes].
+	* elf/Makefile [$(cross-compiling) = no]: Likewise
+	* grp/Makefile [$(cross-compiling) = no]: Likewise.
+	* iconv/Makefile [$(cross-compiling) != yes]: Likewise.
+	* iconvdata/Makefile [$(cross-compiling) = no]: Likewise.
+	* intl/Makefile [$(cross-compiling) = no]: Likewise.
+	* io/Makefile [$(cross-compiling) = no]: Likewise.
+	* libio/Makefile [$(cross-compiling) = no]: Likewise.
+	* malloc/Makefile [$(cross-compiling) = no]: Likewise.
+	* misc/Makefile [$(cross-compiling) = no]: Likewise.
+	* posix/Makefile [$(cross-compiling) = no]: Likewise.
+	* resolv/Makefile [$(cross-compiling) = no]: Likewise.
+	* stdio-common/Makefile [$(cross-compiling) = no]: Likewise.
+	* stdlib/Makefile [$(cross-compiling) = no]: Likewise.
+	* string/Makefile [$(cross-compiling) = no]: Likewise.
 
 	* posix/Makefile ($(objpfx)globtest.out): Pass
 	$(run-program-prefix) to globtest.sh, not $(elf-objpfx) and

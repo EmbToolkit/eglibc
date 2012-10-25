@@ -161,7 +161,7 @@ tests += tst-audit6 tst-audit7
 endif
 endif
 endif
-ifeq ($(cross-compiling),no)
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)tst-leaks1-mem $(objpfx)tst-leaks1-static-mem \
        $(objpfx)noload-mem
 endif
@@ -438,7 +438,7 @@ test-modules = $(addprefix $(objpfx),$(addsuffix .so,$(strip $(modules-names))))
 generated += $(addsuffix .so,$(strip $(modules-names)))
 
 ifeq (yes,$(build-shared))
-ifeq ($(cross-compiling),no)
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)tst-pathopt.out $(objpfx)tst-rtld-load-self.out
 endif
 endif
@@ -644,6 +644,7 @@ $(objpfx)circlemod2a.so: $(objpfx)circlemod3a.so
 $(objpfx)order: $(addprefix $(objpfx),dep4.so dep3.so dep2.so dep1.so)
 
 $(objpfx)order.out: $(objpfx)order
+	$(test-wrapper) \
 	$(elf-objpfx)$(rtld-installed-name) \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $(objpfx)order > $@
@@ -710,10 +711,10 @@ $(objpfx)lateglobal.out: $(objpfx)ltglobmod1.so $(objpfx)ltglobmod2.so
 $(objpfx)tst-pathopt: $(libdl)
 $(objpfx)tst-pathopt.out: tst-pathopt.sh $(objpfx)tst-pathopt \
 			  $(objpfx)pathoptobj.so
-	$(SHELL) $< $(common-objpfx)
+	$(SHELL) $< $(common-objpfx) '$(test-wrapper-env)'
 
 $(objpfx)tst-rtld-load-self.out: tst-rtld-load-self.sh $(objpfx)ld.so
-	$(SHELL) $^ > $@
+	$(SHELL) $^ '$(test-wrapper)' '$(test-wrapper-env)' > $@
 
 $(objpfx)initfirst: $(libdl)
 $(objpfx)initfirst.out: $(objpfx)firstobj.so
@@ -1035,6 +1036,7 @@ $(objpfx)tst-global1.out: $(objpfx)testobj6.so $(objpfx)testobj2.so
 $(objpfx)order2: $(libdl)
 $(objpfx)order2.out: $(objpfx)order2 $(objpfx)order2mod1.so \
 		     $(objpfx)order2mod2.so
+	$(test-wrapper) \
 	$(elf-objpfx)$(rtld-installed-name) \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $(objpfx)order2 > $@
@@ -1129,6 +1131,7 @@ $(objpfx)tst-unique3.out: $(objpfx)tst-unique3lib2.so
 $(objpfx)tst-unique4: $(objpfx)tst-unique4lib.so
 
 $(objpfx)tst-initorder.out: $(objpfx)tst-initorder
+	$(test-wrapper) \
 	$(elf-objpfx)${rtld-installed-name} \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $< > $@
@@ -1150,6 +1153,7 @@ object-suffixes-left := a b c d
 include $(o-iterator)
 
 $(objpfx)tst-initorder2.out: $(objpfx)tst-initorder2
+	$(test-wrapper) \
 	$(elf-objpfx)${rtld-installed-name} \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $< > $@
@@ -1174,11 +1178,12 @@ $(objpfx)tst-relsort1mod2.so: $(libm)
 $(objpfx)tst-relsort1.out: $(objpfx)tst-relsort1mod1.so \
 			   $(objpfx)tst-relsort1mod2.so
 
-ifeq ($(cross-compiling),no)
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)tst-unused-dep.out
 endif
 
 $(objpfx)tst-unused-dep.out: $(objpfx)testobj1.so
+	$(test-wrapper-env) \
 	LD_TRACE_LOADED_OBJECTS=1 \
 	LD_DEBUG=unused \
 	LD_PRELOAD= \

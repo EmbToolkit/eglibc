@@ -257,19 +257,15 @@ tests = tst-typesizes \
 	tst-context1 \
 	tst-sched1 \
 	tst-backtrace1 \
-	tst-oddstacklimit \
 	tst-abstime \
 	tst-vfork1 tst-vfork2 tst-vfork1x tst-vfork2x \
 	tst-getpid1 tst-getpid2 tst-getpid3 \
 	tst-initializers1 $(patsubst %,tst-initializers1-%,c89 gnu89 c99 gnu99)
 xtests = tst-setuid1 tst-setuid1-static tst-mutexpp1 tst-mutexpp6 tst-mutexpp10
+test-srcs = tst-oddstacklimit
 
 # Files which must not be linked with libpthread.
 tests-nolibpthread = tst-unload
-
-# This sets the stack resource limit to 1023kb, which is not a multiple
-# of the page size since every architecture's page size is > 1k.
-tst-oddstacklimit-ENV = ; ulimit -s 1023;
 
 gen-as-const-headers = pthread-errnos.sym
 
@@ -448,7 +444,7 @@ LDFLAGS-tst-atfork2 = -rdynamic
 tst-atfork2-ENV = MALLOC_TRACE=$(objpfx)tst-atfork2.mtrace
 $(objpfx)tst-atfork2mod.so: $(shared-thread-library)
 
-ifeq ($(cross-compiling),no)
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)tst-stack3-mem
 endif
 tst-stack3-ENV = MALLOC_TRACE=$(objpfx)tst-stack3.mtrace
@@ -472,7 +468,7 @@ LDFLAGS-tst-tls5 = $(no-as-needed)
 LDFLAGS-tst-tls5mod.so = -Wl,-soname,tst-tls5mod.so
 
 ifeq ($(build-shared),yes)
-ifeq ($(cross-compiling),no)
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)tst-tls6.out
 endif
 $(objpfx)tst-tls6.out: tst-tls6.sh $(objpfx)tst-tls5 \
@@ -480,7 +476,7 @@ $(objpfx)tst-tls6.out: tst-tls6.sh $(objpfx)tst-tls5 \
 		       $(objpfx)tst-tls5modc.so $(objpfx)tst-tls5modd.so \
 		       $(objpfx)tst-tls5mode.so $(objpfx)tst-tls5modf.so
 	$(SHELL) $< $(common-objpfx) $(elf-objpfx) \
-		    $(rtld-installed-name)
+		    $(rtld-installed-name) '$(test-wrapper-env)'
 endif
 
 $(objpfx)tst-dlsym1: $(libdl) $(shared-thread-library)
@@ -488,31 +484,18 @@ $(objpfx)tst-dlsym1: $(libdl) $(shared-thread-library)
 $(objpfx)tst-fini1: $(shared-thread-library) $(objpfx)tst-fini1mod.so
 
 ifeq (yes,$(build-shared))
-$(objpfx)tst-cond11: $(common-objpfx)rt/librt.so
-$(objpfx)tst-cond19: $(common-objpfx)rt/librt.so
-$(objpfx)tst-sem5: $(common-objpfx)rt/librt.so
-$(objpfx)tst-cancel17: $(common-objpfx)rt/librt.so
-$(objpfx)tst-cancelx17: $(common-objpfx)rt/librt.so
-$(objpfx)tst-cancel18: $(common-objpfx)rt/librt.so
-$(objpfx)tst-cancelx18: $(common-objpfx)rt/librt.so
-$(objpfx)tst-clock2: $(common-objpfx)rt/librt.so
-$(objpfx)tst-rwlock14: $(common-objpfx)rt/librt.so
+librt = $(common-objpfx)rt/librt.so
+else
+librt = $(common-objpfx)rt/librt.a
+endif
+
+$(objpfx)tst-cancel17: $(librt)
+$(objpfx)tst-cancelx17: $(librt)
 $(objpfx)tst-_res1mod2.so: $(objpfx)tst-_res1mod1.so
 LDFLAGS-tst-_res1mod1.so = -Wl,-soname,tst-_res1mod1.so
 LDFLAGS-tst-_res1mod2.so = -Wl,-soname,tst-_res1mod2.so
 $(objpfx)tst-_res1: $(objpfx)tst-_res1mod1.so $(objpfx)tst-_res1mod2.so \
 		    $(shared-thread-library)
-else
-$(objpfx)tst-cond11: $(common-objpfx)rt/librt.a
-$(objpfx)tst-cond19: $(common-objpfx)rt/librt.a
-$(objpfx)tst-sem5: $(common-objpfx)rt/librt.a
-$(objpfx)tst-cancel17: $(common-objpfx)rt/librt.a
-$(objpfx)tst-cancelx17: $(common-objpfx)rt/librt.a
-$(objpfx)tst-cancel18: $(common-objpfx)rt/librt.a
-$(objpfx)tst-cancelx18: $(common-objpfx)rt/librt.a
-$(objpfx)tst-clock2: $(common-objpfx)rt/librt.a
-$(objpfx)tst-rwlock14: $(common-objpfx)rt/librt.a
-endif
 
 LDLIBS-tst-cancel24 = $(no-as-needed) -lstdc++
 LDLIBS-tst-cancel24-static = $(LDLIBS-tst-cancel24)
@@ -583,7 +566,7 @@ generated += banner.h
 LDFLAGS-pthread.so += -e __nptl_main
 endif
 
-ifeq (no,$(cross-compiling))
+ifeq ($(run-built-tests),yes)
 ifeq (yes,$(build-shared))
 tests: $(objpfx)tst-cancel-wrappers.out
 $(objpfx)tst-cancel-wrappers.out: tst-cancel-wrappers.sh
@@ -605,6 +588,13 @@ $(objpfx)tst-fini1mod.so: $(shared-thread-library)
 
 tst-stackguard1-ARGS = --command "$(host-built-program-cmd) --child"
 tst-stackguard1-static-ARGS = --command "$(objpfx)tst-stackguard1-static --child"
+
+ifeq ($(run-built-tests),yes)
+tests: $(objpfx)tst-oddstacklimit.out
+
+$(objpfx)tst-oddstacklimit.out: $(objpfx)tst-oddstacklimit $(objpfx)tst-basic1
+	$(run-program-prefix) $< --command '$(host-built-program-cmd)' > $@
+endif
 
 # The tests here better do not run in parallel
 ifneq ($(filter %tests,$(MAKECMDGOALS)),)

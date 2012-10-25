@@ -112,12 +112,13 @@ generated := $(addprefix wordexp-test-result, 1 2 3 4 5 6 7 8 9 10) \
 
 include ../Rules
 
-ifeq (no,$(cross-compiling))
+ifeq ($(run-built-tests),yes)
 # globtest and wordexp-test currently only works with shared libraries
 ifeq (yes,$(build-shared))
 tests: $(objpfx)globtest.out $(objpfx)wordexp-tst.out
 $(objpfx)globtest.out: globtest.sh $(objpfx)globtest
-	$(SHELL) $< $(common-objpfx) '$(run-program-prefix)'
+	$(SHELL) $< $(common-objpfx) '$(run-via-rtld-prefix)' \
+		'$(test-wrapper)' '$(test-wrapper-env)'
 $(objpfx)wordexp-tst.out: wordexp-tst.sh $(objpfx)wordexp-test
 	$(SHELL) $< $(common-objpfx) '$(run-program-prefix)'
 endif
@@ -211,7 +212,7 @@ ptestcases.h: PTESTS PTESTS2C.sed
 # Run a test on the header files we use.
 # XXX Please note that for now we ignore the result of this test.
 tests: $(objpfx)annexc.out
-ifeq (no,$(cross-compiling))
+ifeq ($(run-built-tests),yes)
 tests: $(objpfx)bug-regex2-mem $(objpfx)bug-regex14-mem \
   $(objpfx)bug-regex21-mem $(objpfx)bug-regex31-mem $(objpfx)tst-rxspencer-mem\
   $(objpfx)tst-pcre-mem $(objpfx)tst-boost-mem $(objpfx)tst-getconf.out \
@@ -276,14 +277,6 @@ $(objpfx)tst-boost-mem: $(objpfx)tst-boost.out
 
 $(objpfx)tst-getconf.out: tst-getconf.sh $(objpfx)getconf
 	$(SHELL) $< $(common-objpfx) '$(built-program-cmd)'
-
-ifeq (yes,$(build-shared))
-$(objpfx)tst-regex: $(common-objpfx)rt/librt.so
-$(objpfx)tst-regex2: $(common-objpfx)rt/librt.so
-else
-$(objpfx)tst-regex: $(common-objpfx)rt/librt.a
-$(objpfx)tst-regex2: $(common-objpfx)rt/librt.a
-endif
 
 $(objpfx)bug-ga2-mem: $(objpfx)bug-ga2.out
 	$(common-objpfx)malloc/mtrace $(objpfx)bug-ga2.mtrace > $@

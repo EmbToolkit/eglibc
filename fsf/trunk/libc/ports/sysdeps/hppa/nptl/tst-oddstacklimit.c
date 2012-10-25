@@ -1,5 +1,6 @@
-/* Get the resolution of a clock.  Stub version.
-   Copyright (C) 1999-2012 Free Software Foundation, Inc.
+/* Test NPTL with stack limit that is not a multiple of the page size.
+   HPPA version.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,16 +17,10 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <time.h>
+/* This sets the stack resource limit to 8193kb, which is not a multiple
+   of the page size, and therefore an odd sized stack limit.  We override
+   this because the default is too small to run with.  */
 
-/* Get resolution of clock.  */
-int
-clock_getres (clockid_t clock_id, struct timespec *res)
-{
-  __set_errno (ENOSYS);
-  return -1;
-}
-strong_alias (clock_getres, __clock_getres)
-stub_warning (clock_getres)
-#include <stub-tag.h>
+#define ODD_STACK_LIMIT (8193 * 1024)
+
+#include <sysdeps/../nptl/tst-oddstacklimit.c>

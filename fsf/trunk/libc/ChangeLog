@@ -1,3 +1,39 @@
+2012-10-25  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/unix/sysv/linux/sparc/sparc64/get_clockfreq.c
+	(__get_clockfreq_via_proc_openprom): Use strtoumax instead
+	of strtoull.
+
+	* sysdeps/sparc/sparc64/multiarch/memcpy.S: Add comments for
+	ifunc-impl-list.c
+	* sysdeps/sparc/sparc64/multiarch/memset.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/ifunc-impl-list.c: New file.
+	* sysdeps/sparc/sparc32/sparcv9/multiarch/ifunc-impl-list.c: New
+	file.
+
+2012-10-25  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/unix/sysv/linux/sparc/sparc64/get_clockfreq.c
+	(__get_clockfreq_via_proc_openprom): Use __getdents instead of
+	__getdirentries.
+
+2012-10-25  Joseph Myers  <joseph@codesourcery.com>
+	    Jim Blandy  <jimb@codesourcery.com>
+
+	* scripts/cross-test-ssh.sh: New file.
+	* manual/install.texi (Configuring and compiling): Document use of
+	cross-test-ssh.sh.
+	* INSTALL: Regenerated.
+
+2012-10-25  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* sysdeps/mach/hurd/ptrace.c (ptrace): Use __hurd_fail to return
+	EOPNOTSUPP.
+
+2012-10-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makeconfig (run-program-prefix): Fix comment.
+
 2012-10-24  Joseph Myers  <joseph@codesourcery.com>
 	    Jim Blandy  <jimb@codesourcery.com>
 
@@ -964,7 +1000,7 @@
 	(__SWBLK_T_TYPE): Likewise.
 
 2012-10-01  Patsy Franklin <pfrankli@redhat.com>
-            Honza Horak <hhorak@redhat.com>
+	    Honza Horak <hhorak@redhat.com>
 
 	* nis/yp_xdr.c (xdr_domainname): Use YPMAXDOMAIN as maxsize.
 	(xdr_mapname): Use YPMAXMAP as maxsize.
@@ -1481,7 +1517,7 @@
 
 2012-12-09  Allan McRae  <allan@archlinux.org>
 
-        * sysdeps/i386/fpu/libm-test-ulps: Update
+	* sysdeps/i386/fpu/libm-test-ulps: Update
 
 2012-09-11  Joseph Myers  <joseph@codesourcery.com>
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 1991, 92, 93, 94, 96, 97 Free Software Foundation, Inc.
+/* Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,26 +12,23 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <unistd.h>
-#include <hurd.h>
-#include <hurd/fd.h>
+#ifdef SHARED
+#include <dl-vdso.h>
+#include <bits/libc-vdso.h>
 
-/* Make all changes done to FD's file data actually appear on disk.  */
-int
-fdatasync (int fd)
+long int (*__vdso_gettimeofday) (struct timeval *, void *) attribute_hidden;
+
+static inline void
+_libc_vdso_platform_setup (void)
 {
-  error_t err = HURD_DPORT_USE (fd, __file_sync (port, 1, 1));
-  if (err)
-    {
-      if (err == EOPNOTSUPP)
-	/* If the file descriptor does not support sync, return EINVAL
-	   as POSIX specifies.  */
-	err = EINVAL;
-      return __hurd_dfail (fd, err);
-    }
-  return 0;
+  PREPARE_VERSION (linux26, "LINUX_2.6", 61765110);
+  __vdso_gettimeofday = _dl_vdso_vsym ("__vdso_gettimeofday", &linux26);
 }
+
+#define VDSO_SETUP _libc_vdso_platform_setup
+#endif
+
+#include "../init-first.c"

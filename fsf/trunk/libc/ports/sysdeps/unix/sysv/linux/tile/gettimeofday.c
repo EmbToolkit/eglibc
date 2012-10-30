@@ -1,4 +1,4 @@
-/* Copyright (C) 1991, 92, 93, 94, 96, 97 Free Software Foundation, Inc.
+/* Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,26 +12,27 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <unistd.h>
-#include <hurd.h>
-#include <hurd/fd.h>
+#include <sysdep.h>
+#include <stddef.h>
+#include <sys/time.h>
+#include <time.h>
 
-/* Make all changes done to FD's file data actually appear on disk.  */
+#undef __gettimeofday
+#include <bits/libc-vdso.h>
+
 int
-fdatasync (int fd)
+__gettimeofday (struct timeval *tv, struct timezone *tz)
 {
-  error_t err = HURD_DPORT_USE (fd, __file_sync (port, 1, 1));
-  if (err)
-    {
-      if (err == EOPNOTSUPP)
-	/* If the file descriptor does not support sync, return EINVAL
-	   as POSIX specifies.  */
-	err = EINVAL;
-      return __hurd_dfail (fd, err);
-    }
-  return 0;
+#ifdef SHARED
+  /* If the vDSO is available we use it. */
+  if (__vdso_gettimeofday != NULL)
+    return __vdso_gettimeofday (tv, tz);
+#endif
+  return INLINE_SYSCALL (gettimeofday, 2, tv, tz);
 }
+
+strong_alias (__gettimeofday, __gettimeofday_internal)
+weak_alias (__gettimeofday, gettimeofday)

@@ -1,3 +1,83 @@
+2012-10-30  Joseph Myers  <joseph@codesourcery.com>
+
+	* elf/Makefile ($(objpfx)tst-array1.out): Depend on comparison
+	input.  Use $(build-program-cmd).
+	($(objpfx)tst-array1-static.out): Likewise.
+	($(objpfx)tst-array2.out): Likewise.
+	($(objpfx)tst-array3.out): Likewise.
+	($(objpfx)tst-array4.out): Likewise.
+	($(objpfx)tst-array5.out): Likewise.
+	($(objpfx)tst-array5-static.out): Likewise.
+
+2012-10-30  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* elf/dl-load.c (_dl_map_object_from_fd): Call DL_AFTER_LOAD
+	if defined.
+
+	* nss/nsswitch.h (nss_interface_function): Provide new
+	macro for use with NSS functions.
+	* grp/initgroups.c: Use new macro.
+	* nss/getXXbyYY.c: Likewise.
+	* nss/getXXbyYY_r.c: Likewise.
+	* nss/getXXent.c: Likewise.
+	* nss/getXXent_r.c: Likewise.
+	* sysdeps/posix/getaddrinfo.c: Likewise.
+
+2012-10-30  Andreas Jaeger  <aj@suse.de>
+
+	* po/ru.po: Update Russion translation from translation project.
+
+2012-10-30  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14152]
+	[BZ #14783]
+	* sysdeps/ieee754/dbl-64/s_fma.c (__fma): Extract low bits of
+	result and shift together with sticky bit instead of replicating
+	round-to-nearest rounding.
+	* sysdeps/ieee754/ldbl-128/s_fmal.c (__fmal): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_fmal.c (__fmal): Likewise.
+	* math/libm-test.inc (fma_test): Add more tests.  Do not permit
+	missing underflow exceptions.
+	(fma_test_towardzero): Add more tests.
+	(fma_test_downward): Likewise.
+	(fma_test_upward): Likewise.
+
+	[BZ #14047]
+	* sysdeps/generic/tininess.h: New file.
+	* sysdeps/i386/tininess.h: Likewise.
+	* sysdeps/sh/tininess.h: Likewise.
+	* sysdeps/x86_64/tininess.h: Likewise.
+	* stdlib/tst-strtod-underflow.c: Likewise.
+	* stdlib/tst-tininess.c: Likewise.
+	* stdlib/strtod_l.c: Include <tininess.h>.
+	(round_and_return): Do not set errno for exact underflow cases.
+	Force an underflow exception when setting errno for underflow.
+	Determine underflow based on rounding to normal precision if
+	TININESS_AFTER_ROUNDING.
+	* stdlib/tst-strtod.c (tests): Do not expect errno to be set to
+	ERANGE for exact underflow cases.
+	* stdlib/Makefile (tests): Add tst-tininess and
+	tst-strtod-underflow.
+	($(objpfx)tst-tininess): Use $(link-libm).
+	($(objpfx)tst-strtod-underflow): Likewise.
+
+2012-10-30  Andreas Jaeger  <aj@suse.de>
+
+	[BZ#14767]
+	* elf/Makefile (tests): Remove conditional for have-initfini-array
+	since this is now always required and the variable does not exist
+	anymore.
+	(tests-static): Likewise.
+	(modules-names): Likewise.
+
+	* po/eo.po: Add Esperanto translation from translation project.
+
+	* elf/tst-array1.c (fini_array): Make writeable so that it can be
+	merged with constructor/destructor.
+	(init_array): Likewise.
+	* elf/tst-array2dep.c (fini_array): Likewise.
+	(init_array): Likewise.
+
 2012-10-29  Mike Frysinger  <vapier@gentoo.org>
 
 	* manual/message.texi: Delete @cartouche tags.

@@ -1,3 +1,60 @@
+2012-11-01  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/Makefile (cflags): Remove -mnew-mnemonics.
+
+2012-11-01  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* catgets/test-gencat.sh (run_program_prefix): Renamed to ...
+	(run_program_cmd): This.
+	* localedata/tst-langinfo.sh (run_program_prefix): Removed.
+	(tst_langinfo): New variable.  Use it.
+
+2012-11-01  Sebastan Andrzej Siewior  <bigeasy@linutronix.de>
+
+	* sysdeps/powerpc/powerpc32/dl-trampoline.S: Put __NO_FPRS__ around
+	floating point opcodes.
+
+2012-11-01  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/mach/hurd/Makefile (link-libc-static-tests): New
+	variable.
+
+	* elf/dl-support.c: Unconditionally include "setup-vdso.h".
+
+	* sysdeps/mach/hurd/powerpc: Remove directory.
+	* sysdeps/mach/powerpc: Likewise.
+
+2012-11-01  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* scripts/check-local-headers.sh: Ignore c++ headers.
+
+2012-11-01  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* libio/genops.c (_IO_flush_all_lockp): Use NULL rather than 0 for
+	__libc_cleanup_region_start argument.
+
+2012-11-01  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14784]
+	[BZ #14785]
+	* sysdeps/ieee754/dbl-64/s_fma.c (__fma): Handle cases with small
+	x * y using scaling, not as x * y + z.
+	* sysdeps/ieee754/ldbl-128/s_fmal.c (__fmal): Likewise.
+	* sysdeps/ieee754/ldbl-96/s_fmal.c (__fmal): Likewise.
+	* math/libm-test.inc (fma_test): Add more tests.
+	(fma_test_towardzero): Likewise.
+	(fma_test_downward): Likewise.
+	(fma_test_upward): Likewise.
+
+2012-11-01  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/mach/hurd/bits/param.h: Remove stray #endif.
+
+2012-10-31  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/sh/Makefile [$(subdir) = debug] (CFLAGS-backtrace.c):
+	New variable.
+
 2012-10-31  Thomas Schwinge  <thomas@codesourcery.com>
 
 	* rt/tst-shm.c (worker): Correct checking for mmap failure.
@@ -2513,7 +2570,7 @@
 	* sysdeps/unix/sysv/linux/bits/param.h: New file.
 	* sysdeps/unix/sysv/linux/sys/param.h: File removed.
 	* sysdeps/mach/hurd/bits/param.h: New file.
-	* sysdeps/mach/hurd/sys/param.h: New file.
+	* sysdeps/mach/hurd/sys/param.h: File removed.
 
 	* elf/dl-close.c (_dl_close_worker): Add a cast and a comment to the
 	last change.

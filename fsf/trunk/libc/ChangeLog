@@ -1,3 +1,56 @@
+2012-11-02  Joseph Myers  <joseph@codesourcery.com>
+
+	* conform/conformtest.pl (@headers): Add fenv.h.
+	* conform/data/fenv.h-data: New file.
+	* include/fenv.h [_ISOMAC]: Disable all contents of file except
+	include of <math/fenv.h>.
+
+	* conform/data/complex.h-data [ISO99 || ISO11 || XOPEN2K ||
+	POSIX2008]: Change condition to [!ISO && !POSIX && !XPG3 && !XPG4
+	&& !UNIX98].  Enables tests for XOPEN2K8.
+	* conform/data/inttypes.h-data [ISO99 || ISO11 || XOPEN2K ||
+	POSIX2008]: Likewise.
+
+	* conform/data/sys/wait.h-data [XPG3 || XOPEN2K8 || POSIX2008]
+	(struct rusage): Do not expect type or its members.
+
+	[BZ #3439]
+	* math/math.h (FP_NAN): Define macro to integer constant usable in
+	#if and use that to give value to enum constant.
+	(FP_INFINITE): Likewise.
+	(FP_ZERO): Likewise.
+	(FP_SUBNORMAL): Likewise.
+	(FP_NORMAL): Likewise.
+
+2012-11-02  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* iconvdata/bug-iconv8.c (do_test): Use %z for size_t arguments.
+	* iconvdata/bug-iconv9.c (do_test): Use %t for ptrdiff_t
+	arguments.
+
+2012-11-02  Roland McGrath  <roland@hack.frob.com>
+
+	* aclocal.m4 (GLIBC_AUTOCONF_VERSION): New macro.
+	Check that AC_AUTOCONF_VERSION matches it and m4_fatal at
+	autoconf-time if not.
+	* configure.in: Remove AC_PREREQ.
+
+2012-11-02  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/sys/platform/ppc.h (__ppc_get_timebase): Use
+	__builtin_ppc_get_timebase when building with GCC >= 4.8 instead
+	of the internal implementation.
+
+2012-11-02  Joseph Myers  <joseph@codesourcery.com>
+
+	* include/sys/syslog.h [_ISOMAC]: Disable all contents of file
+	except include of <misc/sys/syslog.h>.
+
+2012-11-01  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/makecontext.S: If the
+	function returns with a NULL context exit with zero.
+
 2012-11-01  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
 
 	* sysdeps/powerpc/Makefile (cflags): Remove -mnew-mnemonics.

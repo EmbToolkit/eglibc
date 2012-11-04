@@ -1,7 +1,6 @@
-/* Clear given exceptions in current floating-point environment.
-   Copyright (C) 1998-2012 Free Software Foundation, Inc.
+/* Floating-point inline functions for stdlib.h.
+   Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Andreas Jaeger <aj@arthur.rhein-neckar.de>, 1998.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,26 +16,16 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <fenv.h>
-#include <fpu_control.h>
+#ifndef _STDLIB_H
+# error "Never use <bits/stdlib-float.h> directly; include <stdlib.h> instead."
+#endif
 
-int
-feclearexcept (int excepts)
+#ifdef __USE_EXTERN_INLINES
+__BEGIN_NAMESPACE_STD
+__extern_inline double
+__NTH (atof (const char *__nptr))
 {
-  fpu_control_t cw;
-
-  /* Mask out unsupported bits/exceptions.  */
-  excepts &= FE_ALL_EXCEPT;
-
-  /* Read the complete control word.  */
-  _FPU_GETCW (cw);
-
-  /* Clear exception bits.  */
-  cw &= ~excepts;
-  
-  /* Put the new data in effect.  */
-  _FPU_SETCW (cw);
-
-  return 0;
+  return strtod (__nptr, (char **) NULL);
 }
-libm_hidden_def (feclearexcept)
+__END_NAMESPACE_STD
+#endif /* Optimizing and Inlining.  */

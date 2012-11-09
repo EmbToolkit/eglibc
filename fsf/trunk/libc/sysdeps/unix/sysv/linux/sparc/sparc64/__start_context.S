@@ -1,5 +1,4 @@
-/* Defines for bits in AT_HWCAP.
-   Copyright (C) 2012 Free Software Foundation, Inc.
+/* Copyright (C) 2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,22 +15,22 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _SYS_AUXV_H
-# error "Never include <bits/hwcap.h> directly; use <sys/auxv.h> instead."
-#endif
+#include <sysdep.h>
 
-/*
- * The following must match the kernels asm/elf.h.
- * Note that these are *not* the same as the STORE FACILITY LIST bits.
- */
-#define HWCAP_S390_ESAN3        1
-#define HWCAP_S390_ZARCH        2
-#define HWCAP_S390_STFLE        4
-#define HWCAP_S390_MSA          8
-#define HWCAP_S390_LDISP        16
-#define HWCAP_S390_EIMM         32
-#define HWCAP_S390_DFP          64
-#define HWCAP_S390_HPAGE        128
-#define HWCAP_S390_ETF3EH       256
-#define HWCAP_S390_HIGH_GPRS    512
-#define HWCAP_S390_TE           1024
+	.text
+
+/* This is the helper code which gets called if a function which is
+   registered with 'makecontext' returns.  In this case we have to
+   install the context listed in the uc_link element of the context
+   'makecontext' manipulated at the time of the 'makecontext' call.
+   If the pointer is NULL the process must terminate.  */
+
+ENTRY(__start_context)
+	brz,pn	%i0, 1f
+	 mov	1, %o1
+	call	__setcontext
+	 mov	%i0, %o0
+1:	call	HIDDEN_JUMPTARGET(exit)
+	 mov	0, %o0
+	unimp	0
+END(__start_context)

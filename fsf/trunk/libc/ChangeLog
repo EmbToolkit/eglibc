@@ -1,3 +1,25 @@
+2012-11-13  Joseph Myers  <joseph@codesourcery.com>
+
+	* timezone/tzselect.ksh: Update from tzcode git revision
+	a435f9f0ecafa56d9e0263835836bd0c64cd7307.
+	* timezone/zdump.c: Likewise.
+	* timezone/zic.c: Likewise.
+	* timezone/Makefile ($(objpfx)version.h): Only include $(version)
+	in TZVERSION setting, not $(PKGVERSION).
+	($(objpfx)tzselect): Likewise.  Also substitute PKGVERSION and
+	REPORT_BUGS_TO settings.
+
+	[BZ #14838]
+	* resolv/netdb.h [__USE_XOPEN_EXTENDED] (IPPORT_RESERVED): Define
+	macro.
+
+2012-11-13  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* soft-fp/op-common.h (_FP_PACK_SEMIRAW): Move underflow
+	detection to immediately after _FP_ROUND().
+	* soft-fp/soft-fp.h (_FP_ROUND): Don't round if working
+	bits are 0.
+
 2012-11-11  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/unix/sysv/linux/sparc/sparc64/get_clockfreq.c: Include

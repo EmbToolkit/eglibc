@@ -66,7 +66,7 @@ clean:
 %.o: glibc/argp/%.c
 		$(FULLCC) -c -o $@ $<
 %.o: glibc/crypt/%.c
-		$(FULLCC) -c -o $@ $<
+		$(FULLCC) -Iglibc/crypt -c -o $@ $<
 %.o: glibc/malloc/%.c
 		$(FULLCC) -c -o $@ $<
 %.o: glibc/misc/%.c

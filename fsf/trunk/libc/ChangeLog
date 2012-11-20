@@ -1,3 +1,262 @@
+2012-11-19  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* sysdeps/mach/hurd/ptsname.c (ptsname): Change the type of PEERNAME to
+	string_t.  Do not manually set errno.
+	(__ptsname_r): Change the type of PEERNAME to string_t, and check its
+	length with __strnlen.  Make sure to both set errno and return it on
+	failure.
+
+2012-11-19  David S. Miller  <davem@davemloft.net>
+
+	With help from Joseph Myers.
+	* sysdeps/ieee754/ldbl-128/s_atanl.c (__atanl): Handle tiny and
+	very large arguments properly.
+	* math/libm-test.inc (atan_test): New tests.
+	(atan2_test): New tests.
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Update.
+
+2012-11-19  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14856]
+	* posix/bits/posix1_lim.h [!__USE_XOPEN2K] (_POSIX_TZNAME_MAX):
+	Define to 3.
+
+	* conform/data/errno.h-data [POSIX] (EADDRINUSE): Do not expect.
+	[POSIX] (EADDRNOTAVAIL): Likewise.
+	[POSIX] (EAFNOSUPPORT): Likewise.
+	[POSIX] (EALREADY): Likewise.
+	[POSIX] (ECONNABORTED): Likewise.
+	[POSIX] (ECONNREFUSED): Likewise.
+	[POSIX] (ECONNRESET): Likewise.
+	[POSIX] (EDESTADDRREQ): Likewise.
+	[POSIX] (EDQUOT): Likewise.
+	[POSIX] (EHOSTUNREACH): Likewise.
+	[POSIX] (EIDRM): Likewise.
+	[POSIX] (EISCONN): Likewise.
+	[POSIX] (ELOOP): Likewise.
+	[POSIX] (EMULTIHOP): Likewise.
+	[POSIX] (ENETDOWN): Likewise.
+	[POSIX] (ENETUNREACH): Likewise.
+	[POSIX] (ENOBUFS): Likewise.
+	[POSIX] (ENODATA): Likewise.
+	[POSIX] (ENOLINK): Likewise.
+	[POSIX] (ENOMSG): Likewise.
+	[POSIX] (ENOPROTOOPT): Likewise.
+	[POSIX] (ENOSR): Likewise.
+	[POSIX] (ENOSTR): Likewise.
+	[POSIX] (ENOTCONN): Likewise.
+	[POSIX] (ENOTSOCK): Likewise.
+	[POSIX] (EOPNOTSUPP): Likewise.
+	[POSIX] (EOVERFLOW): Likewise.
+	[POSIX] (EPROTO): Likewise.
+	[POSIX] (EPROTONOSUPPORT): Likewise.
+	[POSIX] (EPROTOTYPE): Likewise.
+	[POSIX] (ESTALE): Likewise.
+	[POSIX] (ETIME): Likewise.
+	[POSIX] (ETXTBSY): Likewise.
+	[POSIX] (EWOULDBLOCK): Likewise.
+	[!ISO && !ISO99 && !ISO11] (E*): Do not allow.
+	* conform/data/fcntl.h-data [POSIX] (SEEK_SET): Allow.
+	[POSIX] (SEEK_CUR): Likewise.
+	[POSIX] (SEEK_END): Likewise.
+	[POSIX || UNIX98] (mode_t): Do not require.
+	[POSIX] (off_t): Likewise.
+	[POSIX] (pid_t): Likewise.
+	[POSIX] (sys/stat.h): Do not allow header.
+	[POSIX] (unistd.h): Likewise.
+	[!ISO && !ISO99 && !ISO11] (timespec): Do not allow.
+	[!ISO && !ISO99 && !ISO11] (tv_nsec): Likewise.
+	[!ISO && !ISO99 && !ISO11] (tv_sec): Likewise.
+	* conform/data/locale.h-data [POSIX] (LC_MESSAGES): Do not
+	require.
+	* conform/data/mqueue.h-data [!ISO && !ISO99 && !ISO11] (struct
+	sigevent): Specify elements.
+	[XOPEN2K8 || POSIX2008] (struct sigevent): Remove duplicate type
+	entry.
+	[!ISO && !ISO99 && !ISO11] (mq_*): Allow.
+	[!ISO && !ISO99 && !ISO11] (MQ_*): Likewise.
+
+	* conform/data/cpio.h-data [POSIX]: Disable whole file.
+	* conform/data/glob.h-data [POSIX] (GLOB_NOSYS): Do not expect.
+	* conform/data/limits.h-data [!ISO && !ISO99 && !ISO11]
+	(AIO_LIST_MAX): Change to AIO_LISTIO_MAX.
+	[!ISO && !ISO99 && !ISO11] (ATEXT_MAX): Remove.
+	[!ISO && !ISO99 && !ISO11 && !POSIX && !XPG3] (ATEXIT_MAX): Allow.
+	[POSIX || POSIX2008 || XPG3] (IOV_MAX): Do not allow.
+	[POSIX || POSIX2008 || XPG3] (_XOPEN_IOV_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (MQ_PRIO_MAX): Allow.
+	[!ISO && !ISO99 && !ISO11] (RE_DUP_MAX): Remove duplicate entry.
+	[POSIX || XPG3 || XPG4 || UNIX98] (SS_REPL_MAX): Do not allow.
+	[POSIX || XPG3 || XPG4 || UNIX98] (SYMLOOP_MAX): Likewise.
+	[POSIX || XPG3 || XPG4] (FILESIZEBITS): Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (POSIX_ALLOC_SIZE_MIN):
+	Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (POSIX_REC_INCR_XFER_SIZE):
+	Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (POSIX_REC_MAX_XFER_SIZE):
+	Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (POSIX_REC_XFER_ALIGN):
+	Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (SYMLINK_MAX): Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (_POSIX_SS_REPL_MAX): Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (_POSIX_SYMLINK_MAX): Likewise.
+	[POSIX || XPG3 || XPG4 || UNIX98] (_POSIX_SYMLOOP_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (BC_BASE_MAX): Use macro-constant.
+	Specify lower bound on value.
+	[!ISO && !ISO99 && !ISO11] (BC_DIM_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (BC_SCALE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (BC_STRING_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (COLL_WEIGHTS_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (EXPR_NEST_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (RE_DUP_MAX): Likewise
+	[POSIX || XPG3 || XPG4] (CHARCLASS_NAME_MAX): Do not allow.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_CLOCKRES_MIN): Specify exact
+	value.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_AIO_LISTIO_MAX): Do not specify
+	as optional.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_AIO_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_ARG_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_CHILD_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_DELAYTIMER_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_LINK_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_LOGIN_NAME_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_MAX_CANON): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_MAX_INPUT): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_MQ_OPEN_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_MQ_PRIO_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_NAME_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_NGROUPS_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_OPEN_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_PATH_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_PIPE_BUF): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_RE_DUP_MAX): Remove duplicate
+	entry.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_RTSIG_MAX): Do not specify as
+	optional.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_SEM_NSEMS_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_SEM_VALUE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_SIGQUEUE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_SSIZE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_STREAM_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_THREAD_DESTRUCTOR_ITERATIONS):
+	Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_THREAD_KEYS_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_THREAD_THREADS_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_TIMER_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_TTY_NAME_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX_TZNAME_MAX): Likewise.  Give
+	value as 3 for [POSIX || XPG3 || XPG4 || UNIX98].
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_BC_BASE_MAX): Do not specify
+	as optional.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_BC_DIM_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_BC_SCALE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_BC_STRING_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_CHARCLASS_NAME_MAX):
+	Likewise.  Do not allow for [POSIX || XPG3 || XPG4 || UNIX98].
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_COLL_WEIGHTS_MAX): Do not
+	specify as optional.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_EXPR_NEST_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_LINE_MAX): Likewise.
+	[!ISO && !ISO99 && !ISO11] (_POSIX2_RE_DUP_MAX): Likewise.
+	[POSIX || POSIX2008 || XPG3] (_XOPEN_IOV_MAX): Do not allow.
+	[POSIX || XPG3] (NL_ARGMAX): Do not allow.
+	[XPG3] (NL_LANGMAX): Likewise.
+	[POSIX || XPG3] (NL_MSGMAX): Likewise.
+	[POSIX || XPG3] (NL_NMAX): Likewise.
+	[POSIX || XPG3] (NL_SETMAX): Likewise.
+	[POSIX || XPG3] (NL_TEXTMAX): Likewise.
+	[XPG3] (NZERO): Likewise.
+	[XPG4 || UNIX98] (TMP_MAX): Only enable for these conditions.
+	[POSIX || XPG3 || XPG4 || UNIX98] (*_MIN): Do not allow.
+	[!ISO && !ISO99 && !ISO11] (*_t): Allow.
+	* conform/data/regex.h-data [!ISO && !ISO99 && !ISO11]
+	(REG_ERANGE): Expect.
+	* conform/data/stdio.h-data [POSIX] (L_cuserid): Use
+	optional-constant.
+	[POSIX || XOPEN2K || XOPEN2K8 || POSIX2008] (getchar_unlocked):
+	Use (void) in prototype.
+	[POSIX] (*_t): Allow.
+	* conform/data/sys/times.h-data [POSIX]: Enable whole file.
+	* conform/data/wordexp.h-data [!ISO && !ISO99 && !ISO11]
+	(WRDE_BADVAL): Expect.
+
+	* conform/data/fcntl.h-data [XPG3 || XPG4] (O_DSYNC): Do not
+	expect.
+	[XPG3 || XPG4] (O_RSYNC): Likewise.
+	* conform/data/signal.h-data [XPG3 || XPG4] (pthread_kill):
+	Likewise.
+	[XPG3 || XPG4] (pthread_sigmask): Likewise.
+	[XPG3 || XPG4] (sigqueue): Likewise.
+	[XPG3 || XPG4] (sigtimedwait): Likewise.
+	[XPG3 || XPG4] (sigwaitinfo): Likewise.
+	* conform/data/stdio.h-data [XPG3 || XPG4] (snprintf): Likewise.
+	[XPG3 || XPG4] (vsnprintf): Likewise.
+	* conform/data/sys/stat.h-data [XPG3 || XPG4] (blkcnt_t):
+	Likewise.
+	[XPG3 || XPG4] (blksize_t): Likewise.
+	* conform/data/time.h-data [XPG3 || XPG4] (struct timespec):
+	Likewise.
+	[XPG3 || XPG4] (CLOCK_PROCESS_CPUTIME_ID): Likewise.
+	[XPG3 || XPG4] (CLOCK_THREAD_CPUTIME_ID): Likewise.
+	[XPG3 || XPG4] (struct itimerspec): Likewise.
+	[XPG3 || XPG4] (CLOCK_REALTIME): Likewise.
+	[XPG3 || XPG4] (TIMER_ABSTIME): Likewise.
+	[XPG3 || XPG4] (CLOCK_MONOTONIC): Likewise.
+	[XPG3 || XPG4] (clockid_t): Likewise.
+	[XPG3 || XPG4] (timer_t): Likewise.
+	[XPG3 || XPG4] (clock_getres): Likewise.
+	[XPG3 || XPG4] (clock_gettime): Likewise.
+	[XPG3 || XPG4] (clock_settime): Likewise.
+	[XPG3 || XPG4] (nanosleep): Likewise.
+	[XPG3 || XPG4] (timer_create): Likewise.
+	[XPG3 || XPG4] (timer_delete): Likewise.
+	[XPG3 || XPG4] (timer_gettime): Likewise.
+	[XPG3 || XPG4] (timer_getoverrun): Likewise.
+	[XPG3 || XPG4] (timer_settime): Likewise.
+	* conform/data/unistd.h-data [XPG3 || XPG4] (fdatasync): Likewise.
+	[XPG3 || XPG4] (getlogin_r): Likewise.
+	[XPG3 || XPG4] (pread): Likewise.
+	[XPG3 || XPG4] (pthread_atfork): Likewise.
+	[XPG3 || XPG4] (pwrite): Likewise.
+
+	[BZ #14835]
+	* signal/signal.h [__USE_XOPEN_EXTENDED]: Include
+	<bits/siginfo.h>.
+
+2012-11-19  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* malloc/mtrace.c (muntrace): Reset MALLSTREAM and the hooks before
+	finalizing MALLSTREAM.
+
+	* sysdeps/mach/hurd/syncfs.c: New file.
+
+2012-11-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #14719]
+	* nss/getXXbyYY_r.c (INTERNAL (REENTRANT_NAME)): Set h_errno to
+	NETDB_INTERNAL when NSS_STATUS_UNAVAIL.
+	* resolv/nss_dns/dns-host.c (_nss_dns_gethostbyname3_r): Set
+	h_errno to NETDB_INTERNAL when errno is EMFILE or ENFILE.
+	(_nss_dns_gethostbyname4_r): Likewise.
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Set result to
+	EAI_SYSTEM if NSS_STATUS_UNAVAIL.
+
+2012-11-19  Peng Haitao  <penght@cn.fujitsu.com>
+
+	[BZ #13763]
+	* sunrpc/bindrsvprt.c: Add lock to protect static variable.
+
+2012-11-19  Steve McIntyre  <steve.mcintyre@linaro.org>
+
+	* sysdeps/generic/ldconfig.h (FLAG_AARCH64_LIB64): New macro.
+	* elf/cache.c (print_entry): Print ",AArch64" for
+	FLAG_AARCH64_LIB64
+
+	* sysdeps/generic/ldconfig.h (FLAG_ARM_LIBHF): New macro.
+	* elf/cache.c (print_entry): Print ",hard-float" for
+	FLAG_ARM_LIBHF.
+
 2012-11-18  David S. Miller  <davem@davemloft.net>
 
 	With help from Joseph Myers.

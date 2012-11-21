@@ -1,4 +1,5 @@
-/* Copyright (C) 2012 Free Software Foundation, Inc.
+/* Receive multiple messages on a socket.  Stub version.
+   Copyright (C) 2010-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,27 +13,19 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library.  If not, see
+   License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <math.h>
 #include <errno.h>
-#include "mathimpl.h"
+#include <sys/socket.h>
 
-#ifndef FUNC
-# define FUNC sin
-#endif
-#ifndef float_type
-# define float_type double
-#endif
-
-#define CONCATX(a,b) __CONCAT(a,b)
-
-float_type
-CONCATX(__,FUNC) (float_type x)
+/* Receive up to VLEN messages as described by VMESSAGES from socket FD.
+   Returns the number of bytes read or -1 for errors.  */
+int
+recvmmsg (int fd, struct mmsghdr *vmessages, unsigned int vlen, int flags,
+	  const struct timespec *tmo)
 {
-  if (__m81_test (x) & __M81_COND_INF)
-    __set_errno (EDOM);
-  return __m81_u(CONCATX(__, FUNC)) (x);
+  __set_errno (ENOSYS);
+  return -1;
 }
-weak_alias (CONCATX(__, FUNC), FUNC)
+stub_warning (recvmmsg)

@@ -1,4 +1,4 @@
-/* Copyright (C) 2011, 2012 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2012 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -17,8 +17,8 @@
    <http://www.gnu.org/licenses/>.  */
 
 #ifndef FUNC
-#error FUNC not defined
+# error FUNC not defined
 #endif
 #define TYPE float
 #define REGS "s"
-#include <s_frint.x>
+#include <s_frint.c>

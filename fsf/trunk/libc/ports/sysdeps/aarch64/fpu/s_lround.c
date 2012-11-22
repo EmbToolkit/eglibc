@@ -1,4 +1,4 @@
-/* Copyright (C) 1996, 1997, 2011, 2012 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2012 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -19,20 +19,20 @@
 #include <math.h>
 
 #ifndef FUNC
-#define FUNC lround
+# define FUNC lround
 #endif
 
 #ifndef ITYPE
-#define ITYPE double
-#define IREGS "d"
+# define ITYPE double
+# define IREGS "d"
 #else
-#ifndef IREGS
-#error IREGS not defined
-#endif
+# ifndef IREGS
+#  error IREGS not defined
+# endif
 #endif
 
 #ifndef OTYPE
-#define OTYPE long int
+# define OTYPE long int
 #endif
 
 #define OREGS "x"
@@ -40,8 +40,7 @@
 #define __CONCATX(a,b) __CONCAT(a,b)
 
 OTYPE
-__CONCATX(__,FUNC) (x)
-     ITYPE x;
+__CONCATX(__,FUNC) (ITYPE x)
 {
   OTYPE result;
   asm ( "fcvtas" "\t%" OREGS "0, %" IREGS "1"
@@ -49,10 +48,4 @@ __CONCATX(__,FUNC) (x)
   return result;
 }
 
-#define weak_aliasx(a,b) weak_alias(a,b)
-weak_aliasx (__CONCATX(__,FUNC), FUNC)
-#define strong_aliasx(a,b) strong_alias(a,b)
-#ifdef NO_LONG_DOUBLE
-strong_aliasx (__CONCATX(__,FUNC),  __CONCATX(__,__CONCATX(FUNC,l)))
-weak_aliasx (__CONCATX(__,FUNC), __CONCATX(FUNC,l))
-#endif
+weak_alias (__CONCATX(__,FUNC), FUNC)

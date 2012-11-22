@@ -19,25 +19,22 @@
 #include <math.h>
 
 #ifndef FUNC
-#define FUNC fma
+# define FUNC fma
 #endif
 
 #ifndef TYPE
-#define TYPE double
-#define REGS "d"
+# define TYPE double
+# define REGS "d"
 #else
-#ifndef REGS
-#error REGS not defined
-#endif
+# ifndef REGS
+#  error REGS not defined
+# endif
 #endif
 
 #define __CONCATX(a,b) __CONCAT(a,b)
 
 TYPE
-__CONCATX(__,FUNC) (x, y, z)
-     TYPE x;
-     TYPE y;
-     TYPE z;
+__CONCATX(__,FUNC) (TYPE x, TYPE y, TYPE z)
 {
   TYPE result;
   asm ( "fmadd" "\t%" REGS "0, %" REGS "1, %" REGS "2, %" REGS "3"
@@ -45,10 +42,4 @@ __CONCATX(__,FUNC) (x, y, z)
   return result;
 }
 
-#define weak_aliasx(a,b) weak_alias(a,b)
-weak_aliasx (__CONCATX(__,FUNC), FUNC)
-#define strong_aliasx(a,b) strong_alias(a,b)
-#ifdef NO_LONG_DOUBLE
-strong_aliasx (__CONCATX(__,FUNC),  __CONCATX(__,__CONCATX(FUNC,l)))
-weak_aliasx (__CONCATX(__,FUNC), __CONCATX(FUNC,l))
-#endif
+weak_alias (__CONCATX(__,FUNC), FUNC)

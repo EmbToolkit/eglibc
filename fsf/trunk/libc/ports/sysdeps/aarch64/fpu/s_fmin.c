@@ -1,4 +1,4 @@
-/* Copyright (C) 1996, 1997, 2011, 2012 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2012 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -19,28 +19,26 @@
 #include <math.h>
 
 #ifndef FUNC
-#define FUNC fmin
+# define FUNC fmin
 #endif
 
 #ifndef INSN
-#define INSN "fminnm"
+# define INSN "fminnm"
 #endif
 
 #ifndef TYPE
-#define TYPE double
-#define REGS "d"
+# define TYPE double
+# define REGS "d"
 #else
-#ifndef REGS
-#error REGS not defined
-#endif
+# ifndef REGS
+#  error REGS not defined
+# endif
 #endif
 
 #define __CONCATX(a,b) __CONCAT(a,b)
 
 TYPE
-__CONCATX(__,FUNC) (x, y)
-     TYPE x;
-     TYPE y;
+__CONCATX(__,FUNC) (TYPE x, TYPE y)
 {
   TYPE result;
   asm ( INSN "\t%" REGS "0, %" REGS "1, %" REGS "2"
@@ -48,10 +46,4 @@ __CONCATX(__,FUNC) (x, y)
   return result;
 }
 
-#define weak_aliasx(a,b) weak_alias(a,b)
-weak_aliasx (__CONCATX(__,FUNC), FUNC)
-#define strong_aliasx(a,b) strong_alias(a,b)
-#ifdef NO_LONG_DOUBLE
-strong_aliasx (__CONCATX(__,FUNC),  __CONCATX(__,__CONCATX(FUNC,l)))
-weak_aliasx (__CONCATX(__,FUNC), __CONCATX(FUNC,l))
-#endif
+weak_alias (__CONCATX(__,FUNC), FUNC)

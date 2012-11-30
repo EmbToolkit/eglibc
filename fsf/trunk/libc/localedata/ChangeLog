@@ -1,3 +1,11 @@
+2012-11-26  Nik Kalach  <nikka@fedoraproject.org>
+
+	* locales/ia_FR (abmon): Fix December.
+
+	[BZ#14879]
+	* locales/ia_FR : New file.
+	* SUPPORTED (SUPPORTED-LOCALES): Add appropriate entry.
+
 2012-11-22  Andreas Jaeger  <aj@suse.de>
 
 	* locales/niu_NU: Fix comment.

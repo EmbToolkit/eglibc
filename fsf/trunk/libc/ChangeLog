@@ -1,3 +1,23 @@
+2012-11-29  Roland McGrath  <roland@hack.frob.com>
+
+	* inet/tst-inet6_rth.c (do_test): Use a union rather than type punning.
+
+2012-11-28  Jeff Law  <law@redhat.com>
+
+	[BZ #13761]
+	* nscd/grpcache.c (cache_addgr): Rename alloca_used to
+	dataset_temporary.  Track alloca usage into alloca_used.
+	If dataset is large allocate and release it via malloc/free.
+
+2012-06-04  Florian Weimer  <fweimer@redhat.com>
+
+	[BZ #14197]
+	* debug/test-strcpy_chk.c: Mention __chk_fail ABI test.
+
+2012-11-28  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
 2012-11-28  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #14803]

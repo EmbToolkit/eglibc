@@ -1,3 +1,29 @@
+2012-11-30  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/powerpc/powerpc64/entry.h (TEXT_START): Define using a
+	second, differently-typed declaration, rather than a cast.
+
+2012-11-30  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sunrpc/rpc/svc.h (__svc_accept_failed): Move declaration...
+	* include/rpc/svc.h: ... here.
+
+2012-11-30  Aurelien Jarno  <aurel32@debian.org>
+
+	[BZ #13013]
+	* resolv/res_query.c(__libc_res_nquery): Assign hp and hp2
+	depending n and resplen2 to catch cases where answer
+	equals answerp2.
+
+2012-11-29  Carlos O'Donell  <carlos@systemhalted.org>
+
+	* elf/get-dynamic-info.h (elf_get_dynamic_info): Warn
+	for unsupported DF_1_* bits when DL_DEBUG_FILES is set.
+
+2012-11-29  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/clock_getcpuclockid.c (HAS_CPUCLOCK): Delete.
+
 2012-11-29  Roland McGrath  <roland@hack.frob.com>
 
 	* inet/tst-inet6_rth.c (do_test): Use a union rather than type punning.

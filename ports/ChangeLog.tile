@@ -1,3 +1,7 @@
+2012-11-29  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/__tls_get_addr.S: Fix TLS module initialization bug.
+
 2012-09-06  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/unix/sysv/linux/tile/sys/procfs.h: Fix type of prfpregset_t.

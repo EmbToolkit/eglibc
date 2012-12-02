@@ -142,7 +142,7 @@ tests += loadtest restest1 preloadtest loadfail multiload origtest resolvfail \
 	 tst-dlmodcount tst-dlopenrpath tst-deep1 \
 	 tst-dlmopen1 tst-dlmopen2 tst-dlmopen3 \
 	 unload3 unload4 unload5 unload6 unload7 unload8 tst-global1 order2 \
-	 tst-audit1 tst-audit2 \
+	 tst-audit1 tst-audit2 tst-audit8 \
 	 tst-stackguard1 tst-addr1 tst-thrlock \
 	 tst-unique1 tst-unique2 tst-unique3 tst-unique4 \
 	 tst-initorder tst-initorder2 tst-relsort1
@@ -1040,6 +1040,10 @@ $(objpfx)tst-audit7: $(objpfx)tst-auditmod7a.so
 $(objpfx)tst-audit7.out: $(objpfx)tst-auditmod7b.so
 tst-audit7-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod7b.so
 tst-audit7-WRAPPER = $(..)scripts/run-with-env.sh
+
+$(objpfx)tst-audit8: $(common-objpfx)math/libm.so
+$(objpfx)tst-audit8.out: $(objpfx)tst-auditmod1.so
+tst-audit8-ENV = LD_AUDIT=$(objpfx)tst-auditmod1.so
 
 $(objpfx)tst-global1: $(libdl)
 $(objpfx)tst-global1.out: $(objpfx)testobj6.so $(objpfx)testobj2.so

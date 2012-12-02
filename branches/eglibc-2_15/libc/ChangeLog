@@ -1,10 +1,10 @@
-2012-11-07  Andreas Jaeger  <aj@suse.de>
+2012-05-01  Andreas Schwab  <schwab@linux-m68k.org>
 
-	[BZ #14809]
-	* sysdeps/unix/sysv/linux/sys/sysctl.h (_UAPI_LINUX_KERNEL_H)
-	(_UAPI_LINUX_TYPES_H): Starting with Linux 3.7, the include header
-	guards are changed.  Only define if not yet defined, #undef back
-	after including linux/sysctl.h if defined here.
+	[BZ #14040]
+	* sysdeps/powerpc/powerpc32/fpu/s_nearbyint.S (nearbyintl): Define
+	in version GLIBC_2.1, not GLIBC_2.0.
+	* sysdeps/powerpc/powerpc64/fpu/s_nearbyint.S (nearbyintl):
+	Likewise.
 
 2012-10-04  H.J. Lu  <hongjiu.lu@intel.com>
 

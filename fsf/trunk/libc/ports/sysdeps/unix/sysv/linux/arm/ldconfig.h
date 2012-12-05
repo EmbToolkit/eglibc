@@ -1,11 +1,10 @@
-/* Copyright (C) 2009-2012 Free Software Foundation, Inc.
-
+/* Copyright (C) 2001-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public License as
-   published by the Free Software Foundation; either version 2.1 of the
-   License, or (at your option) any later version.
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
    The GNU C Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,7 +18,6 @@
 #include <sysdeps/generic/ldconfig.h>
 
 #define SYSDEP_KNOWN_INTERPRETER_NAMES \
-  { "/lib/ld-linux-aarch64.so.1", FLAG_ELF_LIBC6 }, \
   { "/lib/ld-linux.so.3", FLAG_ELF_LIBC6 }, \
   { "/lib/ld-linux-armhf.so.3", FLAG_ELF_LIBC6 },
 #define SYSDEP_KNOWN_LIBRARY_NAMES \

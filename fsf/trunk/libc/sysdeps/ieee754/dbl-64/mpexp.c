@@ -1,7 +1,7 @@
 /*
  * IBM Accurate Mathematical Library
  * written by International Business Machines Corp.
- * Copyright (C) 2001-2012 Free Software Foundation, Inc.
+ * Copyright (C) 2001-2013 Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU  Lesser General Public License as published by
@@ -31,6 +31,7 @@
 #include "endian.h"
 #include "mpa.h"
 #include "mpexp.h"
+#include <assert.h>
 
 #ifndef SECTION
 # define SECTION
@@ -71,10 +72,22 @@ __mpexp(mp_no *x, mp_no *y, int p) {
     for (i=2; i<=p; i++) { if (X[i]!=ZERO)  break; }
     if (i==p+1)  { m2--;  a *= TWO; }
   }
-  if ((m=m1+m2) <= 0) {
-    m=0;  a=ONE;
-    for (i=n-1; i>0; i--,n--) { if (m1np[i][p]+m2>0)  break; }
-  }
+
+  m = m1 + m2;
+  if (__glibc_unlikely (m <= 0))
+    {
+      /* The m1np array which is used to determine if we can reduce the
+	 polynomial expansion iterations, has only 18 elements.  Besides,
+	 numbers smaller than those required by p >= 18 should not come here
+	 at all since the fast phase of exp returns 1.0 for anything less
+	 than 2^-55.  */
+      assert (p < 18);
+      m = 0;
+      a = ONE;
+      for (i = n - 1; i > 0; i--, n--)
+	if (m1np[i][p] + m2 > 0)
+	  break;
+    }
 
   /* Compute s=x*2**(-m). Put result in mps */
   __dbl_mp(a,&mpt1,p);

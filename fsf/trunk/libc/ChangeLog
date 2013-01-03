@@ -1,3 +1,59 @@
+2013-01-02  Joseph Myers  <joseph@codesourcery.com>
+
+	* NEWS: Update dates in second copyright notice.
+	* README: Update copyright dates in example.
+	* manual/libc.texinfo: Update copyright dates.
+	* scripts/test-installation.pl: Update copyright date in --version
+	output.
+
+	* hurd/ctty-input.c: Fix copyright notice formatting.
+	* hurd/ctty-output.c: Likewise.
+	* hurd/dtable.c: Likewise.
+	* hurd/hurd-raise.c: Likewise.
+	* hurd/hurdprio.c: Likewise.
+	* hurd/msgportdemux.c: Likewise.
+	* misc/sys/file.h: Likewise.
+	* misc/sys/ioctl.h: Likewise.
+	* sysdeps/gnu/netinet/ip_icmp.h: Likewise.
+	* sysdeps/mach/hurd/chdir.c: Likewise.
+	* sysdeps/mach/hurd/fchdir.c: Likewise.
+	* sysdeps/mach/hurd/rename.c: Likewise.
+	* sysdeps/mach/hurd/rmdir.c: Likewise.
+	* sysdeps/mach/hurd/seekdir.c: Likewise.
+	* sysdeps/mach/hurd/setsid.c: Likewise.
+	* sysdeps/posix/wait3.c: Likewise.
+
+	* All files with FSF copyright notices: Update copyright dates
+	using scripts/update-copyrights.
+	* intl/plural.c: Regenerated.
+	* locale/programs/charmap-kw.h: Likewise.
+	* locale/programs/locfile-kw.h: Likewise.
+
+2013-01-02  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpexp.h (__mpexp_twomm1): Fix first
+	four values.
+
+	* sysdeps/ieee754/dbl-64/mpa.c (__mul): Split mantissa
+	calculation loop and add branch prediction.
+
+	* sysdeps/ieee754/dbl-64/mpexp.c (__mpexp): Add assert to
+	check access beyond bounds of m1np.
+
+	* sysdeps/ieee754/dbl-64/mpa.c [! NO__CONST]: New constant
+	MPTWO.
+	(__inv): Remove local variable MPTWO to use the global
+	constant.
+	* sysdeps/ieee754/dbl-64/mpa.h: Declare MPTWO.
+	* sysdeps/ieee754/dbl-64/mpatan.c (__mpatan): Remove local
+	variable MPTWO.
+	* sysdeps/ieee754/dbl-64/mpsqrt.c (__mpsqrt): Make MPHALF and
+	MP3HALFS static const.
+
+2013-01-01  David S. Miller  <davem@davemloft.net>
+
+	* po/ca.po: Update from translation team.
+
 2013-01-01  Joseph Myers  <joseph@codesourcery.com>
 
 	* scripts/update-copyrights: New file.
@@ -11724,7 +11780,7 @@
 	(ETAGS): Remove, it's in Makeconfig.
 	(move-if-change): Remove, it's in Makeconfig.
 
-2013-04-23  Paul Eggert  <eggert@cs.ucla.edu>
+2012-04-23  Paul Eggert  <eggert@cs.ucla.edu>
 
 	[BZ #13970]
 	* stdlib/stdlib.h: Remove warn_unused_result attribute from strtol etc.

@@ -1,7 +1,7 @@
 /*
  * IBM Accurate Mathematical Library
  * Written by International Business Machines Corp.
- * Copyright (C) 2001, 2011 Free Software Foundation, Inc.
+ * Copyright (C) 2001-2013 Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,10 +33,10 @@ extern const number __mpexp_twomm1[33] attribute_hidden;
 #ifdef BIG_ENDI
   const number
 	__mpexp_twomm1[33] = {                     /* 2**-m1 */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
+/**/                  {{0x3ff00000, 0x00000000} }, /* 1      */
+/**/                  {{0x3ff00000, 0x00000000} }, /* 1      */
+/**/                  {{0x3ff00000, 0x00000000} }, /* 1      */
+/**/                  {{0x3ff00000, 0x00000000} }, /* 1      */
 /**/                  {{0x3ee00000, 0x00000000} }, /* 2**-17 */
 /**/                  {{0x3e800000, 0x00000000} }, /* 2**-23 */
 /**/                  {{0x3e800000, 0x00000000} }, /* 2**-23 */
@@ -72,10 +72,10 @@ extern const number __mpexp_twomm1[33] attribute_hidden;
 #ifdef LITTLE_ENDI
   const number
 	__mpexp_twomm1[33] = {                     /* 2**-m1 */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
-/**/                  {{0x00000000, 0x00000000} }, /* 0      */
+/**/                  {{0x00000000, 0x3ff00000} }, /* 1      */
+/**/                  {{0x00000000, 0x3ff00000} }, /* 1      */
+/**/                  {{0x00000000, 0x3ff00000} }, /* 1      */
+/**/                  {{0x00000000, 0x3ff00000} }, /* 1      */
 /**/                  {{0x00000000, 0x3ee00000} }, /* 2**-17 */
 /**/                  {{0x00000000, 0x3e800000} }, /* 2**-23 */
 /**/                  {{0x00000000, 0x3e800000} }, /* 2**-23 */

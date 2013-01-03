@@ -1,7 +1,7 @@
 /*
  * IBM Accurate Mathematical Library
  * Written by International Business Machines Corp.
- * Copyright (C) 2001, 2011 Free Software Foundation, Inc.
+ * Copyright (C) 2001-2013 Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,6 +55,7 @@ typedef struct {/* This structure holds the details of a multi-precision     */
 typedef union { int i[2]; double d; } number;
 
 extern const mp_no mpone;
+extern const mp_no mptwo;
 
 #define  X   x->d
 #define  Y   y->d

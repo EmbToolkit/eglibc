@@ -1,7 +1,7 @@
 /*
  * IBM Accurate Mathematical Library
  * written by International Business Machines Corp.
- * Copyright (C) 2001-2012 Free Software Foundation, Inc.
+ * Copyright (C) 2001-2013 Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,6 +53,7 @@
 
 #ifndef NO__CONST
 const mp_no mpone = {1, {1.0, 1.0}};
+const mp_no mptwo = {1, {1.0, 2.0}};
 #endif
 
 #ifndef NO___ACR
@@ -446,33 +447,52 @@ void
 SECTION
 __mul(const mp_no *x, const mp_no *y, mp_no *z, int p) {
 
-  int i, i1, i2, j, k, k2;
+  int i, j, k, k2;
   double u;
 
-		      /* Is z=0? */
-  if (X[0]*Y[0]==ZERO)
-     { Z[0]=ZERO;  return; }
+  /* Is z=0?  */
+  if (__glibc_unlikely (X[0] * Y[0] == ZERO))
+    {
+      Z[0]=ZERO;
+      return;
+    }
 
-		       /* Multiply, add and carry */
-  k2 = (p<3) ? p+p : p+3;
-  Z[k2]=ZERO;
-  for (k=k2; k>1; ) {
-    if (k > p)  {i1=k-p; i2=p+1; }
-    else        {i1=1;   i2=k;   }
-    for (i=i1,j=i2-1; i<i2; i++,j--)  Z[k] += X[i]*Y[j];
+  /* Multiply, add and carry */
+  k2 = (__glibc_unlikely (p < 3)) ? p + p : p + 3;
+  Z[k2] = ZERO;
 
-    u = (Z[k] + CUTTER)-CUTTER;
-    if  (u > Z[k])  u -= RADIX;
-    Z[k]  -= u;
-    Z[--k] = u*RADIXI;
-  }
+  for (k = k2; k > p; )
+    {
+      for (i = k - p, j = p; i < p + 1; i++, j--)
+	Z[k] += X[i] * Y[j];
 
-		 /* Is there a carry beyond the most significant digit? */
-  if (Z[1] == ZERO) {
-    for (i=1; i<=p; i++)  Z[i]=Z[i+1];
-    EZ = EX + EY - 1; }
-  else
-    EZ = EX + EY;
+      u = (Z[k] + CUTTER) - CUTTER;
+      if (u > Z[k])
+	u -= RADIX;
+      Z[k] -= u;
+      Z[--k] = u * RADIXI;
+    }
+
+  while (k > 1)
+    {
+      for (i = 1,j = k - 1; i < k; i++, j--)
+	Z[k] += X[i] * Y[j];
+
+      u = (Z[k] + CUTTER) - CUTTER;
+      if (u > Z[k])
+	u -= RADIX;
+      Z[k] -= u;
+      Z[--k] = u * RADIXI;
+    }
+
+  EZ = EX + EY;
+  /* Is there a carry beyond the most significant digit? */
+  if (__glibc_unlikely (Z[1] == ZERO))
+    {
+      for (i = 1; i <= p; i++)
+	Z[i] = Z[i+1];
+      EZ--;
+    }
 
   Z[0] = X[0] * Y[0];
 }
@@ -494,10 +514,6 @@ void __inv(const mp_no *x, mp_no *y, int p) {
   mp_no z,w;
   static const int np1[] = {0,0,0,0,1,2,2,2,2,3,3,3,3,3,3,3,3,3,
 			    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
-  const mp_no mptwo = {1,{1.0,2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0}};
 
   __cpy(x,&z,p);  z.e=0;  __mp_dbl(&z,&t,p);
   t=ONE/t;   __dbl_mp(t,y,p);    EY -= EX;

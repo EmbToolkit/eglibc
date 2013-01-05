@@ -23,9 +23,7 @@
 /*  FUNCTIONS:                                                          */
 /*               mcr                                                    */
 /*               acr                                                    */
-/*               cr                                                     */
 /*               cpy                                                    */
-/*               cpymn                                                  */
 /*               norm                                                   */
 /*               denorm                                                 */
 /*               mp_dbl                                                 */
@@ -47,6 +45,10 @@
 #include "mpa.h"
 #include "mpa2.h"
 #include <sys/param.h>	/* For MIN() */
+
+const mp_no mpone = {1, {1.0, 1.0}};
+const mp_no mptwo = {1, {1.0, 2.0}};
+
 /* mcr() compares the sizes of the mantissas of two multiple precision  */
 /* numbers. Mantissas are compared regardless of the signs of the       */
 /* numbers, even if x->d[0] or y->d[0] are zero. Exponents are also     */
@@ -82,19 +84,6 @@ int __acr(const mp_no *x, const mp_no *y, int p) {
 }
 
 
-/* cr90 compares the values of two multiple precision numbers           */
-int  __cr(const mp_no *x, const mp_no *y, int p) {
-  int i;
-
-  if      (X[0] > Y[0])  i= 1;
-  else if (X[0] < Y[0])  i=-1;
-  else if (X[0] < ZERO ) i= __acr(y,x,p);
-  else                   i= __acr(x,y,p);
-
-  return i;
-}
-
-
 /* Copy a multiple precision number. Set *y=*x. x=y is permissible.      */
 void __cpy(const mp_no *x, mp_no *y, int p) {
   long i;
@@ -106,34 +95,12 @@ void __cpy(const mp_no *x, mp_no *y, int p) {
 }
 
 
-/* Copy a multiple precision number x of precision m into a */
-/* multiple precision number y of precision n. In case n>m, */
-/* the digits of y beyond the m'th are set to zero. In case */
-/* n<m, the digits of x beyond the n'th are ignored.        */
-/* x=y is permissible.                                      */
-
-void __cpymn(const mp_no *x, int m, mp_no *y, int n) {
-
-  long i,k;
-  long n2 = n;
-  long m2 = m;
-
-  EY = EX;     k=MIN(m2,n2);
-  for (i=0; i <= k; i++)    Y[i] = X[i];
-  for (   ; i <= n2; i++)    Y[i] = ZERO;
-
-  return;
-}
-
 /* Convert a multiple precision number *x into a double precision */
 /* number *y, normalized case  (|x| >= 2**(-1022))) */
 static void norm(const mp_no *x, double *y, int p)
 {
-  #define R  radixi.d
+  #define R  RADIXI
   long i;
-#if 0
-  int k;
-#endif
   double a,c,u,v,z[5];
   if (p<5) {
     if      (p==1) c = X[1];
@@ -187,11 +154,8 @@ static void denorm(const mp_no *x, double *y, int p)
   long i,k;
   long p2 = p;
   double c,u,z[5];
-#if 0
-  double a,v;
-#endif
 
-#define R  radixi.d
+#define R RADIXI
   if (EX<-44 || (EX==-44 && X[1]<TWO5))
      { *y=ZERO; return; }
 
@@ -234,10 +198,6 @@ static void denorm(const mp_no *x, double *y, int p)
 /* The result is correctly rounded to the nearest/even. *x is left unchanged */
 
 void __mp_dbl(const mp_no *x, double *y, int p) {
-#if 0
-  int i,k;
-  double a,c,u,v,z[5];
-#endif
 
   if (X[0] == ZERO)  {*y = ZERO;  return; }
 
@@ -461,7 +421,7 @@ void __mul(const mp_no *x, const mp_no *y, mp_no *z, int p) {
 		zk2 = x->d[i2-1]*y->d[i1];
 	}
 	else
-		zk2 = zero.d;
+		zk2 = 0.0;
 	/* Do two multiply/adds per loop iteration, using independent
            accumulators; zk and zk2.  */
 	for (i=i1,j=i2-1; i<i2-1; i+=2,j-=2) 
@@ -508,9 +468,6 @@ void __mul(const mp_no *x, const mp_no *y, mp_no *z, int p) {
 
 void __inv(const mp_no *x, mp_no *y, int p) {
   long i;
-#if 0
-  int l;
-#endif
   double t;
   mp_no z,w;
   static const int np1[] = {0,0,0,0,1,2,2,2,2,3,3,3,3,3,3,3,3,3,

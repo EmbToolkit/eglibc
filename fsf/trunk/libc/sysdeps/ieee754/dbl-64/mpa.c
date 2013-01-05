@@ -93,44 +93,11 @@ __acr(const mp_no *x, const mp_no *y, int p) {
 #endif
 
 
-#if 0
-/* cr() compares the values of two multiple precision numbers           */
-static int  __cr(const mp_no *x, const mp_no *y, int p) {
-  int i;
-
-  if      (X[0] > Y[0])  i= 1;
-  else if (X[0] < Y[0])  i=-1;
-  else if (X[0] < ZERO ) i= __acr(y,x,p);
-  else                   i= __acr(x,y,p);
-
-  return i;
-}
-#endif
-
-
 #ifndef NO___CPY
 /* Copy a multiple precision number. Set *y=*x. x=y is permissible.      */
 void __cpy(const mp_no *x, mp_no *y, int p) {
   EY = EX;
   for (int i=0; i <= p; i++)    Y[i] = X[i];
-}
-#endif
-
-
-#if 0
-/* Copy a multiple precision number x of precision m into a */
-/* multiple precision number y of precision n. In case n>m, */
-/* the digits of y beyond the m'th are set to zero. In case */
-/* n<m, the digits of x beyond the n'th are ignored.        */
-/* x=y is permissible.                                      */
-
-static void __cpymn(const mp_no *x, int m, mp_no *y, int n) {
-
-  int i,k;
-
-  EY = EX;     k=MIN(m,n);
-  for (i=0; i <= k; i++)    Y[i] = X[i];
-  for (   ; i <= n; i++)    Y[i] = ZERO;
 }
 #endif
 
@@ -142,9 +109,6 @@ static void norm(const mp_no *x, double *y, int p)
 {
   #define R  RADIXI
   int i;
-#if 0
-  int k;
-#endif
   double a,c,u,v,z[5];
   if (p<5) {
     if      (p==1) c = X[1];
@@ -196,9 +160,6 @@ static void denorm(const mp_no *x, double *y, int p)
 {
   int i,k;
   double c,u,z[5];
-#if 0
-  double a,v;
-#endif
 
 #define R  RADIXI
   if (EX<-44 || (EX==-44 && X[1]<TWO5))
@@ -241,10 +202,6 @@ static void denorm(const mp_no *x, double *y, int p)
 /* The result is correctly rounded to the nearest/even. *x is left unchanged */
 
 void __mp_dbl(const mp_no *x, double *y, int p) {
-#if 0
-  int i,k;
-  double a,c,u,v,z[5];
-#endif
 
   if (X[0] == ZERO)  {*y = ZERO;  return; }
 
@@ -507,9 +464,6 @@ static
 SECTION
 void __inv(const mp_no *x, mp_no *y, int p) {
   int i;
-#if 0
-  int l;
-#endif
   double t;
   mp_no z,w;
   static const int np1[] = {0,0,0,0,1,2,2,2,2,3,3,3,3,3,3,3,3,3,

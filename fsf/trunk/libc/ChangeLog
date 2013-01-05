@@ -1,3 +1,73 @@
+2013-01-04  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2013-01-04  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* sysdeps/powerpc/fpu/test-powerpc-snan.c (_GNU_SOURCE): Define as
+	1 to avoid redefinition warning.
+	(__USE_GNU): Don't define.
+	(init_signaling_nan): Protoize.
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-01-04  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa.c: Remove commented code.
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c (__cr): Remove.
+	(__cpymn): Likewise.
+	(norm): Remove commented code.
+	(denorm): Likewise.
+	(__mp_dbl): Likewise.
+	(__inv): Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c (__cr): Remove.
+	(__cpymn): Likewise.
+	(norm): Remove commented code.
+	(denorm): Likewise.
+	(__mp_dbl): Likewise.
+	(__inv): Likewise.
+
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c (mpone): Define
+	mp_no value for 1.0 and 2.0.
+	(norm): Use RADIXI instead of radixi.d.
+	(denorm): Likewise.
+	(__mul): Use 0.0 instead of zero.d.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c (mpone): Define
+	mp_no value for 1.0 and 2.0.
+	(norm): Use RADIXI instead of radixi.d.
+	(denorm): Likewise.
+	(__mul): Use 0.0 instead of zero.d.
+
+2013-01-04  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14994]
+	* math/s_casinh.c (__casinh): Reduce finite argument to first
+	quadrant then set signs of results at the end.
+	* math/s_casinhf.c (__casinhf): Likewise.
+	* math/s_casinhl.c (__casinhl): Likewise.
+	* math/libm-test.inc (casin_test): Add more tests.
+	(casinh_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-01-04  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa.h: Fix code formatting.
+
+	* sysdeps/ieee754/dbl-64/mpa.h: Clean up comment for MP_NO.
+
+	* sysdeps/ieee754/dbl-64/mpa.c(norm): Remove commented
+	declarations.
+	(denorm): Likewise.
+	(__mp_dbl): Likewise.
+	(__inv): Likewise.
+
+	* sysdeps/ieee754/dbl-64/mpa.h: Remove commented declarations
+	and adjust the header comment.
+
+	* sysdeps/ieee754/dbl-64/mpa.h (__mpexp): Remove unnecessary
+	variable name from declaration.
+
 2013-01-03  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features):

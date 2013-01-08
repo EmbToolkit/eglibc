@@ -1,3 +1,85 @@
+2013-01-07  Anton Blanchard  <anton@samba.org>
+
+	* sysdeps/powerpc/fpu/feholdexcpt.c: Fixed spelling errors.
+	* sysdeps/powerpc/fpu/feupdateenv.c: Likewise.
+	* sysdeps/powerpc/fpu/math_ldbl.h: Likewise.
+	* sysdeps/powerpc/powerpc32/bits/atomic.h: Likewise.
+	* sysdeps/powerpc/powerpc32/cell/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/dl-machine.c: Likewise.
+	* sysdeps/powerpc/powerpc32/dl-start.S: Likewise.
+	* sysdeps/powerpc/powerpc32/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/slowpow.c: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/w_sqrt.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/w_sqrtf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/hp-timing.h: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5/fpu/w_sqrt.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5/fpu/w_sqrtf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memchr.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memrchr.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/strcasecmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/bits/atomic.h: Likewise.
+	* sysdeps/powerpc/powerpc64/cell/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/dl-machine.h: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_ceill.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_nearbyintl.S: Likewise.
+	* sysdeps/powerpc/powerpc64/hp-timing.h: Likewise.
+	* sysdeps/powerpc/powerpc64/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/slowpow.c: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memrchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strcasecmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/strncmp.S: Likewise.
+
+2013-01-07  Joseph Myers  <joseph@codesourcery.com>
+
+	* malloc/malloc.h (__MALLOC_P): Remove all definitions.
+	(__MALLOC_PMT): Likewise.
+	[__GNUC__] (__MALLOC_HOOK_VOLATILE): Make not conditional on
+	[__GNUC__], only on [_LIBC].
+	[__GNUC__] (__MALLOC_DEPRECATED): Likewise.
+	[!__GNUC__] (__MALLOC_HOOK_VOLATILE): Remove definition.
+	[!__GNUC__] (__MALLOC_DEPRECATED): Likewise.
+	* malloc/malloc.c (malloc_hook_ini): Do not use __MALLOC_P in
+	forward declaration.
+	(realloc_hook_ini): Likewise.
+	(memalign_hook_ini): Likewise.
+	(__libc_memalign): Do not use __MALLOC_PMT in variable
+	declaration.
+	(__libc_valloc): Likewise.
+	(__libc_pvalloc): Likewise.
+	(__libc_calloc): Likewise.
+	(__posix_memalign): Likewise.
+
+	[BZ #14996]
+	* math/s_casinh.c: Include <float.h>.
+	(__casinh): Do not do computation with squaring and square root
+	for large arguments.
+	* math/s_casinhf.c: Include <float.h>.
+	(__casinhf): Do not do computation with squaring and square root
+	for large arguments.
+	* math/s_casinhl.c: Include <float.h>.
+	[LDBL_MANT_DIG == 106] (LDBL_EPSILON): Undefine and redefine.
+	(__casinhl): Do not do computation with squaring and square root
+	for large arguments.
+	* math/libm-test.inc (casin_test): Add more tests.
+	(casinh_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
 2013-01-04  H.J. Lu  <hongjiu.lu@intel.com>
 
 	* sysdeps/i386/i686/cacheinfo.c (__x86_64_data_cache_size): Removed.

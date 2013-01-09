@@ -1,3 +1,13 @@
+2013-01-08  Steve Ellcey  <sellcey@mips.com>
+
+	* sysdeps/mips/memcpy.S: Change prefetch hint, reorder partial
+	loads and stores, set and use MAX_PREFETCH_SIZE.
+
+2013-01-08  Andreas Jaeger  <aj@suse.de>
+
+	[BZ# 14985]
+	* sysdeps/unix/sysv/linux/mips/bits/epoll.h (EPOLL_NONBLOCK): Remove.
+
 2013-01-02  Joseph Myers  <joseph@codesourcery.com>
 
 	* All files with FSF copyright notices: Update copyright dates

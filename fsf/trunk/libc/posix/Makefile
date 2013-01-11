@@ -92,6 +92,8 @@ ifeq (yes,$(build-shared))
 test-srcs	:= globtest
 tests           += wordexp-test tst-exec tst-spawn
 endif
+tests-static	= tst-exec-static tst-spawn-static
+tests		+= $(tests-static)
 others		:= getconf
 install-bin	:= getconf
 install-others-programs	:= $(inst_libexecdir)/getconf
@@ -172,7 +174,9 @@ tstgetopt-ARGS = -a -b -cfoobar --required foobar --optional=bazbug \
 		--none random --col --color --colour
 
 tst-exec-ARGS = -- $(host-built-program-cmd)
+tst-exec-static-ARGS = $(tst-exec-ARGS)
 tst-spawn-ARGS = -- $(host-built-program-cmd)
+tst-spawn-static-ARGS = $(tst-spawn-ARGS)
 tst-dir-ARGS = `pwd` `cd $(common-objdir)/$(subdir); pwd` `cd $(common-objdir); pwd` $(objpfx)tst-dir
 tst-chmod-ARGS = $(objdir)
 tst-vfork3-ARGS = --test-dir=$(objpfx)
@@ -302,3 +306,8 @@ $(objpfx)getconf.speclist: getconf-speclist.c posix-envs.def
 	$(compile.c) -E -o - \
 	    | sed -n -e '/@@@PRESENT_/s/@@@PRESENT_//p' > $@.new
 	mv -f $@.new $@
+
+# This file is only actually needed at install time.  But forcing it to
+# be built both makes it available for eyeball inspection and avoids the
+# surprise of things that look like compilation being done by 'make install'.
+others: $(objpfx)getconf.speclist

@@ -1,3 +1,134 @@
+2013-01-10  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/elf.h (DT_SPARC_REGISTER, DT_SPARC_NUM): Fix whitespace.
+	(EF_MIPS_NOREORDER, EF_MIPS_PIC, EF_MIPS_CPIC, EF_MIPS_XGOT): Likewise.
+	(EF_MIPS_64BIT_WHIRL, EF_MIPS_ABI2, EF_MIPS_ABI_ON32): Likewise.
+	(EF_MIPS_ARCH, EF_MIPS_ARCH_1, EF_MIPS_ARCH_2): Likewise.
+	(EF_MIPS_ARCH_3, EF_MIPS_ARCH_4, EF_MIPS_ARCH_5): Likewise.
+	(EF_MIPS_ARCH_32, EF_MIPS_ARCH_64): Likewise.
+	(E_MIPS_ARCH_1): Define in terms of EF_MIPS_ARCH_* counterpart.
+	(E_MIPS_ARCH_2, E_MIPS_ARCH_3, E_MIPS_ARCH_4, E_MIPS_ARCH_5): Likewise.
+	(E_MIPS_ARCH_32, E_MIPS_ARCH_64): Likewise.
+	(SHN_MIPS_ACOMMON, SHN_MIPS_TEXT, SHN_MIPS_DATA): Fix whitespace.
+	(SHN_MIPS_SCOMMON, SHN_MIPS_SUNDEFINED): Likewise.
+	(SHT_MIPS_LIBLIST, SHT_MIPS_MSYM, SHT_MIPS_CONFLICT): Likewise.
+	(SHT_MIPS_GPTAB, SHT_MIPS_UCODE, SHT_MIPS_DEBUG): Likewise.
+	(SHT_MIPS_REGINFO, SHT_MIPS_PACKAGE, SHT_MIPS_PACKSYM): Likewise.
+	(SHT_MIPS_RELD, SHT_MIPS_IFACE, SHT_MIPS_CONTENT): Likewise.
+	(SHT_MIPS_OPTIONS, SHT_MIPS_SHDR, SHT_MIPS_FDESC): Likewise.
+	(SHT_MIPS_EXTSYM, SHT_MIPS_DENSE, SHT_MIPS_PDESC): Likewise.
+	(SHT_MIPS_LOCSYM, SHT_MIPS_AUXSYM, SHT_MIPS_OPTSYM): Likewise.
+	(SHT_MIPS_LOCSTR, SHT_MIPS_LINE, SHT_MIPS_RFDESC): Likewise.
+	(SHT_MIPS_DELTASYM, SHT_MIPS_DELTAINST, SHT_MIPS_DELTACLASS): Likewise.
+	(SHT_MIPS_DELTADECL, SHT_MIPS_SYMBOL_LIB, SHT_MIPS_EVENTS): Likewise.
+	(SHT_MIPS_TRANSLATE, SHT_MIPS_PIXIE, SHT_MIPS_XLATE): Likewise.
+	(SHT_MIPS_XLATE_DEBUG, SHT_MIPS_WHIRL, SHT_MIPS_EH_REGION): Likewise.
+	(SHT_MIPS_XLATE_OLD, SHT_MIPS_PDR_EXCEPTION): Likewise.
+	(SHF_MIPS_GPREL, SHF_MIPS_MERGE, SHF_MIPS_ADDR): Likewise.
+	(SHF_MIPS_STRINGS, SHF_MIPS_NOSTRIP, SHF_MIPS_LOCAL): Likewise.
+	(SHF_MIPS_NAMES, SHF_MIPS_NODUPE): Likewise.
+
+2013-01-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2013-01-10  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* posix/Makefile (tests-static): New variable.
+	(tests): Add $(tests-static).
+	(tst-exec-static-ARGS): New variable.
+	(tst-spawn-static-ARGS): Likewise.
+	* posix/tst-exec-static.c: New file.
+	* posix/tst-spawn-static.c: Likewise.
+	* posix/tst-exec.c: Support run directly.
+	* posix/tst-spawn.c: Likewise.
+
+2013-01-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* elf/link.h (struct dl_phdr_info): Use __extension__ with long
+	long.
+	* math/bits/mathcalls.h (llrint): Likewise.
+	(llround): Likewise.
+	* stdlib/stdlib.h (struct drand48_data): Likewise.
+	* sysdeps/generic/inttypes.h (imaxdiv_t): Likewise.
+	* sysdeps/s390/bits/byteswap.h (__bswap_64): Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/ipc.h (struct ipc_perm):
+	Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/ucontext.h (struct fpu):
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86/sys/procfs.h [__x86_64__]
+	(elf_greg_t): Likewise.
+	* sysdeps/x86/bits/setjmp.h [__x86_64__ && __WORDSIZE != 64]
+	(__jmp_buf): Likewise.
+	* sysdeps/x86/fpu/bits/mathinline.h (llrintf): Likewise, for all
+	definitions.
+	(llrint): Likewise, for all definitions.
+	(llrintl): Likewise.
+
+	* string/string.h [__USE_BSD && __USE_GNU && __GNUC__] (ffsll):
+	Remove [__GNUC__] condition.
+	* wcsmbs/wchar.h [__USE_ISOC99 || (__GNUC__ && __USE_GNU)]: Change
+	condition to just [__USE_ISOC99].
+	[__GNUC__ && __USE_GNU]: Change condition to just [__USE_GNU].
+
+2013-01-10  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #14200]
+	* sysdeps/unix/sysv/linux/x86/bits/environments.h
+	(_POSIX_V7_ILP32_OFF32): Defined as 1 only if __x86_64__ isn't
+	defined.
+	(_POSIX_V6_ILP32_OFF32): Likewise.
+	(_XBS5_ILP32_OFF32): Likewise.
+	(__ILP32_OFFBIG_CFLAGS): Defined as "-mx32" for x32.
+	(__ILP32_OFFBIG_LDFLAGS): Likewise.
+
+2013-01-10  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpexp.c: Fix formatting.
+
+	* sysdeps/ieee754/dbl-64/mpexp.c (__mpexp): New array of
+	doubles __mpexp_twomm1.  Adjust usage.
+	* sysdeps/ieee754/dbl-64/mpexp.h (__mpexp_twomm1):
+	Remove.
+
+2013-01-10  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #14964]
+	* sysdeps/unix/sysv/linux/bits/fcntl-linux.h (FALLOC_FL_KEEP_SIZE)
+	(FALLOC_FL_PUNCH_HOLE) [__USE_GNU]: New macros.
+
+2013-01-09  David S. Miller  <davem@davemloft.net>
+
+	[BZ #15003]
+	* sysdeps/gnu/netinet/tcp.h (TCP_COOKIE_TRANSACTIONS,
+	TCP_THIN_LINEAR_TIMEOUTS, TCP_THIN_DUPACK, TCP_USER_TIMEOUT,
+	TCP_REPAIR, TCP_REPAIR_QUEUE, TCP_QUEUE_SEQ, TCP_REPAIR_OPTIONS,
+	TCP_FASTOPEN): Define.
+	(tcp_repair_opt): New structure.
+	(TCP_NO_QUEUE, TCP_RECV_QUEUE, TCP_SEND_QUEUE, TCP_QUEUES_NR): New
+	enum values.
+	(TCP_COOKIE_MIN, TCP_COOKIE_MAX, TCP_COOKIE_PAIR_SIZE,
+	TCP_COOKIE_IN_ALWAYS, TCP_COOKIE_OUT_NEVER, TCP_S_DATA_IN,
+	TCP_S_DATA_OUT, TCP_MSS_DEFAULT, TCP_MSS_DESIRED): Define.
+	(tcp_cookie_transactions): New structure.
+
+2013-01-09  Anton Blanchard  <anton@samba.org>
+
+	* sysdeps/unix/sysv/linux/powerpc/sched_getcpu.c: New file.
+	* sysdeps/unix/sysv/linux/powerpc/Versions: Add __vdso_getcpu.
+	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/init-first.c: Likewise.
+
+2013-01-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* include/features.h (__USE_ANSI): Remove.
+
+2013-01-09  Roland McGrath  <roland@hack.frob.com>
+
+	* posix/Makefile (others): Depend on $(objpfx)getconf.speclist.
+
+	* misc/error.c (error_tail: ALLOCA_LIMIT): Remove unused macro.
+
 2013-01-09  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* sysdeps/s390/fpu/libm-test-ulps: Update.

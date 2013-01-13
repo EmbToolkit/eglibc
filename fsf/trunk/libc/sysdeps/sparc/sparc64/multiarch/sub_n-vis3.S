@@ -1,5 +1,5 @@
-! SPARC v9 32-bit __mpn_mul_1 -- Multiply a limb vector with a single
-! limb and store the product in a second limb vector.
+! SPARC v9 64-bit VIS3 __mpn_sub_n -- Subtract two limb vectors of the same length > 0
+! and store difference in a third limb vector.
 !
 ! Copyright (C) 2013 Free Software Foundation, Inc.
 ! This file is part of the GNU C Library.
@@ -23,48 +23,49 @@
 
 #define res_ptr	%o0
 #define s1_ptr	%o1
-#define sz	%o2
-#define s2_limb	%o3
-#define carry	%o5
+#define s2_ptr	%o2
+#define sz	%o3
 #define tmp1	%g1
 #define tmp2	%g2
 #define tmp3	%g3
 #define tmp4	%o4
 
-ENTRY(__mpn_mul_1)
-	srl	sz, 0, sz
-	srl	s2_limb, 0, s2_limb
+	.register	%g2,#scratch
+	.register	%g3,#scratch
+ENTRY(__mpn_sub_n_vis3)
 	subcc	sz, 1, sz
-	be,pn	%icc, .Lfinal_limb
-	 clr	carry
+	be	.Lfinal_limb
+	 cmp	%g0, 1
 
 .Lloop:
-	lduw	[s1_ptr + 0x00], tmp1
-	lduw	[s1_ptr + 0x04], tmp2
-	mulx	tmp1, s2_limb, tmp3
-	add	s1_ptr, 8, s1_ptr
-	mulx	tmp2, s2_limb, tmp4
+	ldx	[s2_ptr + 0x00], tmp1
+	add	s2_ptr, 0x10, s2_ptr
+	ldx	[s1_ptr + 0x00], tmp2
+	add	s1_ptr, 0x10, s1_ptr
+	ldx	[s2_ptr - 0x08], tmp3
+	add	res_ptr, 0x10, res_ptr
+	ldx	[s1_ptr - 0x08], tmp4
 	sub	sz, 2, sz
-	add	res_ptr, 8, res_ptr
-	add	carry, tmp3, tmp3
-	stw	tmp3, [res_ptr - 0x08]
-	srlx	tmp3, 32, carry
-	add	carry, tmp4, tmp4
-	stw	tmp4, [res_ptr - 0x04]
+	xnor	tmp1, %g0, tmp1
+	addxccc	tmp1, tmp2, tmp1
+	stx	tmp1, [res_ptr - 0x10]
+	xnor	tmp3, %g0, tmp3
+	addxccc	tmp3, tmp4, tmp3
 	brgz	sz, .Lloop
-	 srlx	tmp4, 32, carry
+	stx	tmp3, [res_ptr - 0x08]
 
 	brlz,pt	sz, .Lfinish
 	 nop
 
 .Lfinal_limb:
-	lduw	[s1_ptr + 0x00], tmp1
-	mulx	tmp1, s2_limb, tmp3
-	add	carry, tmp3, tmp3
-	stw	tmp3, [res_ptr + 0x00]
-	srlx	tmp3, 32, carry
+	ldx	[s2_ptr + 0x00], tmp1
+	ldx	[s1_ptr + 0x00], tmp2
+	xnor	tmp1, %g0, tmp1
+	addxccc	tmp1, tmp2, tmp1
+	stx	tmp1, [res_ptr + 0x00]
 
 .Lfinish:
+	clr	%o0
 	retl
-	 mov	carry, %o0
-END(__mpn_mul_1)
+	 movcc	%xcc, 1, %o0
+END(__mpn_sub_n_vis3)

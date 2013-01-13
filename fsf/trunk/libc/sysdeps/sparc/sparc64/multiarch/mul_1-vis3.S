@@ -1,4 +1,4 @@
-! SPARC v9 32-bit __mpn_mul_1 -- Multiply a limb vector with a single
+! SPARC v9 64-bit VIS3 __mpn_mul_1 -- Multiply a limb vector with a single
 ! limb and store the product in a second limb vector.
 !
 ! Copyright (C) 2013 Free Software Foundation, Inc.
@@ -31,40 +31,43 @@
 #define tmp3	%g3
 #define tmp4	%o4
 
-ENTRY(__mpn_mul_1)
-	srl	sz, 0, sz
-	srl	s2_limb, 0, s2_limb
+	.register	%g2,#scratch
+	.register	%g3,#scratch
+ENTRY(__mpn_mul_1_vis3)
 	subcc	sz, 1, sz
-	be,pn	%icc, .Lfinal_limb
+	be	.Lfinal_limb
 	 clr	carry
 
 .Lloop:
-	lduw	[s1_ptr + 0x00], tmp1
-	lduw	[s1_ptr + 0x04], tmp2
+	ldx	[s1_ptr + 0x00], tmp1
+	ldx	[s1_ptr + 0x08], tmp4
 	mulx	tmp1, s2_limb, tmp3
-	add	s1_ptr, 8, s1_ptr
-	mulx	tmp2, s2_limb, tmp4
+	add	s1_ptr, 0x10, s1_ptr
+	umulxhi	tmp1, s2_limb, tmp2
 	sub	sz, 2, sz
-	add	res_ptr, 8, res_ptr
-	add	carry, tmp3, tmp3
-	stw	tmp3, [res_ptr - 0x08]
-	srlx	tmp3, 32, carry
-	add	carry, tmp4, tmp4
-	stw	tmp4, [res_ptr - 0x04]
+	mulx	tmp4, s2_limb, tmp1
+	add	res_ptr, 0x10, res_ptr
+	umulxhi	tmp4, s2_limb, tmp4
+	addcc	carry, tmp3, tmp3
+	stx	tmp3, [res_ptr - 0x10]
+	addxc	%g0, tmp2, carry
+	addcc	carry, tmp1, tmp1
+	addxc	%g0, tmp4, carry
 	brgz	sz, .Lloop
-	 srlx	tmp4, 32, carry
+	 stx	tmp1, [res_ptr - 0x08]
 
 	brlz,pt	sz, .Lfinish
 	 nop
 
 .Lfinal_limb:
-	lduw	[s1_ptr + 0x00], tmp1
+	ldx	[s1_ptr + 0x00], tmp1
 	mulx	tmp1, s2_limb, tmp3
-	add	carry, tmp3, tmp3
-	stw	tmp3, [res_ptr + 0x00]
-	srlx	tmp3, 32, carry
+	umulxhi	tmp1, s2_limb, tmp2
+	addcc	carry, tmp3, tmp3
+	addxc	%g0, tmp2, carry
+	stx	tmp3, [res_ptr + 0x00]
 
 .Lfinish:
 	retl
 	 mov	carry, %o0
-END(__mpn_mul_1)
+END(__mpn_mul_1_vis3)

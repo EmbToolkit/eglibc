@@ -1,3 +1,17 @@
+2013-01-14  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa.c (__mul): Add a local variable
+	to optimize copies.
+
+	* sysdeps/ieee754/dbl-64/mpa.c: Fix formatting.
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c: Likewise.
+
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c (__inv): Remove
+	local variable MPTWO.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c (__inv):
+	Likewise.
+
 2013-01-13  Mike Frysinger  <vapier@gentoo.org>
 
 	* manual/pattern.texi (Flags for Globbing): Move GLOB_NOSORT after
@@ -14,9 +28,9 @@
 
 2013-01-11  David S. Miller  <davem@davemloft.net>
 
-	* math/Makefile: Recognize gmp-sysdep_routines.
-	* sysdeps/sparc/sparc64/multiarch/Makefile: Add VIS3 optimized GMP routines
-	to sysdeps.
+	* math/Makefile (gmp-objs): Use $(gmp-sysdep_routines).
+	* sysdeps/sparc/sparc64/multiarch/Makefile [$(subdir) = math]
+	(gmp-sysdep_routines): New variable.  Add VIS3 optimized GMP routines.
 	* sysdeps/sparc/sparc64/multiarch/add_n-vis3.S: New file.
 	* sysdeps/sparc/sparc64/multiarch/add_n.S: New file.
 	* sysdeps/sparc/sparc64/multiarch/addmul_1-vis3.S: New file.

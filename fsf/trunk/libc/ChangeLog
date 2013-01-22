@@ -1,3 +1,19 @@
+2013-01-21  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/backtrace.c: New file.
+	* sysdeps/sparc/sparc32/backtrace.h: New file.
+	* sysdeps/sparc/sparc32/sparcv9/backtrace.h: New file.
+	* sysdeps/sparc/sparc64/backtrace.h: New file.
+	* sysdeps/sparc/sparc64/backtrace.c: Delete.
+	* sysdeps/sparc/Makefile (CFLAGS-backtrace.c): Add
+	-funwind-tables.
+
+2013-01-21  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15020]
+	* posix/wordexp.c (exec_comm): Avoid busy loop when command has
+	closed its stdout.
+
 2013-01-20  Andreas Schwab  <schwab@linux-m68k.org>
 
 	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c: Don't include

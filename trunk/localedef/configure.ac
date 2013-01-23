@@ -23,6 +23,7 @@ AC_CANONICAL_BUILD
 AC_CONFIG_HEADERS([config.h])
 AC_EXEEXT
 AC_PROG_CC
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_LN_S
 AC_C_BIGENDIAN([AC_DEFINE([BUILD_BYTE_ORDER], [__BIG_ENDIAN],
 		          [Define to your build machine's byte order])],

@@ -1,3 +1,36 @@
+2013-01-23  Roland McGrath  <roland@hack.frob.com>
+
+	* misc/sys/cdefs.h (__glibc_unlikely, __glibc_likely): Fix whitespace.
+
+2013-01-23  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/sparc32/sparcv9/bits/atomic.h
+	(__arch_compare_and_exchange_val_32_acq): Use %g0 as second
+	argument of CAS if possible.
+	* sysdeps/sparc/sparc64/bits/atomic.h
+	(__arch_compare_and_exchange_val_32_acq): Likewise.
+	(__arch_compare_and_exchange_val_64_acq): Likewise.
+
+2013-01-23  Pino Toscano  <toscano.pino@tiscali.it>
+
+	* sysdeps/unix/sysv/linux/ulimit.c: Moved to ...
+	* sysdeps/posix/ulimit.c: ... this.
+	Include <limits.h>.
+	* sysdeps/unix/bsd/ulimit.c: Remove file.
+
+2013-01-23  Adam Conrad  <adconrad@0c3.net>
+
+	* elf/Makefile (LDFLAGS-tst-array2): Add $(no-as-needed).
+	(LDFLAGS-tst-array5): Likewise.
+
+2013-01-23  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15036]
+	* bits/wchar.h (__WCHAR_MAX): Define based on __WCHAR_MAX__, or
+	based on [L'\0' - 1 > 0] if [!__WCHAR_MAX__].
+	(__WCHAR_MIN): Likewise, using __WCHAR_MIN__.
+	* sysdeps/unix/sysv/linux/x86/bits/wchar.h: Remove.
+
 2013-01-21  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/backtrace.c: New file.

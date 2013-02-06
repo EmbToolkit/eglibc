@@ -1,3 +1,24 @@
+2013-02-05  Roland McGrath  <roland@hack.frob.com>
+
+	* Makeconfig (all-Depend-files): Add existing
+	$(sorted-subdirs:=/Depend) files.
+	(all-subdirs): Remove nss.
+	* sysdeps/unix/inet/Subdirs: Add it here instead.
+	* hesiod/Depend: New file.
+
+	* elf/dl-hwcaps.c (_dl_important_hwcaps): Use a variable-length array
+	instead of calling alloca.
+
+	* io/lseek.c (__lseek): Rename to __libc_lseek.
+	Define __lseek as an alias.
+
+	* sysdeps/generic/malloc-sysdep.h: Include <stdbool.h> and <unistd.h>.
+
+2013-02-04  Carlos O'Donell  <carlos@redhat.com>
+
+	* stdlib/getenv.c (getenv): Assume __BIG_ENDIAN in the
+	else clause and remove check for non-standard endianness.
+
 2013-02-04  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/fpu/libm-test-ulps: Update.

@@ -1,3 +1,213 @@
+2013-02-08  Roland McGrath  <roland@hack.frob.com>
+
+	* manual/examples/mkfsock.c (make_named_socket): Don't add one for
+	the '\0' terminator.
+
+2013-02-08  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13550]
+	* debug/segfault.c: Don't include <bp-checks.h>.
+	* sysdeps/generic/bp-checks.h: Remove file.
+	* sysdeps/unix/sysv/linux/getdents.c: Don't include <bp-checks.h>.
+	(__GETDENTS): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/i386/brk.c: Don't include <bp-checks.h>.
+	* sysdeps/unix/sysv/linux/i386/getgroups.c: Likewise.
+	(__getgroups): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/i386/setgroups.c: Likewise.
+	(setgroups): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/mmap64.c: Don't include <bp-checks.h>.
+	* sysdeps/unix/sysv/linux/msgrcv.c: Likewise.
+	(__libc_msgrcv): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/msgsnd.c: Don't include <bp-checks.h>.
+	(__libc_msgsnd): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/pread.c: Don't include
+	<bp-checks.h>.
+	(__libc_pread): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/pread64.c: Don't
+	include <bp-checks.h>.
+	(__libc_pread64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/pwrite.c: Don't
+	include <bp-checks.h>.
+	(__libc_pwrite): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/pwrite64.c: Don't
+	include <bp-checks.h>.
+	(__libc_pwrite64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/pread.c: Don't include
+	<bp-checks.h>.
+	(__libc_pread): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/pread64.c: Don't
+	include <bp-checks.h>.
+	(__libc_pread64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/pwrite.c: Don't
+	include <bp-checks.h>.
+	(__libc_pwrite): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/pwrite64.c: Don't
+	include <bp-checks.h>.
+	(__libc_pwrite64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/pread.c: Don't include <bp-checks.h>.
+	(do_pread): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/pread64.c: Don't include <bp-checks.h>.
+	(do_pread64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/pwrite.c: Don't include <bp-checks.h>.
+	(do_pwrite): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/pwrite64.c: Don't include <bp-checks.h>.
+	(do_pwrite64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/readv.c: Don't include <bp-checks.h>.
+	(__libc_readv): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/semop.c: Don't include <bp-checks.h>.
+	(semop): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/semtimedop.c: Don't include
+	<bp-checks.h>.
+	(semtimedop): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sh/pread.c: Don't include <bp-checks.h>.
+	(__libc_pread): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sh/pread64.c: Don't include
+	<bp-checks.h>.
+	(__libc_pread64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sh/pwrite.c: Don't include
+	<bp-checks.h>.
+	(__libc_pwrite): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sh/pwrite64.c: Don't include
+	<bp-checks.h>.
+	(__libc_pwrite64): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/msgrcv.c: Don't include
+	<bp-checks.h>.
+	(__libc_msgrcv): Don't use CHECK_N.
+	* sysdeps/unix/sysv/linux/sysctl.c: Don't include <bp-checks.h>.
+	(__sysctl): Don't use CHECK_N.  Remove GKM FIXME comment.
+	* sysdeps/unix/sysv/linux/writev.c: Don't include <bp-checks.h>.
+	(__libc_writev): Don't use CHECK_N.
+
+2013-02-08  Roland McGrath  <roland@hack.frob.com>
+
+	* string/strcpy.c: Removed unused variable.
+
+	* Makeconfig (+sysdep-includes): Define with := rather than =.
+	Use an existing include/ subdir of each sysdeps dir before it.
+
+2013-02-08  Carlos O'Donell  <carlos@redhat.com>
+
+	* nscd/connection.c (register_traced_file): Comment function.
+	[HAVE_INOTIFY] (union __inev): Define.
+	[HAVE_INOTIFY] (inotify_check_files): New function.
+	[HAVE_INOTIFY] (clear_db_cache): Likewise.
+	[HAVE_INOTIFY] (main_loop_poll): Call inotify_check_files and
+	clear_db_cache.
+	[HAVE_INOTIFY] (main_loop_epoll): Likewise.
+
+2013-02-08  Carlos O'Donell  <carlos@redhat.com>
+
+	* elf/dl-cache.c (_dl_load_cache_lookup): Comment that cache is
+	loaded if not already and that a failure is permanent.
+
+2013-02-08  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #15006]
+	* sysdeps/generic/ldconfig.h: Define FLAG_ARM_LIBSF.
+	* elf/cache.c (print_entry): Add FLAG_ARM_LIBSF support.
+
+2013-02-08  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13550]
+	* sysdeps/generic/bp-checks.h (CHECK_1): Remove all definitions.
+	(CHECK_1_NULL_OK): Likewise.
+	* sysdeps/unix/sysv/linux/fxstat.c: Do not include <bp-checks.h>.
+	(__fxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/fxstat64.c: Do not include
+	<bp-checks.h>.
+	(___fxstat64): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/fxstatat.c: Do not include
+	<bp-checks.h>.
+	(__fxstatat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/fxstatat64.c: Do not include
+	<bp-checks.h>.
+	(__fxstatat64): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/fxstat.c: Do not include
+	<bp-checks.h>.
+	(__fxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/fxstatat.c: Do not include
+	<bp-checks.h>.
+	(__fxstatat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/getresgid.c: Do not include
+	<bp-checks.h>.
+	(__getresgid): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/getresuid.c: Do not include
+	<bp-checks.h>.
+	(__getresuid): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/lxstat.c: Do not include
+	<bp-checks.h>.
+	(__lxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/msgctl.c: Do not include
+	<bp-checks.h>.
+	(__old_msgctl): Do not use CHECK_1.
+	(__new_msgctl): Likewise.
+	* sysdeps/unix/sysv/linux/i386/setrlimit.c: Do not include
+	<bp-checks.h>.
+	(__new_setrlimit): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/i386/shmctl.c: Do not include
+	<bp-checks.h>.
+	(__old_shmctl): Do not use CHECK_1.
+	(__new_shmctl): Likewise.
+	* sysdeps/unix/sysv/linux/i386/xstat.c: Do not include
+	<bp-checks.h>.
+	(__xstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/lxstat.c: Do not include <bp-checks.h>.
+	(__lxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/lxstat64.c: Do not include
+	<bp-checks.h>.
+	(___lxstat64): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/msgctl.c: Do not include <bp-checks.h>.
+	(__old_msgctl): Do not use CHECK_1.
+	(__new_msgctl): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/gettimeofday.c: Do not include
+	<bp-checks.h>.
+	(__gettimeofday): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/ptrace.c: Do not include <bp-checks.h>.
+	(ptrace) [__BOUNDED_POINTERS__]: Remove conditional code.
+	* sysdeps/unix/sysv/linux/s390/gettimeofday.c: Do not include
+	<bp-checks.h>.
+	(__gettimeofday): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/shmctl.c: Do not include <bp-checks.h>.
+	(__old_shmctl): Do not use CHECK_1_NULL_OK.
+	(__new_shmctl): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/sigtimedwait.c: Do not include
+	<bp-checks.h>.
+	(do_sigtimedwait): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/sigwaitinfo.c: Do not include
+	<bp-checks.h>.
+	(do_sigwaitinfo): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/msgctl.c: Do not include
+	<bp-checks.h>.
+	(msgctl): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/shmctl.c: Do not include
+	<bp-checks.h>.
+	(shmctl): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/ustat.c: Do not include <bp-checks.h>.
+	(ustat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/wordsize-64/fxstat.c: Do not include
+	<bp-checks.h>.
+	(__fxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/wordsize-64/fxstatat.c: Do not include
+	<bp-checks.h>.
+	(__fxstatat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/wordsize-64/lxstat.c: Do not include
+	<bp-checks.h>.
+	(__lxstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/wordsize-64/xstat.c: Do not include
+	<bp-checks.h>.
+	(__xstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/xstat.c: Do not include <bp-checks.h>.
+	(__xstat): Do not use CHECK_1.
+	* sysdeps/unix/sysv/linux/xstat64.c: Do not include <bp-checks.h>.
+	(___xstat64): Do not use CHECK_1.
+
+	[BZ #13550]
+	* sysdeps/generic/bp-checks.h (CHECK_BOUNDS_LOW): Remove all
+	definitions.
+	(CHECK_BOUNDS_HIGH): Likewise.
+	* string/strcpy.c: Do not include <bp-checks.h>.
+	(strcpy): Do not use CHECK_BOUNDS_LOW and CHECK_BOUNDS_HIGH.
+
 2013-02-07  Roland McGrath  <roland@hack.frob.com>
 
 	* nscd/nscd-client.h (__nscd_drop_map_ref):

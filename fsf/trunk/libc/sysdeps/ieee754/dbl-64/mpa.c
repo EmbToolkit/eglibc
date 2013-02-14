@@ -370,6 +370,7 @@ SECTION
 add_magnitudes (const mp_no *x, const mp_no *y, mp_no *z, int p)
 {
   int i, j, k;
+  double zk;
 
   EZ = EX;
 
@@ -377,45 +378,54 @@ add_magnitudes (const mp_no *x, const mp_no *y, mp_no *z, int p)
   j = p + EY - EX;
   k = p + 1;
 
-  if (j < 1)
+  if (__glibc_unlikely (j < 1))
     {
       __cpy (x, z, p);
       return;
     }
-  else
-    Z[k] = ZERO;
+
+  zk = ZERO;
 
   for (; j > 0; i--, j--)
     {
-      Z[k] += X[i] + Y[j];
-      if (Z[k] >= RADIX)
+      zk += X[i] + Y[j];
+      if (zk >= RADIX)
 	{
-	  Z[k] -= RADIX;
-	  Z[--k] = ONE;
+	  Z[k--] = zk - RADIX;
+	  zk = ONE;
 	}
       else
-	Z[--k] = ZERO;
+        {
+	  Z[k--] = zk;
+	  zk = ZERO;
+	}
     }
 
   for (; i > 0; i--)
     {
-      Z[k] += X[i];
-      if (Z[k] >= RADIX)
+      zk += X[i];
+      if (zk >= RADIX)
 	{
-	  Z[k] -= RADIX;
-	  Z[--k] = ONE;
+	  Z[k--] = zk - RADIX;
+	  zk = ONE;
 	}
       else
-	Z[--k] = ZERO;
+        {
+	  Z[k--] = zk;
+	  zk = ZERO;
+	}
     }
 
-  if (Z[1] == ZERO)
+  if (zk == ZERO)
     {
       for (i = 1; i <= p; i++)
 	Z[i] = Z[i + 1];
     }
   else
-    EZ += ONE;
+    {
+      Z[1] = zk;
+      EZ += ONE;
+    }
 }
 
 /* Subtract the magnitudes of *X and *Y assuming that abs (*x) > abs (*y) > 0.
@@ -427,65 +437,63 @@ SECTION
 sub_magnitudes (const mp_no *x, const mp_no *y, mp_no *z, int p)
 {
   int i, j, k;
+  double zk;
 
   EZ = EX;
+  i = p;
+  j = p + EY - EX;
+  k = p;
 
-  if (EX == EY)
+  /* Y is too small compared to X, copy X over to the result.  */
+  if (__glibc_unlikely (j < 1))
     {
-      i = j = k = p;
-      Z[k] = Z[k + 1] = ZERO;
+      __cpy (x, z, p);
+      return;
+    }
+
+  /* The relevant least significant digit in Y is non-zero, so we factor it in
+     to enhance accuracy.  */
+  if (j < p && Y[j + 1] > ZERO)
+    {
+      Z[k + 1] = RADIX - Y[j + 1];
+      zk = MONE;
     }
   else
-    {
-      j = EX - EY;
-      if (j > p)
-	{
-	  __cpy (x, z, p);
-	  return;
-	}
-      else
-	{
-	  i = p;
-	  j = p + 1 - j;
-	  k = p;
-	  if (Y[j] > ZERO)
-	    {
-	      Z[k + 1] = RADIX - Y[j--];
-	      Z[k] = MONE;
-	    }
-	  else
-	    {
-	      Z[k + 1] = ZERO;
-	      Z[k] = ZERO;
-	      j--;
-	    }
-	}
-    }
+    zk = Z[k + 1] = ZERO;
 
+  /* Subtract and borrow.  */
   for (; j > 0; i--, j--)
     {
-      Z[k] += (X[i] - Y[j]);
-      if (Z[k] < ZERO)
+      zk += (X[i] - Y[j]);
+      if (zk < ZERO)
 	{
-	  Z[k] += RADIX;
-	  Z[--k] = MONE;
+	  Z[k--] = zk + RADIX;
+	  zk = MONE;
 	}
       else
-	Z[--k] = ZERO;
+        {
+	  Z[k--] = zk;
+	  zk = ZERO;
+	}
     }
 
+  /* We're done with digits from Y, so it's just digits in X.  */
   for (; i > 0; i--)
     {
-      Z[k] += X[i];
-      if (Z[k] < ZERO)
+      zk += X[i];
+      if (zk < ZERO)
 	{
-	  Z[k] += RADIX;
-	  Z[--k] = MONE;
+	  Z[k--] = zk + RADIX;
+	  zk = MONE;
 	}
       else
-	Z[--k] = ZERO;
+        {
+	  Z[k--] = zk;
+	  zk = ZERO;
+	}
     }
 
+  /* Normalize.  */
   for (i = 1; Z[i] == ZERO; i++);
   EZ = EZ - i + 1;
   for (k = 1; i <= p + 1;)
@@ -602,7 +610,7 @@ void
 SECTION
 __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
 {
-  int i, j, k, k2;
+  int i, j, k, ip, ip2;
   double u, zk;
 
   /* Is z=0?  */
@@ -612,11 +620,51 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
       return;
     }
 
-  /* Multiply, add and carry.  */
-  k2 = (__glibc_unlikely (p < 3)) ? p + p : p + 3;
-  zk = Z[k2] = ZERO;
+  /* We need not iterate through all X's and Y's since it's pointless to
+     multiply zeroes.  Here, both are zero...  */
+  for (ip2 = p; ip2 > 0; ip2--)
+    if (X[ip2] != ZERO || Y[ip2] != ZERO)
+      break;
 
-  for (k = k2; k > p; k--)
+  /* ... and here, at least one of them is still zero.  */
+  for (ip = ip2; ip > 0; ip--)
+    if (X[ip] * Y[ip] != ZERO)
+      break;
+
+  /* The product looks like this for p = 3 (as an example):
+
+
+				a1    a2    a3
+		 x		b1    b2    b3
+		 -----------------------------
+			     a1*b3 a2*b3 a3*b3
+		       a1*b2 a2*b2 a3*b2
+		 a1*b1 a2*b1 a3*b1
+
+     So our K needs to ideally be P*2, but we're limiting ourselves to P + 3
+     for P >= 3.  We compute the above digits in two parts; the last P-1
+     digits and then the first P digits.  The last P-1 digits are a sum of
+     products of the input digits from P to P-k where K is 0 for the least
+     significant digit and increases as we go towards the left.  The product
+     term is of the form X[k]*X[P-k] as can be seen in the above example.
+
+     The first P digits are also a sum of products with the same product term,
+     except that the sum is from 1 to k.  This is also evident from the above
+     example.
+
+     Another thing that becomes evident is that only the most significant
+     ip+ip2 digits of the result are non-zero, where ip and ip2 are the
+     'internal precision' of the input numbers, i.e. digits after ip and ip2
+     are all ZERO.  */
+
+  k = (__glibc_unlikely (p < 3)) ? p + p : p + 3;
+
+  while (k > ip + ip2 + 1)
+    Z[k--] = ZERO;
+
+  zk = Z[k] = ZERO;
+
+  while (k > p)
     {
       for (i = k - p, j = p; i < p + 1; i++, j--)
 	zk += X[i] * Y[j];
@@ -624,10 +672,11 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
       u = (zk + CUTTER) - CUTTER;
       if (u > zk)
 	u -= RADIX;
-      Z[k] = zk - u;
+      Z[k--] = zk - u;
       zk = u * RADIXI;
     }
 
+  /* The real deal.  */
   while (k > 1)
     {
       for (i = 1, j = k - 1; i < k; i++, j--)
@@ -636,9 +685,8 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
       u = (zk + CUTTER) - CUTTER;
       if (u > zk)
 	u -= RADIX;
-      Z[k] = zk - u;
+      Z[k--] = zk - u;
       zk = u * RADIXI;
-      k--;
     }
   Z[k] = zk;
 

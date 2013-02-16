@@ -612,6 +612,7 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
 {
   int i, j, k, ip, ip2;
   double u, zk;
+  const mp_no *a;
 
   /* Is z=0?  */
   if (__glibc_unlikely (X[0] * Y[0] == ZERO))
@@ -626,9 +627,11 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
     if (X[ip2] != ZERO || Y[ip2] != ZERO)
       break;
 
+  a = X[ip2] != ZERO ? y : x;
+
   /* ... and here, at least one of them is still zero.  */
   for (ip = ip2; ip > 0; ip--)
-    if (X[ip] * Y[ip] != ZERO)
+    if (a->d[ip] != ZERO)
       break;
 
   /* The product looks like this for p = 3 (as an example):
@@ -690,15 +693,20 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
     }
   Z[k] = zk;
 
-  EZ = EX + EY;
+  /* Get the exponent sum into an intermediate variable.  This is a subtle
+     optimization, where given enough registers, all operations on the exponent
+     happen in registers and the result is written out only once into EZ.  */
+  int e = EX + EY;
+
   /* Is there a carry beyond the most significant digit?  */
   if (__glibc_unlikely (Z[1] == ZERO))
     {
       for (i = 1; i <= p; i++)
 	Z[i] = Z[i + 1];
-      EZ--;
+      e--;
     }
 
+  EZ = e;
   Z[0] = X[0] * Y[0];
 }
 
@@ -739,12 +747,9 @@ __sqr (const mp_no *x, mp_no *y, int p)
       long lim = k / 2;
 
       if (k % 2 == 0)
-        {
-	  yk += X[lim] * X[lim];
-	  lim--;
-	}
+	yk += X[lim] * X[lim];
 
-      for (i = k - p, j = p; i <= lim; i++, j--)
+      for (i = k - p, j = p; i < j; i++, j--)
 	yk2 += X[i] * X[j];
 
       yk += 2.0 * yk2;
@@ -762,12 +767,9 @@ __sqr (const mp_no *x, mp_no *y, int p)
       long lim = k / 2;
 
       if (k % 2 == 0)
-        {
-	  yk += X[lim] * X[lim];
-	  lim--;
-	}
+	yk += X[lim] * X[lim];
 
-      for (i = 1, j = k - 1; i <= lim; i++, j--)
+      for (i = 1, j = k - 1; i < j; i++, j--)
 	yk2 += X[i] * X[j];
 
       yk += 2.0 * yk2;
@@ -783,14 +785,20 @@ __sqr (const mp_no *x, mp_no *y, int p)
   /* Squares are always positive.  */
   Y[0] = 1.0;
 
-  EY = 2 * EX;
+  /* Get the exponent sum into an intermediate variable.  This is a subtle
+     optimization, where given enough registers, all operations on the exponent
+     happen in registers and the result is written out only once into EZ.  */
+  int e = EX * 2;
+
   /* Is there a carry beyond the most significant digit?  */
   if (__glibc_unlikely (Y[1] == ZERO))
     {
       for (i = 1; i <= p; i++)
 	Y[i] = Y[i + 1];
-      EY--;
+      e--;
     }
+
+  EY = e;
 }
 
 /* Invert *X and store in *Y.  Relative error bound:

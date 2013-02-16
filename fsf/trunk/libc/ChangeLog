@@ -1,4 +1,82 @@
+2013-02-15  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa.c (__sqr): Avoid using LIM in
+	loop termination condition.
+
+	* sysdeps/ieee754/dbl-64/mpa.c (__mul): Use intermediate
+	variable to calculate EZ.
+	(__sqr): Likewise.
+
+	* sysdeps/ieee754/dbl-64/mpa.c (__mul): Fix determination of
+	the lower precision input.
+
+2013-02-15  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13550]
+	* Makeconfig [!+link-bounded] (+link-bounded): Remove variable.
+	[!link-extra-libs] (link-extra-libs-bounded): Likewise.
+	(run-via-rtld-prefix): Do not handle %-bp tests.
+	(test-via-rtld-prefix): Do not mention %-bp tests in comment.
+	(all-object-suffixes): Remove .ob.
+	(bppfx): Remove variable.
+	[$(build-bounded) = yes] (object-suffixes): Do not add .ob.
+	[$(build-bounded) = yes] (CPPFLAGS-.ob): Remove variable.
+	[$(build-bounded) = yes] (CFLAGS-.ob): Likewise.
+	[$(build-bounded) = yes] (libtype.ob): Likewise.
+	* Makerules (elide-routines.ob): Remove variable.
+	(do-tests-clean): Do not handle *-bp.out.
+	(common-mostlyclean): Do not handle *-bp and *-bp.out.
+	* Rules [$(build-bounded) = yes] (tests-bp.out): Remove variable.
+	[$(build-bounded) = yes] (xtests-bp.out): Likewise.
+	(tests): Do not include $(tests-bp.out).
+	(xtests): Do not include $(xtests-bp.out).
+	[$(build-bounded) = yes] (binaries-bounded): Remove variable.
+	[$(build-bounded) = yes] ($(addprefix
+	$(objpfx),$(binaries-bounded))): Remove rule.
+	($(objpfx)%-bp.out): Remove rule.
+	* config.make.in (build-bounded): Remove variable.
+	* crypt/Makefile [$(build-bounded) = yes]
+	($(tests:%=$(objpfx)%-bp)): Remove dependency.
+	* csu/Makefile [$(build-bounded) = yes] (extra-objs): Do not
+	append to variable.
+	[$(build-bounded) = yes] (install-lib): Likewise.
+	[$(build-bounded) = yes] (generated): Likewise.
+	[!start-installed-name-rule] ($(objpfx)b$(start-installed-name)):
+	Remove rule.
+	* intl/Makefile [$(build-bounded) = yes]
+	($(multithread-test-srcs:%=$(objpfx)%-bp)): Remove dependency.
+	* math/Makefile [$(build-bounded) = yes]
+	($(tests:%=$(objpfx)%-bp): Likewise.
+	* misc/Makefile [$(build-bounded) = yes]
+	($(objpfx)tst-tsearch-bp): Likewise.
+	* nptl/Makeconfig (bounded-thread-library): Remove variable.
+	* rt/Makefile [$(build-bounded) = yes] ($(tests:%=$(objpfx)%-bp)):
+	Remove dependency.
+	* string/Makefile (o-objects.ob): Remove variable.
+	* sysdeps/i386/i686/Makefile [$(config-asflags-i686) = yes]
+	(CFLAGS-.ob): Remove variable.
+	[$(config-asflags-i686) = yes] (ASFLAGS-.ob): Likewise.
+	* sysdeps/sparc/sparc32/sparcv9/Makefile (ASFLAGS-.ob): Remove
+	both definitions of variable.
+	* sysdeps/sparc/sparc64/Makefile [$(have-as-vis3) = yes]
+	(ASFLAGS-.ob): Remove variable.
+
 2013-02-14  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13550]
+	* config.h.in [USE_REGPARMS && !PROF && !__BOUNDED_POINTERS__]:
+	Remove __BOUNDED_POINTERS__ from condition.
+	* elf/dl-runtime.c [!PROF && !__BOUNDED_POINTERS__]: Likewise.
+	* string/bits/string2.h [!__NO_STRING_INLINES &&
+	!__BOUNDED_POINTERS__]: Likewise.
+	* sysdeps/i386/dl-machine.h [!PROF && !__BOUNDED_POINTERS__]:
+	Likewise.
+	* sysdeps/unix/sysv/linux/shmat.c (shmat) [__BOUNDED_POINTERS__]:
+	Remove conditional code.
+	* sysdeps/x86/bits/string.h [!__NO_STRING_INLINES &&
+	__USE_STRING_INLINES && __GNUC__ && __GNUC__ >= 2 &&
+	!__BOUNDED_POINTERS__]: Remove __BOUNDED_POINTERS__ from
+	condition.
 
 	[BZ #13550]
 	* csu/libc-start.c: Do not include <bp-sym.h>.

@@ -1,3 +1,81 @@
+2013-02-18  Mike Frysinger  <vapier@gentoo.org>
+
+	* stdlib/stdlib.h (aligned_alloc): Use __attribute_malloc__
+	and __attribute_alloc_size__.
+
+2013-02-18  Mike Frysinger  <vapier@gentoo.org>
+
+	* include/programs/xmalloc.h: Change __attribute_alloc_size to
+	__attribute_alloc_size__.
+	* include/sys/cdefs.h (__attribute_alloc_size): Macro removed.
+	* misc/sys/cdefs.h (__attribute_alloc_size__): New macro.
+
+2013-02-18  Mike Frysinger  <vapier@gentoo.org>
+
+	* include/programs/xmalloc.h: New file.
+	* catgets/gencat.c: Include it.
+	(xmalloc, xcalloc, xrealloc, xstrdup): Don't declare them.
+	* elf/pldd.c: Likewise.
+	* iconv/iconv_charmap.c: Likewise.
+	* iconv/iconvconfig.c: Likewise.
+	* iconv/strtab.c: Likewise.
+	* locale/programs/locale.c: Likewise.
+	* locale/programs/localedef.h: Likewise.
+	* locale/programs/simple-hash.c: Likewise.
+	* nscd/nscd.h: Likewise.
+	* nss/makedb.c: Likewise.
+	* sysdeps/generic/ldconfig.h: Likewise.
+
+2013-02-18  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* Versions.def: Add GLIBC_2.18.
+	* include/link.h (struct link_map): New member l_tls_dtor_count.
+	* include/stdlib.h (__cxa_thread_atexit_impl): Declare.
+	(__call_tls_dtors): Likewise.
+	* sysdeps/unix/sysv/linux/i386/nptl/libc.abilist: Add
+	__cxa_thread_atexit_impl.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/sh/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/nptl/libc.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/nptl/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/nptl/libc.abilist:
+	Likewise.
+	* stdlib/Makefile (routines): Add __cxa_thread_atexit_impl.
+	(tests): Add test case tst-tls-atexit.
+	(modules-names): Add shared library for tst-tls-atexit.
+	* stdlib/Versions (GLIBC_2.17): Add __cxa_thread_atexit_impl.
+	(GLIBC_PRIVATE): Add __call_tls_dtors.
+	* stdlib/cxa_thread_atexit_impl.c: New file with helper function
+	for libstdc++.
+	* stdlib/exit.c (__run_exit_handlers): Call __call_tls_dtors.
+	* stdlib/tst-tls-atexit.c: New test case.
+	* stdlib/tst-tls-atexit-lib.c: New test case.
+
+	* misc/tst-pselect.c: Include stdlib.h for declaration of exit.
+
+	* elf/Versions (ld): Add _dl_find_dso_for_object.
+	* elf/dl-addr.c (_dl_addr): Use _dl_find_dso_for_object.
+	* elf/dl-open.c (_dl_find_dso_for_object): New function.
+	(dl_open_worker): Use _dl_find_dso_for_object.
+	* elf/dl-sym.c (do_sym): Likewise.
+	* sysdeps/generic/ldsodefs.h: Declare _dl_find_dso_for_object.
+
+2013-02-18  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/s390-64/dl-trampoline.S (_dl_runtime_resolve):
+	Syntactic changes only.
+	(_dl_runtime_profile): Do a tail-call to the resolved function.
+
 2013-02-17  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #13550]

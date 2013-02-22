@@ -112,7 +112,7 @@ __cpy (const mp_no *x, mp_no *y, int p)
 static void
 norm (const mp_no *x, double *y, int p)
 {
-#define R  RADIXI
+#define R RADIXI
   long i;
   double a, c, u, v, z[5];
   if (p < 5)
@@ -599,7 +599,7 @@ __mul (const mp_no *x, const mp_no *y, mp_no *z, int p)
   double u, zk, zk2;
 
   /* Is z=0?  */
-  if (X[0] * Y[0] == ZERO)
+  if (__glibc_unlikely (X[0] * Y[0] == ZERO))
     {
       Z[0] = ZERO;
       return;
@@ -782,7 +782,7 @@ __sqr (const mp_no *x, mp_no *y, int p)
    - For P > 3: 2.001 * R ^ (1 - P)
 
    *X = 0 is not permissible.  */
-void
+static void
 __inv (const mp_no *x, mp_no *y, int p)
 {
   long i;

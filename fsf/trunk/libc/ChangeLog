@@ -1,3 +1,34 @@
+2013-02-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/sincos32.c (ss32): Remove commented
+	code.
+	(cc32): Likewise.
+
+	* sysdeps/ieee754/dbl-64/mpa.c (mcr): Use long instead of int.
+	(__acr): Likewise.
+	(__cpy): Likewise.
+	(norm): Likewise.
+	(denorm): Likewise.
+	(__dbl_mp): Likewise.
+	(add_magnitudes): Likewise.
+	(sub_magnitudes): Likewise.
+	(__mul): Likewise.
+	(__inv): Likewise.
+
+	* sysdeps/ieee754/dbl-64/slowexp.c: Reformat in GNU coding
+	style.
+
+	* sysdeps/ieee754/dbl-64/slowpow.c: Reformat in GNU coding
+	style.
+
+	* sysdeps/ieee754/dbl-64/slowexp.c (__slowexp): Remove commented
+	code.
+
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c (__mp_dbl): Sync
+	up changes with default code.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c (__mp_dbl):
+	Likewise.
+
 2013-02-24  Allan McRae  <allan@archlinux.org>
 
 	* manual/socket.texi (The Internet Namespace): Order menu items

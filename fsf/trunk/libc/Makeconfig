@@ -868,8 +868,6 @@ subdirs = $(sorted-subdirs)
 subdir-srcdirs = $(foreach dir,$(subdirs),\
 			   $(firstword $($(dir)-srcdir) $(..)$(dir)))
 
-ifeq (yes, $(build-shared))
-
 # This is a pair of implicit rules to preprocess a file with # comments,
 # %ifdef et al, based on config.h settings or other %include'd files.
 # We use chained rules instead of a pipeline here so that we can properly
@@ -887,6 +885,8 @@ ifeq (yes, $(build-shared))
 %.v: %.v.i
 	sed '/^[ 	]*#/d;/^[ 	]*$$/d' $< > $@T
 	mv -f $@T $@
+
+ifeq (yes, $(build-shared))
 
 # To generate a header to support more than one ABI for different
 # architecture variants, the CPU/Makefile defines abi-variants to be a

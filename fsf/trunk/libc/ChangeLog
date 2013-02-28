@@ -1,3 +1,29 @@
+2013-02-27  Roland McGrath  <roland@hack.frob.com>
+
+	* csu/gmon-start.c: Add special exception to license text.
+
+2013-02-27  Richard Henderson  <rth@redhat.com>
+
+	* scripts/config.guess: Update from config.git.
+	* scripts/config.sub: Likewise.
+
+2013-02-27  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpsqrt.c: Reformat.
+
+	* sysdeps/ieee754/dbl-64/mpatan2.c: Reformat.
+
+	* sysdeps/ieee754/dbl-64/mpatan.c: Reformat.
+
+	* sysdeps/ieee754/dbl-64/mptan.c: Reformat.
+
+	* sysdeps/ieee754/dbl-64/mplog.c: Reformat.
+
+2013-02-26  Roland McGrath  <roland@hack.frob.com>
+
+	* Makeconfig (%.v.i, %.v): Move these pattern rules outside of
+	[$(build-shared = yes].
+
 2013-02-26  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* sysdeps/ieee754/dbl-64/mpa.c: Include alloca.h.

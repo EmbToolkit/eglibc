@@ -1,3 +1,39 @@
+2013-03-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/fpu/fpu_control.h: Move to ...
+	* sysdeps/powerpc/fpu_control.h: ... here.
+	* sysdeps/powerpc/fpu/bits/fenvinline.h: Move to ...
+	* sysdeps/powerpc/bits/fenvinline.h: ... here.
+	* sysdeps/powerpc/fpu/bits/mathinline.h: Move to ...
+	* sysdeps/powerpc/bits/mathinline.h: ... here.
+
+2013-03-01  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/dl-hwcaps.c (_dl_important_hwcaps):
+	Change [NEED_DL_SYSINFO || NEED_DL_SYSINFO_DSO] conditionals
+	to just [NEED_DL_SYSINFO_DSO].
+	* elf/dl-support.c: Likewise.
+	* elf/dl-sysdep.c (_dl_sysdep_start): Likewise.
+	* elf/rtld.c (dl_main): Likewise.
+	* elf/setup-vdso.h (setup_vdso): Likewise.
+	* sysdeps/generic/ldsodefs.h (struct rtld_global_ro): Likewise.
+	* sysdeps/unix/sysv/linux/dl-sysdep.c
+	(_dl_discover_osversion): Likewise.
+
+2013-03-01  Carlos O'Donell  <carlos@redhat.com>
+
+	* csu/libc-start.c (__pthread_initialize_minimal): Revert last change.
+	* csu/libc-tls.c (__pthread_initialize_minimal): Likewise.
+
+2013-03-01  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* NEWS: Mention libm performance improvements and non-x86 PI
+	futex support.
+
+	* csu/libc-start.c (__pthread_initialize_minimal): Change
+	function arguments.
+	* csu/libc-tls.c (__pthread_initialize_minimal): Likewise.
+
 2013-02-28  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #13550]

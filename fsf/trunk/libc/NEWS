@@ -17,6 +17,12 @@ Version 2.18
   and program exit.  This needs compiler support for offloading C++11
   destructor calls to glibc.
 
+* Improved worst case performance of libm functions with double inputs and
+  output.
+
+* Support for priority inherited mutexes in pthread condition variables on
+  non-x86 architectures.
+
 
 Version 2.17
 

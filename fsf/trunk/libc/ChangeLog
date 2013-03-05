@@ -1,3 +1,21 @@
+2013-03-04  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/mman-linux.h: New file, with Linux
+	common definitions.
+
+	* sysdeps/unix/sysv/linux/sh/bits/mman.h: Remove all defines
+	provided by bits/mman-linux.h and include <bits/mman-linux.h>.
+	* sysdeps/unix/sysv/linux/x86/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/mman.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/mman.h: Likewise.
+
+2013-03-04  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	[BZ #15055]
+	* sysdeps/ieee754/ldbl-128ibm/e_acoshl.c (__ieee754_acoshl): Use
+	__ieee754_sqrl instead of __sqrl.
+
 2013-03-01  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/fpu/fpu_control.h: Move to ...

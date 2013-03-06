@@ -1,3 +1,57 @@
+2013-03-05  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	* stdio-common/vfprintf.c (vfprintf): Check malloc return; don't
+	call free(NULL).
+
+2013-03-05  David S. Miller  <davem@davemloft.net>
+
+	* po/es.po: Update from translation team.
+
+2013-03-05  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/s390/bits/mman.h: Include
+	<bits/mman-linux.h>.
+	(MCL_CURRENT, MCL_FUTURE): Do not define here, the generic value
+	is fine.
+	* sysdeps/unix/sysv/linux/sh/bits/mman.h: Move include of
+	<bits/mman-linux.h> to end of file.
+	(MCL_CURRENT, MCL_FUTURE): Do not define here, the generic value
+	is fine.
+	* sysdeps/unix/sysv/linux/x86/bits/mman.h: Move include of
+	<bits/mman-linux.h> to end of file.
+	(MCL_CURRENT, MCL_FUTURE): Do not define here, the generic value
+	is fine.
+	* sysdeps/unix/sysv/linux/sparc/bits/mman.h: Move include of
+	<bits/mman-linux.h> to end of file.
+
+	* sysdeps/unix/sysv/linux/bits/mman-linux.h [!MCL_CURRENT]
+	(MCL_CURRENT, MCL_FUTURE): Define here.
+
+2013-03-05  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/s390-32/multiarch/ifunc-resolve.c: Use
+	attribute_hidden.
+	* sysdeps/s390/s390-64/multiarch/ifunc-resolve.c: Likewise.
+
+2013-03-05  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/s390/s390-32/getcontext.S: Set the
+	fourth parameter needed for rt_sigprocmask syscall.
+	* sysdeps/unix/sysv/linux/s390/s390-32/setcontext.S:
+	* sysdeps/unix/sysv/linux/s390/s390-32/swapcontext.S: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/getcontext.S: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/setcontext.S: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/swapcontext.S: Likewise.
+	* sysdeps/unix/sysv/linux/s390/ucontext_i.sym: Define _NSIG8.
+
+2013-03-04  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #13550]
+	* sysdeps/powerpc/powerpc32/power4/strncmp.S (strncmp): Remove
+	comment about bounded pointers.
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S (strncmp): Likewise.
+	* sysdeps/powerpc/powerpc32/strncmp.S (strncmp): Likewise.
+
 2013-03-04  Andreas Jaeger  <aj@suse.de>
 
 	* sysdeps/unix/sysv/linux/bits/mman-linux.h: New file, with Linux

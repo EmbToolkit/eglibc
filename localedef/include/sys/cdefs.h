@@ -47,9 +47,20 @@
 # endif
 #endif
 
-#if defined(__GNUC__) \
+#ifndef __attribute_malloc__
+# if defined(__GNUC__) \
+    && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 96))
+#  define __attribute_malloc__ __attribute__ ((__malloc__))
+# else
+#  define __attribute_malloc__ /* Ignore */
+# endif
+#endif
+
+#ifndef __attribute_alloc_size__
+# if defined(__GNUC__) \
     && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
-# define __attribute_alloc_size(...) __attribute__ ((alloc_size (__VA_ARGS__)))
-#else
-# define __attribute_alloc_size(...)
+#  define __attribute_alloc_size__(...) __attribute__ ((alloc_size (__VA_ARGS__)))
+# else
+#  define __attribute_alloc_size__(...)
+# endif
 #endif

@@ -1,4 +1,5 @@
-/* Copyright (C) 2005-2013 Free Software Foundation, Inc.
+/* mpn_addmul_1 -- multiply and accumulate bignums.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,32 +18,50 @@
 
 #include <sysdep.h>
 
-/* In the EABI syscall interface, we don't need a special syscall to
-   implement syscall().  It won't work reliably with 64-bit arguments
-   (but that is true on many modern platforms).  */
+	.syntax unified
+	.text
 
-ENTRY (syscall)
-	mov	ip, sp
-	push	{r4, r5, r6, r7}
+@		cycles/limb
+@ StrongArm	   ?
+@ Cortex-A8	   ?
+@ Cortex-A9	   ?
+@ Cortex-A15	   4
+
+/* mp_limb_t mpn_addmul_1(res_ptr, src1_ptr, size, s2_limb) */
+
+ENTRY (__mpn_addmul_1)
+	push	{ r4, r5, r6, r7 }
 	cfi_adjust_cfa_offset (16)
 	cfi_rel_offset (r4, 0)
 	cfi_rel_offset (r5, 4)
 	cfi_rel_offset (r6, 8)
 	cfi_rel_offset (r7, 12)
-	mov	r7, r0
-	mov	r0, r1
-	mov	r1, r2
-	mov	r2, r3
-	ldmfd	ip, {r3, r4, r5, r6}
-	swi	0x0
-	pop	{r4, r5, r6, r7}
+
+	ldr	r6, [r1], #4
+	ldr	r5, [r0]
+	mov	r4, #0			/* init carry in */
+	b	1f
+0:
+	ldr	r6, [r1], #4		/* load next ul */
+	adds	r7, r4, r5		/* (out, c) = cl + lpl */
+	ldr	r5, [r0, #4]		/* load next rl */
+	adc	r4, ip, #0		/* cl = hpl + c */
+	str	r7, [r0], #4
+1:
+	mov	ip, #0			/* zero-extend rl */
+	umlal	r5, ip, r6, r3		/* (hpl, lpl) = ul * vl + rl */
+	subs	r2, r2, #1
+	bne	0b
+
+	adds	r4, r4, r5		/* (out, c) = cl + llpl */
+	str	r4, [r0]
+	adc	r0, ip, #0		/* return hpl + c */
+
+	pop	{ r4, r5, r6, r7 }
 	cfi_adjust_cfa_offset (-16)
 	cfi_restore (r4)
 	cfi_restore (r5)
 	cfi_restore (r6)
 	cfi_restore (r7)
-	cmn	r0, #4096
-	it	cc
-	RETINSTR(cc, lr)
-	b	PLTJMP(syscall_error)
-PSEUDO_END (syscall)
+	DO_RET	(lr)
+END (__mpn_addmul_1)

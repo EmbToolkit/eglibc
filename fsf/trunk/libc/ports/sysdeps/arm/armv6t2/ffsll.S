@@ -1,4 +1,5 @@
-/* Copyright (C) 1998-2013 Free Software Foundation, Inc.
+/* ffsll -- find first set bit in a long long, from least significant end.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,48 +18,33 @@
 
 #include <sysdep.h>
 
-#define	EINVAL		22
-
+	.syntax unified
 	.text
 
-ENTRY (__mmap)
-	/* shuffle args */
-	push	{ r5 }
-	cfi_adjust_cfa_offset (4)
-	cfi_rel_offset (r5, 0)
-	ldr	r5, [sp, #8]
-	push	{ r4 }
-	cfi_adjust_cfa_offset (4)
-	cfi_rel_offset (r4, 0)
-	cfi_remember_state
-	ldr	r4, [sp, #8]
-
-	/* convert offset to pages */
-	movs	ip, r5, lsl #20
-	bne	.Linval
-	mov	r5, r5, lsr #12
-	
-	/* do the syscall */
-	DO_CALL (mmap2, 0)
-
-	/* restore registers */
-2:
-	pop	{ r4 }
-	cfi_adjust_cfa_offset (-4)
-	cfi_restore (r4)
-	pop	{ r5 }
-	cfi_adjust_cfa_offset (-4)
-	cfi_restore (r5)
-
-	cmn	r0, $4096
-	it	cc
-	RETINSTR(cc, lr)
-	b	PLTJMP(syscall_error)
-
-	cfi_restore_state
-.Linval:
-	mov	r0, #-EINVAL
-	b	2b
-PSEUDO_END (__mmap)
-
-weak_alias (__mmap, mmap)
+ENTRY (ffsll)
+	@ If low part is 0, operate on the high part.  Ensure that the
+	@ word on which we operate is in r0.  Set r2 to the bit offset
+	@ of the word being considered.  Set the flags for the word
+	@ being operated on.
+#ifdef __ARMEL__
+	cmp	r0, #0
+	itee	ne
+	movne	r2, #0
+	moveq	r2, #32
+	movseq	r0, r1
+#else
+	cmp	r1, #0
+	ittee	ne
+	movne	r2, #0
+	movne	r0, r1
+	moveq	r2, #32
+	cmpeq	r0, #0
+#endif
+	@ Perform the ffs on r0.
+	rbit	r0, r0
+	ittt	ne
+	clzne	r0, r0
+	addne	r2, r2, #1
+	addne	r0, r0, r2
+	bx	lr
+END (ffsll)

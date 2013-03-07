@@ -1,7 +1,6 @@
-/* Bounded-pointer symbol modifier.
-   Copyright (C) 2000-2013 Free Software Foundation, Inc.
+/* ffs -- find first set bit in an int, from least significant end.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Greg McGary <greg@mcgary.org>
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -14,12 +13,23 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#define BP_SYM(name) _BP_SYM (name)
-#if __BOUNDED_POINTERS__
-# define _BP_SYM(name) __BP_##name
-#else
-# define _BP_SYM(name) name
-#endif
+#include <sysdep.h>
+
+	.syntax unified
+	.text
+
+ENTRY (__ffs)
+	cmp	r0, #0
+	rbit	r0, r0
+	itt	ne
+	clzne	r0, r0
+	addne	r0, r0, #1
+	bx	lr
+END (__ffs)
+
+weak_alias (__ffs, ffs)
+weak_alias (__ffs, ffsl)
+libc_hidden_builtin_def (ffs)

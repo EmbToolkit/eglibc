@@ -1,3 +1,51 @@
+2013-03-07  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add
+	bits/mman-linux.h.
+
+2013-03-07  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/slowexp.c [!USE_LONG_DOUBLE_FOR_MP]:
+	Include mpa.h and declare __MPEXP.
+	[USE_LONG_DOUBLE_FOR_MP] (__slowexp): Call __IEEE754_EXPL.
+	* sysdeps/powerpc/powerpc32/power4/fpu/Makefile
+	(CPPFLAGS-slowexp.c): Define USE_LONG_DOUBLE_FOR_MP.
+	* sysdeps/powerpc/powerpc32/power4/fpu/slowexp.c: Remove.
+	* sysdeps/powerpc/powerpc64/power4/fpu/Makefile
+	(CPPFLAGS-slowexp.c): Define USE_LONG_DOUBLE_FOR_MP.
+	* sysdeps/powerpc/powerpc64/power4/fpu/slowexp.c: Remove.
+
+	* sysdeps/ieee754/dbl-64/slowpow.c [USE_LONG_DOUBLE_FOR_MP]
+	(__slowpow): Use long double EXPL and LOGL functions to
+	compute POW.
+	* sysdeps/powerpc/powerpc32/power4/fpu/Makefile
+	(CPPFLAGS-slowpow.c): Define USE_LONG_DOUBLE_FOR_MP.
+	* sysdeps/powerpc/powerpc32/power4/fpu/slowpow.c: Remove.
+	* sysdeps/powerpc/powerpc64/power4/fpu/Makefile
+	(CPPFLAGS-slowpow.c): Define USE_LONG_DOUBLE_FOR_MP.
+	* sysdeps/powerpc/powerpc64/power4/fpu/slowpow.c: Remove.
+
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c (__mul): Use
+	intermediate variable to calculate exponent.
+	(__sqr): Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c (__mul):
+	Likewise.
+	(__sqr): Likewise.
+
+	* sysdeps/ieee754/dbl-64/mpa.c [!NO__MUL]: Define __mul.
+	[!NO__SQR]: Define __sqr.
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c: define NO__MUL
+	and NO__SQR.  Remove all code except __mul and __sqr.  Include
+	sysdeps/ieee754/dbl-64/mpa.c.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c: Likewise.
+
+	[BZ #12723]
+	* posix/Makefile (tests): Add tst-pathconf.
+	* posix/tst-pathconf.c: New test case.
+	* sysdeps/unix/sysv/linux/fpathconf.c (__fpathconf): Remove
+	_PC_PIPE_BUF.
+	* sysdeps/unix/sysv/linux/pathconf.c (__pathconf): Likewise.
+
 2013-03-06  Patsy Franklin  <pfrankli@redhat.com>
 
 	* io/fcntl.h: Added a comment about AT_EACCESS and AT_REMOVEDIR.

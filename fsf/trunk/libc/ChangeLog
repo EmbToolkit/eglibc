@@ -1,3 +1,89 @@
+2013-03-08  Roland McGrath  <roland@hack.frob.com>
+
+	* Makeconfig ($(common-objpfx)config.status): Depend on
+	sysdeps/*/preconfigure{,.in} too.
+
+2013-03-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* malloc/malloc.h (__malloc_ptr_t): Remove macro.
+	(__free_hook): Use void * instead of __malloc_ptr_t.
+	(__malloc_hook): Likewise.
+	(__realloc_hook): Likewise.
+	(__memalign_hook): Likewise.
+	(__after_morecore_hook): Likewise.
+	* malloc/arena.c (save_malloc_hook): Likewise.
+	(save_free_hook): Likewise.
+	* malloc/hooks.c (malloc_hook_ini): Likewise.
+	(realloc_hook_ini): Likewise.
+	(memalign_hook_ini): Likewise.
+	* malloc/malloc.c (malloc_hook_ini): Likewise.
+	(realloc_hook_ini): Likewise.
+	(memalign_hook_ini): Likewise.
+	(__free_hook): Likewise.
+	(__malloc_hook): Likewise.
+	(__realloc_hook): Likewise.
+	(__memalign_hook): Likewise.
+	(__libc_malloc): Likewise.
+	(__libc_free): Likewise.
+	(__libc_realloc): Likewise.
+	(__libc_memalign): Likewise.
+	(__libc_valloc): Likewise.
+	(__libc_pvalloc): Likewise.
+	(__libc_calloc): Likewise.
+	(__posix_memalign): Likewise.
+	* malloc/morecore.c (__sbrk): Likewise.
+	(__default_morecore): Likewise.
+
+	* malloc/morecore.c (__default_morecore): Use ISO C prototype.
+
+	* malloc/malloc.h (__malloc_ptrdiff_t): Remove macro.
+	* malloc/morecore.c (__default_morecore): Use ptrdiff_t instead of
+	__malloc_ptrdiff_t.
+
+	* malloc/malloc.h (__malloc_size_t): Remove macro.
+	* malloc/mcheck.c (old_malloc_hook): Use size_t instead of
+	__malloc_size_t.
+	(old_memalign_hook): Likewise.
+	(old_realloc_hook): Likewise.
+	(struct hdr): Likewise.
+	(flood): Likewise.
+	(mallochook): Likewise.
+	(memalignhook): Likewise.
+	(reallochook): Likewise.
+	* malloc/mtrace.c (tr_old_malloc_hook): Likewise.
+	(tr_old_realloc_hook): Likewise.
+	(tr_old_memalign_hook): Likewise.
+	(tr_mallochook): Likewise.
+	(tr_reallochook): Likewise.
+	(tr_memalignhook): Likewise.
+
+2013-03-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h (ldbl_pack): Rename to
+	default_ldbl_pack and using as default implementation.
+	(ldbl_unpack): Rename to default_ldbl_unpack and using as default
+	implementation.
+	* sysdeps/powerpc/fpu/math_ldbl.h (ldbl_extract_mantissa): Remove
+	redundant definition.
+	(ldbl_insert_mantissa): Likewise.
+	(ldbl_canonicalize): Likewise.
+	(ldbl_nearbyint): Likewise.
+	(ldbl_pack): Rename to ldbl_pack_ppc.
+	(ldbl_unpack): Rename to ldbl_unpack_ppc.
+	* sysdeps/unix/sysv/linux/powerpc/Implies: Remove file.
+	* sysdeps/powerpc/Implies: Add ieee754/ldbl-opt after ieee754/ldbl-128ibm.
+
+2013-03-08  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/powerpc/powerpc32/power4/fpu/mpa.c: Move file...
+	* sysdeps/powerpc/power4/fpu/mpa.c: ... here.
+	* sysdeps/powerpc/powerpc32/power4/fpu/Makefile: Move file...
+	* sysdeps/powerpc/power4/fpu/Makefile: ... here.
+	* sysdeps/powerpc/powerpc64/power4/fpu/mpa.c: Remove file.
+	* sysdeps/powerpc/powerpc64/power4/fpu/Makefile: Remove file.
+	* sysdeps/powerpc/powerpc32/power4/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power4/Implies: New file.
+
 2013-03-07  Andreas Jaeger  <aj@suse.de>
 
 	* sysdeps/unix/sysv/linux/Makefile (sysdep_headers): Add

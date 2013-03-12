@@ -53,6 +53,7 @@
 #endif
 
 		.text
+		.syntax unified
 
 /* Prototype: void *memcpy(void *dest, const void *src, size_t n); */
 
@@ -84,7 +85,7 @@ ENTRY(memcpy)
 
 	CALGN(	ands	ip, r1, #31		)
 	CALGN(	rsb	r3, ip, #32		)
-	CALGN(	sbcnes	r4, r3, r2		)  @ C is always set here
+	CALGN(	sbcsne	r4, r3, r2		)  @ C is always set here
 	CALGN(	bcs	2f			)
 	CALGN(	adr	r4, 6f			)
 	CALGN(	subs	r2, r2, r3		)  @ C gets set
@@ -139,12 +140,12 @@ ENTRY(memcpy)
 		cfi_restore (r8)
 
 8:		movs	r2, r2, lsl #31
-		ldrneb	r3, [r1], #1
-		ldrcsb	r4, [r1], #1
-		ldrcsb	ip, [r1]
-		strneb	r3, [r0], #1
-		strcsb	r4, [r0], #1
-		strcsb	ip, [r0]
+		ldrbne	r3, [r1], #1
+		ldrbcs	r4, [r1], #1
+		ldrbcs	ip, [r1]
+		strbne	r3, [r0], #1
+		strbcs	r4, [r0], #1
+		strbcs	ip, [r0]
 
 #if defined (__ARM_ARCH_4T__) && defined(__THUMB_INTERWORK__)
 		pop	{r0, r4, lr}
@@ -160,11 +161,11 @@ ENTRY(memcpy)
 
 9:		rsb	ip, ip, #4
 		cmp	ip, #2
-		ldrgtb	r3, [r1], #1
-		ldrgeb	r4, [r1], #1
+		ldrbgt	r3, [r1], #1
+		ldrbge	r4, [r1], #1
 		ldrb	lr, [r1], #1
-		strgtb	r3, [r0], #1
-		strgeb	r4, [r0], #1
+		strbgt	r3, [r0], #1
+		strbge	r4, [r0], #1
 		subs	r2, r2, ip
 		strb	lr, [r0], #1
 		blt	8b
@@ -185,17 +186,17 @@ ENTRY(memcpy)
 
 	CALGN(	ands	ip, r1, #31		)
 	CALGN(	rsb	ip, ip, #32		)
-	CALGN(	sbcnes	r4, ip, r2		)  @ C is always set here
+	CALGN(	sbcsne	r4, ip, r2		)  @ C is always set here
 	CALGN(	subcc	r2, r2, ip		)
 	CALGN(	bcc	15f			)
 
-11:		push	{r5 - r9}
+11:		push	{r5 - r8, r10}
 		cfi_adjust_cfa_offset (20)
 		cfi_rel_offset (r5, 0)
 		cfi_rel_offset (r6, 4)
 		cfi_rel_offset (r7, 8)
 		cfi_rel_offset (r8, 12)
-		cfi_rel_offset (r9, 16)
+		cfi_rel_offset (r10, 16)
 
 	PLD(	pld	[r1, #0]		)
 	PLD(	subs	r2, r2, #96		)
@@ -208,7 +209,7 @@ ENTRY(memcpy)
 13:		ldmia	r1!, {r4, r5, r6, r7}
 		mov	r3, lr, PULL #\pull
 		subs	r2, r2, #32
-		ldmia	r1!, {r8, r9, ip, lr}
+		ldmia	r1!, {r8, r10, ip, lr}
 		orr	r3, r3, r4, PUSH #\push
 		mov	r4, r4, PULL #\pull
 		orr	r4, r4, r5, PUSH #\push
@@ -219,23 +220,23 @@ ENTRY(memcpy)
 		mov	r7, r7, PULL #\pull
 		orr	r7, r7, r8, PUSH #\push
 		mov	r8, r8, PULL #\pull
-		orr	r8, r8, r9, PUSH #\push
-		mov	r9, r9, PULL #\pull
-		orr	r9, r9, ip, PUSH #\push
+		orr	r8, r8, r10, PUSH #\push
+		mov	r10, r10, PULL #\pull
+		orr	r10, r10, ip, PUSH #\push
 		mov	ip, ip, PULL #\pull
 		orr	ip, ip, lr, PUSH #\push
-		stmia	r0!, {r3, r4, r5, r6, r7, r8, r9, ip}
+		stmia	r0!, {r3, r4, r5, r6, r7, r8, r10, ip}
 		bge	12b
 	PLD(	cmn	r2, #96			)
 	PLD(	bge	13b			)
 
-		pop	{r5 - r9}
+		pop	{r5 - r8, r10}
 		cfi_adjust_cfa_offset (-20)
 		cfi_restore (r5)
 		cfi_restore (r6)
 		cfi_restore (r7)
 		cfi_restore (r8)
-		cfi_restore (r9)
+		cfi_restore (r10)
 
 14:		ands	ip, r2, #28
 		beq	16f

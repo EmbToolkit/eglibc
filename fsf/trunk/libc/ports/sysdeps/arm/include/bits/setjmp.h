@@ -1,5 +1,5 @@
-/* bzero.  x86-64 version.
-   Copyright (C) 2010-2013 Free Software Foundation, Inc.
+/* Private jmp_buf-related definitions.  ARM EABI version.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -13,16 +13,22 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
-#include <init-arch.h>
+#ifndef _INCLUDE_BITS_SETJMP_H
+#define _INCLUDE_BITS_SETJMP_H 1
 
-	.text
-ENTRY(__bzero)
-	mov	%rsi,%rdx	/* Adjust parameter.  */
-	xorl	%esi,%esi	/* Fill with 0s.  */
-	jmp	__libc_memset	/* Branch to IFUNC memset.  */
-END(__bzero)
-weak_alias (__bzero, bzero)
+#ifndef __ASSEMBLER__
+/* Get the public declarations.  */
+# include <sysdeps/arm/bits/setjmp.h>
+#endif
+
+/* Register list for a ldm/stm instruction to load/store
+   the general registers from a __jmp_buf.  */
+#define JMP_BUF_REGLIST		{v1-v6, sl, fp, sp, lr}
+
+/* Index of __jmp_buf where the sp register resides.  */
+#define __JMP_BUF_SP		8
+
+#endif  /* include/bits/setjmp.h */

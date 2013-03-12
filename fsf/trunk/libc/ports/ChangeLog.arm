@@ -1,3 +1,30 @@
+2013-03-11  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/arm/bits/setjmp.h: Test [!__ASSEMBLER__] rather than [!_ASM].
+	* sysdeps/arm/jmpbuf-offsets.h: File removed.
+	* sysdeps/arm/jmpbuf-unwind.h: Don't #include it.
+	* sysdeps/arm/include/bits/setjmp.h: New file.
+	* sysdeps/arm/setjmp.S (_SETJMP_H, _ASM): Macros removed.
+	Use JMP_BUF_REGLIST macro.
+	* sysdeps/arm/__longjmp.S: Likewise.
+
+	* sysdeps/arm/memcpy.S: Convert to unified assembly syntax.
+	* sysdeps/arm/memmove.S: Likewise.
+	* sysdeps/arm/memset.S: Likewise.
+	* sysdeps/arm/strlen.S: Likewise.
+
+	* sysdeps/arm/memcpy.S: Use r10 instead of r9.
+	* sysdeps/arm/memmove.S: Likewise.
+
+	* sysdeps/arm/preconfigure.in: New file.
+	* sysdeps/arm/preconfigure: Replaced with generated file.
+
+2013-03-11  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15234]
+	* sysdeps/unix/sysv/linux/arm/nptl/libpthread.abilist (GLIBC_2.4):
+	Remove pthread_atfork.
+
 2013-03-06  Richard Henderson <rth@redhat.com>
 
 	* sysdeps/arm/armv6/rawmemchr.S: New file.

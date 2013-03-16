@@ -1,3 +1,130 @@
+2013-03-15  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/dl-support.c (_dl_aux_init): Ignore zero value for AT_PAGESZ.
+	(_dl_non_dynamic_init): Don't set _dl_pagesize; it will never be
+	zero since it's initialized to EXEC_PAGESIZE.
+
+	* sysdeps/unix/sysv/linux/ldsodefs.h
+	(_dl_non_dynamic_init, _dl_aux_init): Move declarations to ...
+	* sysdeps/generic/ldsodefs.h: ... here.
+
+2013-03-15  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* math/libm-test.inc (ldexp_test): Add missing START/END markers.
+
+	* sysdeps/powerpc/fpu/test-powerpc-snan.c: Rename to
+	math/test-snan.c.
+	* math/test-snan.c: Renamed from
+	sysdeps/powerpc/fpu/test-powerpc-snan.c.
+	* math/Makefile (tests): Add test-snan.
+	* sysdeps/powerpc/fpu/Makefile (libm-tests): Don't add
+	test-powerpc-snan.
+
+	* math/basic-test.c (TEST_FUNC): Replace NANFUNC argument with
+	SUFFIX.  Initialize qNaN_var with __builtin_nan family of
+	functions.
+	(TEST_TRUNC): Add SUFFIX argument.  Initialize qNaN_var with
+	__builtin_nan family of functions.
+	* math/libm-test.inc (initialize): Initialize qnan_value with
+	__builtin_nan family of functions.
+	* sysdeps/powerpc/fpu/test-powerpc-snan.c (SNANf, SNAN, SNANl):
+	Remove variables.
+	(init_signaling_nan, snan_float, snan_double, snan_ldouble):
+	Remove functions.
+	(TEST_FUNC): Add SUFFIX argument.  Move sNaN_var into static
+	storage class.  Initialize qNaN_var and sNaN_var with
+	__builtin_nan and __builtin_nans families of functions,
+	respectively.
+
+	* math/libm-test.inc (acosh_test): Also test with qNaN input.
+	(sqrt_test): Remove duplicate test with qNaN input.
+	(lrint_test, llrint_test, lround_test, llround_test, rint_test)
+	(round_test, signbit_test, significand_test): Note missing +/-Inf
+	as well as qNaN tests.
+
+	* math/basic-test.c (TEST_FUNC, TEST_TRUNC): Rename NaN_var to
+	qNaN_var.  Fix a few strings, too.
+	* math/libm-test.inc (nan_value): Rename to qnan_value.
+	* math/gen-libm-test.pl (%beautify): Adjust to that.
+	* math/bits/mathcalls.h (nan): Refer to qNaN instead of NaN.
+	* math/test-misc.c (main): Likewise.
+	* sysdeps/ieee754/bits/nan.h (__nan_bytes, __nan_union): Rename
+	to __qnan_bytes, and __qnan_union, respectively.
+	* ports/sysdeps/mips/bits/nan.h (__nan_bytes, __nan_union):
+	Likewise.
+	* stdio-common/tstdiomisc.c (nanval, lnanval): Rename to qnanval,
+	and lqnanval, respectively.
+	* sysdeps/powerpc/bits/fenv.h: Fix usage of NaN/qNaN/sNaN.
+	* sysdeps/powerpc/fpu/fenv_libc.h: Likewise.
+	* sysdeps/powerpc/fpu/test-powerpc-snan.c (TEST_FUNC): Likewise,
+	and rename NaN_var to qNaN_var, and SNaN_var to sNaN_var.
+
+	* math/libm-test.inc (fpstack_test) [__x86_64__]: Enable test.
+	* math/test-misc.c (main) [__x86_64__]: Enable test for long
+	doubles.
+
+	* math/test-misc.c (main): Fix copy'n'pastos.
+	* misc/tst-efgcvt.c (special): Likewise.
+
+	* stdio-common/printf_fp.c (__isinfl_internal, __isnanl_internal):
+	Remove declarations.
+
+2013-03-15  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa-arch.h: Remove.
+	* sysdeps/ieee754/dbl-64/mpa.c: Revert last change.
+	* sysdeps/ieee754/dbl-64/mpa.h: Revert last change.
+	* sysdeps/powerpc/power4/fpu/mpa-arch.h: Remove.
+
+2013-03-15  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h (VDSO_IFUNC_RET): Add
+	macro to return vdso values correctly in IFUNC implementations.
+	* sysdeps/unix/sysv/linux/powerpc/gettimeofday.c (__gettimeofday):
+	Optimization by using IFUNC.
+
+2013-03-15  Siddhesh Poyarekar  <siddhesh@redhat.com>
+	    Richard Henderson  <rth@redhat.com>
+	    Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* Makefile.in (bench): New target.
+	* NEWS: Mention the benchmark framework.
+	* Rules (bench): Likewise.
+	(binaries-bench): Generate binaries for functions to
+	benchmark.
+	* benchtests/Makefile: New makefile for benchmark tests.
+	* benchtests/bench-skeleton.c: New skeleton file for benchmark
+	programs.
+	* benchtests/exp-inputs: New input file for EXP function.
+	* benchtests/pow-inputs: New input file for POW function.
+	* scripts/bench.pl: New script to generate source files for
+	benchmark programs.
+
+2013-03-15  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa-arch.h: New file.
+	* sysdeps/ieee754/dbl-64/mpa.c (norm): Use MANTISSA_T to store
+	computations on mantissa.  Use macros for rounding and
+	division.
+	(denorm): Likewise.
+	(__dbl_mp): Likewise.
+	(add_magnitudes): Likewise.
+	(sub_magnitudes): Likewise.
+	(__mul): Likewise.
+	(__sqr): Likewise.
+	* sysdeps/ieee754/dbl-64/mpa.h: Include mpa-arch.h.  Define
+	powers of two in terms of TWOPOW macro.
+	(mp_no): Make type of mantissa as MANTISSA_T.
+	[!RADIXI]: Define RADIXI.
+	[!TWO52]: Define TWO52.
+	* sysdeps/powerpc/power4/fpu/mpa-arch.h: New file.
+
+	* manual/nptl.texi (cindex): Modify threads to pthreads.
+
+2013-03-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/x86_64/preconfigure: Regenerated.
+
 2013-03-14  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #14155]

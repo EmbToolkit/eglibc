@@ -1,3 +1,31 @@
+2013-03-16  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15283]
+	* sysdeps/ieee754/ldbl-96/e_j1l.c (__ieee754_y1l): Correct test
+	for arguments at most half maximum finite value.
+	* math/libm-test.inc (j0_test): Add more tests.
+	(j1_test): Likewise.
+	(y0_test): Likewise.
+	(y1_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #14155]
+	* sysdeps/ieee754/ldbl-128/e_j0l.c (__ieee754_j0l): Do not compute
+	1 / x and functions P and Q for arguments above 0x1p256L.
+	(__ieee754_y0l): Likewise.
+	* sysdeps/ieee754/ldbl-128/e_j1l.c (__ieee754_j1l): Likewise.
+	(__ieee754_y1l): Likewise.
+	* math/libm-test.inc (j0_test): Do not allow spurious underflows.
+	(j1_test): Likewise.
+	(y0_test): Likewise.
+	(y1_test): Likewise.
+
+2013-03-16  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* math/test-snan.c (TEST_FUNC): Add and use minus_sNaN_var
+	variable.
+
 2013-03-15  Roland McGrath  <roland@hack.frob.com>
 
 	* elf/dl-support.c (_dl_aux_init): Ignore zero value for AT_PAGESZ.

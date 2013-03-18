@@ -1,3 +1,12 @@
+2013-03-17  Carlos O'Donell  <carlos@redhat.com>
+
+	* manual/memory.texi (Malloc Tunable Parameters):
+	Sort parameters alphabetically. Add comments for missing entries.
+
+2013-03-17  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
 2013-03-16  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #15283]

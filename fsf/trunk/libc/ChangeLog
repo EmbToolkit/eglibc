@@ -1,13 +1,48 @@
+2013-03-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/k_casinhf.c (__kernel_casinhf): Consistently use float
+	constants.
+	* math/k_casinhl.c (__kernel_casinhl): Consistently use long
+	double constants.
+
+2013-03-19  Andreas Schwab  <schwab@suse.de>
+
+	* sysdeps/gnu/configure.in: Set libc_cv_rtldir for s390x.
+	* sysdeps/gnu/configure: Regenerate.
+
+	* configure.in: Substitute libc_cv_rtlddir.
+	* configure: Regenerate.
+	* config.make.in (rtlddir): Set from libc_cv_rtlddir.
+	* Makeconfig (rtlddir, inst_rtlddir): New variables.
+	(rtld-LDFLAGS): Use them with $(rtld-installed-name).
+	* elf/Makefile (install-others, CFLAGS-interp.c)
+	(ldso_install, common-ldd-rewrite): Likewise.
+	($(inst_rtlddir)/$(rtld-installed-name)): Renamed from
+	$(inst_slibdir)/$(rtld-installed-name).
+	* scripts/rellns-sh: Add -p option.
+	* Makerules (make-shlib-link): Use rellns-sh to get relative name
+	for source.
+
+2013-03-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* manual/nptl.texi: Renamed to ...
+	* manual/threads.texi: ... this.
+	* manual/Makefile (chapters): Update.
+
 2013-03-18  Roland McGrath  <roland@hack.frob.com>
 
 	[BZ #14812]
 	* argp/argp-parse.c (argp_default_options): Put N_ translation marker
 	on argument names, not just descriptions.
-	* iconv/iconv_prog.c (options): Likewise.
-	* iconv/iconvconfig.c (options): Likewise.
 	* malloc/memusagestat.c (options): Likewise.
 	* nss/getent.c (options): Likewise.
-	Reported by Benno Schulenberg <bensberg@justemail.net>.
+
+2013-03-18  Benno Schulenberg  <bensberg@justemail.net>
+
+	[BZ #14812]
+	* iconv/iconv_prog.c (options): Put N_ translation marker
+	on argument names, not just descriptions.
+	* iconv/iconvconfig.c (options): Likewise.
 
 2013-03-18  Ondrej Bilka  <neleai@seznam.cz>
 

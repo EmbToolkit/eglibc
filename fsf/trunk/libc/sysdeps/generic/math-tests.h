@@ -1,5 +1,5 @@
-/* Double-precision floating point square root wrapper.
-   Copyright (C) 2004-2013 Free Software Foundation, Inc.
+/* Configuration for math tests.  Generic version.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,33 +16,21 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <math.h>
-#include <math_private.h>
-#include <fenv_libc.h>
-#include <math_ldbl_opt.h>
-
-double
-__sqrt (double x)		/* wrapper sqrt */
-{
-#ifdef _IEEE_LIBM
-  return __ieee754_sqrt (x);
-#else
-  double z;
-  z = __ieee754_sqrt (x);
-  if (_LIB_VERSION == _IEEE_ || (x != x))
-    return z;
-
-  if (x < 0.0)
-    return __kernel_standard (x, x, 26);	/* sqrt(negative) */
-  else
-    return z;
+/* Indicate whether to run tests involving sNaN values for the float, double,
+   and long double C data types, respectively.  All are run unless
+   overridden.  */
+#ifndef SNAN_TESTS_float
+# define SNAN_TESTS_float	1
 #endif
-}
+#ifndef SNAN_TESTS_double
+# define SNAN_TESTS_double	1
+#endif
+#ifndef SNAN_TESTS_long_double
+# define SNAN_TESTS_long_double	1
+#endif
 
-weak_alias (__sqrt, sqrt)
-#ifdef NO_LONG_DOUBLE
-  strong_alias (__sqrt, __sqrtl) weak_alias (__sqrt, sqrtl)
-#endif
-#if LONG_DOUBLE_COMPAT(libm, GLIBC_2_0)
-compat_symbol (libm, __sqrt, sqrtl, GLIBC_2_0);
-#endif
+/* Return nonzero value if to run tests involving sNaN values for X.  */
+#define SNAN_TESTS(x)							\
+  (sizeof (x) == sizeof (float) ? SNAN_TESTS_float			\
+   : sizeof (x) == sizeof (double) ? SNAN_TESTS_double			\
+   : SNAN_TESTS_long_double)

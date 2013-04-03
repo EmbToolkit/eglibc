@@ -1,3 +1,79 @@
+2013-04-02  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15327]
+	* math/s_cacosh.c (__cacosh): Implement for finite nonzero
+	arguments using __kernel_casinh.
+	* math/s_cacoshf.c (__cacoshf): Implement for finite nonzero
+	arguments using __kernel_casinhf.
+	* math/s_cacoshl.c (__cacoshl): Implement for finite nonzero
+	arguments using __kernel_casinhl.
+	* math/libm-test.inc (cacosh_test): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-04-02  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/mpa.h (HALFRAD): Define as TWO23.
+	* sysdeps/ieee754/dbl-64/mpexp.c (__mpexp): Use mantissa_t.
+
+	* bench/Makefile (bench): Add sin and slowsin.
+	* benchtests/sin-inputs: New file.
+	* benchtests/slowsin-inputs: New file.
+	* benchtests/slowsin.c: New file.
+
+	* benchtests/Makefile: Add benchmarks for slowpow and slowexp.
+	(bench): Add slowexp and slowpow.
+	(exp-ITER): Increase iterations.
+	(pow-ITER): Likewise.
+	* benchtests/exp-inputs: Change input.
+	* benchtests/pow-inputs: Likewise.
+	* benchtests/slowexp-inputs: New file.
+	* benchtests/slowexp.c: New file.
+	* benchtests/slowpow-inputs: New file.
+	* benchtests/slowpow.c: New file.
+
+2013-04-02  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/fpu/s_rint.S: Remove branch prediction
+	instructions.
+	* sysdeps/powerpc/powerpc32/fpu/s_rintf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_rint.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_rintf.S: Likewise.
+	* benchtests/Makefile: Add rint benchtest.
+	* benchtests/rint-inputs: Input for rint benchtest.
+
+2013-04-02  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* Versions.def (libm): Add GLIBC_2.18.
+	* include/math.h [!_ISOMAC] (__issignaling, __issignalingf): Add
+	hidden libm prototypes.
+	[!_ISOMAC && !__NO_LONG_DOUBLE_MATH] (__issignalingl): Likewise.
+	* math/Makefile (libm-calls): Add s_issignaling.
+	* math/Versions (libm: GLIBC_2.18): Add __issignaling,
+	__issignalingf, __issignalingl.  Adjust all libm.abilist files.
+	* math/bits/mathcalls.h [__USE_GNU] (__issignaling): New prototype
+	declaration.
+	* math/math.h [__USE_GNU] (issignaling): New macro.
+	* sysdeps/ieee754/flt-32/s_issignalingf.c: New file.
+	* sysdeps/ieee754/dbl-64/s_issignaling.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_issignaling.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_issignalingl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/s_issignalingl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_issignalingl.c: Likewise.
+	* manual/arith.texi (issignaling): New section.
+	* manual/libm-err-tab.pl (@all_functions): Update comment.
+	* math/gen-libm-test.pl (parse_args): Apply special handling for
+	issignaling.
+	* math/libm-test.inc (print_float, issignaling_test): New
+	functions.
+	(check_float_internal): Add issignaling checks.
+	* sysdeps/generic/math-tests.h (SNAN_TESTS_TYPE_CAST): Provide
+	default definition.
+	* sysdeps/powerpc/math-tests.h: New file.
+	* math/basic-test.c (TEST_FUNC, TEST_TRUNC): Add issignaling
+	tests.
+	* math/test-snan.c (TEST_FUNC): Likewise.
+
 2013-03-30  David S. Miller  <davem@davemloft.net>
 
 	* po/de.po: Update from translation team.

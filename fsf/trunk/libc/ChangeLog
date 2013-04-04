@@ -1,3 +1,48 @@
+2013-04-03  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14478]
+	* math/s_cexp.c (__cexp): Ensure underflow exception occurs for
+	underflowed result.
+	* math/s_cexpf.c (__cexpf): Likewise.
+	* math/s_cexpl.c (__cexpl): Likewise.
+	* math/libm-test.inc (cexp_test): Add more tests.
+
+2013-04-03  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15330]
+	* sysdeps/posix/getaddrinfo.c (getaddrinfo): Allocate results and
+	order arrays from heap if bigger than alloca cutoff.
+
+2013-04-03  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/i386/fpu/math-tests.h (SNAN_TESTS_float)
+	(SNAN_TESTS_double): Refer to GCC PR56831.
+	* sysdeps/powerpc/math-tests.h (SNAN_TESTS_TYPE_CAST): Refer to
+	GCC PR56828.
+
+2013-04-03  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* Rules (bench): Move bench.out after the run is complete.
+
+	* Rules (bench): Echo currently running benchmark.
+
+	* benchtests/Makefile (bench): Add atan and slowatan.
+	* benchtests/atan-inputs: New file.
+	* benchtests/slowatan-inputs: New file.
+	* benchtests/slowatan.c: New file.
+
+	* sysdeps/ieee754/dbl-64/mpa.h (TWO): Remove definition.
+	* sysdeps/ieee754/dbl-64/mpatan.c (__mpatan): Replace TWO with
+	its value.
+
+	[BZ #15305]
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x02061d]: Define
+	__ASSUME_XFS_RESTRICTED_CHOWN.
+	* sysdeps/unix/sysv/linux/pathconf.c
+	(__statfs_chown_restricted) [!__ASSUME_XFS_RESTRICTED_CHOWN]:
+	Save and restore errno.
+
 2013-04-02  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #15327]

@@ -1,3 +1,47 @@
+2013-04-06  Carlos O'Donell  <carlos@redhat.com>
+
+	* math/README.libm-test (How can I generate "libm-test-ulps"?):
+	Use testrun.sh to run libm tests.
+
+	[BZ #15309]
+	* elf/dl-open.c (dl_open_worker): memset all of seen array.
+
+2013-04-06  Marko Myllynen  <myllynen@redhat.com>
+
+	[BZ #15264]
+	* locales/fi_FI (LC_MESSAGES): Define yesstr and nostr.
+
+2013-04-06  Carlos O'Donell  <carlos@redhat.com>
+
+	* Makefile.in (regen-ulps): New target.
+	* math/Makefile [ifneq (no,$(PERL)]: Declare regen-ulps with .PHONY.
+	[ifneq (no,$(PERL)] (run-regen-ulps): New variable.
+	[ifneq (no,$(PERL)] (regen-ulps): New target.
+	[ifeq (no,$(PERL)] (regen-ulps): New target.
+	* math/libm-test.inc (ulps_file_name): Define.
+	(output_dir): New variable.
+	(options): Add "output-dir" option.
+	(parse_opt): Handle 'o' case.
+	(main): If output_dir is non-NULL use it as a prefix
+	otherwise use "".
+	* math/README.libm-test: Update `How can I generate "libm-test-ulps"?'
+
+2013-04-06  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #10060, #10062]
+	* aclocal.m4 (LIBC_COMPILER_BUILTIN_INLINED): New macro.
+	* sysdeps/i386/configure.in: Use LIBC_COMPILER_BUILTIN_INLINED and
+	fail configure if __sync_val_compare_and_swap is not inlined.
+	* sysdeps/i386/configure: Regenerate.
+	* configure.in: Build for i686 when configured for i386.
+	* configure: Regenerate.
+	* README: Remove i386 reference.
+
+2013-04-06  Carlos O'Donell  <carlos@redhat.com>
+
+	* sysdeps/s390/s390-32/sysdep.h: Undefine PSEUDO before redefinition.
+	* sysdeps/s390/s390-64/sysdep.h: Likewise.
+
 2013-04-05  Thomas Schwinge  <thomas@codesourcery.com>
 
 	* stdio-common/tstdiomisc.c (snanval, msnanval, lsnanval)

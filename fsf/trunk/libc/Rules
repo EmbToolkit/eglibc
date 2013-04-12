@@ -194,12 +194,12 @@ binaries-bench := $(addprefix $(objpfx)bench-,$(bench))
 
 run-bench = $(test-wrapper-env) \
 	    GCONV_PATH=$(common-objpfx)iconvdata LC_ALL=C \
-	    $($*-ENV) $(run-via-rtld-prefix) $${run}
+	    $($*-ENV) $(rtld-prefix) $${run}
 
 bench: $(binaries-bench)
 	for run in $^; do \
 	  echo "Running $${run}"; \
-	  eval $(run-bench) >>  $(objpfx)bench.out-tmp; \
+	  $(run-bench) >>  $(objpfx)bench.out-tmp; \
 	done; \
 	if [ -f $(objpfx)bench.out ]; then \
 	  mv -f $(objpfx)bench.out $(objpfx)bench.out.old; \

@@ -1,3 +1,20 @@
+2013-04-16  Roland McGrath  <roland@hack.frob.com>
+
+	* rt/tst-aio7.c (do_test): Don't test O_RDONLY fd case, which is now
+	considered kosher.
+
+2013-04-16  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile: Include cppflags-iterator.mk to add
+	-DNOT_IN_libc=1 to CPPFLAGS of all benchmark programs.
+
+	* Makefile.in (bench-clean): New target.
+	* benchtests/Makefile (bench-clean): Likewise.
+
+2013-04-16  David Holsgrove  <david.holsgrove@xilinx.com>
+
+	* elf/elf.h: Add EM_MICROBLAZE and MicroBlaze relocations.
+
 2013-04-15  Thomas Schwinge  <thomas@codesourcery.com>
 
 	* stdio-common/tstdiomisc.c: Fix coding-style violation.

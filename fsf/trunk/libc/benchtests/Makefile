@@ -114,11 +114,20 @@ include ../Rules
 
 binaries-bench := $(addprefix $(objpfx)bench-,$(bench))
 
+# This makes sure CPPFLAGS-nonlib and CFLAGS-nonlib are passed
+# for all these modules.
+cpp-srcs-left := $(binaries-bench:=.c)
+lib := nonlib
+include $(patsubst %,$(..)cppflags-iterator.mk,$(cpp-srcs-left))
+
 bench-deps := bench-skeleton.c Makefile
 
 run-bench = $(test-wrapper-env) \
 	    GCONV_PATH=$(common-objpfx)iconvdata LC_ALL=C \
 	    $($*-ENV) $(rtld-prefix) $${run}
+
+bench-clean:
+	rm -f $(binaries-bench) $(addsuffix .o,$(binaries-bench))
 
 bench: $(binaries-bench)
 	{ for run in $^; do \

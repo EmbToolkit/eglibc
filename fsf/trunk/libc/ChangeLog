@@ -1,3 +1,38 @@
+2013-04-24  Carlos O'Donell  <carlos@redhat.com>
+
+	* math/libm-test.inc (cos_test): Use accurate hex constants.
+	(sincost_test): Likewise.
+
+2013-04-24  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (catan_test): Add more tests.
+	(catanh_test): Likewise.
+
+	* math/s_catanf.c (__catanf): Use suffixed floating-point
+	constants.
+	* math/s_catanhf.c (__catanhf): Likewise.
+	* math/s_catanhl.c (__catanhl): Likewise.
+	* math/s_catanl.c (__catanl): Likewise.
+
+	[BZ #15394]
+	* math/s_catan.c (__catan): Calculate imaginary part of result
+	with log1p not log unless computing log of number close to 0.
+	* math/s_catanf.c (__catanf): Likewise.
+	* math/s_catanl.c (__catanl): Likewise.
+	* math/s_catanh.c (__catanh): Calculate real part of result with
+	log1p not log unless computing log of number close to 0.
+	* math/s_catanhf.c (__catanhf): Likewise.
+	* math/s_catanhl.c (__catanhl): Likewise.
+	* math/libm-test.inc (catan_test): Add more tests.
+	(catanh_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-04-24  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile: Mention files in which fast and slow
+	paths of math functions are implemented.
+
 2013-04-23  Roland McGrath  <roland@hack.frob.com>
 
 	* sysdeps/posix/timespec_get.c: New file.

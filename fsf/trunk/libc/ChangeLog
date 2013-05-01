@@ -1,3 +1,61 @@
+2013-04-30  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-04-30  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15416]
+	* math/s_catan.c (__catan): Compute expressions 1 - x^2 - y^2 more
+	accurately for denominator in atan2.
+	* math/s_catanf.c (__catanf): Likewise.
+	* math/s_catanh.c (__catanh): Likewise.
+	* math/s_catanhf.c (__catanhf): Likewise.
+	* math/s_catanhl.c (__catanhl): Likewise.
+	* math/s_catanl.c (__catanl): Likewise.
+	* math/libm-test.inc (catan_test): Add more tests.
+	(catanh_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-04-30  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c: Format code.
+
+	* benchtests/Makefile (bench): Remove slow benchmarks.
+	* benchtests/atan-inputs: Add slow benchmark inputs.
+	* benchtests/bench-modf.c (NUM_VARIANTS): Define.
+	(BENCH_FUNC): Accept variant offset.
+	(VARIANT): Define.
+	* benchtests/bench-skeleton.c (main): Run benchmark for each
+	variant.
+	* benchtests/cos-inputs: Add slow benchmark inputs.
+	* benchtests/exp-inputs: Likewise.
+	* benchtests/pow-inputs: Likewise.
+	* benchtests/sin-inputs: Likewise.
+	* benchtests/slowatan-inputs: Remove.
+	* benchtests/slowatan.c: Remove.
+	* benchtests/slowcos-inputs: Remove.
+	* benchtests/slowcos.c: Remove.
+	* benchtests/slowexp-inputs: Remove.
+	* benchtests/slowexp.c: Remove.
+	* benchtests/slowpow-inputs: Remove.
+	* benchtests/slowpow.c: Remove.
+	* benchtests/slowsin-inputs: Remove.
+	* benchtests/slowsin.c: Remove.
+	* benchtests/slowtan-inputs: Remove.
+	* benchtests/slowtan.c: Remove.
+	* benchtests/tan-inputs: Add slow benchmark inputs.
+	* scripts/bench.pl: Parse comments and directives.
+
+	* benchtests/Makefile: Remove *-ITER.  Define BENCH_DURATION
+	in CPPFLAGS.
+	($(objpfx)bench-%.c): Remove *-ITER.
+	* benchtests/bench-modf.c: Remove definition of ITER.
+	* benchtests/bench-skeleton.c (TIMESPEC_AFTER): New macro.
+	(main): Loop for DURATION seconds instead of fixed number of
+	iterations.
+	* scripts/bench.pl: Don't expect iterations in parameters.
+
 2013-04-29  Roland McGrath  <roland@hack.frob.com>
 
 	* io/fchdir.c (__fchdir): Renamed from fchdir.

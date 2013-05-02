@@ -1,3 +1,34 @@
+2013-05-01  Ondřej Bílka  <neleai@seznam.cz>
+
+	* string/bits/string2.h (__strcmp_cg): Call __strcmp_gc.
+
+2013-05-01  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/posix/opendir.c: Include <sys/param.h> to get MIN/MAX macros.
+
+2013-05-01  Richard Smith  <richard@metafoo.co.uk>
+
+	* misc/sys/cdefs.h (__extern_inline, __extern_always_inline)
+	[__GNUC__ && (__GNUC_STDC_INLINE__ || __GNUC_GNU_INLINE__)]:
+	Use __attribute__ ((__gnu_inline__)).
+	[__GNUC__ && !(__GNUC_STDC_INLINE__ || __GNUC_GNU_INLINE__)]:
+	Don't use __attribute__ ((__gnu_inline__)).
+
+2013-05-01  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15423]
+	* math/s_catan.c (__catan): Handle small real or imaginary part of
+	input specially to avoid spurious underflow.
+	* math/s_catanf.c (__catanf): Likewise.
+	* math/s_catanh.c (__catanh): Likewise.
+	* math/s_catanhf.c (__catanhf): Likewise.
+	* math/s_catanhl.c (__catanhl): Likewise.
+	* math/s_catanl.c (__catanl): Likewise.
+	* math/libm-test.inc (catan_test): Add more tests.
+	(catanh_test): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
 2013-04-30  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
 	* sysdeps/powerpc/fpu/libm-test-ulps: Update.

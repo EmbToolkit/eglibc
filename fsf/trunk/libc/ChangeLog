@@ -1,3 +1,66 @@
+2013-05-03  Roland McGrath  <roland@hack.frob.com>
+
+	* io/open.c (__open_2): Moved to ...
+	* io/open_2.c: ... this new file.
+	* io/open64.c (__open64_2): Moved to ...
+	* io/open64_2.c: ... this new file.
+	* io/openat.c (__openat_2): Moved to ...
+	* io/openat_2.c: ... this new file.
+	* io/openat64.c (__openat64_2): Moved to ...
+	* io/openat64_2.c: ... this new file.
+	* io/Makefile (routines): Add them.
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_routines): Remove them.
+	* sysdeps/unix/sysv/linux/open_2.c: File removed.
+	* sysdeps/unix/sysv/linux/open64_2.c: File removed.
+	* sysdeps/unix/sysv/linux/openat.c (__OPENAT_2): Removed.
+	* sysdeps/unix/sysv/linux/openat64.c (__OPENAT_2): Removed.
+	* sysdeps/unix/sysv/linux/wordsize-64/openat.c (__openat_2): Removed.
+	(__openat64): Add hidden_ver.
+	* sysdeps/mach/hurd/open.c (__open_2, __open64_2): Removed.
+	* sysdeps/mach/hurd/openat.c (__openat_2): Removed.
+
+	* elf/dl-sysdep.c (_dl_sysdep_start) [NEED_DL_SYSINFO]:
+	Separately conditionalize setting of GLRO(dl_sysinfo) so
+	that the GLRO(dl_sysinfo_dso) test is under [NEED_DL_SYSINFO_DSO]
+	as well, but the actual setting is only under [NEED_DL_SYSINFO].
+
+2013-04-30  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/Versions: Add __vdso_time symbol.
+	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h: Add __vdso_time
+	definition.
+	(VDSO_IFUNC_RET): Cast to void * to silence compiler warning.
+	* sysdeps/unix/sysv/linux/powerpc/init-first.c
+	(_libc_vdso_platform_setup): Add __vdso_time initialization.
+	* sysdeps/unix/sysv/linux/powerpc/time.c: New file: time implementation
+	for PowerPC using vDSO where is avaliable or gettimeofday as a fallback.
+
+2013-05-03  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (lgamma_test): Consistently use TEST_f_f1 to
+	test signgam value.
+
+	* math/libm-test.inc (hypot_test): Do not use
+	IGNORE_ZERO_INF_SIGN.
+
+2013-05-03  Andreas Jaeger  <aj@suse.de>
+
+	* sysdeps/gnu/netinet/tcp.h (TCP_TIMESTAMP): New value, from
+	Linux 3.9.
+	* sysdeps/unix/sysv/linux/bits/socket.h (PF_VSOCK, AF_VSOCK): Add.
+	(PF_MAX): Adjust for VSOCK change.
+
+2013-05-03  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-05-02  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #15264]
+	* localedata/locales/en_CA (LC_MESSAGES): Define yesstr and nostr.
+	* localedata/locales/es_AR (LC_MESSAGES): Copy es_ES.
+	* localedata/locales/es_ES (LC_MESSAGES): Define yesstr and nostr.
+
 2013-05-02  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/fpu/libm-test-ulps: Update.
@@ -12,6 +75,7 @@
 
 2013-05-01  Richard Smith  <richard@metafoo.co.uk>
 
+	[BZ #14952]
 	* misc/sys/cdefs.h (__extern_inline, __extern_always_inline)
 	[__GNUC__ && (__GNUC_STDC_INLINE__ || __GNUC_GNU_INLINE__)]:
 	Use __attribute__ ((__gnu_inline__)).

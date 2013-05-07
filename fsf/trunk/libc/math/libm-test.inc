@@ -9103,11 +9103,11 @@ gamma_test (void)
 
   START (gamma);
 
-  TEST_f_f (gamma, plus_infty, plus_infty);
-  TEST_f_f (gamma, 0, plus_infty, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f (gamma, -3, plus_infty, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f (gamma, minus_infty, plus_infty);
-  TEST_f_f (gamma, qnan_value, qnan_value);
+  TEST_f_f1 (gamma, plus_infty, plus_infty, 1);
+  TEST_f_f1 (gamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION);
+  TEST_f_f1 (gamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION);
+  TEST_f_f1 (gamma, minus_infty, plus_infty, IGNORE);
+  TEST_f_f1 (gamma, qnan_value, qnan_value, IGNORE);
 
   TEST_f_f1 (gamma, 1, 0, 1);
   TEST_f_f1 (gamma, 3, M_LN2l, 1);
@@ -9159,6 +9159,7 @@ hypot_test (void)
   TEST_ff_f (hypot, 0.75L, 1.25L, 1.45773797371132511771853821938639577L);
 
   TEST_ff_f (hypot, 1.0L, 0x1p-61L, 1.0L);
+  TEST_ff_f (hypot, 0x1p+0L, 0x1.fp-129L, 0x1p+0L);
 #if defined TEST_LDOUBLE && LDBL_MANT_DIG >= 106
   TEST_ff_f (hypot, 0x1.23456789abcdef0123456789ab8p-500L, 0x1.23456789abcdef0123456789ab8p-500L, 4.9155782399407039128612180934736799735113e-151L);
 #endif
@@ -9170,6 +9171,7 @@ hypot_test (void)
 
 #if !defined TEST_FLOAT && !(defined TEST_DOUBLE && defined TEST_INLINE)
   TEST_ff_f (hypot, 0x3p1021L, 0x4p1021L, 0x5p1021L);
+  TEST_ff_f (hypot, 0x1p+0L, 0x0.3ep-1022L, 0x1p+0L);
 #endif
 
 #if defined TEST_LDOUBLE && LDBL_MAX_EXP >= 16384 && !defined TEST_INLINE

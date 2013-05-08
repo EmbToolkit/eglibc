@@ -1,4 +1,22 @@
+2013-05-07  Aurelien Jarno <aurelien@aurel32.net>
+
+	* misc/sys/param.h (DEV_BSIZE): Define only if not already defined.
+
+2013-05-07  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/generic/ldsodefs.h [IS_IN_rtld]: Declare _dl_skip_args
+	and _dl_skip_args_internal.
+
+2013-05-07  Carlos O'Donell  <carlos@redhat.com>
+
+	* manual/message.texi (Message Translation): Talk about users.
+	Message to key mapping impacts design.
+
 2013-05-06  Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/unix/sysv/linux/wordsize-64/glob64.c: New file.
+
+	* elf/dl-open.c: Remove declaration of _dl_sysdep_start.
 
 	* sysdeps/unix/sysv/linux/wordsize-64/glob64.c: Moved to ...
 	* sysdeps/wordsize-64/glob64.c: ... here.

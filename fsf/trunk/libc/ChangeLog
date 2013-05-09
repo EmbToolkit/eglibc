@@ -1,3 +1,118 @@
+2013-05-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-05-08  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (PLUS_ZERO_INIT): New macro.
+	(MINUS_ZERO_INIT): Likewise.
+	(PLUS_INFTY_INIT): Likewise.
+	(MINUS_INFTY_INIT): Likewise.
+	(QNAN_VALUE_INIT): Likewise.
+	(MAX_VALUE_INIT): Likewise.
+	(MIN_VALUE_INIT): Likewise.
+	(MIN_SUBNORM_VALUE_INIT): Likewise.
+	(plus_zero): Initialize with PLUS_ZERO_INIT.
+	(minus_zero): Initialize with MINUS_ZERO_INIT.
+	(plus_infty): Initialize with PLUS_INFTY_INIT.
+	(minus_infty): Initialize with MINUS_INFTY_INIT.
+	(qnan_value): Initialize with QNAN_VALUE_INIT.
+	(max_value): Initialize with MAX_VALUE_INIT.
+	(min_value): Initialize with MIN_VALUE_INIT.
+	(min_subnorm_value): Initialize with MIN_SUBNORM_VALUE_INIT.
+
+	* math/libm-test.inc (RUN_TEST_if_f): New macro.
+	(jn_test): Use TEST_if_f instead of TEST_ff_f.
+	(ldexp_text): Use TEST_fi_i instead of TEST_ff_f.
+	(yn_test): Use TEST_if_f instead of TEST_ff_f.
+
+	* math/libm-test.inc (RUN_TEST_f_f): New macro.
+	(RUN_TEST_2_f): Likewise.
+	(RUN_TEST_ff_f): Likewise.
+	(RUN_TEST_fi_f): Likewise.
+	(RUN_TEST_fl_f): Likewise.
+	(RUN_TEST_fff_f): Likewise.
+	(RUN_TEST_c_f): Likewise.
+	(RUN_TEST_f_f1): Likewise.
+	(RUN_TEST_fF_f1): Likewise.
+	(RUN_TEST_fI_f1): Likewise.
+	(RUN_TEST_ffI_f1): Likewise.
+	(RUN_TEST_c_c): Likewise.
+	(RUN_TEST_cc_c): Likewise.
+	(RUN_TEST_f_i): Likewise.
+	(RUN_TEST_f_i_tg): Likewise.
+	(RUN_TEST_ff_i_tg): Likewise.
+	(RUN_TEST_f_b): Likewise.
+	(RUN_TEST_f_b_tg): Likewise.
+	(RUN_TEST_f_l): Likewise.
+	(RUN_TEST_f_L): Likewise.
+	(RUN_TEST_sincos): Likewise.
+	* math/gen-libm-test.pl (new_test): Take new argument to indicate
+	whether to show exceptions.  Do not include ");\n" in return
+	value.
+	(special_functions): Output call to RUN_TEST_sincos instead of
+	check_float calls.  Update calls to new_test.
+	(parse_args): Output call to single RUN_TEST_* macro instead of
+	check_* calls and other assignments.  Update calls to new_test.
+
+	[BZ #2546]
+	[BZ #2560]
+	[BZ #5159]
+	[BZ #15426]
+	* sysdeps/ieee754/k_standard.c (__kernel_standard): Copy sign of
+	input to result for tgamma overflow.
+	* sysdeps/ieee754/dbl-64/e_gamma_r.c: Include <float.h>.
+	(gamma_coeff): New variable.
+	(NCOEFF): New macro.
+	(gamma_positive): New function.
+	(__ieee754_gamma_r): Handle positive infinity, NaN, overflow and
+	underflow here.  Use gamma_positive instead of exp (lgamma) for
+	other arguments.
+	* sysdeps/ieee754/flt-32/e_gammaf_r.c: Include <float.h>.
+	(gamma_coeff): New variable.
+	(NCOEFF): New macro.
+	(gammaf_positive): New function.
+	(__ieee754_gammaf_r): Handle positive infinity, NaN, overflow and
+	underflow here.  Use gamma_positive instead of exp (lgamma) for
+	other arguments.
+	* sysdeps/ieee754/ldbl-128/e_gammal_r.c: Include <float.h>.
+	(gamma_coeff): New variable.
+	(NCOEFF): New macro.
+	(gammal_positive): New function.
+	(__ieee754_gammal_r): Handle positive infinity, NaN, overflow and
+	underflow here.  Use gamma_positive instead of exp (lgamma) for
+	other arguments.
+	* sysdeps/ieee754/ldbl-128ibm/e_gammal_r.c: Include <float.h>.
+	(gamma_coeff): New variable.
+	(NCOEFF): New macro.
+	(gammal_positive): New function.
+	(__ieee754_gammal_r): Handle positive infinity, overflow and
+	underflow here.  Handle NaN the same as positive infinity.  Remove
+	check x < 0xffffffff for negative integers.  Use gamma_positive
+	instead of exp (lgamma) for other arguments.
+	* sysdeps/ieee754/ldbl-96/e_gammal_r.c: Include <float.h>.
+	(gamma_coeff): New variable.
+	(NCOEFF): New macro.
+	(gammal_positive): New function.
+	* sysdeps/ieee754/dbl-64/gamma_product.c: New file.
+	* sysdeps/ieee754/dbl-64/gamma_productf.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/gamma_productl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/gamma_productl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/gamma_product.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/gamma_productl.c: Likewise.
+	* sysdeps/generic/math_private.h (__gamma_productf): New
+	prototype.
+	(__gamma_product): Likewise.
+	(__gamma_productl): Likewise.
+	* math/Makefile (libm-calls): Add gamma_product.
+	* math/libm-test.inc (tgamma_test): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-05-08  Ondřej Bílka  <neleai@seznam.cz>
+
+	* benchtests/bench-skeleton.c (main): Preheat CPU.
+
 2013-05-07  Aurelien Jarno <aurelien@aurel32.net>
 
 	* misc/sys/param.h (DEV_BSIZE): Define only if not already defined.

@@ -207,12 +207,11 @@
 #define M_SQRT_PIl		1.7724538509055160272981674833411451L	/* sqrt (M_PIl)  */
 #define M_LOG_SQRT_PIl		0.57236494292470008707171367567652933L	/* log(sqrt(M_PIl))  */
 #define M_LOG_2_SQRT_PIl	1.265512123484645396488945797134706L	/* log(2*sqrt(M_PIl))  */
-#define M_PI_34l		(M_PIl - M_PI_4l)		/* 3*pi/4 */
-#define M_PI_34_LOG10El		(M_PIl - M_PI_4l) * M_LOG10El
-#define M_PI2_LOG10El		M_PI_2l * M_LOG10El
-#define M_PI4_LOG10El		M_PI_4l * M_LOG10El
-#define M_PI_LOG10El		M_PIl * M_LOG10El
-#define M_SQRT_2_2		0.70710678118654752440084436210484903L /* sqrt (2) / 2 */
+#define M_PI_34l		2.356194490192344928846982537459627163L	/* 3*pi/4 */
+#define M_PI_34_LOG10El		1.023282265381381010614337719073516828L
+#define M_PI2_LOG10El		0.682188176920920673742891812715677885L
+#define M_PI4_LOG10El		0.341094088460460336871445906357838943L
+#define M_PI_LOG10El		1.364376353841841347485783625431355770L
 
 #define ulps_file_name "ULPs"	/* Name of the ULPs file.  */
 static FILE *ulps_file;		/* File to document difference.  */
@@ -3031,9 +3030,9 @@ carg_test (void)
 
   TEST_c_f (carg, plus_infty, minus_infty, -M_PI_4l);
 
-  TEST_c_f (carg, minus_infty, plus_infty, 3 * M_PI_4l);
+  TEST_c_f (carg, minus_infty, plus_infty, M_PI_34l);
 
-  TEST_c_f (carg, minus_infty, minus_infty, -3 * M_PI_4l);
+  TEST_c_f (carg, minus_infty, minus_infty, -M_PI_34l);
 
   TEST_c_f (carg, qnan_value, qnan_value, qnan_value);
 
@@ -7081,7 +7080,7 @@ csqrt_test (void)
   TEST_c_c (csqrt, -2, 3, 0.89597747612983812471573375529004348L, 1.6741492280355400404480393008490519L);
   /* Principal square root should be returned (i.e., non-negative real
      part).  */
-  TEST_c_c (csqrt, 0, -1, M_SQRT_2_2, -M_SQRT_2_2);
+  TEST_c_c (csqrt, 0, -1, M_SQRT1_2l, -M_SQRT1_2l);
 
   TEST_c_c (csqrt, 0x1.fffffep+127L, 0x1.fffffep+127L, 2.026714405498316804978751017492482558075e+19L, 8.394925938143272988211878516208015586281e+18L);
   TEST_c_c (csqrt, 0x1.fffffep+127L, 1.0L, 1.844674352395372953599975585936590505260e+19L, 2.710505511993121390769065968615872097053e-20L);

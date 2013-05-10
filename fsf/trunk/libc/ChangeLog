@@ -1,3 +1,31 @@
+2013-05-09  Carlos O'Donell  <carlos@redhat.com>
+
+	* elf/dl-close.c (_dl_close_worker): Add comments.
+
+2013-05-09  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15359]
+	* sysdeps/ieee754/ldbl-128ibm/e_rem_pio2l.c (c): Use 106 bits for
+	high part of pi/2.
+	(__ieee754_rem_pio2l): Update comments.
+
+	[BZ #15429]
+	* sysdeps/ieee754/ldbl-128/e_rem_pio2l.c (c): Use 113 bits for
+	high part of pi/2.
+	(__ieee754_rem_pio2l): Update comments.
+
+	* math/libm-test.inc (M_SQRT_2_2): Remove macro.
+	(csqrt_test): Use M_SQRT1_2l instead of M_SQRT_2_2.
+
+	* math/libm-test.inc (carg_test): Use M_PI_34l instead of 3 *
+	M_PI_4l.
+
+	* math/libm-test.inc (M_PI_34l): Define using decimal constant.
+	(M_PI_34_LOG10El): Likewise.
+	(M_PI2_LOG10El): Likewise.
+	(M_PI4_LOG10El): Likewise.
+	(M_PI_LOG10El): Likewise.
+
 2013-05-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
 	* sysdeps/powerpc/fpu/libm-test-ulps: Update.

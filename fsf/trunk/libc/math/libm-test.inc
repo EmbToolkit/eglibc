@@ -933,12 +933,60 @@ struct test_c_f_data
   FLOAT max_ulp;
   int exceptions;
 };
+/* Used for both RUN_TEST_LOOP_f_f1 and RUN_TEST_LOOP_fI_f1.  */
+struct test_f_f1_data
+{
+  const char *test_name;
+  FLOAT arg;
+  FLOAT expected;
+  FLOAT max_ulp;
+  int exceptions;
+  const char *extra_name;
+  int extra_init;
+  int extra_test;
+  int extra_expected;
+  int extra_ulp;
+};
+struct test_fF_f1_data
+{
+  const char *test_name;
+  FLOAT arg;
+  FLOAT expected;
+  FLOAT max_ulp;
+  int exceptions;
+  const char *extra_name;
+  FLOAT extra_init;
+  int extra_test;
+  FLOAT extra_expected;
+  FLOAT extra_ulp;
+};
+struct test_ffI_f1_data
+{
+  const char *test_name;
+  FLOAT arg1, arg2;
+  FLOAT expected;
+  FLOAT max_ulp;
+  int exceptions;
+  const char *extra_name;
+  int extra_init;
+  int extra_test;
+  int extra_expected;
+  int extra_ulp;
+};
 struct test_c_c_data
 {
   const char *test_name;
   FLOAT argr, argc;
   FLOAT expr, expc;
   __complex__ FLOAT max_ulp;
+  int exceptions;
+};
+struct test_f_i_data
+{
+  const char *test_name;
+  FLOAT arg;
+  int expected;
+  int max_ulp;
   int exceptions;
 };
 
@@ -988,7 +1036,7 @@ struct test_c_c_data
     for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
       RUN_TEST_2_f ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg1,	\
 		    (ARRAY)[i].arg2, (ARRAY)[i].expected,		\
-		    (ARRAY)[i].max_ulp,	(ARRAY)[i].exceptions);		\
+		    (ARRAY)[i].max_ulp, (ARRAY)[i].exceptions);		\
   ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_ff_f RUN_TEST_2_f
 #define RUN_TEST_LOOP_ff_f RUN_TEST_LOOP_2_f
@@ -1036,6 +1084,16 @@ struct test_c_c_data
 		   EXTRA_ULP, 0);					\
     }									\
   while (0)
+#define RUN_TEST_LOOP_f_f1(FUNC_NAME, ARRAY, ROUNDING_MODE, EXTRA_VAR)	\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_f1 ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		     (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		     (ARRAY)[i].exceptions, (ARRAY)[i].extra_name,	\
+		     EXTRA_VAR, (ARRAY)[i].extra_init,			\
+		     (ARRAY)[i].extra_test, (ARRAY)[i].extra_expected,	\
+		     (ARRAY)[i].extra_ulp);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_fF_f1(TEST_NAME, FUNC_NAME, ARG, EXPECTED,		\
 		       MAX_ULP, EXCEPTIONS,				\
 		       EXTRA_NAME, EXTRA_VAR, EXTRA_INIT, EXTRA_TEST,	\
@@ -1050,6 +1108,16 @@ struct test_c_c_data
 		     EXTRA_ULP, 0);					\
     }									\
   while (0)
+#define RUN_TEST_LOOP_fF_f1(FUNC_NAME, ARRAY, ROUNDING_MODE, EXTRA_VAR)	\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_fF_f1 ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		      (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		      (ARRAY)[i].exceptions, (ARRAY)[i].extra_name,	\
+		      EXTRA_VAR, (ARRAY)[i].extra_init,			\
+		      (ARRAY)[i].extra_test, (ARRAY)[i].extra_expected,	\
+		      (ARRAY)[i].extra_ulp);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_fI_f1(TEST_NAME, FUNC_NAME, ARG, EXPECTED,		\
 		       MAX_ULP, EXCEPTIONS,				\
 		       EXTRA_NAME, EXTRA_VAR, EXTRA_INIT, EXTRA_TEST,	\
@@ -1064,6 +1132,16 @@ struct test_c_c_data
 		   EXTRA_ULP, 0);					\
     }									\
   while (0)
+#define RUN_TEST_LOOP_fI_f1(FUNC_NAME, ARRAY, ROUNDING_MODE, EXTRA_VAR)	\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_fI_f1 ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		      (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		      (ARRAY)[i].exceptions, (ARRAY)[i].extra_name,	\
+		      EXTRA_VAR, (ARRAY)[i].extra_init,			\
+		      (ARRAY)[i].extra_test, (ARRAY)[i].extra_expected,	\
+		      (ARRAY)[i].extra_ulp);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_ffI_f1(TEST_NAME, FUNC_NAME, ARG1, ARG2, EXPECTED,	\
 			MAX_ULP, EXCEPTIONS,				\
 			EXTRA_NAME, EXTRA_VAR, EXTRA_INIT, EXTRA_TEST,	\
@@ -1079,6 +1157,19 @@ struct test_c_c_data
 		   EXTRA_ULP, 0);					\
     }									\
   while (0)
+#define RUN_TEST_LOOP_ffI_f1(FUNC_NAME, ARRAY, ROUNDING_MODE,		\
+			     EXTRA_VAR)					\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_ffI_f1 ((ARRAY)[i].test_name, FUNC_NAME,			\
+		       (ARRAY)[i].arg1, (ARRAY)[i].arg2,		\
+		       (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		       (ARRAY)[i].exceptions, (ARRAY)[i].extra_name,	\
+		       EXTRA_VAR, (ARRAY)[i].extra_init,		\
+		       (ARRAY)[i].extra_test,				\
+		       (ARRAY)[i].extra_expected,			\
+		       (ARRAY)[i].extra_ulp);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_c_c(TEST_NAME, FUNC_NAME, ARGR, ARGC, EXPR, EXPC,	\
 		     MAX_ULP, EXCEPTIONS)				\
   check_complex (TEST_NAME,						\
@@ -1103,10 +1194,24 @@ struct test_c_c_data
 		     MAX_ULP, EXCEPTIONS)			\
   check_int (TEST_NAME, FUNC (FUNC_NAME) (ARG), EXPECTED,	\
 	     MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_f_i(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_i ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		    (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		    (ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_f_i_tg(TEST_NAME, FUNC_NAME, ARG, EXPECTED,	\
 			MAX_ULP, EXCEPTIONS)			\
   check_int (TEST_NAME, FUNC_NAME (ARG), EXPECTED,		\
 	     MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_f_i_tg(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_i_tg ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		       (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		       (ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_ff_i_tg(TEST_NAME, FUNC_NAME, ARG1, ARG2, EXPECTED,	\
 			 MAX_ULP, EXCEPTIONS)				\
   check_int (TEST_NAME, FUNC_NAME (ARG1, ARG2), EXPECTED,		\
@@ -9481,22 +9586,42 @@ fmod_test (void)
 }
 
 
+static const struct test_f_i_data fpclassify_test_data[] =
+  {
+    START_DATA (fpclassify),
+    TEST_f_i (fpclassify, qnan_value, FP_NAN),
+    TEST_f_i (fpclassify, plus_infty, FP_INFINITE),
+    TEST_f_i (fpclassify, minus_infty, FP_INFINITE),
+    TEST_f_i (fpclassify, plus_zero, FP_ZERO),
+    TEST_f_i (fpclassify, minus_zero, FP_ZERO),
+    TEST_f_i (fpclassify, 1000, FP_NORMAL),
+    TEST_f_i (fpclassify, min_subnorm_value, FP_SUBNORMAL),
+    END_DATA (fpclassify)
+  };
+
 static void
 fpclassify_test (void)
 {
   START (fpclassify);
-
-  TEST_f_i (fpclassify, qnan_value, FP_NAN);
-  TEST_f_i (fpclassify, plus_infty, FP_INFINITE);
-  TEST_f_i (fpclassify, minus_infty, FP_INFINITE);
-  TEST_f_i (fpclassify, plus_zero, FP_ZERO);
-  TEST_f_i (fpclassify, minus_zero, FP_ZERO);
-  TEST_f_i (fpclassify, 1000, FP_NORMAL);
-  TEST_f_i (fpclassify, min_subnorm_value, FP_SUBNORMAL);
-
+  RUN_TEST_LOOP_f_i_tg (fpclassify, fpclassify_test_data, );
   END (fpclassify);
 }
 
+
+static const struct test_f_f1_data frexp_test_data[] =
+  {
+    START_DATA (frexp),
+    TEST_fI_f1 (frexp, plus_infty, plus_infty, IGNORE),
+    TEST_fI_f1 (frexp, minus_infty, minus_infty, IGNORE),
+    TEST_fI_f1 (frexp, qnan_value, qnan_value, IGNORE),
+
+    TEST_fI_f1 (frexp, 0.0, 0.0, 0.0),
+    TEST_fI_f1 (frexp, minus_zero, minus_zero, 0.0),
+
+    TEST_fI_f1 (frexp, 12.8L, 0.8L, 4),
+    TEST_fI_f1 (frexp, -27.34L, -0.854375L, 5),
+    END_DATA (frexp)
+  };
 
 static void
 frexp_test (void)
@@ -9504,20 +9629,27 @@ frexp_test (void)
   int x;
 
   START (frexp);
-
-  TEST_fI_f1 (frexp, plus_infty, plus_infty, IGNORE);
-  TEST_fI_f1 (frexp, minus_infty, minus_infty, IGNORE);
-  TEST_fI_f1 (frexp, qnan_value, qnan_value, IGNORE);
-
-  TEST_fI_f1 (frexp, 0.0, 0.0, 0.0);
-  TEST_fI_f1 (frexp, minus_zero, minus_zero, 0.0);
-
-  TEST_fI_f1 (frexp, 12.8L, 0.8L, 4);
-  TEST_fI_f1 (frexp, -27.34L, -0.854375L, 5);
-
+  RUN_TEST_LOOP_fI_f1 (frexp, frexp_test_data, , x);
   END (frexp);
 }
 
+
+static const struct test_f_f1_data gamma_test_data[] =
+  {
+    START_DATA (gamma),
+    TEST_f_f1 (gamma, plus_infty, plus_infty, 1),
+    TEST_f_f1 (gamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION),
+    TEST_f_f1 (gamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION),
+    TEST_f_f1 (gamma, minus_infty, plus_infty, IGNORE),
+    TEST_f_f1 (gamma, qnan_value, qnan_value, IGNORE),
+
+    TEST_f_f1 (gamma, 1, 0, 1),
+    TEST_f_f1 (gamma, 3, M_LN2l, 1),
+
+    TEST_f_f1 (gamma, 0.5, M_LOG_SQRT_PIl, 1),
+    TEST_f_f1 (gamma, -0.5, M_LOG_2_SQRT_PIl, -1),
+    END_DATA (gamma)
+  };
 
 static void
 gamma_test (void)
@@ -9530,19 +9662,7 @@ gamma_test (void)
     return;
 
   START (gamma);
-
-  TEST_f_f1 (gamma, plus_infty, plus_infty, 1);
-  TEST_f_f1 (gamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f1 (gamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f1 (gamma, minus_infty, plus_infty, IGNORE);
-  TEST_f_f1 (gamma, qnan_value, qnan_value, IGNORE);
-
-  TEST_f_f1 (gamma, 1, 0, 1);
-  TEST_f_f1 (gamma, 3, M_LN2l, 1);
-
-  TEST_f_f1 (gamma, 0.5, M_LOG_SQRT_PIl, 1);
-  TEST_f_f1 (gamma, -0.5, M_LOG_2_SQRT_PIl, -1);
-
+  RUN_TEST_LOOP_f_f1 (gamma, gamma_test_data, , signgam);
   END (gamma);
 }
 
@@ -9615,25 +9735,30 @@ hypot_test (void)
 }
 
 
+static const struct test_f_i_data ilogb_test_data[] =
+  {
+    START_DATA (ilogb),
+    TEST_f_i (ilogb, 1, 0),
+    TEST_f_i (ilogb, M_El, 1),
+    TEST_f_i (ilogb, 1024, 10),
+    TEST_f_i (ilogb, -2000, 10),
+
+    /* ilogb (0.0) == FP_ILOGB0 plus invalid exception  */
+    TEST_f_i (ilogb, 0.0, FP_ILOGB0, INVALID_EXCEPTION|ERRNO_EDOM),
+    /* ilogb (qNaN) == FP_ILOGBNAN plus invalid exception  */
+    TEST_f_i (ilogb, qnan_value, FP_ILOGBNAN, INVALID_EXCEPTION|ERRNO_EDOM),
+    /* ilogb (inf) == INT_MAX plus invalid exception  */
+    TEST_f_i (ilogb, plus_infty, INT_MAX, INVALID_EXCEPTION|ERRNO_EDOM),
+    /* ilogb (-inf) == INT_MAX plus invalid exception  */
+    TEST_f_i (ilogb, minus_infty, INT_MAX, INVALID_EXCEPTION|ERRNO_EDOM),
+    END_DATA (ilogb)
+  };
+
 static void
 ilogb_test (void)
 {
   START (ilogb);
-
-  TEST_f_i (ilogb, 1, 0);
-  TEST_f_i (ilogb, M_El, 1);
-  TEST_f_i (ilogb, 1024, 10);
-  TEST_f_i (ilogb, -2000, 10);
-
-  /* ilogb (0.0) == FP_ILOGB0 plus invalid exception  */
-  TEST_f_i (ilogb, 0.0, FP_ILOGB0, INVALID_EXCEPTION|ERRNO_EDOM);
-  /* ilogb (qNaN) == FP_ILOGBNAN plus invalid exception  */
-  TEST_f_i (ilogb, qnan_value, FP_ILOGBNAN, INVALID_EXCEPTION|ERRNO_EDOM);
-  /* ilogb (inf) == INT_MAX plus invalid exception  */
-  TEST_f_i (ilogb, plus_infty, INT_MAX, INVALID_EXCEPTION|ERRNO_EDOM);
-  /* ilogb (-inf) == INT_MAX plus invalid exception  */
-  TEST_f_i (ilogb, minus_infty, INT_MAX, INVALID_EXCEPTION|ERRNO_EDOM);
-
+  RUN_TEST_LOOP_f_i (ilogb, ilogb_test_data, );
   END (ilogb);
 }
 
@@ -10087,6 +10212,31 @@ ldexp_test (void)
 }
 
 
+static const struct test_f_f1_data lgamma_test_data[] =
+  {
+    START_DATA (lgamma),
+    TEST_f_f1 (lgamma, plus_infty, plus_infty, 1),
+    TEST_f_f1 (lgamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION),
+    TEST_f_f1 (lgamma, minus_zero, plus_infty, -1, DIVIDE_BY_ZERO_EXCEPTION),
+    TEST_f_f1 (lgamma, qnan_value, qnan_value, IGNORE),
+
+    /* lgamma (x) == +inf plus divide by zero exception for integer x <= 0.  */
+    TEST_f_f1 (lgamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
+    TEST_f_f1 (lgamma, minus_infty, plus_infty, IGNORE),
+    TEST_f_f1 (lgamma, -max_value, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION),
+    TEST_f_f1 (lgamma, max_value, plus_infty, 1, OVERFLOW_EXCEPTION),
+
+    TEST_f_f1 (lgamma, 1, 0, 1),
+
+    TEST_f_f1 (lgamma, 3, M_LN2l, 1),
+
+    TEST_f_f1 (lgamma, 0.5, M_LOG_SQRT_PIl, 1),
+    TEST_f_f1 (lgamma, -0.5, M_LOG_2_SQRT_PIl, -1),
+    TEST_f_f1 (lgamma, 0.7L, 0.260867246531666514385732417016759578L, 1),
+    TEST_f_f1 (lgamma, 1.2L, -0.853740900033158497197028392998854470e-1L, 1),
+    END_DATA (lgamma)
+  };
+
 static void
 lgamma_test (void)
 {
@@ -10097,27 +10247,7 @@ lgamma_test (void)
     return;
 
   START (lgamma);
-
-  TEST_f_f1 (lgamma, plus_infty, plus_infty, 1);
-  TEST_f_f1 (lgamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f1 (lgamma, minus_zero, plus_infty, -1, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f1 (lgamma, qnan_value, qnan_value, IGNORE);
-
-  /* lgamma (x) == +inf plus divide by zero exception for integer x <= 0.  */
-  TEST_f_f1 (lgamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE);
-  TEST_f_f1 (lgamma, minus_infty, plus_infty, IGNORE);
-  TEST_f_f1 (lgamma, -max_value, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION);
-  TEST_f_f1 (lgamma, max_value, plus_infty, 1, OVERFLOW_EXCEPTION);
-
-  TEST_f_f1 (lgamma, 1, 0, 1);
-
-  TEST_f_f1 (lgamma, 3, M_LN2l, 1);
-
-  TEST_f_f1 (lgamma, 0.5, M_LOG_SQRT_PIl, 1);
-  TEST_f_f1 (lgamma, -0.5, M_LOG_2_SQRT_PIl, -1);
-  TEST_f_f1 (lgamma, 0.7L, 0.260867246531666514385732417016759578L, 1);
-  TEST_f_f1 (lgamma, 1.2L, -0.853740900033158497197028392998854470e-1L, 1);
-
+  RUN_TEST_LOOP_f_f1 (lgamma, lgamma_test_data, , signgam);
   END (lgamma);
 }
 
@@ -11434,24 +11564,29 @@ llround_test (void)
   END (llround);
 }
 
+static const struct test_fF_f1_data modf_test_data[] =
+  {
+    START_DATA (modf),
+    TEST_fF_f1 (modf, plus_infty, 0, plus_infty),
+    TEST_fF_f1 (modf, minus_infty, minus_zero, minus_infty),
+    TEST_fF_f1 (modf, qnan_value, qnan_value, qnan_value),
+    TEST_fF_f1 (modf, 0, 0, 0),
+    TEST_fF_f1 (modf, 1.5, 0.5, 1),
+    TEST_fF_f1 (modf, 2.5, 0.5, 2),
+    TEST_fF_f1 (modf, -2.5, -0.5, -2),
+    TEST_fF_f1 (modf, 20, 0, 20),
+    TEST_fF_f1 (modf, 21, 0, 21),
+    TEST_fF_f1 (modf, 89.5, 0.5, 89),
+    END_DATA (modf)
+  };
+
 static void
 modf_test (void)
 {
   FLOAT x;
 
   START (modf);
-
-  TEST_fF_f1 (modf, plus_infty, 0, plus_infty);
-  TEST_fF_f1 (modf, minus_infty, minus_zero, minus_infty);
-  TEST_fF_f1 (modf, qnan_value, qnan_value, qnan_value);
-  TEST_fF_f1 (modf, 0, 0, 0);
-  TEST_fF_f1 (modf, 1.5, 0.5, 1);
-  TEST_fF_f1 (modf, 2.5, 0.5, 2);
-  TEST_fF_f1 (modf, -2.5, -0.5, -2);
-  TEST_fF_f1 (modf, 20, 0, 20);
-  TEST_fF_f1 (modf, 21, 0, 21);
-  TEST_fF_f1 (modf, 89.5, 0.5, 89);
-
+  RUN_TEST_LOOP_fF_f1 (modf, modf_test_data, , x);
   END (modf);
 }
 
@@ -12506,6 +12641,25 @@ remainder_test (void)
   END (remainder);
 }
 
+static const struct test_ffI_f1_data remquo_test_data[] =
+  {
+    START_DATA (remquo),
+    TEST_ffI_f1 (remquo, 1, 0, qnan_value, IGNORE, INVALID_EXCEPTION),
+    TEST_ffI_f1 (remquo, 1, minus_zero, qnan_value, IGNORE, INVALID_EXCEPTION),
+    TEST_ffI_f1 (remquo, plus_infty, 1, qnan_value, IGNORE, INVALID_EXCEPTION),
+    TEST_ffI_f1 (remquo, minus_infty, 1, qnan_value, IGNORE, INVALID_EXCEPTION),
+    TEST_ffI_f1 (remquo, qnan_value, qnan_value, qnan_value, IGNORE),
+
+    TEST_ffI_f1 (remquo, 1.625, 1.0, -0.375, 2),
+    TEST_ffI_f1 (remquo, -1.625, 1.0, 0.375, -2),
+    TEST_ffI_f1 (remquo, 1.625, -1.0, -0.375, -2),
+    TEST_ffI_f1 (remquo, -1.625, -1.0, 0.375, 2),
+
+    TEST_ffI_f1 (remquo, 5, 2, 1, 2),
+    TEST_ffI_f1 (remquo, 3, 2, -1, 2),
+    END_DATA (remquo)
+  };
+
 static void
 remquo_test (void)
 {
@@ -12519,21 +12673,7 @@ remquo_test (void)
     return;
 
   START (remquo);
-
-  TEST_ffI_f1 (remquo, 1, 0, qnan_value, IGNORE, INVALID_EXCEPTION);
-  TEST_ffI_f1 (remquo, 1, minus_zero, qnan_value, IGNORE, INVALID_EXCEPTION);
-  TEST_ffI_f1 (remquo, plus_infty, 1, qnan_value, IGNORE, INVALID_EXCEPTION);
-  TEST_ffI_f1 (remquo, minus_infty, 1, qnan_value, IGNORE, INVALID_EXCEPTION);
-  TEST_ffI_f1 (remquo, qnan_value, qnan_value, qnan_value, IGNORE);
-
-  TEST_ffI_f1 (remquo, 1.625, 1.0, -0.375, 2);
-  TEST_ffI_f1 (remquo, -1.625, 1.0, 0.375, -2);
-  TEST_ffI_f1 (remquo, 1.625, -1.0, -0.375, -2);
-  TEST_ffI_f1 (remquo, -1.625, -1.0, 0.375, 2);
-
-  TEST_ffI_f1 (remquo, 5, 2, 1, 2);
-  TEST_ffI_f1 (remquo, 3, 2, -1, 2);
-
+  RUN_TEST_LOOP_ffI_f1 (remquo, remquo_test_data, , x);
   END (remquo);
 }
 
@@ -13256,7 +13396,7 @@ scalbln_test (void)
 
   START (scalbln);
   RUN_TEST_LOOP_fl_f (scalbln, scalbln_test_data, );
-  END (scalbn);
+  END (scalbln);
 }
 
 

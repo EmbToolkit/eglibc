@@ -1,3 +1,105 @@
+2013-05-13  Peter Collingbourne  <pcc@google.com>
+
+	* math/atest-exp2.c (get_log2): Remove const attribute.
+
+2013-05-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (struct test_f_l_data): New type.
+	(RUN_TEST_LOOP_f_l): New macro.
+	(lrint_test_data): New variable.
+	(lrint_test): Run tests with RUN_TEST_LOOP_f_l.
+	(lrint_tonearest_test_data): New variable.
+	(lrint_test_tonearest): Run tests with RUN_TEST_LOOP_f_l.
+	(lrint_towardzero_test_data): New variable.
+	(lrint_test_towardzero): Run tests with RUN_TEST_LOOP_f_l.
+	(lrint_downward_test_data): New variable.
+	(lrint_test_downward): Run tests with RUN_TEST_LOOP_f_l.
+	(lrint_upward_test_data): New variable.
+	(lrint_test_upward): Run tests with RUN_TEST_LOOP_f_l.
+	(lround_test_data): New variable.
+	(lround_test): Run tests with RUN_TEST_LOOP_f_l.
+
+2013-05-15  Peter Collingbourne  <pcc@google.com>
+
+	* sysdeps/x86_64/fpu/math_private.h (MOVQ): New macro.
+	(EXTRACT_WORDS64) Use where appropriate.
+	(INSERT_WORDS64) Likewise.
+
+	* sysdeps/x86_64/fpu/multiarch/s_fma.c (__fma_fma4): Replace xm
+	constraints with x constraints.
+	* sysdeps/x86_64/fpu/multiarch/s_fmaf.c (__fmaf_fma4): Likewise.
+
+	* malloc/obstack.c (_obstack_compat): Add initializer.
+
+2013-05-15  Edjunior Machado  <emachado@linux.vnet.ibm.com>
+
+	* sysdeps/unix/sysv/linux/s390/bits/siginfo.h (siginfo_t): Remove
+	si_trapno and add si_addr_lsb to _sifields.sigfault.
+	(si_trapno): Remove macro.
+	(si_addr_lsb): Define new macro.
+	(BUS_MCEERR_AR, BUS_MCEERR_AO): Define new values.
+
+2013-05-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (llrint_test): Consistently use TEST_f_L
+	instead of TEST_f_l.
+	(llrint_test_tonearest): Likewise.
+	(llrint_test_towardzero): Likewise.
+	(llrint_test_downward): Likewise.
+	(llrint_test_upward): Likewise.
+	(llround_test): Likewise.
+
+	* math/libm-test.inc (struct test_f_i_data): Add comment.
+	(RUN_TEST_LOOP_f_b): New macro.
+	(RUN_TEST_LOOP_f_b_tg): Likewise.
+	(finite_test_data): New variable.
+	(finite_test): Run tests with RUN_TEST_LOOP_f_b.
+	(isfinite_test_data): New variable.
+	(isfinite_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+	(isinf_test_data): New variable.
+	(isinf_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+	(isnan_test_data): New variable.
+	(isnan_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+	(isnormal_test_data): New variable.
+	(isnormal_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+	(issignaling_test_data): New variable.
+	(issignaling_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+	(signbit_test_data): New variable.
+	(signbit_test): Run tests with RUN_TEST_LOOP_f_b_tg.
+
+	* math/libm-test.inc (acos_test_data): Use ERRNO_EDOM together
+	with INVALID_EXCEPTION.
+	(acosh_test_data): Likewise.
+	(asin_test_data): Likewise.
+	(atanh_test_data): Likewise.
+	(fmod_test_data): Likewise.
+	(log_test_data): Likewise.
+	(log10_test_data): Likewise.
+	(log2_test_data): Likewise.
+	(pow_test_data): Likewise.
+	(sqrt_test_data): Likewise.
+	(y0_test_data): Likewise.
+	(y1_test_data): Likewise.
+	(yn_test_data): Likewise.
+
+	* math/libm-test.inc (test_single_errno) [TEST_INLINE]: Disable
+	function contents.
+
+	* math/libm-test.inc (struct test_ff_i_data): New type.
+	(RUN_TEST_LOOP_ff_i_tg): New macro.
+	(isgreater_test_data): New variable.
+	(isgreater_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+	(isgreaterequal_test_data): New variable.
+	(isgreaterequal_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+	(isless_test_data): New variable.
+	(isless_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+	(islessequal_test_data): New variable.
+	(islessequal_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+	(islessgreater_test_data): New variable.
+	(islessgreater_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+	(isunordered_test_data): New variable.
+	(isunordered_test): Run tests with RUN_TEST_LOOP_ff_i_tg.
+
 2013-05-14  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/fpu/libm-test-ulps: Update.

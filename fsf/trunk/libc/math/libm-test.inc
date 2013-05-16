@@ -560,6 +560,7 @@ static void
 test_single_errno (const char *test_name, int errno_value,
 		   int expected_value, const char *expected_name)
 {
+#ifndef TEST_INLINE
   if (errno_value == expected_value)
     {
       if (print_screen (1))
@@ -573,6 +574,7 @@ test_single_errno (const char *test_name, int errno_value,
 	printf ("Failure: %s: errno set to %d, expected %d (%s)\n",
 		test_name, errno_value, expected_value, expected_name);
     }
+#endif
 }
 
 /* Test whether errno (value ERRNO_VALUE) has been for TEST_NAME set
@@ -981,12 +983,30 @@ struct test_c_c_data
   __complex__ FLOAT max_ulp;
   int exceptions;
 };
+/* Used for all of RUN_TEST_LOOP_f_i, RUN_TEST_LOOP_f_i_tg,
+   RUN_TEST_LOOP_f_b and RUN_TEST_LOOP_f_b_tg.  */
 struct test_f_i_data
 {
   const char *test_name;
   FLOAT arg;
   int expected;
   int max_ulp;
+  int exceptions;
+};
+struct test_ff_i_data
+{
+  const char *test_name;
+  FLOAT arg1, arg2;
+  int expected;
+  int max_ulp;
+  int exceptions;
+};
+struct test_f_l_data
+{
+  const char *test_name;
+  FLOAT arg;
+  long int expected;
+  long int max_ulp;
   int exceptions;
 };
 
@@ -1216,18 +1236,47 @@ struct test_f_i_data
 			 MAX_ULP, EXCEPTIONS)				\
   check_int (TEST_NAME, FUNC_NAME (ARG1, ARG2), EXPECTED,		\
 	     MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_ff_i_tg(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_ff_i_tg ((ARRAY)[i].test_name, FUNC_NAME,		\
+			(ARRAY)[i].arg1, (ARRAY)[i].arg2,		\
+			(ARRAY)[i].expected, (ARRAY)[i].max_ulp,	\
+			(ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_f_b(TEST_NAME, FUNC_NAME, ARG, EXPECTED,	\
 		     MAX_ULP, EXCEPTIONS)			\
   check_bool (TEST_NAME, FUNC (FUNC_NAME) (ARG), EXPECTED,	\
 	      MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_f_b(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_b ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		    (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		    (ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_f_b_tg(TEST_NAME, FUNC_NAME, ARG, EXPECTED,	\
 			MAX_ULP, EXCEPTIONS)			\
   check_bool (TEST_NAME, FUNC_NAME (ARG), EXPECTED,		\
 	      MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_f_b_tg(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_b_tg ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		       (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		       (ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_f_l(TEST_NAME, FUNC_NAME, ARG, EXPECTED,	\
 		     MAX_ULP, EXCEPTIONS)			\
   check_long (TEST_NAME, FUNC (FUNC_NAME) (ARG), EXPECTED,	\
 	      MAX_ULP, EXCEPTIONS)
+#define RUN_TEST_LOOP_f_l(FUNC_NAME, ARRAY, ROUNDING_MODE)		\
+  IF_ROUND_INIT_ ## ROUNDING_MODE					\
+    for (size_t i = 0; i < sizeof (ARRAY) / sizeof (ARRAY)[0]; i++)	\
+      RUN_TEST_f_l ((ARRAY)[i].test_name, FUNC_NAME, (ARRAY)[i].arg,	\
+		    (ARRAY)[i].expected, (ARRAY)[i].max_ulp,		\
+		    (ARRAY)[i].exceptions);				\
+  ROUND_RESTORE_ ## ROUNDING_MODE
 #define RUN_TEST_f_L(TEST_NAME, FUNC_NAME, ARG, EXPECTED,	\
 		     MAX_ULP, EXCEPTIONS)			\
   check_longlong (TEST_NAME, FUNC (FUNC_NAME) (ARG), EXPECTED,	\
@@ -1263,15 +1312,15 @@ matherr (struct exception *x __attribute__ ((unused)))
 static const struct test_f_f_data acos_test_data[] =
   {
     START_DATA (acos),
-    TEST_f_f (acos, plus_infty, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (acos, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (acos, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (acos, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (acos, qnan_value, qnan_value),
 
     /* |x| > 1: */
-    TEST_f_f (acos, 1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (acos, -1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (acos, max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (acos, -max_value, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (acos, 1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (acos, -1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (acos, max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (acos, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (acos, 0, M_PI_2l),
     TEST_f_f (acos, minus_zero, M_PI_2l),
@@ -1423,12 +1472,12 @@ static const struct test_f_f_data acosh_test_data[] =
   {
     START_DATA (acosh),
     TEST_f_f (acosh, plus_infty, plus_infty),
-    TEST_f_f (acosh, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (acosh, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (acosh, qnan_value, qnan_value),
 
     /* x < 1:  */
-    TEST_f_f (acosh, -1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (acosh, -max_value, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (acosh, -1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (acosh, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (acosh, 1, 0),
     TEST_f_f (acosh, 7, 2.63391579384963341725009269461593689L),
@@ -1452,15 +1501,15 @@ acosh_test (void)
 static const struct test_f_f_data asin_test_data[] =
   {
     START_DATA (asin),
-    TEST_f_f (asin, plus_infty, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (asin, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (asin, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (asin, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (asin, qnan_value, qnan_value),
 
     /* asin x == qNaN plus invalid exception for |x| > 1.  */
-    TEST_f_f (asin, 1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (asin, -1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (asin, max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (asin, -max_value, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (asin, 1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (asin, -1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (asin, max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (asin, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (asin, 0, 0),
     TEST_f_f (asin, minus_zero, minus_zero),
@@ -1688,10 +1737,10 @@ static const struct test_f_f_data atanh_test_data[] =
     TEST_f_f (atanh, qnan_value, qnan_value),
 
     /* atanh (x) == qNaN plus invalid exception if |x| > 1.  */
-    TEST_f_f (atanh, 1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (atanh, -1.125L, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (atanh, max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (atanh, -max_value, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (atanh, 1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (atanh, -1.125L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (atanh, max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (atanh, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (atanh, 0.75L, 0.972955074527656652552676371721589865L),
     END_DATA (atanh)
@@ -8378,19 +8427,24 @@ fdim_test (void)
 }
 
 
+static const struct test_f_i_data finite_test_data[] =
+  {
+    START_DATA (finite),
+    TEST_f_b (finite, 0, 1),
+    TEST_f_b (finite, minus_zero, 1),
+    TEST_f_b (finite, 10, 1),
+    TEST_f_b (finite, min_subnorm_value, 1),
+    TEST_f_b (finite, plus_infty, 0),
+    TEST_f_b (finite, minus_infty, 0),
+    TEST_f_b (finite, qnan_value, 0),
+    END_DATA (finite)
+  };
+
 static void
 finite_test (void)
 {
   START (finite);
-
-  TEST_f_b (finite, 0, 1);
-  TEST_f_b (finite, minus_zero, 1);
-  TEST_f_b (finite, 10, 1);
-  TEST_f_b (finite, min_subnorm_value, 1);
-  TEST_f_b (finite, plus_infty, 0);
-  TEST_f_b (finite, minus_infty, 0);
-  TEST_f_b (finite, qnan_value, 0);
-
+  RUN_TEST_LOOP_f_b (finite, finite_test_data, );
   END (finite);
 }
 
@@ -9547,7 +9601,7 @@ static const struct test_ff_f_data fmod_test_data[] =
     /* fmod (x, +0) == qNaN plus invalid exception.  */
     TEST_ff_f (fmod, 3, 0, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     /* fmod (x, -0) == qNaN plus invalid exception.  */
-    TEST_ff_f (fmod, 3, minus_zero, qnan_value, INVALID_EXCEPTION),
+    TEST_ff_f (fmod, 3, minus_zero, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     /* fmod (x, +inf) == x for x not infinite.  */
     TEST_ff_f (fmod, 3.0, plus_infty, 3.0),
@@ -9762,233 +9816,288 @@ ilogb_test (void)
   END (ilogb);
 }
 
+static const struct test_f_i_data isfinite_test_data[] =
+  {
+    START_DATA (isfinite),
+    TEST_f_b (isfinite, 0, 1),
+    TEST_f_b (isfinite, minus_zero, 1),
+    TEST_f_b (isfinite, 10, 1),
+    TEST_f_b (isfinite, min_subnorm_value, 1),
+    TEST_f_b (isfinite, plus_infty, 0),
+    TEST_f_b (isfinite, minus_infty, 0),
+    TEST_f_b (isfinite, qnan_value, 0),
+    END_DATA (isfinite)
+  };
+
 static void
 isfinite_test (void)
 {
   START (isfinite);
-
-  TEST_f_b (isfinite, 0, 1);
-  TEST_f_b (isfinite, minus_zero, 1);
-  TEST_f_b (isfinite, 10, 1);
-  TEST_f_b (isfinite, min_subnorm_value, 1);
-  TEST_f_b (isfinite, plus_infty, 0);
-  TEST_f_b (isfinite, minus_infty, 0);
-  TEST_f_b (isfinite, qnan_value, 0);
-
+  RUN_TEST_LOOP_f_b_tg (isfinite, isfinite_test_data, );
   END (isfinite);
 }
+
+static const struct test_ff_i_data isgreater_test_data[] =
+  {
+    START_DATA (isgreater),
+    TEST_ff_i (isgreater, minus_zero, minus_zero, 0),
+    TEST_ff_i (isgreater, minus_zero, plus_zero, 0),
+    TEST_ff_i (isgreater, minus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isgreater, minus_zero, qnan_value, 0),
+    TEST_ff_i (isgreater, plus_zero, minus_zero, 0),
+    TEST_ff_i (isgreater, plus_zero, plus_zero, 0),
+    TEST_ff_i (isgreater, plus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isgreater, plus_zero, qnan_value, 0),
+    TEST_ff_i (isgreater, (FLOAT) 1, minus_zero, 1),
+    TEST_ff_i (isgreater, (FLOAT) 1, plus_zero, 1),
+    TEST_ff_i (isgreater, (FLOAT) 1, (FLOAT) 1, 0),
+    TEST_ff_i (isgreater, (FLOAT) 1, qnan_value, 0),
+    TEST_ff_i (isgreater, qnan_value, minus_zero, 0),
+    TEST_ff_i (isgreater, qnan_value, plus_zero, 0),
+    TEST_ff_i (isgreater, qnan_value, (FLOAT) 1, 0),
+    TEST_ff_i (isgreater, qnan_value, qnan_value, 0),
+    END_DATA (isgreater)
+  };
 
 static void
 isgreater_test (void)
 {
   START (isgreater);
-
-  TEST_ff_i (isgreater, minus_zero, minus_zero, 0);
-  TEST_ff_i (isgreater, minus_zero, plus_zero, 0);
-  TEST_ff_i (isgreater, minus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isgreater, minus_zero, qnan_value, 0);
-  TEST_ff_i (isgreater, plus_zero, minus_zero, 0);
-  TEST_ff_i (isgreater, plus_zero, plus_zero, 0);
-  TEST_ff_i (isgreater, plus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isgreater, plus_zero, qnan_value, 0);
-  TEST_ff_i (isgreater, (FLOAT) 1, minus_zero, 1);
-  TEST_ff_i (isgreater, (FLOAT) 1, plus_zero, 1);
-  TEST_ff_i (isgreater, (FLOAT) 1, (FLOAT) 1, 0);
-  TEST_ff_i (isgreater, (FLOAT) 1, qnan_value, 0);
-  TEST_ff_i (isgreater, qnan_value, minus_zero, 0);
-  TEST_ff_i (isgreater, qnan_value, plus_zero, 0);
-  TEST_ff_i (isgreater, qnan_value, (FLOAT) 1, 0);
-  TEST_ff_i (isgreater, qnan_value, qnan_value, 0);
-
+  RUN_TEST_LOOP_ff_i_tg (isgreater, isgreater_test_data, );
   END (isgreater);
 }
+
+static const struct test_ff_i_data isgreaterequal_test_data[] =
+  {
+    START_DATA (isgreaterequal),
+    TEST_ff_i (isgreaterequal, minus_zero, minus_zero, 1),
+    TEST_ff_i (isgreaterequal, minus_zero, plus_zero, 1),
+    TEST_ff_i (isgreaterequal, minus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isgreaterequal, minus_zero, qnan_value, 0),
+    TEST_ff_i (isgreaterequal, plus_zero, minus_zero, 1),
+    TEST_ff_i (isgreaterequal, plus_zero, plus_zero, 1),
+    TEST_ff_i (isgreaterequal, plus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isgreaterequal, plus_zero, qnan_value, 0),
+    TEST_ff_i (isgreaterequal, (FLOAT) 1, minus_zero, 1),
+    TEST_ff_i (isgreaterequal, (FLOAT) 1, plus_zero, 1),
+    TEST_ff_i (isgreaterequal, (FLOAT) 1, (FLOAT) 1, 1),
+    TEST_ff_i (isgreaterequal, (FLOAT) 1, qnan_value, 0),
+    TEST_ff_i (isgreaterequal, qnan_value, minus_zero, 0),
+    TEST_ff_i (isgreaterequal, qnan_value, plus_zero, 0),
+    TEST_ff_i (isgreaterequal, qnan_value, (FLOAT) 1, 0),
+    TEST_ff_i (isgreaterequal, qnan_value, qnan_value, 0),
+    END_DATA (isgreaterequal)
+  };
 
 static void
 isgreaterequal_test (void)
 {
   START (isgreaterequal);
-
-  TEST_ff_i (isgreaterequal, minus_zero, minus_zero, 1);
-  TEST_ff_i (isgreaterequal, minus_zero, plus_zero, 1);
-  TEST_ff_i (isgreaterequal, minus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isgreaterequal, minus_zero, qnan_value, 0);
-  TEST_ff_i (isgreaterequal, plus_zero, minus_zero, 1);
-  TEST_ff_i (isgreaterequal, plus_zero, plus_zero, 1);
-  TEST_ff_i (isgreaterequal, plus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isgreaterequal, plus_zero, qnan_value, 0);
-  TEST_ff_i (isgreaterequal, (FLOAT) 1, minus_zero, 1);
-  TEST_ff_i (isgreaterequal, (FLOAT) 1, plus_zero, 1);
-  TEST_ff_i (isgreaterequal, (FLOAT) 1, (FLOAT) 1, 1);
-  TEST_ff_i (isgreaterequal, (FLOAT) 1, qnan_value, 0);
-  TEST_ff_i (isgreaterequal, qnan_value, minus_zero, 0);
-  TEST_ff_i (isgreaterequal, qnan_value, plus_zero, 0);
-  TEST_ff_i (isgreaterequal, qnan_value, (FLOAT) 1, 0);
-  TEST_ff_i (isgreaterequal, qnan_value, qnan_value, 0);
-
+  RUN_TEST_LOOP_ff_i_tg (isgreaterequal, isgreaterequal_test_data, );
   END (isgreaterequal);
 }
+
+static const struct test_f_i_data isinf_test_data[] =
+  {
+    START_DATA (isinf),
+    TEST_f_b (isinf, 0, 0),
+    TEST_f_b (isinf, minus_zero, 0),
+    TEST_f_b (isinf, 10, 0),
+    TEST_f_b (isinf, min_subnorm_value, 0),
+    TEST_f_b (isinf, plus_infty, 1),
+    TEST_f_b (isinf, minus_infty, 1),
+    TEST_f_b (isinf, qnan_value, 0),
+    END_DATA (isinf)
+  };
 
 static void
 isinf_test (void)
 {
   START (isinf);
-
-  TEST_f_b (isinf, 0, 0);
-  TEST_f_b (isinf, minus_zero, 0);
-  TEST_f_b (isinf, 10, 0);
-  TEST_f_b (isinf, min_subnorm_value, 0);
-  TEST_f_b (isinf, plus_infty, 1);
-  TEST_f_b (isinf, minus_infty, 1);
-  TEST_f_b (isinf, qnan_value, 0);
-
+  RUN_TEST_LOOP_f_b_tg (isinf, isinf_test_data, );
   END (isinf);
 }
+
+static const struct test_ff_i_data isless_test_data[] =
+  {
+    START_DATA (isless),
+    TEST_ff_i (isless, minus_zero, minus_zero, 0),
+    TEST_ff_i (isless, minus_zero, plus_zero, 0),
+    TEST_ff_i (isless, minus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (isless, minus_zero, qnan_value, 0),
+    TEST_ff_i (isless, plus_zero, minus_zero, 0),
+    TEST_ff_i (isless, plus_zero, plus_zero, 0),
+    TEST_ff_i (isless, plus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (isless, plus_zero, qnan_value, 0),
+    TEST_ff_i (isless, (FLOAT) 1, minus_zero, 0),
+    TEST_ff_i (isless, (FLOAT) 1, plus_zero, 0),
+    TEST_ff_i (isless, (FLOAT) 1, (FLOAT) 1, 0),
+    TEST_ff_i (isless, (FLOAT) 1, qnan_value, 0),
+    TEST_ff_i (isless, qnan_value, minus_zero, 0),
+    TEST_ff_i (isless, qnan_value, plus_zero, 0),
+    TEST_ff_i (isless, qnan_value, (FLOAT) 1, 0),
+    TEST_ff_i (isless, qnan_value, qnan_value, 0),
+    END_DATA (isless)
+  };
 
 static void
 isless_test (void)
 {
   START (isless);
-
-  TEST_ff_i (isless, minus_zero, minus_zero, 0);
-  TEST_ff_i (isless, minus_zero, plus_zero, 0);
-  TEST_ff_i (isless, minus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (isless, minus_zero, qnan_value, 0);
-  TEST_ff_i (isless, plus_zero, minus_zero, 0);
-  TEST_ff_i (isless, plus_zero, plus_zero, 0);
-  TEST_ff_i (isless, plus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (isless, plus_zero, qnan_value, 0);
-  TEST_ff_i (isless, (FLOAT) 1, minus_zero, 0);
-  TEST_ff_i (isless, (FLOAT) 1, plus_zero, 0);
-  TEST_ff_i (isless, (FLOAT) 1, (FLOAT) 1, 0);
-  TEST_ff_i (isless, (FLOAT) 1, qnan_value, 0);
-  TEST_ff_i (isless, qnan_value, minus_zero, 0);
-  TEST_ff_i (isless, qnan_value, plus_zero, 0);
-  TEST_ff_i (isless, qnan_value, (FLOAT) 1, 0);
-  TEST_ff_i (isless, qnan_value, qnan_value, 0);
-
+  RUN_TEST_LOOP_ff_i_tg (isless, isless_test_data, );
   END (isless);
 }
+
+static const struct test_ff_i_data islessequal_test_data[] =
+  {
+    START_DATA (islessequal),
+    TEST_ff_i (islessequal, minus_zero, minus_zero, 1),
+    TEST_ff_i (islessequal, minus_zero, plus_zero, 1),
+    TEST_ff_i (islessequal, minus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (islessequal, minus_zero, qnan_value, 0),
+    TEST_ff_i (islessequal, plus_zero, minus_zero, 1),
+    TEST_ff_i (islessequal, plus_zero, plus_zero, 1),
+    TEST_ff_i (islessequal, plus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (islessequal, plus_zero, qnan_value, 0),
+    TEST_ff_i (islessequal, (FLOAT) 1, minus_zero, 0),
+    TEST_ff_i (islessequal, (FLOAT) 1, plus_zero, 0),
+    TEST_ff_i (islessequal, (FLOAT) 1, (FLOAT) 1, 1),
+    TEST_ff_i (islessequal, (FLOAT) 1, qnan_value, 0),
+    TEST_ff_i (islessequal, qnan_value, minus_zero, 0),
+    TEST_ff_i (islessequal, qnan_value, plus_zero, 0),
+    TEST_ff_i (islessequal, qnan_value, (FLOAT) 1, 0),
+    TEST_ff_i (islessequal, qnan_value, qnan_value, 0),
+    END_DATA (islessequal)
+  };
 
 static void
 islessequal_test (void)
 {
   START (islessequal);
-
-  TEST_ff_i (islessequal, minus_zero, minus_zero, 1);
-  TEST_ff_i (islessequal, minus_zero, plus_zero, 1);
-  TEST_ff_i (islessequal, minus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (islessequal, minus_zero, qnan_value, 0);
-  TEST_ff_i (islessequal, plus_zero, minus_zero, 1);
-  TEST_ff_i (islessequal, plus_zero, plus_zero, 1);
-  TEST_ff_i (islessequal, plus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (islessequal, plus_zero, qnan_value, 0);
-  TEST_ff_i (islessequal, (FLOAT) 1, minus_zero, 0);
-  TEST_ff_i (islessequal, (FLOAT) 1, plus_zero, 0);
-  TEST_ff_i (islessequal, (FLOAT) 1, (FLOAT) 1, 1);
-  TEST_ff_i (islessequal, (FLOAT) 1, qnan_value, 0);
-  TEST_ff_i (islessequal, qnan_value, minus_zero, 0);
-  TEST_ff_i (islessequal, qnan_value, plus_zero, 0);
-  TEST_ff_i (islessequal, qnan_value, (FLOAT) 1, 0);
-  TEST_ff_i (islessequal, qnan_value, qnan_value, 0);
-
+  RUN_TEST_LOOP_ff_i_tg (islessequal, islessequal_test_data, );
   END (islessequal);
 }
+
+static const struct test_ff_i_data islessgreater_test_data[] =
+  {
+    START_DATA (islessgreater),
+    TEST_ff_i (islessgreater, minus_zero, minus_zero, 0),
+    TEST_ff_i (islessgreater, minus_zero, plus_zero, 0),
+    TEST_ff_i (islessgreater, minus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (islessgreater, minus_zero, qnan_value, 0),
+    TEST_ff_i (islessgreater, plus_zero, minus_zero, 0),
+    TEST_ff_i (islessgreater, plus_zero, plus_zero, 0),
+    TEST_ff_i (islessgreater, plus_zero, (FLOAT) 1, 1),
+    TEST_ff_i (islessgreater, plus_zero, qnan_value, 0),
+    TEST_ff_i (islessgreater, (FLOAT) 1, minus_zero, 1),
+    TEST_ff_i (islessgreater, (FLOAT) 1, plus_zero, 1),
+    TEST_ff_i (islessgreater, (FLOAT) 1, (FLOAT) 1, 0),
+    TEST_ff_i (islessgreater, (FLOAT) 1, qnan_value, 0),
+    TEST_ff_i (islessgreater, qnan_value, minus_zero, 0),
+    TEST_ff_i (islessgreater, qnan_value, plus_zero, 0),
+    TEST_ff_i (islessgreater, qnan_value, (FLOAT) 1, 0),
+    TEST_ff_i (islessgreater, qnan_value, qnan_value, 0),
+    END_DATA (islessgreater)
+  };
 
 static void
 islessgreater_test (void)
 {
   START (islessgreater);
-
-  TEST_ff_i (islessgreater, minus_zero, minus_zero, 0);
-  TEST_ff_i (islessgreater, minus_zero, plus_zero, 0);
-  TEST_ff_i (islessgreater, minus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (islessgreater, minus_zero, qnan_value, 0);
-  TEST_ff_i (islessgreater, plus_zero, minus_zero, 0);
-  TEST_ff_i (islessgreater, plus_zero, plus_zero, 0);
-  TEST_ff_i (islessgreater, plus_zero, (FLOAT) 1, 1);
-  TEST_ff_i (islessgreater, plus_zero, qnan_value, 0);
-  TEST_ff_i (islessgreater, (FLOAT) 1, minus_zero, 1);
-  TEST_ff_i (islessgreater, (FLOAT) 1, plus_zero, 1);
-  TEST_ff_i (islessgreater, (FLOAT) 1, (FLOAT) 1, 0);
-  TEST_ff_i (islessgreater, (FLOAT) 1, qnan_value, 0);
-  TEST_ff_i (islessgreater, qnan_value, minus_zero, 0);
-  TEST_ff_i (islessgreater, qnan_value, plus_zero, 0);
-  TEST_ff_i (islessgreater, qnan_value, (FLOAT) 1, 0);
-  TEST_ff_i (islessgreater, qnan_value, qnan_value, 0);
-
+  RUN_TEST_LOOP_ff_i_tg (islessgreater, islessgreater_test_data, );
   END (islessgreater);
 }
+
+static const struct test_f_i_data isnan_test_data[] =
+  {
+    START_DATA (isnan),
+    TEST_f_b (isnan, 0, 0),
+    TEST_f_b (isnan, minus_zero, 0),
+    TEST_f_b (isnan, 10, 0),
+    TEST_f_b (isnan, min_subnorm_value, 0),
+    TEST_f_b (isnan, plus_infty, 0),
+    TEST_f_b (isnan, minus_infty, 0),
+    TEST_f_b (isnan, qnan_value, 1),
+    END_DATA (isnan)
+  };
 
 static void
 isnan_test (void)
 {
   START (isnan);
-
-  TEST_f_b (isnan, 0, 0);
-  TEST_f_b (isnan, minus_zero, 0);
-  TEST_f_b (isnan, 10, 0);
-  TEST_f_b (isnan, min_subnorm_value, 0);
-  TEST_f_b (isnan, plus_infty, 0);
-  TEST_f_b (isnan, minus_infty, 0);
-  TEST_f_b (isnan, qnan_value, 1);
-
+  RUN_TEST_LOOP_f_b_tg (isnan, isnan_test_data, );
   END (isnan);
 }
+
+static const struct test_f_i_data isnormal_test_data[] =
+  {
+    START_DATA (isnormal),
+    TEST_f_b (isnormal, 0, 0),
+    TEST_f_b (isnormal, minus_zero, 0),
+    TEST_f_b (isnormal, 10, 1),
+    TEST_f_b (isnormal, min_subnorm_value, 0),
+    TEST_f_b (isnormal, plus_infty, 0),
+    TEST_f_b (isnormal, minus_infty, 0),
+    TEST_f_b (isnormal, qnan_value, 0),
+    END_DATA (isnormal)
+  };
 
 static void
 isnormal_test (void)
 {
   START (isnormal);
-
-  TEST_f_b (isnormal, 0, 0);
-  TEST_f_b (isnormal, minus_zero, 0);
-  TEST_f_b (isnormal, 10, 1);
-  TEST_f_b (isnormal, min_subnorm_value, 0);
-  TEST_f_b (isnormal, plus_infty, 0);
-  TEST_f_b (isnormal, minus_infty, 0);
-  TEST_f_b (isnormal, qnan_value, 0);
-
+  RUN_TEST_LOOP_f_b_tg (isnormal, isnormal_test_data, );
   END (isnormal);
 }
+
+static const struct test_f_i_data issignaling_test_data[] =
+  {
+    START_DATA (issignaling),
+    TEST_f_b (issignaling, 0, 0),
+    TEST_f_b (issignaling, minus_zero, 0),
+    TEST_f_b (issignaling, 10, 0),
+    TEST_f_b (issignaling, min_subnorm_value, 0),
+    TEST_f_b (issignaling, plus_infty, 0),
+    TEST_f_b (issignaling, minus_infty, 0),
+    TEST_f_b (issignaling, qnan_value, 0),
+    END_DATA (issignaling)
+  };
 
 static void
 issignaling_test (void)
 {
   START (issignaling);
-
-  TEST_f_b (issignaling, 0, 0);
-  TEST_f_b (issignaling, minus_zero, 0);
-  TEST_f_b (issignaling, 10, 0);
-  TEST_f_b (issignaling, min_subnorm_value, 0);
-  TEST_f_b (issignaling, plus_infty, 0);
-  TEST_f_b (issignaling, minus_infty, 0);
-  TEST_f_b (issignaling, qnan_value, 0);
-
+  RUN_TEST_LOOP_f_b_tg (issignaling, issignaling_test_data, );
   END (issignaling);
 }
+
+static const struct test_ff_i_data isunordered_test_data[] =
+  {
+    START_DATA (isunordered),
+    TEST_ff_i (isunordered, minus_zero, minus_zero, 0),
+    TEST_ff_i (isunordered, minus_zero, plus_zero, 0),
+    TEST_ff_i (isunordered, minus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isunordered, minus_zero, qnan_value, 1),
+    TEST_ff_i (isunordered, plus_zero, minus_zero, 0),
+    TEST_ff_i (isunordered, plus_zero, plus_zero, 0),
+    TEST_ff_i (isunordered, plus_zero, (FLOAT) 1, 0),
+    TEST_ff_i (isunordered, plus_zero, qnan_value, 1),
+    TEST_ff_i (isunordered, (FLOAT) 1, minus_zero, 0),
+    TEST_ff_i (isunordered, (FLOAT) 1, plus_zero, 0),
+    TEST_ff_i (isunordered, (FLOAT) 1, (FLOAT) 1, 0),
+    TEST_ff_i (isunordered, (FLOAT) 1, qnan_value, 1),
+    TEST_ff_i (isunordered, qnan_value, minus_zero, 1),
+    TEST_ff_i (isunordered, qnan_value, plus_zero, 1),
+    TEST_ff_i (isunordered, qnan_value, (FLOAT) 1, 1),
+    TEST_ff_i (isunordered, qnan_value, qnan_value, 1),
+    END_DATA (isunordered)
+  };
 
 static void
 isunordered_test (void)
 {
   START (isunordered);
-
-  TEST_ff_i (isunordered, minus_zero, minus_zero, 0);
-  TEST_ff_i (isunordered, minus_zero, plus_zero, 0);
-  TEST_ff_i (isunordered, minus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isunordered, minus_zero, qnan_value, 1);
-  TEST_ff_i (isunordered, plus_zero, minus_zero, 0);
-  TEST_ff_i (isunordered, plus_zero, plus_zero, 0);
-  TEST_ff_i (isunordered, plus_zero, (FLOAT) 1, 0);
-  TEST_ff_i (isunordered, plus_zero, qnan_value, 1);
-  TEST_ff_i (isunordered, (FLOAT) 1, minus_zero, 0);
-  TEST_ff_i (isunordered, (FLOAT) 1, plus_zero, 0);
-  TEST_ff_i (isunordered, (FLOAT) 1, (FLOAT) 1, 0);
-  TEST_ff_i (isunordered, (FLOAT) 1, qnan_value, 1);
-  TEST_ff_i (isunordered, qnan_value, minus_zero, 1);
-  TEST_ff_i (isunordered, qnan_value, plus_zero, 1);
-  TEST_ff_i (isunordered, qnan_value, (FLOAT) 1, 1);
-  TEST_ff_i (isunordered, qnan_value, qnan_value, 1);
-
+  RUN_TEST_LOOP_ff_i_tg (isunordered, isunordered_test_data, );
   END (isunordered);
 }
 
@@ -10252,195 +10361,187 @@ lgamma_test (void)
 }
 
 
+static const struct test_f_l_data lrint_test_data[] =
+  {
+    START_DATA (lrint),
+    /* XXX this test is incomplete.  We need to have a way to specifiy
+       the rounding method and test the critical cases.  So far, only
+       unproblematic numbers are tested.  */
+    /* TODO: missing +/-Inf as well as qNaN tests.  */
+    TEST_f_l (lrint, 0.0, 0),
+    TEST_f_l (lrint, minus_zero, 0),
+    TEST_f_l (lrint, 0.2L, 0),
+    TEST_f_l (lrint, -0.2L, 0),
+
+    TEST_f_l (lrint, 1.4L, 1),
+    TEST_f_l (lrint, -1.4L, -1),
+
+    TEST_f_l (lrint, 8388600.3L, 8388600),
+    TEST_f_l (lrint, -8388600.3L, -8388600),
+
+    TEST_f_l (lrint, 1071930.0008, 1071930),
+#ifndef TEST_FLOAT
+    TEST_f_l (lrint, 1073741824.01, 1073741824),
+# if LONG_MAX > 281474976710656
+    TEST_f_l (lrint, 281474976710656.025, 281474976710656),
+# endif
+#endif
+    END_DATA (lrint)
+  };
+
 static void
 lrint_test (void)
 {
-  /* XXX this test is incomplete.  We need to have a way to specifiy
-     the rounding method and test the critical cases.  So far, only
-     unproblematic numbers are tested.  */
-  /* TODO: missing +/-Inf as well as qNaN tests.  */
-
   START (lrint);
-
-  TEST_f_l (lrint, 0.0, 0);
-  TEST_f_l (lrint, minus_zero, 0);
-  TEST_f_l (lrint, 0.2L, 0);
-  TEST_f_l (lrint, -0.2L, 0);
-
-  TEST_f_l (lrint, 1.4L, 1);
-  TEST_f_l (lrint, -1.4L, -1);
-
-  TEST_f_l (lrint, 8388600.3L, 8388600);
-  TEST_f_l (lrint, -8388600.3L, -8388600);
-
-  TEST_f_l (lrint, 1071930.0008, 1071930);
-#ifndef TEST_FLOAT
-  TEST_f_l (lrint, 1073741824.01, 1073741824);
-# if LONG_MAX > 281474976710656
-  TEST_f_l (lrint, 281474976710656.025, 281474976710656);
-# endif
-#endif
-
+  RUN_TEST_LOOP_f_l (lrint, lrint_test_data, );
   END (lrint);
 }
 
 
+static const struct test_f_l_data lrint_tonearest_test_data[] =
+  {
+    START_DATA (lrint_tonearest),
+    TEST_f_l (lrint, 0.0, 0),
+    TEST_f_l (lrint, minus_zero, 0),
+    TEST_f_l (lrint, 0.2L, 0),
+    TEST_f_l (lrint, -0.2L, 0),
+    TEST_f_l (lrint, 0.5L, 0),
+    TEST_f_l (lrint, -0.5L, 0),
+    TEST_f_l (lrint, 0.8L, 1),
+    TEST_f_l (lrint, -0.8L, -1),
+
+    TEST_f_l (lrint, 1.4L, 1),
+    TEST_f_l (lrint, -1.4L, -1),
+
+    TEST_f_l (lrint, 8388600.3L, 8388600),
+    TEST_f_l (lrint, -8388600.3L, -8388600),
+
+    TEST_f_l (lrint, 1071930.0008, 1071930),
+#ifndef TEST_FLOAT
+    TEST_f_l (lrint, 1073741824.01, 1073741824),
+# if LONG_MAX > 281474976710656
+    TEST_f_l (lrint, 281474976710656.025, 281474976710656),
+# endif
+#endif
+    END_DATA (lrint_tonearest)
+  };
+
 static void
 lrint_test_tonearest (void)
 {
-  int save_round_mode;
   START (lrint_tonearest);
-
-  save_round_mode = fegetround ();
-
-  if (!fesetround (FE_TONEAREST))
-    {
-      TEST_f_l (lrint, 0.0, 0);
-      TEST_f_l (lrint, minus_zero, 0);
-      TEST_f_l (lrint, 0.2L, 0);
-      TEST_f_l (lrint, -0.2L, 0);
-      TEST_f_l (lrint, 0.5L, 0);
-      TEST_f_l (lrint, -0.5L, 0);
-      TEST_f_l (lrint, 0.8L, 1);
-      TEST_f_l (lrint, -0.8L, -1);
-
-      TEST_f_l (lrint, 1.4L, 1);
-      TEST_f_l (lrint, -1.4L, -1);
-
-      TEST_f_l (lrint, 8388600.3L, 8388600);
-      TEST_f_l (lrint, -8388600.3L, -8388600);
-
-      TEST_f_l (lrint, 1071930.0008, 1071930);
-#ifndef TEST_FLOAT
-      TEST_f_l (lrint, 1073741824.01, 1073741824);
-# if LONG_MAX > 281474976710656
-      TEST_f_l (lrint, 281474976710656.025, 281474976710656);
-# endif
-#endif
-    }
-
-  fesetround (save_round_mode);
-
+  RUN_TEST_LOOP_f_l (lrint, lrint_tonearest_test_data, FE_TONEAREST);
   END (lrint_tonearest);
 }
 
 
+static const struct test_f_l_data lrint_towardzero_test_data[] =
+  {
+    START_DATA (lrint_towardzero),
+    TEST_f_l (lrint, 0.0, 0),
+    TEST_f_l (lrint, minus_zero, 0),
+    TEST_f_l (lrint, 0.2L, 0),
+    TEST_f_l (lrint, -0.2L, 0),
+    TEST_f_l (lrint, 0.5L, 0),
+    TEST_f_l (lrint, -0.5L, 0),
+    TEST_f_l (lrint, 0.8L, 0),
+    TEST_f_l (lrint, -0.8L, 0),
+
+    TEST_f_l (lrint, 1.4L, 1),
+    TEST_f_l (lrint, -1.4L, -1),
+
+    TEST_f_l (lrint, 8388600.3L, 8388600),
+    TEST_f_l (lrint, -8388600.3L, -8388600),
+
+    TEST_f_l (lrint, 1071930.0008, 1071930),
+#ifndef TEST_FLOAT
+    TEST_f_l (lrint, 1073741824.01, 1073741824),
+# if LONG_MAX > 281474976710656
+    TEST_f_l (lrint, 281474976710656.025, 281474976710656),
+# endif
+#endif
+    END_DATA (lrint_towardzero)
+  };
+
 static void
 lrint_test_towardzero (void)
 {
-  int save_round_mode;
   START (lrint_towardzero);
-
-  save_round_mode = fegetround ();
-
-  if (!fesetround (FE_TOWARDZERO))
-    {
-      TEST_f_l (lrint, 0.0, 0);
-      TEST_f_l (lrint, minus_zero, 0);
-      TEST_f_l (lrint, 0.2L, 0);
-      TEST_f_l (lrint, -0.2L, 0);
-      TEST_f_l (lrint, 0.5L, 0);
-      TEST_f_l (lrint, -0.5L, 0);
-      TEST_f_l (lrint, 0.8L, 0);
-      TEST_f_l (lrint, -0.8L, 0);
-
-      TEST_f_l (lrint, 1.4L, 1);
-      TEST_f_l (lrint, -1.4L, -1);
-
-      TEST_f_l (lrint, 8388600.3L, 8388600);
-      TEST_f_l (lrint, -8388600.3L, -8388600);
-
-      TEST_f_l (lrint, 1071930.0008, 1071930);
-#ifndef TEST_FLOAT
-      TEST_f_l (lrint, 1073741824.01, 1073741824);
-# if LONG_MAX > 281474976710656
-      TEST_f_l (lrint, 281474976710656.025, 281474976710656);
-# endif
-#endif
-    }
-
-  fesetround (save_round_mode);
-
+  RUN_TEST_LOOP_f_l (lrint, lrint_towardzero_test_data, FE_TOWARDZERO);
   END (lrint_towardzero);
 }
 
 
+static const struct test_f_l_data lrint_downward_test_data[] =
+  {
+    START_DATA (lrint_downward),
+    TEST_f_l (lrint, 0.0, 0),
+    TEST_f_l (lrint, minus_zero, 0),
+    TEST_f_l (lrint, 0.2L, 0),
+    TEST_f_l (lrint, -0.2L, -1),
+    TEST_f_l (lrint, 0.5L, 0),
+    TEST_f_l (lrint, -0.5L, -1),
+    TEST_f_l (lrint, 0.8L, 0),
+    TEST_f_l (lrint, -0.8L, -1),
+
+    TEST_f_l (lrint, 1.4L, 1),
+    TEST_f_l (lrint, -1.4L, -2),
+
+    TEST_f_l (lrint, 8388600.3L, 8388600),
+    TEST_f_l (lrint, -8388600.3L, -8388601),
+
+    TEST_f_l (lrint, 1071930.0008, 1071930),
+#ifndef TEST_FLOAT
+    TEST_f_l (lrint, 1073741824.01, 1073741824),
+# if LONG_MAX > 281474976710656
+    TEST_f_l (lrint, 281474976710656.025, 281474976710656),
+# endif
+#endif
+    END_DATA (lrint_downward)
+  };
+
 static void
 lrint_test_downward (void)
 {
-  int save_round_mode;
   START (lrint_downward);
-
-  save_round_mode = fegetround ();
-
-  if (!fesetround (FE_DOWNWARD))
-    {
-      TEST_f_l (lrint, 0.0, 0);
-      TEST_f_l (lrint, minus_zero, 0);
-      TEST_f_l (lrint, 0.2L, 0);
-      TEST_f_l (lrint, -0.2L, -1);
-      TEST_f_l (lrint, 0.5L, 0);
-      TEST_f_l (lrint, -0.5L, -1);
-      TEST_f_l (lrint, 0.8L, 0);
-      TEST_f_l (lrint, -0.8L, -1);
-
-      TEST_f_l (lrint, 1.4L, 1);
-      TEST_f_l (lrint, -1.4L, -2);
-
-      TEST_f_l (lrint, 8388600.3L, 8388600);
-      TEST_f_l (lrint, -8388600.3L, -8388601);
-
-      TEST_f_l (lrint, 1071930.0008, 1071930);
-#ifndef TEST_FLOAT
-      TEST_f_l (lrint, 1073741824.01, 1073741824);
-# if LONG_MAX > 281474976710656
-      TEST_f_l (lrint, 281474976710656.025, 281474976710656);
-# endif
-#endif
-    }
-
-  fesetround (save_round_mode);
-
+  RUN_TEST_LOOP_f_l (lrint, lrint_downward_test_data, FE_DOWNWARD);
   END (lrint_downward);
 }
 
 
+static const struct test_f_l_data lrint_upward_test_data[] =
+  {
+    START_DATA (lrint_upward),
+    TEST_f_l (lrint, 0.0, 0),
+    TEST_f_l (lrint, minus_zero, 0),
+    TEST_f_l (lrint, 0.2L, 1),
+    TEST_f_l (lrint, -0.2L, 0),
+    TEST_f_l (lrint, 0.5L, 1),
+    TEST_f_l (lrint, -0.5L, 0),
+    TEST_f_l (lrint, 0.8L, 1),
+    TEST_f_l (lrint, -0.8L, 0),
+
+    TEST_f_l (lrint, 1.4L, 2),
+    TEST_f_l (lrint, -1.4L, -1),
+
+    TEST_f_l (lrint, 8388600.3L, 8388601),
+    TEST_f_l (lrint, -8388600.3L, -8388600),
+
+#ifndef TEST_FLOAT
+    TEST_f_l (lrint, 1071930.0008, 1071931),
+    TEST_f_l (lrint, 1073741824.01, 1073741825),
+# if LONG_MAX > 281474976710656 && defined (TEST_LDOUBLE)
+    TEST_f_l (lrint, 281474976710656.025, 281474976710656),
+# endif
+#endif
+    END_DATA (lrint_upward)
+  };
+
 static void
 lrint_test_upward (void)
 {
-  int save_round_mode;
   START (lrint_upward);
-
-  save_round_mode = fegetround ();
-
-  if (!fesetround (FE_UPWARD))
-    {
-      TEST_f_l (lrint, 0.0, 0);
-      TEST_f_l (lrint, minus_zero, 0);
-      TEST_f_l (lrint, 0.2L, 1);
-      TEST_f_l (lrint, -0.2L, 0);
-      TEST_f_l (lrint, 0.5L, 1);
-      TEST_f_l (lrint, -0.5L, 0);
-      TEST_f_l (lrint, 0.8L, 1);
-      TEST_f_l (lrint, -0.8L, 0);
-
-      TEST_f_l (lrint, 1.4L, 2);
-      TEST_f_l (lrint, -1.4L, -1);
-
-      TEST_f_l (lrint, 8388600.3L, 8388601);
-      TEST_f_l (lrint, -8388600.3L, -8388600);
-
-#ifndef TEST_FLOAT
-      TEST_f_l (lrint, 1071930.0008, 1071931);
-      TEST_f_l (lrint, 1073741824.01, 1073741825);
-# if LONG_MAX > 281474976710656 && defined (TEST_LDOUBLE)
-      TEST_f_l (lrint, 281474976710656.025, 281474976710656);
-# endif
-#endif
-    }
-
-  fesetround (save_round_mode);
-
+  RUN_TEST_LOOP_f_l (lrint, lrint_upward_test_data, FE_UPWARD);
   END (lrint_upward);
 }
 
@@ -10466,7 +10567,7 @@ llrint_test (void)
   TEST_f_L (llrint, 8388600.3L, 8388600);
   TEST_f_L (llrint, -8388600.3L, -8388600);
 
-  TEST_f_l (llrint, 1071930.0008, 1071930);
+  TEST_f_L (llrint, 1071930.0008, 1071930);
 
   /* Test boundary conditions.  */
   /* 0x1FFFFF */
@@ -10601,7 +10702,7 @@ llrint_test_tonearest (void)
       TEST_f_L (llrint, 8388600.3L, 8388600);
       TEST_f_L (llrint, -8388600.3L, -8388600);
 
-      TEST_f_l (llrint, 1071930.0008, 1071930);
+      TEST_f_L (llrint, 1071930.0008, 1071930);
 
       /* Test boundary conditions.  */
       /* 0x1FFFFF */
@@ -10739,7 +10840,7 @@ llrint_test_towardzero (void)
       TEST_f_L (llrint, 8388600.3L, 8388600);
       TEST_f_L (llrint, -8388600.3L, -8388600);
 
-      TEST_f_l (llrint, 1071930.0008, 1071930);
+      TEST_f_L (llrint, 1071930.0008, 1071930);
 
       /* Test boundary conditions.  */
       /* 0x1FFFFF */
@@ -10877,7 +10978,7 @@ llrint_test_downward (void)
       TEST_f_L (llrint, 8388600.3L, 8388600);
       TEST_f_L (llrint, -8388600.3L, -8388601);
 
-      TEST_f_l (llrint, 1071930.0008, 1071930);
+      TEST_f_L (llrint, 1071930.0008, 1071930);
 
       /* Test boundary conditions.  */
       /* 0x1FFFFF */
@@ -11011,7 +11112,7 @@ llrint_test_upward (void)
       TEST_f_L (llrint, 8388600.3L, 8388601);
       TEST_f_L (llrint, -8388600.3L, -8388600);
 #ifndef TEST_FLOAT
-      TEST_f_l (llrint, 1071930.0008, 1071931);
+      TEST_f_L (llrint, 1071930.0008, 1071931);
 #endif
       /* Test boundary conditions.  */
       /* 0x1FFFFF */
@@ -11133,9 +11234,9 @@ static const struct test_f_f_data log_test_data[] =
 
     TEST_f_f (log, 1, 0),
 
-    TEST_f_f (log, -1, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log, -max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (log, -1, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (log, plus_infty, plus_infty),
     TEST_f_f (log, qnan_value, qnan_value),
 
@@ -11170,9 +11271,9 @@ static const struct test_f_f_data log10_test_data[] =
     TEST_f_f (log10, 1, 0),
 
     /* log10 (x) == qNaN plus invalid exception if x < 0.  */
-    TEST_f_f (log10, -1, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log10, -max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log10, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (log10, -1, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log10, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log10, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (log10, plus_infty, plus_infty),
     TEST_f_f (log10, qnan_value, qnan_value),
@@ -11245,9 +11346,9 @@ static const struct test_f_f_data log2_test_data[] =
 
     TEST_f_f (log2, 1, 0),
 
-    TEST_f_f (log2, -1, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log2, -max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (log2, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (log2, -1, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log2, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (log2, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (log2, plus_infty, plus_infty),
     TEST_f_f (log2, qnan_value, qnan_value),
@@ -11348,46 +11449,51 @@ logb_test_downward (void)
   END (logb_downward);
 }
 
+static const struct test_f_l_data lround_test_data[] =
+  {
+    START_DATA (lround),
+    /* TODO: missing +/-Inf as well as qNaN tests.  */
+    TEST_f_l (lround, 0, 0),
+    TEST_f_l (lround, minus_zero, 0),
+    TEST_f_l (lround, 0.2L, 0.0),
+    TEST_f_l (lround, -0.2L, 0),
+    TEST_f_l (lround, 0.5, 1),
+    TEST_f_l (lround, -0.5, -1),
+    TEST_f_l (lround, 0.8L, 1),
+    TEST_f_l (lround, -0.8L, -1),
+    TEST_f_l (lround, 1.5, 2),
+    TEST_f_l (lround, -1.5, -2),
+    TEST_f_l (lround, 22514.5, 22515),
+    TEST_f_l (lround, -22514.5, -22515),
+    TEST_f_l (lround, 1071930.0008, 1071930),
+#ifndef TEST_FLOAT
+    TEST_f_l (lround, 1073741824.01, 1073741824),
+# if LONG_MAX > 281474976710656
+    TEST_f_l (lround, 281474976710656.025, 281474976710656),
+    TEST_f_l (lround, 18014398509481974, 18014398509481974),
+# endif
+    TEST_f_l (lround, 2097152.5, 2097153),
+    TEST_f_l (lround, -2097152.5, -2097153),
+    /* nextafter(0.5,-1)  */
+    TEST_f_l (lround, 0x1.fffffffffffffp-2, 0),
+    /* nextafter(-0.5,1)  */
+    TEST_f_l (lround, -0x1.fffffffffffffp-2, 0),
+#else
+    /* nextafter(0.5,-1)  */
+    TEST_f_l (lround, 0x1.fffffp-2, 0),
+    /* nextafter(-0.5,1)  */
+    TEST_f_l (lround, -0x1.fffffp-2, 0),
+    TEST_f_l (lround, 0x1.fffffep+23, 16777215),
+    TEST_f_l (lround, -0x1.fffffep+23, -16777215),
+#endif
+    END_DATA (lround)
+  };
+
 static void
 lround_test (void)
 {
-  /* TODO: missing +/-Inf as well as qNaN tests.  */
-
   START (lround);
-
-  TEST_f_l (lround, 0, 0);
-  TEST_f_l (lround, minus_zero, 0);
-  TEST_f_l (lround, 0.2L, 0.0);
-  TEST_f_l (lround, -0.2L, 0);
-  TEST_f_l (lround, 0.5, 1);
-  TEST_f_l (lround, -0.5, -1);
-  TEST_f_l (lround, 0.8L, 1);
-  TEST_f_l (lround, -0.8L, -1);
-  TEST_f_l (lround, 1.5, 2);
-  TEST_f_l (lround, -1.5, -2);
-  TEST_f_l (lround, 22514.5, 22515);
-  TEST_f_l (lround, -22514.5, -22515);
-  TEST_f_l (lround, 1071930.0008, 1071930);
-#ifndef TEST_FLOAT
-  TEST_f_l (lround, 1073741824.01, 1073741824);
-# if LONG_MAX > 281474976710656
-  TEST_f_l (lround, 281474976710656.025, 281474976710656);
-  TEST_f_l (lround, 18014398509481974, 18014398509481974);
-# endif
-  TEST_f_l (lround, 2097152.5, 2097153);
-  TEST_f_l (lround, -2097152.5, -2097153);
-  /* nextafter(0.5,-1)  */
-  TEST_f_l (lround, 0x1.fffffffffffffp-2, 0);
-  /* nextafter(-0.5,1)  */
-  TEST_f_l (lround, -0x1.fffffffffffffp-2, 0);
-#else
-  /* nextafter(0.5,-1)  */
-  TEST_f_l (lround, 0x1.fffffp-2, 0);
-  /* nextafter(-0.5,1)  */
-  TEST_f_l (lround, -0x1.fffffp-2, 0);
-  TEST_f_l (lround, 0x1.fffffep+23, 16777215);
-  TEST_f_l (lround, -0x1.fffffep+23, -16777215);
-#endif
+  RUN_TEST_LOOP_f_l (lround, lround_test_data, );
   END (lround);
 }
 
@@ -11411,7 +11517,7 @@ llround_test (void)
   TEST_f_L (llround, -1.5, -2);
   TEST_f_L (llround, 22514.5, 22515);
   TEST_f_L (llround, -22514.5, -22515);
-  TEST_f_l (llround, 1071930.0008, 1071930);
+  TEST_f_L (llround, 1071930.0008, 1071930);
 #ifndef TEST_FLOAT
   TEST_f_L (llround, 2097152.5, 2097153);
   TEST_f_L (llround, -2097152.5, -2097153);
@@ -11913,14 +12019,14 @@ static const struct test_ff_f_data pow_test_data[] =
     TEST_ff_f (pow, 0x1p-72L, 0, 1),
     TEST_ff_f (pow, 0x1p-72L, minus_zero, 1),
 
-    TEST_ff_f (pow, -0.1L, 1.1L, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -0.1L, -1.1L, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -10.1L, 1.1L, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -10.1L, -1.1L, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -1.01L, min_subnorm_value, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -1.01L, -min_subnorm_value, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -1.0L, min_subnorm_value, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -1.0L, -min_subnorm_value, qnan_value, INVALID_EXCEPTION),
+    TEST_ff_f (pow, -0.1L, 1.1L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -0.1L, -1.1L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -10.1L, 1.1L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -10.1L, -1.1L, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -1.01L, min_subnorm_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -1.01L, -min_subnorm_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -1.0L, min_subnorm_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -1.0L, -min_subnorm_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_ff_f (pow, 0, -1, plus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
     TEST_ff_f (pow, 0, -11, plus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
@@ -12269,9 +12375,9 @@ static const struct test_ff_f_data pow_test_data[] =
 #endif
     TEST_ff_f (pow, -2.0, max_value, plus_infty, OVERFLOW_EXCEPTION),
 
-    TEST_ff_f (pow, -max_value, 0.5, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -max_value, 1.5, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -max_value, 1000.5, qnan_value, INVALID_EXCEPTION),
+    TEST_ff_f (pow, -max_value, 0.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -max_value, 1.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -max_value, 1000.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (pow, -max_value, -2, plus_zero, UNDERFLOW_EXCEPTION),
     TEST_ff_f (pow, -max_value, -3, minus_zero, UNDERFLOW_EXCEPTION),
     TEST_ff_f (pow, -max_value, 2, plus_infty, OVERFLOW_EXCEPTION),
@@ -12370,9 +12476,9 @@ static const struct test_ff_f_data pow_test_data[] =
 #endif
     TEST_ff_f (pow, -0.5, max_value, plus_zero, UNDERFLOW_EXCEPTION),
 
-    TEST_ff_f (pow, -min_value, 0.5, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -min_value, 1.5, qnan_value, INVALID_EXCEPTION),
-    TEST_ff_f (pow, -min_value, 1000.5, qnan_value, INVALID_EXCEPTION),
+    TEST_ff_f (pow, -min_value, 0.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -min_value, 1.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_ff_f (pow, -min_value, 1000.5, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (pow, -min_value, -2, plus_infty, OVERFLOW_EXCEPTION),
     TEST_ff_f (pow, -min_value, -3, minus_infty, OVERFLOW_EXCEPTION),
     /* Allow inexact results to be considered to underflow.  */
@@ -13400,23 +13506,27 @@ scalbln_test (void)
 }
 
 
+static const struct test_f_i_data signbit_test_data[] =
+  {
+    START_DATA (signbit),
+    /* TODO: missing qNaN tests.  */
+    TEST_f_b (signbit, 0, 0),
+    TEST_f_b (signbit, minus_zero, 1),
+    TEST_f_b (signbit, plus_infty, 0),
+    TEST_f_b (signbit, minus_infty, 1),
+
+    /* signbit (x) != 0 for x < 0.  */
+    TEST_f_b (signbit, -1, 1),
+    /* signbit (x) == 0 for x >= 0.  */
+    TEST_f_b (signbit, 1, 0),
+    END_DATA (signbit)
+  };
+
 static void
 signbit_test (void)
 {
-  /* TODO: missing qNaN tests.  */
-
   START (signbit);
-
-  TEST_f_b (signbit, 0, 0);
-  TEST_f_b (signbit, minus_zero, 1);
-  TEST_f_b (signbit, plus_infty, 0);
-  TEST_f_b (signbit, minus_infty, 1);
-
-  /* signbit (x) != 0 for x < 0.  */
-  TEST_f_b (signbit, -1, 1);
-  /* signbit (x) == 0 for x >= 0.  */
-  TEST_f_b (signbit, 1, 0);
-
+  RUN_TEST_LOOP_f_b_tg (signbit, signbit_test_data, );
   END (signbit);
 }
 
@@ -13817,9 +13927,9 @@ static const struct test_f_f_data sqrt_test_data[] =
     TEST_f_f (sqrt, minus_zero, minus_zero),
 
     /* sqrt (x) == qNaN plus invalid exception for x < 0.  */
-    TEST_f_f (sqrt, -1, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (sqrt, -max_value, qnan_value, INVALID_EXCEPTION),
-    TEST_f_f (sqrt, minus_infty, qnan_value, INVALID_EXCEPTION),
+    TEST_f_f (sqrt, -1, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (sqrt, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (sqrt, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (sqrt, 2209, 47),
     TEST_f_f (sqrt, 4, 2),
@@ -14743,8 +14853,8 @@ static const struct test_f_f_data y0_test_data[] =
   {
     START_DATA (y0),
     /* y0 is the Bessel function of the second kind of order 0 */
-    TEST_f_f (y0, -1.0, minus_infty, INVALID_EXCEPTION),
-    TEST_f_f (y0, -max_value, minus_infty, INVALID_EXCEPTION),
+    TEST_f_f (y0, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (y0, -max_value, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (y0, 0.0, minus_infty),
     TEST_f_f (y0, qnan_value, qnan_value),
     TEST_f_f (y0, plus_infty, 0),
@@ -14807,8 +14917,8 @@ static const struct test_f_f_data y1_test_data[] =
   {
     START_DATA (y1),
     /* y1 is the Bessel function of the second kind of order 1 */
-    TEST_f_f (y1, -1.0, minus_infty, INVALID_EXCEPTION),
-    TEST_f_f (y1, -max_value, minus_infty, INVALID_EXCEPTION),
+    TEST_f_f (y1, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_f_f (y1, -max_value, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (y1, 0.0, minus_infty),
     TEST_f_f (y1, plus_infty, 0),
     TEST_f_f (y1, qnan_value, qnan_value),
@@ -14872,8 +14982,8 @@ static const struct test_if_f_data yn_test_data[] =
     START_DATA (yn),
     /* yn is the Bessel function of the second kind of order n */
     /* yn (0, x) == y0 (x)  */
-    TEST_if_f (yn, 0, -1.0, minus_infty, INVALID_EXCEPTION),
-    TEST_if_f (yn, 0, -max_value, minus_infty, INVALID_EXCEPTION),
+    TEST_if_f (yn, 0, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
+    TEST_if_f (yn, 0, -max_value, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_if_f (yn, 0, 0.0, minus_infty),
     TEST_if_f (yn, 0, qnan_value, qnan_value),
     TEST_if_f (yn, 0, plus_infty, 0),
@@ -14887,7 +14997,7 @@ static const struct test_if_f_data yn_test_data[] =
     TEST_if_f (yn, 0, 10.0, 0.0556711672835993914244598774101900481L),
 
     /* yn (1, x) == y1 (x)  */
-    TEST_if_f (yn, 1, -1.0, minus_infty, INVALID_EXCEPTION),
+    TEST_if_f (yn, 1, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_if_f (yn, 1, 0.0, minus_infty),
     TEST_if_f (yn, 1, plus_infty, 0),
     TEST_if_f (yn, 1, qnan_value, qnan_value),

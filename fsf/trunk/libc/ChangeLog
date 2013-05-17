@@ -1,3 +1,432 @@
+2013-05-16  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	[BZ #15442]
+	* soft-fp/op-common.h (_FP_FRAC_SNANP): New macro.
+	(_FP_FRAC_SNANP_SEMIRAW): Likewise.
+	(_FP_UNPACK_CANONICAL): Use _FP_FRAC_SNANP.
+	(_FP_CHECK_SIGNAN_SEMIRAW): Use _FP_FRAC_SNANP_SEMIRAW.
+	(_FP_SETQNAN): New macro.
+	(_FP_SETQNAN_SEMIRAW): Likewise.
+	(_FP_PACK_SEMIRAW): Use _FP_SETQNAN.
+	(_FP_PACK_CANONICAL): Use _FP_SETQNAN.
+	(_FP_ISSIGNAN): Use _FP_FRAC_SNANP.
+	(FP_EXTEND): Use _FP_FRAC_SNANP.
+	(FP_TRUNC): Use _FP_SETQNAN_SEMIRAW.
+	* soft-fp/testit.c (gen_special_double): Take _FP_QNANNEGATEDP
+	into account.
+	* sysdeps/sparc/sparc32/soft-fp/sfp-machine.h (_FP_QNANNEGATEDP):
+	New macro.
+	* sysdeps/sparc/sparc64/soft-fp/sfp-machine.h (_FP_QNANNEGATEDP):
+	Likewise.
+
+2013-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (atanh_test_data): Use ERRNO_ERANGE together
+	with DIVIDE_BY_ZERO_EXCEPTION.
+	(gamma_test_data): Likewise.
+	(lgamma_test_data): Likewise.
+	(log_test_data): Likewise.
+	(log10_test_data): Likewise.
+	(log2_test_data): Likewise.
+	(tgamma_test_data): Likewise.
+
+	* math/libm-test.inc (acos_test): Don't test for ENOSYS error.
+	(acos_test_tonearest): Likewise.
+	(acos_test_towardzero): Likewise.
+	(acos_test_downward): Likewise.
+	(acos_test_upward): Likewise.
+	(acosh_test): Likewise.
+	(asin_test): Likewise.
+	(asin_test_tonearest): Likewise.
+	(asin_test_towardzero): Likewise.
+	(asin_test_downward): Likewise.
+	(asin_test_upward): Likewise.
+	(asinh_test): Likewise.
+	(atan_test): Likewise.
+	(atanh_test): Likewise.
+	(atan2_test): Likewise.
+	(cabs_test): Likewise.
+	(cacos_test): Likewise.
+	(cacosh_test): Likewise.
+	(casin_test): Likewise.
+	(casinh_test): Likewise.
+	(catan_test): Likewise.
+	(catanh_test): Likewise.
+	(cbrt_test): Likewise.
+	(ccos_test): Likewise.
+	(ccosh_test): Likewise.
+	(cexp_test): Likewise.
+	(clog_test): Likewise.
+	(clog10_test): Likewise.
+	(cos_test): Likewise.
+	(cos_test_tonearest): Likewise.
+	(cos_test_towardzero): Likewise.
+	(cos_test_downward): Likewise.
+	(cos_test_upward): Likewise.
+	(cosh_test): Likewise.
+	(cosh_test_tonearest): Likewise.
+	(cosh_test_towardzero): Likewise.
+	(cosh_test_downward): Likewise.
+	(cosh_test_upward): Likewise.
+	(cpow_test): Likewise.
+	(csin_test): Likewise.
+	(csinh_test): Likewise.
+	(csqrt_test): Likewise.
+	(ctan_test): Likewise.
+	(ctan_test_tonearest): Likewise.
+	(ctan_test_towardzero): Likewise.
+	(ctan_test_downward): Likewise.
+	(ctan_test_upward): Likewise.
+	(ctanh_test): Likewise.
+	(ctanh_test_tonearest): Likewise.
+	(ctanh_test_towardzero): Likewise.
+	(ctanh_test_downward): Likewise.
+	(ctanh_test_upward): Likewise.
+	(erf_test): Likewise.
+	(erfc_test): Likewise.
+	(exp_test): Likewise.
+	(exp_test_tonearest): Likewise.
+	(exp_test_towardzero): Likewise.
+	(exp_test_downward): Likewise.
+	(exp_test_upward): Likewise.
+	(exp10_test): Likewise.
+	(exp2_test): Likewise.
+	(expm1_test): Likewise.
+	(fmod_test): Likewise.
+	(gamma_test): Likewise.
+	(hypot_test): Likewise.
+	(j0_test): Likewise.
+	(j1_test): Likewise.
+	(jn_test): Likewise.
+	(lgamma_test): Likewise.
+	(log_test): Likewise.
+	(log10_test): Likewise.
+	(log1p_test): Likewise.
+	(log2_test): Likewise.
+	(logb_test_downward): Likewise.
+	(pow_test): Likewise.
+	(pow_test_tonearest): Likewise.
+	(pow_test_towardzero): Likewise.
+	(pow_test_downward): Likewise.
+	(pow_test_upward): Likewise.
+	(remainder_test): Likewise.
+	(remquo_test): Likewise.
+	(sin_test): Likewise.
+	(sin_test_tonearest): Likewise.
+	(sin_test_towardzero): Likewise.
+	(sin_test_downward): Likewise.
+	(sin_test_upward): Likewise.
+	(sincos_test): Likewise.
+	(sinh_test): Likewise.
+	(sinh_test_tonearest): Likewise.
+	(sinh_test_towardzero): Likewise.
+	(sinh_test_downward): Likewise.
+	(sinh_test_upward): Likewise.
+	(sqrt_test): Likewise.
+	(tan_test): Likewise.
+	(tan_test_tonearest): Likewise.
+	(tan_test_towardzero): Likewise.
+	(tan_test_downward): Likewise.
+	(tan_test_upward): Likewise.
+	(tanh_test): Likewise.
+	(tgamma_test): Likewise.
+	(y0_test): Likewise.
+	(y1_test): Likewise.
+	(yn_test): Likewise.
+
+	* math/gen-libm-test.pl (adjust_arg): Remove function.
+	(special_function): Remove argument $in_func.  Only handle
+	generating output for tables of tests, not inside functions.
+	(parse_args): Likewise.
+	(generate_testfile): Remove variable $in_func.  Update call to
+	parse_args.
+	* math/libm-test.inc (PLUS_ZERO_INIT): Rename macro to plus_zero.
+	(MINUS_ZERO_INIT): Rename macro to minus_zero.
+	(PLUS_INFTY_INIT): Rename macro to plus_infty.
+	(MINUS_INFTY_INIT): Rename macro to minus_infty.
+	(QNAN_VALUE_INIT): Rename macro to qnan_value.
+	(MAX_VALUE_INIT): Rename macro to max_value.
+	(MIN_VALUE_INIT): Rename macro to min_value.
+	(MIN_SUBNORM_VALUE_INIT): Rename macro to min_subnorm_value.
+	(plus_zero): Remove variable.
+	(minus_zero): Likewise.
+	(plus_infty): Likewise.
+	(minus_infty): Likewise.
+	(qnan_value): Likewise.
+	(max_value): Likewise.
+	(min_value): Likewise.
+	(min_subnorm_value): Likewise.
+
+2013-05-16  Ryan S. Arnold  <rsa@linux.vnet.ibm.com>
+
+	* crypt/sha512-block.c: Add missing #include <stdint.h> due to
+	uint64_t or uint32_t usage.
+	* crypt/sha256-block.c: Likewise.
+	* crypt/sha256-crypt.c: Likewise.
+	* crypt/sha256.c: Likewise.
+	* crypt/sha512-block.c: Likewise.
+	* crypt/sha512-crypt.c: Likewise.
+	* crypt/sha512.c: Likewise.
+	* debug/backtrace-tst.c: Likewise.
+	* debug/pcprofiledump.c: Likewise.
+	* elf/cache.c: Likewise.
+	* elf/dl-cache.c: Likewise.
+	* elf/dl-misc.c: Likewise.
+	* elf/dl-profile.c: Likewise.
+	* elf/dl-support.c: Likewise.
+	* elf/ldconfig.c: Likewise.
+	* elf/sprof.c: Likewise.
+	* iconv/dummy-repertoire.c: Likewise.
+	* iconv/iconv_charmap.c: Likewise.
+	* iconv/skeleton.c: Likewise.
+	* iconvdata/8bit-generic.c: Likewise.
+	* iconvdata/cp737.h: Likewise.
+	* iconvdata/cp775.h: Likewise.
+	* iconvdata/ibm1008.h: Likewise.
+	* iconvdata/ibm1025.h: Likewise.
+	* iconvdata/ibm1046.h: Likewise.
+	* iconvdata/ibm1097.h: Likewise.
+	* iconvdata/ibm1112.h: Likewise.
+	* iconvdata/ibm1122.h: Likewise.
+	* iconvdata/ibm1123.h: Likewise.
+	* iconvdata/ibm1124.h: Likewise.
+	* iconvdata/ibm1129.h: Likewise.
+	* iconvdata/ibm1130.h: Likewise.
+	* iconvdata/ibm1132.h: Likewise.
+	* iconvdata/ibm1133.h: Likewise.
+	* iconvdata/ibm1137.h: Likewise.
+	* iconvdata/ibm1140.h: Likewise.
+	* iconvdata/ibm1141.h: Likewise.
+	* iconvdata/ibm1142.h: Likewise.
+	* iconvdata/ibm1143.h: Likewise.
+	* iconvdata/ibm1144.h: Likewise.
+	* iconvdata/ibm1145.h: Likewise.
+	* iconvdata/ibm1146.h: Likewise.
+	* iconvdata/ibm1147.h: Likewise.
+	* iconvdata/ibm1148.h: Likewise.
+	* iconvdata/ibm1149.h: Likewise.
+	* iconvdata/ibm1153.h: Likewise.
+	* iconvdata/ibm1154.h: Likewise.
+	* iconvdata/ibm1155.h: Likewise.
+	* iconvdata/ibm1156.h: Likewise.
+	* iconvdata/ibm1157.h: Likewise.
+	* iconvdata/ibm1158.h: Likewise.
+	* iconvdata/ibm1160.h: Likewise.
+	* iconvdata/ibm1161.h: Likewise.
+	* iconvdata/ibm1162.h: Likewise.
+	* iconvdata/ibm1163.h: Likewise.
+	* iconvdata/ibm1164.h: Likewise.
+	* iconvdata/ibm1166.h: Likewise.
+	* iconvdata/ibm1167.h: Likewise.
+	* iconvdata/ibm12712.h: Likewise.
+	* iconvdata/ibm1390.h: Likewise.
+	* iconvdata/ibm1399.h: Likewise.
+	* iconvdata/ibm16804.h: Likewise.
+	* iconvdata/ibm4517.h: Likewise.
+	* iconvdata/ibm4899.h: Likewise.
+	* iconvdata/ibm4909.h: Likewise.
+	* iconvdata/ibm4971.h: Likewise.
+	* iconvdata/ibm5347.h: Likewise.
+	* iconvdata/ibm803.h: Likewise.
+	* iconvdata/ibm856.h: Likewise.
+	* iconvdata/ibm901.h: Likewise.
+	* iconvdata/ibm902.h: Likewise.
+	* iconvdata/ibm9030.h: Likewise.
+	* iconvdata/ibm9066.h: Likewise.
+	* iconvdata/ibm921.h: Likewise.
+	* iconvdata/ibm922.h: Likewise.
+	* iconvdata/ibm9448.h: Likewise.
+	* iconvdata/isiri-3342.h: Likewise.
+	* iconvdata/jis0201.h: Likewise.
+	* include/link.h: Likewise.
+	* include/netdb.h: Likewise.
+	* inet/check_native.c: Likewise.
+	* inet/check_pf.c: Likewise.
+	* inet/getipv4sourcefilter.c: Likewise.
+	* inet/getnameinfo.c: Likewise.
+	* inet/getsourcefilter.c: Likewise.
+	* inet/htonl.c: Likewise.
+	* inet/setipv4sourcefilter.c: Likewise.
+	* inet/setsourcefilter.c: Likewise.
+	* inet/test-inet6_opt.c: Likewise.
+	* inet/tst-network.c: Likewise.
+	* locale/C-collate.c: Likewise.
+	* locale/C-ctype.c: Likewise.
+	* locale/C-time.c: Likewise.
+	* locale/C-translit.h: Likewise.
+	* locale/loadarchive.c: Likewise.
+	* locale/programs/3level.h: Likewise.
+	* locale/programs/charmap.c: Likewise.
+	* locale/programs/charmap.h: Likewise.
+	* locale/programs/ld-address.c: Likewise.
+	* locale/programs/ld-collate.c: Likewise.
+	* locale/programs/ld-ctype.c: Likewise.
+	* locale/programs/ld-identification.c: Likewise.
+	* locale/programs/ld-measurement.c: Likewise.
+	* locale/programs/ld-messages.c: Likewise.
+	* locale/programs/ld-monetary.c: Likewise.
+	* locale/programs/ld-name.c: Likewise.
+	* locale/programs/ld-numeric.c: Likewise.
+	* locale/programs/ld-paper.c: Likewise.
+	* locale/programs/ld-telephone.c: Likewise.
+	* locale/programs/ld-time.c: Likewise.
+	* locale/programs/linereader.c: Likewise.
+	* locale/programs/locale.c: Likewise.
+	* locale/programs/locarchive.c: Likewise.
+	* locale/programs/locfile.h: Likewise.
+	* locale/programs/repertoire.c: Likewise.
+	* locale/programs/simple-hash.c: Likewise.
+	* locale/programs/simple-hash.h: Likewise.
+	* malloc/memusage.c: Likewise.
+	* malloc/memusagestat.c: Likewise.
+	* nis/nis_defaults.c: Likewise.
+	* nis/nis_hash.c: Likewise.
+	* nis/nis_print.c: Likewise.
+	* nis/nis_xdr.c: Likewise.
+	* nscd/connections.c: Likewise.
+	* nscd/hstcache.c: Likewise.
+	* nscd/nscd_gethst_r.c: Likewise.
+	* nscd/nscd_getserv_r.c: Likewise.
+	* nscd/nscd_helper.c: Likewise.
+	* nscd/servicescache.c: Likewise.
+	* nss/makedb.c: Likewise.
+	* nss/nss_db/db-XXX.c: Likewise.
+	* nss/nss_db/db-initgroups.c: Likewise.
+	* nss/nss_db/db-netgrp.c: Likewise.
+	* nss/nss_files/files-network.c: Likewise.
+	* nss/nss_files/files-parse.c: Likewise.
+	* posix/bug-regex5.c: Likewise.
+	* posix/fnmatch_loop.c: Likewise.
+	* posix/regcomp.c: Likewise.
+	* posix/regexec.c: Likewise.
+	* posix/tst-rfc3484-2.c: Likewise.
+	* posix/tst-rfc3484-3.c: Likewise.
+	* posix/tst-rfc3484.c: Likewise.
+	* resolv/nss_dns/dns-canon.c: Likewise.
+	* resolv/nss_dns/dns-network.c: Likewise.
+	* resolv/res_init.c: Likewise.
+	* resolv/res_mkquery.c: Likewise.
+	* resolv/tst-aton.c: Likewise.
+	* stdlib/cxa_atexit.c: Likewise.
+	* stdlib/cxa_finalize.c: Likewise.
+	* stdlib/gen-fpioconst.c: Likewise.
+	* stdlib/strtol_l.c: Likewise.
+	* string/tst-endian.c: Likewise.
+	* sunrpc/auth_des.c: Likewise.
+	* sunrpc/clnt_udp.c: Likewise.
+	* sunrpc/rtime.c: Likewise.
+	* sunrpc/svcauth_des.c: Likewise.
+	* sunrpc/xdr.c: Likewise.
+	* sunrpc/xdr_intXX_t.c: Likewise.
+	* sunrpc/xdr_rec.c: Likewise.
+	* sysdeps/generic/ldconfig.h: Likewise.
+	* sysdeps/generic/ldsodefs.h: Likewise.
+	* sysdeps/generic/memusage.h: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_fmod.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/e_log10.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/math_private.h: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_finite.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_floor.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_isnan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_modf.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_remquo.c: Likewise.
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_round.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h: Likewise.
+	* sysdeps/posix/getaddrinfo.c: Likewise.
+	* sysdeps/powerpc/fpu/e_hypot.c: Likewise.
+	* sysdeps/powerpc/fpu/e_hypotf.c: Likewise.
+	* sysdeps/powerpc/fpu/e_sqrt.c: Likewise.
+	* sysdeps/powerpc/fpu/e_sqrtf.c: Likewise.
+	* sysdeps/powerpc/test-gettimebase.c: Likewise.
+	* sysdeps/unix/sysv/linux/check_pf.c: Likewise.
+	* sysdeps/unix/sysv/linux/getipv4sourcefilter.c: Likewise.
+	* sysdeps/unix/sysv/linux/getsourcefilter.c: Likewise.
+	* sysdeps/unix/sysv/linux/netlinkaccess.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/test-gettimebasefreq.c: Likewise.
+	* sysdeps/unix/sysv/linux/preadv.c: Likewise.
+	* sysdeps/unix/sysv/linux/pwritev.c: Likewise.
+	* sysdeps/unix/sysv/linux/setipv4sourcefilter.c: Likewise.
+	* sysdeps/unix/sysv/linux/setsourcefilter.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/arch_prctl.c: Likewise.
+	* sysdeps/x86_64/dl-tls.h: Likewise.
+	* sysdeps/x86_64/dl-tlsdesc.h: Likewise.
+	* time/alt_digit.c: Likewise.
+	* time/era.c: Likewise.
+	* wcsmbs/tst-c16c32-1.c: Likewise.
+
+2013-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (struct test_sincos_data): New type.
+	(RUN_TEST_LOOP_sincos): New macro.
+	(sincos_test_data): New variable.
+	(sincos_test): Run tests with RUN_TEST_LOOP_sincos.
+
+2013-05-16  Richard Henderson  <rth@redhat.com>
+
+	* math/atest-exp2.c (LIMB64): New macro.
+	(CONSTSZ): New macro.
+	(mp_exp1, mp_exp_m1, mp_log2): New variables.
+	(hexdig): Move ...
+	(print_mpn_fp): ... to function scope.
+	(read_mpn_hex): Remove.
+	(get_log2): Remove.
+	(exp2_mpn): Use mp_log2.
+	(main): Use mp_exp1.
+
+2013-05-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc: Remove comment about not testing "inexact"
+	exceptions.
+	(INEXACT_EXCEPTION): New macro.
+	(NO_INEXACT_EXCEPTION): Likewise.
+	(INVALID_EXCEPTION_OK): Update value.
+	(DIVIDE_BY_ZERO_EXCEPTION_OK): Likewise.
+	(OVERFLOW_EXCEPTION_OK): Likewise.
+	(UNDERFLOW_EXCEPTION_OK): Likewise.
+	(IGNORE_ZERO_INF_SIGN): Likewise.
+	(ERRNO_UNCHANGED): Likewise.
+	(ERRNO_EDOM): Likewise.
+	(ERRNO_ERANGE): Likewise.
+	(test_exceptions): Handle testing "inexact" exceptions.
+	(nearbyint_test_data): Use NO_INEXACT_EXCEPTION on all tests.
+	(rint_test_data): Use NO_INEXACT_EXCEPTION and INEXACT_EXCEPTION.
+	(rint_test_data) [LDBL_MANT_DIG <= 100]: Disable some tests.
+	(rint_tonearest_test_data): Use NO_INEXACT_EXCEPTION and
+	INEXACT_EXCEPTION.
+	(rint_towardzero_test_data): Likewise.
+	(rint_downward_test_data): Likewise.
+	(rint_upward_test_data): Likewise.
+
+	* math/libm-test.inc (exp_test_data): Use ERRNO_ERANGE together
+	with OVERFLOW_EXCEPTION.
+	(exp10_test_data): Likewise.
+	(exp2_test_data): Likewise.
+	(expm1_test_data): Likewise.
+	(lgamma_test_data): Likewise.
+	(pow_test_data): Likewise.
+	(tgamma_test_data): Likewise.
+	(yn_test_data): Remove duplicate test of overflow.
+
+	* math/libm-test.inc (struct test_cc_c_data): New type.
+	(RUN_TEST_LOOP_cc_c): New macro.
+	(cpow_test_data): New variable.
+	(cpow_test): Run tests with RUN_TEST_LOOP_cc_c.
+
+	* math/libm-test.inc (struct test_f_L_data): New type.
+	(RUN_TEST_LOOP_f_L): New macro.
+	(llrint_test_data): New variable.
+	(llrint_test): Run tests with RUN_TEST_LOOP_f_L.
+	(llrint_tonearest_test_data): New variable.
+	(llrint_test_tonearest): Run tests with RUN_TEST_LOOP_f_L.
+	(llrint_towardzero_test_data): New variable.
+	(llrint_test_towardzero): Run tests with RUN_TEST_LOOP_f_L.
+	(llrint_downward_test_data): New variable.
+	(llrint_test_downward): Run tests with RUN_TEST_LOOP_f_L.
+	(llrint_upward_test_data): New variable.
+	(llrint_test_upward): Run tests with RUN_TEST_LOOP_f_L.
+	(llround_test_data): New variable.
+	(llround_test): Run tests with RUN_TEST_LOOP_f_L.
+
 2013-05-13  Peter Collingbourne  <pcc@google.com>
 
 	* math/atest-exp2.c (get_log2): Remove const attribute.

@@ -1,3 +1,130 @@
+2013-05-17  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15480]
+	[BZ #15485]
+	* sysdeps/ieee754/dbl-64/e_remainder.c (__ieee754_remainder): For
+	main case of finite arguments, set rounding mode to FE_TONEAREST
+	and discard exceptions.
+	* math/libm-test.inc (remainder_test_data): Disallow "inexact"
+	exceptions.
+	(remainder_tonearest_test_data): New variable.
+	(remainder_test_tonearest): New function.
+	(remainder_towardzero_test_data): New variable.
+	(remainder_test_towardzero): New function.
+	(remainder_downward_test_data): New variable.
+	(remainder_test_downward): New function.
+	(remainder_upward_test_data): New variable.
+	(remainder_test_upward): New function.
+	(main): Call the new test functions.
+
+	* math/libm-test.inc (struct test_f_f1_data): Remove field
+	extra_init.
+	(struct test_fF_f1_data): Likewise.
+	(struct test_ffI_f1_data): Likewise.
+	(RUN_TEST_f_f1): Remove argument EXTRA_INIT.  Initialize EXTRA_VAR
+	based on value of EXTRA_EXPECTED.
+	(RUN_TEST_LOOP_f_f1): Update call to RUN_TEST_f_f1.
+	(RUN_TEST_fF_f1): Remove argument EXTRA_INIT.  Initialize
+	EXTRA_VAR based on value of EXTRA_EXPECTED.
+	(RUN_TEST_LOOP_fF_f1): Update call to RUN_TEST_fF_f1.
+	(RUN_TEST_fI_f1): Remove argument EXTRA_INIT.  Initialize
+	EXTRA_VAR based on value of EXTRA_EXPECTED.
+	(RUN_TEST_LOOP_fI_f1): Update call to RUN_TEST_fI_f1.
+	(RUN_TEST_ffI_f1): Remove argument EXTRA_INIT.  Initialize
+	EXTRA_VAR based on value of EXTRA_EXPECTED.
+	(RUN_TEST_LOOP_ffI_f1): Update call to RUN_TEST_ffI_f1.
+	* math/gen-libm-test.pl (parse_args): Don't output initializers
+	for extra output values.
+
+	* math/libm-test.inc (check_int): Expect result to be exactly
+	equal to expected value and do not handle ulps.
+	(check_long): Likewise.
+	(check_longlong): Likewise.
+
+	* math/libm-test.inc (ceil_test_data): Test for "inexact"
+	exceptions.
+	(cimag_test_data): Likewise.
+	(conj_test_data): Likewise.
+	(copysign_test_data): Likewise.
+	(cproj_test_data): Likewise.
+	(creal_test_data): Likewise.
+	(fabs_test_data): Likewise.
+	(fdim_test_data): Likewise.
+	(finite_test_data): Likewise.
+	(floor_test_data): Likewise.
+	(fmax_test_data): Likewise.
+	(fmin_test_data): Likewise.
+	(fmod_test_data): Likewise.
+	(fpclassify_test_data): Likewise.
+	(frexp_test_data): Likewise.
+	(ilogb_test_data): Likewise.
+	(isfinite_test_data): Likewise.
+	(isgreater_test_data): Likewise.
+	(isgreaterequal_test_data): Likewise.
+	(isinf_test_data): Likewise.
+	(isless_test_data): Likewise.
+	(islessequal_test_data): Likewise.
+	(islessgreater_test_data): Likewise.
+	(isnan_test_data): Likewise.
+	(isnormal_test_data): Likewise.
+	(issignaling_test_data): Likewise.
+	(isunordered_test_data): Likewise.
+	(ldexp_test_data): Likewise.
+	(lrint_test_data): Likewise.
+	(lrint_test_data) [TEST_FLOAT]: Disable one test.
+	(lrint_test_data) [!TEST_LDOUBLE]: Likewise.
+	(lrint_tonearest_test_data): Test for "inexact" exceptions.
+	(lrint_tonearest_test_data) [TEST_FLOAT]: Disable one test.
+	(lrint_tonearest_test_data) [!TEST_LDOUBLE]: Likewise.
+	(lrint_tonearest_test_data) [TEST_LDOUBLE]: Use "L" suffix on that
+	test input.
+	(lrint_towardzero_test_data): Test for "inexact" exceptions.
+	(lrint_towardzero_test_data) [TEST_FLOAT]: Disable one test.
+	(lrint_towardzero_test_data) [!TEST_LDOUBLE]: Likewise.
+	(lrint_towardzero_test_data) [TEST_LDOUBLE]: Use "L" suffix on
+	that test input.
+	(lrint_downward_test_data): Test for "inexact" exceptions.
+	(lrint_downward_test_data) [TEST_FLOAT]: Disable one test.
+	(lrint_downward_test_data) [!TEST_LDOUBLE]: Likewise.
+	(lrint_downward_test_data) [TEST_LDOUBLE]: Use "L" suffix on that
+	test input.
+	(lrint_upward_test_data): Test for "inexact" exceptions.
+	(lrint_upward_test_data) [TEST_LDOUBLE]: Use "L" suffix on one
+	test input.
+	(llrint_test_data): Test for "inexact" exceptions.
+	(llrint_test_data) [TEST_FLOAT]: Disable one test.
+	(llrint_tonearest_test_data): Test for "inexact" exceptions.
+	(llrint_tonearest_test_data) [TEST_FLOAT]: Disable one test.
+	(llrint_towardzero_test_data): Test for "inexact" exceptions.
+	(llrint_towardzero_test_data) [TEST_FLOAT]: Disable one test.
+	(llrint_downward_test_data): Test for "inexact" exceptions.
+	(llrint_downward_test_data) [TEST_FLOAT]: Disable one test.
+	(llrint_upward_test_data): Test for "inexact" exceptions.
+	(logb_test_data): Likewise.
+	(logb_downward_test_data): Likewise.
+	(nextafter_test_data): Likewise.
+	(nexttoward_test_data): Likewise.
+	(remainder_test_data): Likewise.
+	(remquo_test_data): Likewise.
+	(scalbn_test_data): Likewise.
+	(scalbln_test_data): Likewise.
+	(signbit_test_data): Likewise.
+	(sqrt_test_data): Likewise.
+	(significand_test_data): Likewise.
+
+2013-05-17  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15424]
+	* benchtests/bench-modf.c (struct args): Mark arg0 as
+	volatile.
+	* scripts/bench.pl: Mark members of struct args as volatile.
+
+2013-05-17  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/e_hypot.c (GET_TWO_FLOAT_WORD): Fix test for
+	negative infinity on POWER6 or lower.
+	* sysdeps/powerpc/fpu/e_hypotf.c (GET_TWO_FLOAT_WORD): Likewise.
+
 2013-05-16  Maciej W. Rozycki  <macro@codesourcery.com>
 
 	[BZ #15442]

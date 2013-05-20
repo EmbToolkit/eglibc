@@ -1,3 +1,42 @@
+2013-05-19  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15490]
+	* sysdeps/ieee754/dbl-64/s_nearbyint.c (__nearbyint): Use
+	math_force_eval before restoring floating-point envrionment.
+	* sysdeps/ieee754/flt-32/s_nearbyintf.c (__nearbyintf): Likewise.
+	* sysdeps/ieee754/ldbl-128/s_nearbyintl.c (__nearbyintl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nearbyintl.c: Include
+	<math_private.h>.
+	(__nearbyintl): Use math_force_eval before restoring
+	floating-point environment.
+	* sysdeps/ieee754/ldbl-96/s_nearbyintl.c (__nearbyintl): Likewise.
+
+	* math/gen-libm-test.pl (special_functions): Remove.
+	(parse_args): Don't handle TEST_extra.  Handle functions with no
+	return value.
+	* math/libm-test.inc (struct test_sincos_data): Replace with
+	struct test_fFF_11_data.
+	(RUN_TEST_sincos): Replace with RUN_TEST_fFF_11.
+	(RUN_TEST_LOOP_sincos): Replace with RUN_TEST_LOOP_fFF_11.
+	(sincos_test_data): Change element type to struct
+	test_fFF_11_data.  Use TEST_fFF_11 instead of TEST_extra.
+	(sincos_test): Use RUN_TEST_LOOP_fFF_11 instead of
+	RUN_TEST_LOOP_sincos.
+	* math/README.libm-test: Don't mention special handling of
+	individual functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update names of sincos tests.
+	* sysdeps/powerpc/fpu/libm-test-ulps: Likewise.
+	* sysdeps/s390/fpu/libm-test-ulps: Likewise.
+	* sysdeps/sh/sh4/fpu/libm-test-ulps: Likewise.
+	* sysdeps/sparc/fpu/libm-test-ulps: Likewise.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* math/gen-libm-test.pl (get_variable): Remove function.
+	(parse_args): Don't show pointer parameters to call in test
+	names.  Use "extra output N" in test names for extra outputs
+	rather than naming variables.
+
 2013-05-18  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #15488]

@@ -1,3 +1,19 @@
+2013-05-20  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/memset.S (memset): New implementation.
+	(__bzero): Likewise.
+	(__memset_tail): New function.
+
+2013-05-20  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/memcpy-sse2-unaligned.S: New file.
+	* sysdeps/x86_64/multiarch/memcpy.S (__new_memcpy): Add
+	__memcpy_sse2_unaligned ifunc selection.
+	* sysdeps/x86_64/multiarch/Makefile (sysdep_routines):
+	Add memcpy-sse2-unaligned.S.
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c (__libc_ifunc_impl_list):
+	Add: __memcpy_sse2_unaligned.
+
 2013-05-19  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #15490]
@@ -260,6 +276,7 @@
 
 2013-05-17  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
+	[BZ # 15497]
 	* sysdeps/powerpc/fpu/e_hypot.c (GET_TWO_FLOAT_WORD): Fix test for
 	negative infinity on POWER6 or lower.
 	* sysdeps/powerpc/fpu/e_hypotf.c (GET_TWO_FLOAT_WORD): Likewise.

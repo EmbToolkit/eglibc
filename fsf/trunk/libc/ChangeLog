@@ -1,3 +1,44 @@
+2013-05-21  Dmitry V. Levin  <ldv@altlinux.org>
+
+	[BZ #15339]
+	* posix/tst-getaddrinfo4.c: New test.
+	* posix/Makefile (tests): Add it.
+
+2013-05-21  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15339]
+	* nss/getXXbyYY_r.c (REENTRANT_NAME): Set NETDB_INTERNAL only
+	when no services were used.
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Set h_errno.
+	Return EAI_SYSTEM if h_errno is NETDB_INTERNAL.
+
+2013-05-21  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15014]
+	* nss/getXXbyYY_r.c (INTERNAL (REENTRANT_NAME))
+	[HANDLE_DIGITS_DOTS]: Set any_service when digits-dots parsing was
+	successful.
+	* nss/digits_dots.c (__nss_hostname_digits_dots): Remove
+	redundant variable declarations and reallocation of buffer when
+	parsing as IPv6 address.  Always set NSS status when called from
+	reentrant functions.  Use NETDB_INTERNAL instead of TRY_AGAIN when
+	buffer too small.  Correct computation of needed size.
+	* nss/Makefile (tests): Add test-digits-dots.
+	* nss/test-digits-dots.c: New test.
+
+2013-05-21  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile: Remove instructions for adding
+	benchmark tests.
+	* benchtests/README: New file to explain how to execute and
+	enhance the benchmark tests.
+
+2013-05-21  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15493]
+	* setjmp/Makefile (tests): Add tst-sigsetjmp.
+	* setjmp/tst-sigsetjmp.c: New test.
+
 2013-05-20  Ondřej Bílka  <neleai@seznam.cz>
 
 	* sysdeps/x86_64/memset.S (memset): New implementation.

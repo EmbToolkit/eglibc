@@ -17,13 +17,51 @@
 
 
 # Makefile for benchmark tests.  The only useful target here is `bench`.
+# Add benchmark functions in alphabetical order.
 
 subdir := benchtests
-bench := exp pow rint sin cos tan atan modf
+bench := acos acosh asin asinh atan atanh cos cosh exp log modf pow rint sin \
+	 sinh tan tanh
+
+acos-ARGLIST = double
+acos-RET = double
+LDFLAGS-bench-acos = -lm
+
+acosh-ARGLIST = double
+acosh-RET = double
+LDFLAGS-bench-acosh = -lm
+
+asin-ARGLIST = double
+asin-RET = double
+LDFLAGS-bench-asin = -lm
+
+asinh-ARGLIST = double
+asinh-RET = double
+LDFLAGS-bench-asinh = -lm
+
+atan-ARGLIST = double
+atan-RET = double
+LDFLAGS-bench-atan = -lm
+
+atanh-ARGLIST = double
+atanh-RET = double
+LDFLAGS-bench-atanh = -lm
+
+cos-ARGLIST = double
+cos-RET = double
+LDFLAGS-bench-cos = -lm
+
+cosh-ARGLIST = double
+cosh-RET = double
+LDFLAGS-bench-cosh = -lm
 
 exp-ARGLIST = double
 exp-RET = double
 LDFLAGS-bench-exp = -lm
+
+log-ARGLIST = double
+log-RET = double
+LDFLAGS-bench-log = -lm
 
 pow-ARGLIST = double:double
 pow-RET = double
@@ -37,17 +75,17 @@ sin-ARGLIST = double
 sin-RET = double
 LDFLAGS-bench-sin = -lm
 
-cos-ARGLIST = double
-cos-RET = double
-LDFLAGS-bench-cos = -lm
+sinh-ARGLIST = double
+sinh-RET = double
+LDFLAGS-bench-sinh = -lm
 
 tan-ARGLIST = double
 tan-RET = double
 LDFLAGS-bench-tan = -lm
 
-atan-ARGLIST = double
-atan-RET = double
-LDFLAGS-bench-atan = -lm
+tanh-ARGLIST = double
+tanh-RET = double
+LDFLAGS-bench-tanh = -lm
 
 
 

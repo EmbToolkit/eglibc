@@ -39,7 +39,7 @@
 
 /* This testsuite has currently tests for:
    acos, acosh, asin, asinh, atan, atan2, atanh,
-   cbrt, ceil, copysign, cos, cosh, erf, erfc, exp, exp10, exp2, expm1,
+   cbrt, ceil, copysign, cos, cosh, drem, erf, erfc, exp, exp10, exp2, expm1,
    fabs, fdim, finite, floor, fma, fmax, fmin, fmod, fpclassify,
    frexp, gamma, hypot,
    ilogb, isfinite, isinf, isnan, isnormal, issignaling,
@@ -47,7 +47,7 @@
    j0, j1, jn,
    ldexp, lgamma, log, log10, log1p, log2, logb,
    modf, nearbyint, nextafter, nexttoward,
-   pow, remainder, remquo, rint, lrint, llrint,
+   pow, pow10, remainder, remquo, rint, lrint, llrint,
    round, lround, llround,
    scalb, scalbn, scalbln, signbit, sin, sincos, sinh, sqrt, tan, tanh, tgamma, trunc,
    y0, y1, yn, significand
@@ -58,10 +58,8 @@
    csin, csinh, csqrt, ctan, ctanh.
 
    At the moment the following functions and macros aren't tested:
-   drem (alias for remainder),
    lgamma_r,
-   nan,
-   pow10 (alias for exp10).
+   nan.
 
    Parameter handling is primitive in the moment:
    --verbose=[0..3] for different levels of output:
@@ -271,6 +269,8 @@ static FLOAT max_error, real_max_error, imag_max_error;
 
 #define MANT_DIG CHOOSE ((LDBL_MANT_DIG-1), (DBL_MANT_DIG-1), (FLT_MANT_DIG-1),  \
 			 (LDBL_MANT_DIG-1), (DBL_MANT_DIG-1), (FLT_MANT_DIG-1))
+#define MAX_EXP CHOOSE ((LDBL_MAX_EXP-1), (DBL_MAX_EXP-1), (FLT_MAX_EXP-1),	\
+			(LDBL_MAX_EXP-1), (DBL_MAX_EXP-1), (FLT_MAX_EXP-1))
 
 /* Compare KEY (a string, with the name of a test or a function) with
    ULP (a pointer to a struct ulp_data structure), returning a value
@@ -657,6 +657,44 @@ test_errno (const char *test_name, int errno_value, int exceptions)
     test_single_errno (test_name, errno_value, ERANGE, "ERANGE");
 }
 
+/* Returns the number of ulps that GIVEN is away from EXPECTED.  */
+#define ULPDIFF(given, expected) \
+	(FUNC(fabs) ((given) - (expected)) / ulp (expected))
+
+/* Returns the size of an ulp for VALUE.  */
+static FLOAT
+ulp (FLOAT value)
+{
+  FLOAT ulp;
+
+  switch (fpclassify (value))
+    {
+      case FP_ZERO:
+	/* We compute the distance to the next FP which is the same as the
+	   value of the smallest subnormal number. Previously we used
+	   2^(-MANT_DIG) which is too large a value to be useful. Note that we
+	   can't use ilogb(0), since that isn't a valid thing to do. As a point
+	   of comparison Java's ulp returns the next normal value e.g.
+	   2^(1 - MAX_EXP) for ulp(0), but that is not what we want for
+	   glibc.  */
+	/* Fall through...  */
+      case FP_SUBNORMAL:
+        /* The next closest subnormal value is a constant distance away.  */
+	ulp = FUNC(ldexp) (1.0, 1 - (MAX_EXP + MANT_DIG));
+	break;
+
+      case FP_NORMAL:
+	ulp = FUNC(ldexp) (1.0, FUNC(ilogb) (value) - MANT_DIG);
+	break;
+
+      default:
+	/* It should never happen. */
+	abort ();
+	break;
+    }
+  return ulp;
+}
+
 static void
 check_float_internal (const char *test_name, FLOAT computed, FLOAT expected,
 		      int exceptions,
@@ -665,7 +703,7 @@ check_float_internal (const char *test_name, FLOAT computed, FLOAT expected,
   int ok = 0;
   int print_diff = 0;
   FLOAT diff = 0;
-  FLOAT ulp = 0;
+  FLOAT ulps = 0;
   int errno_value = errno;
 
   test_exceptions (test_name, exceptions);
@@ -696,37 +734,19 @@ check_float_internal (const char *test_name, FLOAT computed, FLOAT expected,
   else
     {
       diff = FUNC(fabs) (computed - expected);
-      switch (fpclassify (expected))
-	{
-	case FP_ZERO:
-	  /* ilogb (0) isn't allowed. */
-	  ulp = diff / FUNC(ldexp) (1.0, - MANT_DIG);
-	  break;
-	case FP_NORMAL:
-	  ulp = diff / FUNC(ldexp) (1.0, FUNC(ilogb) (expected) - MANT_DIG);
-	  break;
-	case FP_SUBNORMAL:
-	  /* 1ulp for a subnormal value, shifted by MANT_DIG, is the
-	     least normal value.  */
-	  ulp = (FUNC(ldexp) (diff, MANT_DIG) / min_value);
-	  break;
-	default:
-	  /* It should never happen. */
-	  abort ();
-	  break;
-	}
-      set_max_error (ulp, curr_max_error);
+      ulps = ULPDIFF (computed, expected);
+      set_max_error (ulps, curr_max_error);
       print_diff = 1;
       if ((exceptions & IGNORE_ZERO_INF_SIGN) == 0
 	  && computed == 0.0 && expected == 0.0
 	  && signbit(computed) != signbit (expected))
 	ok = 0;
-      else if (ulp <= 0.5 || (ulp <= max_ulp && !ignore_max_ulp))
+      else if (ulps <= 0.5 || (ulps <= max_ulp && !ignore_max_ulp))
 	ok = 1;
       else
 	{
 	  ok = 0;
-	  print_ulps (test_name, ulp);
+	  print_ulps (test_name, ulps);
 	}
 
     }
@@ -744,7 +764,7 @@ check_float_internal (const char *test_name, FLOAT computed, FLOAT expected,
 	{
 	  printf (" difference: % .20" PRINTF_EXPR "  % .20" PRINTF_XEXPR
 		  "\n", diff, diff);
-	  printf (" ulp       : % .4" PRINTF_NEXPR "\n", ulp);
+	  printf (" ulp       : % .4" PRINTF_NEXPR "\n", ulps);
 	  printf (" max.ulp   : % .4" PRINTF_NEXPR "\n", max_ulp);
 	}
     }
@@ -1461,7 +1481,14 @@ struct test_fFF_11_data
 		       (ARRAY)[i].extra2_expected);			\
   ROUND_RESTORE_ ## ROUNDING_MODE
 
-
+/* Start and end the tests for a given function.  */
+#define START(FUNC)				\
+  const char *this_func = #FUNC;		\
+  init_max_error ()
+#define END					\
+  print_max_error (this_func)
+#define END_COMPLEX				\
+  print_complex_max_error (this_func)
 
 /* This is to prevent messages from the SVID libm emulation.  */
 int
@@ -1478,7 +1505,6 @@ matherr (struct exception *x __attribute__ ((unused)))
 
 static const struct test_f_f_data acos_test_data[] =
   {
-    START_DATA (acos),
     TEST_f_f (acos, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (acos, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (acos, qnan_value, qnan_value),
@@ -1510,7 +1536,6 @@ static const struct test_f_f_data acos_test_data[] =
     TEST_f_f (acos, 0x0.ffffffffffffffffp0L, 3.2927225399135962333718255320079907245059e-10L),
     TEST_f_f (acos, -0x0.ffffffffffffffffp0L, 3.1415926532605209844712837599423203309964L),
 #endif
-    END_DATA (acos)
   };
 
 static void
@@ -1518,20 +1543,18 @@ acos_test (void)
 {
   START (acos);
   RUN_TEST_LOOP_f_f (acos, acos_test_data, );
-  END (acos);
+  END;
 }
 
 
 static const struct test_f_f_data acos_tonearest_test_data[] =
   {
-    START_DATA (acos_tonearest),
     TEST_f_f (acos, 0, M_PI_2l),
     TEST_f_f (acos, minus_zero, M_PI_2l),
     TEST_f_f (acos, 1, 0),
     TEST_f_f (acos, -1, M_PIl),
     TEST_f_f (acos, 0.5, M_PI_6l*2.0),
     TEST_f_f (acos, -0.5, M_PI_6l*4.0),
-    END_DATA (acos_tonearest)
   };
 
 static void
@@ -1539,20 +1562,18 @@ acos_test_tonearest (void)
 {
   START (acos_tonearest);
   RUN_TEST_LOOP_f_f (acos, acos_tonearest_test_data, FE_TONEAREST);
-  END (acos_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data acos_towardzero_test_data[] =
   {
-    START_DATA (acos_towardzero),
     TEST_f_f (acos, 0, M_PI_2l),
     TEST_f_f (acos, minus_zero, M_PI_2l),
     TEST_f_f (acos, 1, 0),
     TEST_f_f (acos, -1, M_PIl),
     TEST_f_f (acos, 0.5, M_PI_6l*2.0),
     TEST_f_f (acos, -0.5, M_PI_6l*4.0),
-    END_DATA (acos_towardzero)
   };
 
 static void
@@ -1560,20 +1581,18 @@ acos_test_towardzero (void)
 {
   START (acos_towardzero);
   RUN_TEST_LOOP_f_f (acos, acos_towardzero_test_data, FE_TOWARDZERO);
-  END (acos_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data acos_downward_test_data[] =
   {
-    START_DATA (acos_downward),
     TEST_f_f (acos, 0, M_PI_2l),
     TEST_f_f (acos, minus_zero, M_PI_2l),
     TEST_f_f (acos, 1, 0),
     TEST_f_f (acos, -1, M_PIl),
     TEST_f_f (acos, 0.5, M_PI_6l*2.0),
     TEST_f_f (acos, -0.5, M_PI_6l*4.0),
-    END_DATA (acos_downward)
   };
 
 static void
@@ -1581,20 +1600,18 @@ acos_test_downward (void)
 {
   START (acos_downward);
   RUN_TEST_LOOP_f_f (acos, acos_downward_test_data, FE_DOWNWARD);
-  END (acos_downward);
+  END;
 }
 
 
 static const struct test_f_f_data acos_upward_test_data[] =
   {
-    START_DATA (acos_upward),
     TEST_f_f (acos, 0, M_PI_2l),
     TEST_f_f (acos, minus_zero, M_PI_2l),
     TEST_f_f (acos, 1, 0),
     TEST_f_f (acos, -1, M_PIl),
     TEST_f_f (acos, 0.5, M_PI_6l*2.0),
     TEST_f_f (acos, -0.5, M_PI_6l*4.0),
-    END_DATA (acos_upward)
   };
 
 static void
@@ -1602,12 +1619,11 @@ acos_test_upward (void)
 {
   START (acos_upward);
   RUN_TEST_LOOP_f_f (acos, acos_upward_test_data, FE_UPWARD);
-  END (acos_upward);
+  END;
 }
 
 static const struct test_f_f_data acosh_test_data[] =
   {
-    START_DATA (acosh),
     TEST_f_f (acosh, plus_infty, plus_infty),
     TEST_f_f (acosh, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (acosh, qnan_value, qnan_value),
@@ -1618,7 +1634,6 @@ static const struct test_f_f_data acosh_test_data[] =
 
     TEST_f_f (acosh, 1, 0),
     TEST_f_f (acosh, 7, 2.63391579384963341725009269461593689L),
-    END_DATA (acosh)
   };
 
 static void
@@ -1626,12 +1641,11 @@ acosh_test (void)
 {
   START (acosh);
   RUN_TEST_LOOP_f_f (acosh, acosh_test_data, );
-  END (acosh);
+  END;
 }
 
 static const struct test_f_f_data asin_test_data[] =
   {
-    START_DATA (asin),
     TEST_f_f (asin, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (asin, minus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (asin, qnan_value, qnan_value),
@@ -1661,7 +1675,6 @@ static const struct test_f_f_data asin_test_data[] =
     TEST_f_f (asin, 0x0.ffffffffffffffffp0L, 1.5707963264656243652399620683025688888978L),
     TEST_f_f (asin, -0x0.ffffffffffffffffp0L, -1.5707963264656243652399620683025688888978L),
 #endif
-    END_DATA (asin)
   };
 
 static void
@@ -1669,20 +1682,18 @@ asin_test (void)
 {
   START (asin);
   RUN_TEST_LOOP_f_f (asin, asin_test_data, );
-  END (asin);
+  END;
 }
 
 
 static const struct test_f_f_data asin_tonearest_test_data[] =
   {
-    START_DATA (asin_tonearest),
     TEST_f_f (asin, 0, 0),
     TEST_f_f (asin, minus_zero, minus_zero),
     TEST_f_f (asin, 0.5, M_PI_6l),
     TEST_f_f (asin, -0.5, -M_PI_6l),
     TEST_f_f (asin, 1.0, M_PI_2l),
     TEST_f_f (asin, -1.0, -M_PI_2l),
-    END_DATA (asin_tonearest)
   };
 
 static void
@@ -1690,20 +1701,18 @@ asin_test_tonearest (void)
 {
   START (asin_tonearest);
   RUN_TEST_LOOP_f_f (asin, asin_tonearest_test_data, FE_TONEAREST);
-  END (asin_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data asin_towardzero_test_data[] =
   {
-    START_DATA (asin_towardzero),
     TEST_f_f (asin, 0, 0),
     TEST_f_f (asin, minus_zero, minus_zero),
     TEST_f_f (asin, 0.5, M_PI_6l),
     TEST_f_f (asin, -0.5, -M_PI_6l),
     TEST_f_f (asin, 1.0, M_PI_2l),
     TEST_f_f (asin, -1.0, -M_PI_2l),
-    END_DATA (asin_towardzero)
   };
 
 static void
@@ -1711,20 +1720,18 @@ asin_test_towardzero (void)
 {
   START (asin_towardzero);
   RUN_TEST_LOOP_f_f (asin, asin_towardzero_test_data, FE_TOWARDZERO);
-  END (asin_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data asin_downward_test_data[] =
   {
-    START_DATA (asin_downward),
     TEST_f_f (asin, 0, 0),
     TEST_f_f (asin, minus_zero, minus_zero),
     TEST_f_f (asin, 0.5, M_PI_6l),
     TEST_f_f (asin, -0.5, -M_PI_6l),
     TEST_f_f (asin, 1.0, M_PI_2l),
     TEST_f_f (asin, -1.0, -M_PI_2l),
-    END_DATA (asin_downward)
   };
 
 static void
@@ -1732,20 +1739,18 @@ asin_test_downward (void)
 {
   START (asin_downward);
   RUN_TEST_LOOP_f_f (asin, asin_downward_test_data, FE_DOWNWARD);
-  END (asin_downward);
+  END;
 }
 
 
 static const struct test_f_f_data asin_upward_test_data[] =
   {
-    START_DATA (asin_upward),
     TEST_f_f (asin, 0, 0),
     TEST_f_f (asin, minus_zero, minus_zero),
     TEST_f_f (asin, 0.5, M_PI_6l),
     TEST_f_f (asin, -0.5, -M_PI_6l),
     TEST_f_f (asin, 1.0, M_PI_2l),
     TEST_f_f (asin, -1.0, -M_PI_2l),
-    END_DATA (asin_upward)
   };
 
 static void
@@ -1753,12 +1758,11 @@ asin_test_upward (void)
 {
   START (asin_upward);
   RUN_TEST_LOOP_f_f (asin, asin_upward_test_data, FE_UPWARD);
-  END (asin_upward);
+  END;
 }
 
 static const struct test_f_f_data asinh_test_data[] =
   {
-    START_DATA (asinh),
     TEST_f_f (asinh, 0, 0),
     TEST_f_f (asinh, minus_zero, minus_zero),
 #ifndef TEST_INLINE
@@ -1767,7 +1771,6 @@ static const struct test_f_f_data asinh_test_data[] =
 #endif
     TEST_f_f (asinh, qnan_value, qnan_value),
     TEST_f_f (asinh, 0.75L, 0.693147180559945309417232121458176568L),
-    END_DATA (asinh)
   };
 
 static void
@@ -1775,12 +1778,11 @@ asinh_test (void)
 {
   START (asinh);
   RUN_TEST_LOOP_f_f (asinh, asinh_test_data, );
-  END (asinh);
+  END;
 }
 
 static const struct test_f_f_data atan_test_data[] =
   {
-    START_DATA (atan),
     TEST_f_f (atan, 0, 0),
     TEST_f_f (atan, minus_zero, minus_zero),
 
@@ -1802,7 +1804,6 @@ static const struct test_f_f_data atan_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_f_f (atan, 0x1p-10000L, 0x1p-10000L),
 #endif
-    END_DATA (atan)
   };
 
 static void
@@ -1810,14 +1811,13 @@ atan_test (void)
 {
   START (atan);
   RUN_TEST_LOOP_f_f (atan, atan_test_data, );
-  END (atan);
+  END;
 }
 
 
 
 static const struct test_f_f_data atanh_test_data[] =
   {
-    START_DATA (atanh),
     TEST_f_f (atanh, 0, 0),
     TEST_f_f (atanh, minus_zero, minus_zero),
 
@@ -1832,7 +1832,6 @@ static const struct test_f_f_data atanh_test_data[] =
     TEST_f_f (atanh, -max_value, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
 
     TEST_f_f (atanh, 0.75L, 0.972955074527656652552676371721589865L),
-    END_DATA (atanh)
   };
 
 static void
@@ -1840,12 +1839,11 @@ atanh_test (void)
 {
   START (atanh);
   RUN_TEST_LOOP_f_f (atanh, atanh_test_data, );
-  END (atanh);
+  END;
 }
 
 static const struct test_ff_f_data atan2_test_data[] =
   {
-    START_DATA (atan2),
     /* atan2 (0,x) == 0 for x > 0.  */
     TEST_ff_f (atan2, 0, 1, 0),
 
@@ -1916,7 +1914,6 @@ static const struct test_ff_f_data atan2_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MANT_DIG >= 64
     TEST_ff_f (atan2, 0x1.00000000000001p0L, 0x1.00000000000001p0L, M_PI_4l),
 #endif
-    END_DATA (atan2)
   };
 
 static void
@@ -1924,12 +1921,11 @@ atan2_test (void)
 {
   START (atan2);
   RUN_TEST_LOOP_ff_f (atan2, atan2_test_data, );
-  END (atan2);
+  END;
 }
 
 static const struct test_c_f_data cabs_test_data[] =
   {
-    START_DATA (cabs);
     /* cabs (x + iy) is specified as hypot (x,y) */
 
     /* cabs (+inf + i x) == +inf.  */
@@ -1961,7 +1957,6 @@ static const struct test_c_f_data cabs_test_data[] =
     TEST_c_f (cabs, 5.7e7L, 0, 5.7e7L),
 
     TEST_c_f (cabs, 0.75L, 1.25L, 1.45773797371132511771853821938639577L),
-    END_DATA (cabs);
   };
 
 static void
@@ -1969,13 +1964,12 @@ cabs_test (void)
 {
   START (cabs);
   RUN_TEST_LOOP_c_f (cabs, cabs_test_data, );
-  END (cabs);
+  END;
 }
 
 
 static const struct test_c_c_data cacos_test_data[] =
   {
-    START_DATA (cacos),
     TEST_c_c (cacos, 0, 0, M_PI_2l, minus_zero),
     TEST_c_c (cacos, minus_zero, 0, M_PI_2l, minus_zero),
     TEST_c_c (cacos, minus_zero, minus_zero, M_PI_2l, 0.0),
@@ -2654,7 +2648,6 @@ static const struct test_c_c_data cacos_test_data[] =
 
     TEST_c_c (cacos, 0.75L, 1.25L, 1.11752014915610270578240049553777969L, -1.13239363160530819522266333696834467L),
     TEST_c_c (cacos, -2, -3, 2.1414491111159960199416055713254211L, 1.9833870299165354323470769028940395L),
-    END_DATA (cacos)
   };
 
 static void
@@ -2662,12 +2655,11 @@ cacos_test (void)
 {
   START (cacos);
   RUN_TEST_LOOP_c_c (cacos, cacos_test_data, );
-  END (cacos, complex);
+  END_COMPLEX;
 }
 
 static const struct test_c_c_data cacosh_test_data[] =
   {
-    START_DATA (cacosh),
     TEST_c_c (cacosh, 0, 0, 0.0, M_PI_2l),
     TEST_c_c (cacosh, minus_zero, 0, 0.0, M_PI_2l),
     TEST_c_c (cacosh, 0, minus_zero, 0.0, -M_PI_2l),
@@ -3340,7 +3332,6 @@ static const struct test_c_c_data cacosh_test_data[] =
 
     TEST_c_c (cacosh, 0.75L, 1.25L, 1.13239363160530819522266333696834467L, 1.11752014915610270578240049553777969L),
     TEST_c_c (cacosh, -2, -3, 1.9833870299165354323470769028940395L, -2.1414491111159960199416055713254211L),
-    END_DATA (cacosh)
   };
 
 static void
@@ -3348,13 +3339,12 @@ cacosh_test (void)
 {
   START (cacosh);
   RUN_TEST_LOOP_c_c (cacosh, cacosh_test_data, );
-  END (cacosh, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_f_data carg_test_data[] =
   {
-    START_DATA (carg);
     /* carg (x + iy) is specified as atan2 (y, x) */
 
     /* carg (x + i 0) == 0 for x > 0.  */
@@ -3413,7 +3403,6 @@ static const struct test_c_f_data carg_test_data[] =
     TEST_c_f (carg, minus_infty, minus_infty, -M_PI_34l),
 
     TEST_c_f (carg, qnan_value, qnan_value, qnan_value),
-    END_DATA (carg);
   };
 
 static void
@@ -3421,12 +3410,11 @@ carg_test (void)
 {
   START (carg);
   RUN_TEST_LOOP_c_f (carg, carg_test_data, );
-  END (carg);
+  END;
 }
 
 static const struct test_c_c_data casin_test_data[] =
   {
-    START_DATA (casin),
     TEST_c_c (casin, 0, 0, 0.0, 0.0),
     TEST_c_c (casin, minus_zero, 0, minus_zero, 0.0),
     TEST_c_c (casin, 0, minus_zero, 0.0, minus_zero),
@@ -4109,7 +4097,6 @@ static const struct test_c_c_data casin_test_data[] =
 
     TEST_c_c (casin, 0.75L, 1.25L, 0.453276177638793913448921196101971749L, 1.13239363160530819522266333696834467L),
     TEST_c_c (casin, -2, -3, -0.57065278432109940071028387968566963L, -1.9833870299165354323470769028940395L),
-    END_DATA (casin)
   };
 
 static void
@@ -4117,13 +4104,12 @@ casin_test (void)
 {
   START (casin);
   RUN_TEST_LOOP_c_c (casin, casin_test_data, );
-  END (casin, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data casinh_test_data[] =
   {
-    START_DATA (casinh),
     TEST_c_c (casinh, 0, 0, 0.0, 0.0),
     TEST_c_c (casinh, minus_zero, 0, minus_zero, 0),
     TEST_c_c (casinh, 0, minus_zero, 0.0, minus_zero),
@@ -4806,7 +4792,6 @@ static const struct test_c_c_data casinh_test_data[] =
 
     TEST_c_c (casinh, 0.75L, 1.25L, 1.03171853444778027336364058631006594L, 0.911738290968487636358489564316731207L),
     TEST_c_c (casinh, -2, -3, -1.9686379257930962917886650952454982L, -0.96465850440760279204541105949953237L),
-    END_DATA (casinh)
   };
 
 static void
@@ -4814,13 +4799,12 @@ casinh_test (void)
 {
   START (casinh);
   RUN_TEST_LOOP_c_c (casinh, casinh_test_data, );
-  END (casinh, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data catan_test_data[] =
   {
-    START_DATA (catan),
     TEST_c_c (catan, 0, 0, 0, 0),
     TEST_c_c (catan, minus_zero, 0, minus_zero, 0),
     TEST_c_c (catan, 0, minus_zero, 0, minus_zero),
@@ -5317,7 +5301,6 @@ static const struct test_c_c_data catan_test_data[] =
 
     TEST_c_c (catan, 0.75L, 1.25L, 1.10714871779409050301706546017853704L, 0.549306144334054845697622618461262852L),
     TEST_c_c (catan, -2, -3, -1.4099210495965755225306193844604208L, -0.22907268296853876629588180294200276L),
-    END_DATA (catan)
   };
 
 static void
@@ -5325,12 +5308,11 @@ catan_test (void)
 {
   START (catan);
   RUN_TEST_LOOP_c_c (catan, catan_test_data, );
-  END (catan, complex);
+  END_COMPLEX;
 }
 
 static const struct test_c_c_data catanh_test_data[] =
   {
-    START_DATA (catanh),
     TEST_c_c (catanh, 0, 0, 0.0, 0.0),
     TEST_c_c (catanh, minus_zero, 0, minus_zero, 0.0),
     TEST_c_c (catanh, 0, minus_zero, 0.0, minus_zero),
@@ -5826,7 +5808,6 @@ static const struct test_c_c_data catanh_test_data[] =
 
     TEST_c_c (catanh, 0.75L, 1.25L, 0.261492138795671927078652057366532140L, 0.996825126463918666098902241310446708L),
     TEST_c_c (catanh, -2, -3, -0.14694666622552975204743278515471595L, -1.3389725222944935611241935759091443L),
-    END_DATA (catanh)
   };
 
 static void
@@ -5834,12 +5815,11 @@ catanh_test (void)
 {
   START (catanh);
   RUN_TEST_LOOP_c_c (catanh, catanh_test_data, );
-  END (catanh, complex);
+  END_COMPLEX;
 }
 
 static const struct test_f_f_data cbrt_test_data[] =
   {
-    START_DATA (cbrt),
     TEST_f_f (cbrt, 0.0, 0.0),
     TEST_f_f (cbrt, minus_zero, minus_zero),
 
@@ -5852,7 +5832,6 @@ static const struct test_f_f_data cbrt_test_data[] =
     TEST_f_f (cbrt, -27.0, -3.0),
     TEST_f_f (cbrt, 0.9921875L, 0.997389022060725270579075195353955217L),
     TEST_f_f (cbrt, 0.75L, 0.908560296416069829445605878163630251L),
-    END_DATA (cbrt)
   };
 
 static void
@@ -5860,13 +5839,12 @@ cbrt_test (void)
 {
   START (cbrt);
   RUN_TEST_LOOP_f_f (cbrt, cbrt_test_data, );
-  END (cbrt);
+  END;
 }
 
 
 static const struct test_c_c_data ccos_test_data[] =
   {
-    START_DATA (ccos),
     TEST_c_c (ccos, 0.0, 0.0, 1.0, minus_zero),
     TEST_c_c (ccos, minus_zero, 0.0, 1.0, 0.0),
     TEST_c_c (ccos, 0.0, minus_zero, 1.0, 0.0),
@@ -5953,7 +5931,6 @@ static const struct test_c_c_data ccos_test_data[] =
 
     TEST_c_c (ccos, min_subnorm_value * 0x1p120, 0x1p-120, 1.0, -min_subnorm_value, UNDERFLOW_EXCEPTION),
     TEST_c_c (ccos, 0x1p-120, min_subnorm_value * 0x1p120, 1.0, -min_subnorm_value, UNDERFLOW_EXCEPTION),
-    END_DATA (ccos)
   };
 
 static void
@@ -5961,13 +5938,12 @@ ccos_test (void)
 {
   START (ccos);
   RUN_TEST_LOOP_c_c (ccos, ccos_test_data, );
-  END (ccos, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ccosh_test_data[] =
   {
-    START_DATA (ccosh),
     TEST_c_c (ccosh, 0.0, 0.0, 1.0, 0.0),
     TEST_c_c (ccosh, minus_zero, 0.0, 1.0, minus_zero),
     TEST_c_c (ccosh, 0.0, minus_zero, 1.0, minus_zero),
@@ -6055,7 +6031,6 @@ static const struct test_c_c_data ccosh_test_data[] =
 
     TEST_c_c (ccosh, min_subnorm_value * 0x1p120, 0x1p-120, 1.0, min_subnorm_value, UNDERFLOW_EXCEPTION),
     TEST_c_c (ccosh, 0x1p-120, min_subnorm_value * 0x1p120, 1.0, min_subnorm_value, UNDERFLOW_EXCEPTION),
-    END_DATA (ccosh)
   };
 
 static void
@@ -6063,13 +6038,12 @@ ccosh_test (void)
 {
   START (ccosh);
   RUN_TEST_LOOP_c_c (ccosh, ccosh_test_data, );
-  END (ccosh, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_f_f_data ceil_test_data[] =
   {
-    START_DATA (ceil),
     TEST_f_f (ceil, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (ceil, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_f_f (ceil, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
@@ -6155,7 +6129,6 @@ static const struct test_f_f_data ceil_test_data[] =
     TEST_f_f (ceil, 10141204801825835211973625643008.75L, 10141204801825835211973625643009.0L),
     TEST_f_f (ceil, 10141204801825835211973625643009.5L, 10141204801825835211973625643010.0L),
 #endif
-    END_DATA (ceil)
   };
 
 static void
@@ -6163,13 +6136,12 @@ ceil_test (void)
 {
   START (ceil);
   RUN_TEST_LOOP_f_f (ceil, ceil_test_data, );
-  END (ceil);
+  END;
 }
 
 
 static const struct test_c_c_data cexp_test_data[] =
   {
-    START_DATA (cexp),
     TEST_c_c (cexp, plus_zero, plus_zero, 1, 0.0),
     TEST_c_c (cexp, minus_zero, plus_zero, 1, 0.0),
     TEST_c_c (cexp, plus_zero, minus_zero, 1, minus_zero),
@@ -6265,7 +6237,6 @@ static const struct test_c_c_data cexp_test_data[] =
 
     TEST_c_c (cexp, min_value, min_subnorm_value, 1.0, min_subnorm_value, UNDERFLOW_EXCEPTION),
     TEST_c_c (cexp, min_value, -min_subnorm_value, 1.0, -min_subnorm_value, UNDERFLOW_EXCEPTION),
-    END_DATA (cexp)
   };
 
 static void
@@ -6273,13 +6244,12 @@ cexp_test (void)
 {
   START (cexp);
   RUN_TEST_LOOP_c_c (cexp, cexp_test_data, );
-  END (cexp, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_f_data cimag_test_data[] =
   {
-    START_DATA (cimag);
     TEST_c_f (cimag, 1.0, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_c_f (cimag, 1.0, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_c_f (cimag, 1.0, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
@@ -6287,7 +6257,6 @@ static const struct test_c_f_data cimag_test_data[] =
     TEST_c_f (cimag, 1.0, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_c_f (cimag, 1.0, minus_infty, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_c_f (cimag, 2.0, 3.0, 3.0, NO_INEXACT_EXCEPTION),
-    END_DATA (cimag);
   };
 
 static void
@@ -6295,12 +6264,11 @@ cimag_test (void)
 {
   START (cimag);
   RUN_TEST_LOOP_c_f (cimag, cimag_test_data, );
-  END (cimag);
+  END;
 }
 
 static const struct test_c_c_data clog_test_data[] =
   {
-    START_DATA (clog),
     TEST_c_c (clog, minus_zero, 0, minus_infty, M_PIl, DIVIDE_BY_ZERO_EXCEPTION),
     TEST_c_c (clog, minus_zero, minus_zero, minus_infty, -M_PIl, DIVIDE_BY_ZERO_EXCEPTION),
 
@@ -6506,7 +6474,6 @@ static const struct test_c_c_data clog_test_data[] =
     TEST_c_c (clog, 0xdb85c467ee2aadd5f425fe0f4b8dp-114L, 0x3e83162a0f95f1dcbf97dddf410eap-114L, 4.6017338806965821566734340588575402712716e-67L, 1.3547418904611758959096647942223384691728L),
     TEST_c_c (clog, 0x1415bcaf2105940d49a636e98ae59p-115L, 0x7e6a150adfcd1b0921d44b31f40f4p-115L, 2.5993421227864195179698176012564317527271e-67L, 1.4132318089683022770487383611430906982461L),
 #endif
-    END_DATA (clog)
   };
 
 static void
@@ -6514,13 +6481,12 @@ clog_test (void)
 {
   START (clog);
   RUN_TEST_LOOP_c_c (clog, clog_test_data, );
-  END (clog, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data clog10_test_data[] =
   {
-    START_DATA (clog10),
     TEST_c_c (clog10, minus_zero, 0, minus_infty, M_PIl, DIVIDE_BY_ZERO_EXCEPTION),
     TEST_c_c (clog10, minus_zero, minus_zero, minus_infty, -M_PIl, DIVIDE_BY_ZERO_EXCEPTION),
 
@@ -6725,7 +6691,6 @@ static const struct test_c_c_data clog10_test_data[] =
     TEST_c_c (clog10, 0xdb85c467ee2aadd5f425fe0f4b8dp-114L, 0x3e83162a0f95f1dcbf97dddf410eap-114L, 1.9985076315737626043096596036300177494613e-67L, 0.5883569274304683249184005177865521205198L),
     TEST_c_c (clog10, 0x1415bcaf2105940d49a636e98ae59p-115L, 0x7e6a150adfcd1b0921d44b31f40f4p-115L, 1.1288799405048268615023706955013387413519e-67L, 0.6137587762850841972073301550420510507903L),
 #endif
-    END_DATA (clog10)
   };
 
 static void
@@ -6733,13 +6698,12 @@ clog10_test (void)
 {
   START (clog10);
   RUN_TEST_LOOP_c_c (clog10, clog10_test_data, );
-  END (clog10, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data conj_test_data[] =
   {
-    START_DATA (conj),
     TEST_c_c (conj, 0.0, 0.0, 0.0, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_c_c (conj, 0.0, minus_zero, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_c_c (conj, qnan_value, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
@@ -6747,7 +6711,6 @@ static const struct test_c_c_data conj_test_data[] =
     TEST_c_c (conj, plus_infty, plus_infty, plus_infty, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_c_c (conj, 1.0, 2.0, 1.0, -2.0, NO_INEXACT_EXCEPTION),
     TEST_c_c (conj, 3.0, -4.0, 3.0, 4.0, NO_INEXACT_EXCEPTION),
-    END_DATA (conj)
   };
 
 static void
@@ -6755,13 +6718,12 @@ conj_test (void)
 {
   START (conj);
   RUN_TEST_LOOP_c_c (conj, conj_test_data, );
-  END (conj, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_ff_f_data copysign_test_data[] =
   {
-    START_DATA (copysign),
     TEST_ff_f (copysign, 0, 4, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (copysign, 0, -4, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_ff_f (copysign, minus_zero, 4, 0, NO_INEXACT_EXCEPTION),
@@ -6782,7 +6744,6 @@ static const struct test_ff_f_data copysign_test_data[] =
     TEST_ff_f (copysign, qnan_value, minus_zero, qnan_value, NO_INEXACT_EXCEPTION),
     TEST_ff_f (copysign, -qnan_value, 0, qnan_value, NO_INEXACT_EXCEPTION),
     TEST_ff_f (copysign, -qnan_value, minus_zero, qnan_value, NO_INEXACT_EXCEPTION),
-    END_DATA (copysign)
   };
 
 static void
@@ -6790,13 +6751,12 @@ copysign_test (void)
 {
   START (copysign);
   RUN_TEST_LOOP_ff_f (copysign, copysign_test_data, );
-  END (copysign);
+  END;
 }
 
 
 static const struct test_f_f_data cos_test_data[] =
   {
-    START_DATA (cos),
     TEST_f_f (cos, 0, 1),
     TEST_f_f (cos, minus_zero, 1),
     TEST_f_f (cos, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -6857,7 +6817,6 @@ static const struct test_f_f_data cos_test_data[] =
     TEST_f_f (cos, 0x1.fffffep+127, 8.53021039830304158051791467692161107353094e-01L),
     TEST_f_f (cos, 0x1p+50, 8.68095904660550604334592502063501320395739e-01L),
     TEST_f_f (cos, 0x1p+28, -1.65568979490578758865468278195361551113358e-01L),
-    END_DATA (cos)
   };
 
 static void
@@ -6865,13 +6824,12 @@ cos_test (void)
 {
   START (cos);
   RUN_TEST_LOOP_f_f (cos, cos_test_data, );
-  END (cos);
+  END;
 }
 
 
 static const struct test_f_f_data cos_tonearest_test_data[] =
   {
-    START_DATA (cos_tonearest),
     TEST_f_f (cos, 1, 0.5403023058681397174009366074429766037323L),
     TEST_f_f (cos, 2, -0.4161468365471423869975682295007621897660L),
     TEST_f_f (cos, 3, -0.9899924966004454572715727947312613023937L),
@@ -6882,7 +6840,6 @@ static const struct test_f_f_data cos_tonearest_test_data[] =
     TEST_f_f (cos, 8, -0.1455000338086135258688413818311946826093L),
     TEST_f_f (cos, 9, -0.9111302618846769883682947111811653112463L),
     TEST_f_f (cos, 10, -0.8390715290764524522588639478240648345199L),
-    END_DATA (cos_tonearest)
   };
 
 static void
@@ -6890,13 +6847,12 @@ cos_test_tonearest (void)
 {
   START (cos_tonearest);
   RUN_TEST_LOOP_f_f (cos, cos_tonearest_test_data, FE_TONEAREST);
-  END (cos_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data cos_towardzero_test_data[] =
   {
-    START_DATA (cos_towardzero),
     TEST_f_f (cos, 1, 0.5403023058681397174009366074429766037323L),
     TEST_f_f (cos, 2, -0.4161468365471423869975682295007621897660L),
     TEST_f_f (cos, 3, -0.9899924966004454572715727947312613023937L),
@@ -6907,7 +6863,6 @@ static const struct test_f_f_data cos_towardzero_test_data[] =
     TEST_f_f (cos, 8, -0.1455000338086135258688413818311946826093L),
     TEST_f_f (cos, 9, -0.9111302618846769883682947111811653112463L),
     TEST_f_f (cos, 10, -0.8390715290764524522588639478240648345199L),
-    END_DATA (cos_towardzero)
   };
 
 static void
@@ -6915,13 +6870,12 @@ cos_test_towardzero (void)
 {
   START (cos_towardzero);
   RUN_TEST_LOOP_f_f (cos, cos_towardzero_test_data, FE_TOWARDZERO);
-  END (cos_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data cos_downward_test_data[] =
   {
-    START_DATA (cos_downward),
     TEST_f_f (cos, 1, 0.5403023058681397174009366074429766037323L),
     TEST_f_f (cos, 2, -0.4161468365471423869975682295007621897660L),
     TEST_f_f (cos, 3, -0.9899924966004454572715727947312613023937L),
@@ -6932,7 +6886,6 @@ static const struct test_f_f_data cos_downward_test_data[] =
     TEST_f_f (cos, 8, -0.1455000338086135258688413818311946826093L),
     TEST_f_f (cos, 9, -0.9111302618846769883682947111811653112463L),
     TEST_f_f (cos, 10, -0.8390715290764524522588639478240648345199L),
-    END_DATA (cos_downward)
   };
 
 static void
@@ -6940,13 +6893,12 @@ cos_test_downward (void)
 {
   START (cos_downward);
   RUN_TEST_LOOP_f_f (cos, cos_downward_test_data, FE_DOWNWARD);
-  END (cos_downward);
+  END;
 }
 
 
 static const struct test_f_f_data cos_upward_test_data[] =
   {
-    START_DATA (cos_upward),
     TEST_f_f (cos, 1, 0.5403023058681397174009366074429766037323L),
     TEST_f_f (cos, 2, -0.4161468365471423869975682295007621897660L),
     TEST_f_f (cos, 3, -0.9899924966004454572715727947312613023937L),
@@ -6957,7 +6909,6 @@ static const struct test_f_f_data cos_upward_test_data[] =
     TEST_f_f (cos, 8, -0.1455000338086135258688413818311946826093L),
     TEST_f_f (cos, 9, -0.9111302618846769883682947111811653112463L),
     TEST_f_f (cos, 10, -0.8390715290764524522588639478240648345199L),
-    END_DATA (cos_upward)
   };
 
 static void
@@ -6965,13 +6916,12 @@ cos_test_upward (void)
 {
   START (cos_upward);
   RUN_TEST_LOOP_f_f (cos, cos_upward_test_data, FE_UPWARD);
-  END (cos_upward);
+  END;
 }
 
 
 static const struct test_f_f_data cosh_test_data[] =
   {
-    START_DATA (cosh),
     TEST_f_f (cosh, 0, 1),
     TEST_f_f (cosh, minus_zero, 1),
 
@@ -6987,7 +6937,6 @@ static const struct test_f_f_data cosh_test_data[] =
     TEST_f_f (cosh, 709.8893558127259666434838436543941497802734375L, 9.9999998999995070652573675944761818416035e+307L),
     TEST_f_f (cosh, -709.8893558127259666434838436543941497802734375L, 9.9999998999995070652573675944761818416035e+307L),
 #endif
-    END_DATA (cosh)
   };
 
 static void
@@ -6995,17 +6944,15 @@ cosh_test (void)
 {
   START (cosh);
   RUN_TEST_LOOP_f_f (cosh, cosh_test_data, );
-  END (cosh);
+  END;
 }
 
 
 static const struct test_f_f_data cosh_tonearest_test_data[] =
   {
-    START_DATA (cosh_tonearest),
     TEST_f_f (cosh, 22, 1792456423.065795780980053377632656584997L),
     TEST_f_f (cosh, 23, 4872401723.124451300068625740569997090344L),
     TEST_f_f (cosh, 24, 13244561064.92173614708845674912733665919L),
-    END_DATA (cosh_tonearest)
   };
 
 static void
@@ -7013,17 +6960,15 @@ cosh_test_tonearest (void)
 {
   START (cosh_tonearest);
   RUN_TEST_LOOP_f_f (cosh, cosh_tonearest_test_data, FE_TONEAREST);
-  END (cosh_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data cosh_towardzero_test_data[] =
   {
-    START_DATA (cosh_towardzero),
     TEST_f_f (cosh, 22, 1792456423.065795780980053377632656584997L),
     TEST_f_f (cosh, 23, 4872401723.124451300068625740569997090344L),
     TEST_f_f (cosh, 24, 13244561064.92173614708845674912733665919L),
-    END_DATA (cosh_towardzero)
   };
 
 static void
@@ -7031,17 +6976,15 @@ cosh_test_towardzero (void)
 {
   START (cosh_towardzero);
   RUN_TEST_LOOP_f_f (cosh, cosh_towardzero_test_data, FE_TOWARDZERO);
-  END (cosh_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data cosh_downward_test_data[] =
   {
-    START_DATA (cosh_downward),
     TEST_f_f (cosh, 22, 1792456423.065795780980053377632656584997L),
     TEST_f_f (cosh, 23, 4872401723.124451300068625740569997090344L),
     TEST_f_f (cosh, 24, 13244561064.92173614708845674912733665919L),
-    END_DATA (cosh_downward)
   };
 
 static void
@@ -7049,17 +6992,15 @@ cosh_test_downward (void)
 {
   START (cosh_downward);
   RUN_TEST_LOOP_f_f (cosh, cosh_downward_test_data, FE_DOWNWARD);
-  END (cosh_downward);
+  END;
 }
 
 
 static const struct test_f_f_data cosh_upward_test_data[] =
   {
-    START_DATA (cosh_upward),
     TEST_f_f (cosh, 22, 1792456423.065795780980053377632656584997L),
     TEST_f_f (cosh, 23, 4872401723.124451300068625740569997090344L),
     TEST_f_f (cosh, 24, 13244561064.92173614708845674912733665919L),
-    END_DATA (cosh_upward)
   };
 
 static void
@@ -7067,17 +7008,18 @@ cosh_test_upward (void)
 {
   START (cosh_upward);
   RUN_TEST_LOOP_f_f (cosh, cosh_upward_test_data, FE_UPWARD);
-  END (cosh_upward);
+  END;
 }
 
 
 static const struct test_cc_c_data cpow_test_data[] =
   {
-    START_DATA (cpow),
     TEST_cc_c (cpow, 1, 0, 0, 0, 1.0, 0.0),
     TEST_cc_c (cpow, 2, 0, 10, 0, 1024.0, 0.0),
-
+#if 0
+    /* Disabled until we fix bug 14473.  */
     TEST_cc_c (cpow, M_El, 0, 0, 2 * M_PIl, 1.0, 0.0),
+#endif
     TEST_cc_c (cpow, 2, 3, 4, 0, -119.0, -120.0),
 
     TEST_cc_c (cpow, qnan_value, qnan_value, qnan_value, qnan_value, qnan_value, qnan_value),
@@ -7086,7 +7028,6 @@ static const struct test_cc_c_data cpow_test_data[] =
     TEST_cc_c (cpow, 0.75L, 1.25L, 1.0L, 1.0L, 0.0846958290317209430433805274189191353L, 0.513285749182902449043287190519090481L),
     TEST_cc_c (cpow, 0.75L, 1.25L, 1.0L, 0.0L, 0.75L, 1.25L),
     TEST_cc_c (cpow, 0.75L, 1.25L, 0.0L, 1.0L, 0.331825439177608832276067945276730566L, 0.131338600281188544930936345230903032L),
-    END_DATA (cpow)
   };
 
 static void
@@ -7094,13 +7035,12 @@ cpow_test (void)
 {
   START (cpow);
   RUN_TEST_LOOP_cc_c (cpow, cpow_test_data, );
-  END (cpow, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data cproj_test_data[] =
   {
-    START_DATA (cproj),
     TEST_c_c (cproj, 0.0, 0.0, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_c_c (cproj, minus_zero, minus_zero, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_c_c (cproj, 0.0, minus_zero, 0.0, minus_zero, NO_INEXACT_EXCEPTION),
@@ -7115,7 +7055,6 @@ static const struct test_c_c_data cproj_test_data[] =
 
     TEST_c_c (cproj, 1.0, 0.0, 1.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_c_c (cproj, 2.0, 3.0, 2.0, 3.0, NO_INEXACT_EXCEPTION),
-    END_DATA (cproj)
   };
 
 static void
@@ -7123,13 +7062,12 @@ cproj_test (void)
 {
   START (cproj);
   RUN_TEST_LOOP_c_c (cproj, cproj_test_data, );
-  END (cproj, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_f_data creal_test_data[] =
   {
-    START_DATA (creal);
     TEST_c_f (creal, 0.0, 1.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_c_f (creal, minus_zero, 1.0, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_c_f (creal, qnan_value, 1.0, qnan_value, NO_INEXACT_EXCEPTION),
@@ -7137,7 +7075,6 @@ static const struct test_c_f_data creal_test_data[] =
     TEST_c_f (creal, plus_infty, 1.0, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_c_f (creal, minus_infty, 1.0, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_c_f (creal, 2.0, 3.0, 2.0, NO_INEXACT_EXCEPTION),
-    END_DATA (creal);
   };
 
 static void
@@ -7145,12 +7082,11 @@ creal_test (void)
 {
   START (creal);
   RUN_TEST_LOOP_c_f (creal, creal_test_data, );
-  END (creal);
+  END;
 }
 
 static const struct test_c_c_data csin_test_data[] =
   {
-    START_DATA (csin),
     TEST_c_c (csin, 0.0, 0.0, 0.0, 0.0),
     TEST_c_c (csin, minus_zero, 0.0, minus_zero, 0.0),
     TEST_c_c (csin, 0.0, minus_zero, 0, minus_zero),
@@ -7237,7 +7173,6 @@ static const struct test_c_c_data csin_test_data[] =
 
     TEST_c_c (csin, min_subnorm_value, min_value, min_subnorm_value, min_value, UNDERFLOW_EXCEPTION),
     TEST_c_c (csin, min_value, min_subnorm_value, min_value, min_subnorm_value, UNDERFLOW_EXCEPTION),
-    END_DATA (csin)
   };
 
 static void
@@ -7245,13 +7180,12 @@ csin_test (void)
 {
   START (csin);
   RUN_TEST_LOOP_c_c (csin, csin_test_data, );
-  END (csin, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data csinh_test_data[] =
   {
-    START_DATA (csinh),
     TEST_c_c (csinh, 0.0, 0.0, 0.0, 0.0),
     TEST_c_c (csinh, minus_zero, 0.0, minus_zero, 0.0),
     TEST_c_c (csinh, 0.0, minus_zero, 0.0, minus_zero),
@@ -7338,7 +7272,6 @@ static const struct test_c_c_data csinh_test_data[] =
 
     TEST_c_c (csinh, min_subnorm_value, min_value, min_subnorm_value, min_value, UNDERFLOW_EXCEPTION),
     TEST_c_c (csinh, min_value, min_subnorm_value, min_value, min_subnorm_value, UNDERFLOW_EXCEPTION),
-    END_DATA (csinh)
   };
 
 static void
@@ -7346,13 +7279,12 @@ csinh_test (void)
 {
   START (csinh);
   RUN_TEST_LOOP_c_c (csinh, csinh_test_data, );
-  END (csinh, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data csqrt_test_data[] =
   {
-    START_DATA (csqrt),
     TEST_c_c (csqrt, 0, 0, 0.0, 0.0),
     TEST_c_c (csqrt, 0, minus_zero, 0, minus_zero),
     TEST_c_c (csqrt, minus_zero, 0, 0.0, 0.0),
@@ -7459,7 +7391,6 @@ static const struct test_c_c_data csqrt_test_data[] =
     TEST_c_c (csqrt, -0x1.0000000000000000000000000001p-16382L, -0x1.0000000000000000000000000001p-16382L, 8.344545284118961663847948339519226074126e-2467L, -2.014551439675644900022606748976158925145e-2466L),
 # endif
 #endif
-    END_DATA (csqrt)
   };
 
 static void
@@ -7467,12 +7398,11 @@ csqrt_test (void)
 {
   START (csqrt);
   RUN_TEST_LOOP_c_c (csqrt, csqrt_test_data, );
-  END (csqrt, complex);
+  END_COMPLEX;
 }
 
 static const struct test_c_c_data ctan_test_data[] =
   {
-    START_DATA (ctan),
     TEST_c_c (ctan, 0, 0, 0.0, 0.0),
     TEST_c_c (ctan, 0, minus_zero, 0.0, minus_zero),
     TEST_c_c (ctan, minus_zero, 0, minus_zero, 0.0),
@@ -7545,7 +7475,6 @@ static const struct test_c_c_data ctan_test_data[] =
     TEST_c_c (ctan, 50000, -50000, plus_zero, -1.0, UNDERFLOW_EXCEPTION),
     TEST_c_c (ctan, -50000, 50000, minus_zero, 1.0, UNDERFLOW_EXCEPTION),
     TEST_c_c (ctan, -50000, -50000, minus_zero, -1.0, UNDERFLOW_EXCEPTION),
-    END_DATA (ctan)
   };
 
 static void
@@ -7553,13 +7482,12 @@ ctan_test (void)
 {
   START (ctan);
   RUN_TEST_LOOP_c_c (ctan, ctan_test_data, );
-  END (ctan, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctan_tonearest_test_data[] =
   {
-    START_DATA (ctan_tonearest),
     TEST_c_c (ctan, 0x1.921fb6p+0, 0x1p-149, -2.287733242885645987394874673945769518150e7L, 7.334008549954377778731880988481078535821e-31L),
 
 #ifndef TEST_FLOAT
@@ -7569,7 +7497,6 @@ static const struct test_c_c_data ctan_tonearest_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctan, 0x1.921fb54442d1846ap+0L, 0x1p-16445L, -3.986797629811710706723242948653362815645e19L, 5.793882568875674066286163141055208625180e-4912L),
 #endif
-    END_DATA (ctan_tonearest)
   };
 
 static void
@@ -7577,13 +7504,12 @@ ctan_test_tonearest (void)
 {
   START (ctan_tonearest);
   RUN_TEST_LOOP_c_c (ctan, ctan_tonearest_test_data, FE_TONEAREST);
-  END (ctan_tonearest, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctan_towardzero_test_data[] =
   {
-    START_DATA (ctan_towardzero),
     TEST_c_c (ctan, 0x1.921fb6p+0, 0x1p-149, -2.287733242885645987394874673945769518150e7L, 7.334008549954377778731880988481078535821e-31L),
 
 #ifndef TEST_FLOAT
@@ -7593,7 +7519,6 @@ static const struct test_c_c_data ctan_towardzero_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctan, 0x1.921fb54442d1846ap+0L, 0x1p-16445L, -3.986797629811710706723242948653362815645e19L, 5.793882568875674066286163141055208625180e-4912L),
 #endif
-    END_DATA (ctan_towardzero)
   };
 
 static void
@@ -7601,13 +7526,12 @@ ctan_test_towardzero (void)
 {
   START (ctan_towardzero);
   RUN_TEST_LOOP_c_c (ctan, ctan_towardzero_test_data, FE_TOWARDZERO);
-  END (ctan_towardzero, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctan_downward_test_data[] =
   {
-    START_DATA (ctan_downward),
     TEST_c_c (ctan, 0x1.921fb6p+0, 0x1p-149, -2.287733242885645987394874673945769518150e7L, 7.334008549954377778731880988481078535821e-31L),
 
 #ifndef TEST_FLOAT
@@ -7617,7 +7541,6 @@ static const struct test_c_c_data ctan_downward_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctan, 0x1.921fb54442d1846ap+0L, 0x1p-16445L, -3.986797629811710706723242948653362815645e19L, 5.793882568875674066286163141055208625180e-4912L),
 #endif
-    END_DATA (ctan_downward)
   };
 
 static void
@@ -7625,13 +7548,12 @@ ctan_test_downward (void)
 {
   START (ctan_downward);
   RUN_TEST_LOOP_c_c (ctan, ctan_downward_test_data, FE_DOWNWARD);
-  END (ctan_downward, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctan_upward_test_data[] =
   {
-    START_DATA (ctan_upward),
     TEST_c_c (ctan, 0x1.921fb6p+0, 0x1p-149, -2.287733242885645987394874673945769518150e7L, 7.334008549954377778731880988481078535821e-31L),
 
 #ifndef TEST_FLOAT
@@ -7641,7 +7563,6 @@ static const struct test_c_c_data ctan_upward_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctan, 0x1.921fb54442d1846ap+0L, 0x1p-16445L, -3.986797629811710706723242948653362815645e19L, 5.793882568875674066286163141055208625180e-4912L),
 #endif
-    END_DATA (ctan_upward)
   };
 
 static void
@@ -7649,13 +7570,12 @@ ctan_test_upward (void)
 {
   START (ctan_upward);
   RUN_TEST_LOOP_c_c (ctan, ctan_upward_test_data, FE_UPWARD);
-  END (ctan_upward, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctanh_test_data[] =
   {
-    START_DATA (ctanh),
     TEST_c_c (ctanh, 0, 0, 0.0, 0.0),
     TEST_c_c (ctanh, 0, minus_zero, 0.0, minus_zero),
     TEST_c_c (ctanh, minus_zero, 0, minus_zero, 0.0),
@@ -7729,7 +7649,6 @@ static const struct test_c_c_data ctanh_test_data[] =
     TEST_c_c (ctanh, 50000, -50000, 1.0, minus_zero, UNDERFLOW_EXCEPTION),
     TEST_c_c (ctanh, -50000, 50000, -1.0, plus_zero, UNDERFLOW_EXCEPTION),
     TEST_c_c (ctanh, -50000, -50000, -1.0, minus_zero, UNDERFLOW_EXCEPTION),
-    END_DATA (ctanh)
   };
 
 static void
@@ -7737,13 +7656,12 @@ ctanh_test (void)
 {
   START (ctanh);
   RUN_TEST_LOOP_c_c (ctanh, ctanh_test_data, );
-  END (ctanh, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctanh_tonearest_test_data[] =
   {
-    START_DATA (ctanh_tonearest),
     TEST_c_c (ctanh, 0x1p-149, 0x1.921fb6p+0, 7.334008549954377778731880988481078535821e-31L, -2.287733242885645987394874673945769518150e7L),
 
 #ifndef TEST_FLOAT
@@ -7753,7 +7671,6 @@ static const struct test_c_c_data ctanh_tonearest_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctanh, 0x1p-16445L, 0x1.921fb54442d1846ap+0L, 5.793882568875674066286163141055208625180e-4912L, -3.986797629811710706723242948653362815645e19L),
 #endif
-    END_DATA (ctanh_tonearest)
   };
 
 static void
@@ -7761,13 +7678,12 @@ ctanh_test_tonearest (void)
 {
   START (ctanh_tonearest);
   RUN_TEST_LOOP_c_c (ctanh, ctanh_tonearest_test_data, FE_TONEAREST);
-  END (ctanh_tonearest, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctanh_towardzero_test_data[] =
   {
-    START_DATA (ctanh_towardzero),
     TEST_c_c (ctanh, 0x1p-149, 0x1.921fb6p+0, 7.334008549954377778731880988481078535821e-31L, -2.287733242885645987394874673945769518150e7L),
 
 #ifndef TEST_FLOAT
@@ -7777,7 +7693,6 @@ static const struct test_c_c_data ctanh_towardzero_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctanh, 0x1p-16445L, 0x1.921fb54442d1846ap+0L, 5.793882568875674066286163141055208625180e-4912L, -3.986797629811710706723242948653362815645e19L),
 #endif
-    END_DATA (ctanh_towardzero)
   };
 
 static void
@@ -7785,13 +7700,12 @@ ctanh_test_towardzero (void)
 {
   START (ctanh_towardzero);
   RUN_TEST_LOOP_c_c (ctanh, ctanh_towardzero_test_data, FE_TOWARDZERO);
-  END (ctanh_towardzero, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctanh_downward_test_data[] =
   {
-    START_DATA (ctanh_downward),
     TEST_c_c (ctanh, 0x1p-149, 0x1.921fb6p+0, 7.334008549954377778731880988481078535821e-31L, -2.287733242885645987394874673945769518150e7L),
 
 #ifndef TEST_FLOAT
@@ -7801,7 +7715,6 @@ static const struct test_c_c_data ctanh_downward_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctanh, 0x1p-16445L, 0x1.921fb54442d1846ap+0L, 5.793882568875674066286163141055208625180e-4912L, -3.986797629811710706723242948653362815645e19L),
 #endif
-    END_DATA (ctanh_downward)
   };
 
 static void
@@ -7809,13 +7722,12 @@ ctanh_test_downward (void)
 {
   START (ctanh_downward);
   RUN_TEST_LOOP_c_c (ctanh, ctanh_downward_test_data, FE_DOWNWARD);
-  END (ctanh_downward, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_c_c_data ctanh_upward_test_data[] =
   {
-    START_DATA (ctanh_upward),
     TEST_c_c (ctanh, 0x1p-149, 0x1.921fb6p+0, 7.334008549954377778731880988481078535821e-31L, -2.287733242885645987394874673945769518150e7L),
 
 #ifndef TEST_FLOAT
@@ -7825,7 +7737,6 @@ static const struct test_c_c_data ctanh_upward_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_c_c (ctanh, 0x1p-16445L, 0x1.921fb54442d1846ap+0L, 5.793882568875674066286163141055208625180e-4912L, -3.986797629811710706723242948653362815645e19L),
 #endif
-    END_DATA (ctanh_upward)
   };
 
 static void
@@ -7833,13 +7744,12 @@ ctanh_test_upward (void)
 {
   START (ctanh_upward);
   RUN_TEST_LOOP_c_c (ctanh, ctanh_upward_test_data, FE_UPWARD);
-  END (ctanh_upward, complex);
+  END_COMPLEX;
 }
 
 
 static const struct test_f_f_data erf_test_data[] =
   {
-    START_DATA (erf),
     TEST_f_f (erf, 0, 0),
     TEST_f_f (erf, minus_zero, minus_zero),
     TEST_f_f (erf, plus_infty, 1),
@@ -7852,7 +7762,6 @@ static const struct test_f_f_data erf_test_data[] =
     TEST_f_f (erf, 2.0L, 0.995322265018952734162069256367252929L),
     TEST_f_f (erf, 4.125L, 0.999999994576599200434933994687765914L),
     TEST_f_f (erf, 27.0L, 1.0L),
-    END_DATA (erf)
   };
 
 static void
@@ -7860,13 +7769,12 @@ erf_test (void)
 {
   START (erf);
   RUN_TEST_LOOP_f_f (erf, erf_test_data, );
-  END (erf);
+  END;
 }
 
 
 static const struct test_f_f_data erfc_test_data[] =
   {
-    START_DATA (erfc),
     TEST_f_f (erfc, plus_infty, 0.0),
     TEST_f_f (erfc, minus_infty, 2.0),
     TEST_f_f (erfc, 0.0, 1.0),
@@ -7890,7 +7798,6 @@ static const struct test_f_f_data erfc_test_data[] =
     TEST_f_f (erfc, 0x1.ffff56789abcdef0123456789a8p+2L, 1.123161416304655390092138725253789378459e-29L),
 # endif
 #endif
-    END_DATA (erfc)
   };
 
 static void
@@ -7898,13 +7805,12 @@ erfc_test (void)
 {
   START (erfc);
   RUN_TEST_LOOP_f_f (erfc, erfc_test_data, );
-  END (erfc);
+  END;
 }
 
 
 static const struct test_f_f_data exp_test_data[] =
   {
-    START_DATA (exp),
     TEST_f_f (exp, 0, 1),
     TEST_f_f (exp, minus_zero, 1),
 
@@ -7935,7 +7841,6 @@ static const struct test_f_f_data exp_test_data[] =
     TEST_f_f (exp, 1e5, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (exp, max_value, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (exp, -max_value, 0, UNDERFLOW_EXCEPTION),
-    END_DATA (exp)
   };
 
 static void
@@ -7943,17 +7848,15 @@ exp_test (void)
 {
   START (exp);
   RUN_TEST_LOOP_f_f (exp, exp_test_data, );
-  END (exp);
+  END;
 }
 
 
 static const struct test_f_f_data exp_tonearest_test_data[] =
   {
-    START_DATA (exp_tonearest),
     TEST_f_f (exp, 1, M_El),
     TEST_f_f (exp, 2, M_E2l),
     TEST_f_f (exp, 3, M_E3l),
-    END_DATA (exp_tonearest)
   };
 
 static void
@@ -7961,17 +7864,15 @@ exp_test_tonearest (void)
 {
   START (exp_tonearest);
   RUN_TEST_LOOP_f_f (exp, exp_tonearest_test_data, FE_TONEAREST);
-  END (exp_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data exp_towardzero_test_data[] =
   {
-    START_DATA (exp_towardzero),
     TEST_f_f (exp, 1, M_El),
     TEST_f_f (exp, 2, M_E2l),
     TEST_f_f (exp, 3, M_E3l),
-    END_DATA (exp_towardzero)
   };
 
 static void
@@ -7979,17 +7880,15 @@ exp_test_towardzero (void)
 {
   START (exp_towardzero);
   RUN_TEST_LOOP_f_f (exp, exp_towardzero_test_data, FE_TOWARDZERO);
-  END (exp_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data exp_downward_test_data[] =
   {
-    START_DATA (exp_downward),
     TEST_f_f (exp, 1, M_El),
     TEST_f_f (exp, 2, M_E2l),
     TEST_f_f (exp, 3, M_E3l),
-    END_DATA (exp_downward)
   };
 
 static void
@@ -7997,17 +7896,15 @@ exp_test_downward (void)
 {
   START (exp_downward);
   RUN_TEST_LOOP_f_f (exp, exp_downward_test_data, FE_DOWNWARD);
-  END (exp_downward);
+  END;
 }
 
 
 static const struct test_f_f_data exp_upward_test_data[] =
   {
-    START_DATA (exp_upward),
     TEST_f_f (exp, 1, M_El),
     TEST_f_f (exp, 2, M_E2l),
     TEST_f_f (exp, 3, M_E3l),
-    END_DATA (exp_upward)
   };
 
 static void
@@ -8015,13 +7912,12 @@ exp_test_upward (void)
 {
   START (exp_upward);
   RUN_TEST_LOOP_f_f (exp, exp_upward_test_data, FE_UPWARD);
-  END (exp_upward);
+  END;
 }
 
 
 static const struct test_f_f_data exp10_test_data[] =
   {
-    START_DATA (exp10),
     TEST_f_f (exp10, 0, 1),
     TEST_f_f (exp10, minus_zero, 1),
 
@@ -8045,7 +7941,6 @@ static const struct test_f_f_data exp10_test_data[] =
     TEST_f_f (exp10, max_value, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (exp10, -max_value, 0, UNDERFLOW_EXCEPTION),
     TEST_f_f (exp10, 0.75L, 5.62341325190349080394951039776481231L),
-    END_DATA (exp10)
   };
 
 static void
@@ -8053,13 +7948,21 @@ exp10_test (void)
 {
   START (exp10);
   RUN_TEST_LOOP_f_f (exp10, exp10_test_data, );
-  END (exp10);
+  END;
+}
+
+static void
+pow10_test (void)
+{
+  START (pow10);
+  /* pow10 uses the same test data as exp10.  */
+  RUN_TEST_LOOP_f_f (pow10, exp10_test_data, );
+  END;
 }
 
 
 static const struct test_f_f_data exp2_test_data[] =
   {
-    START_DATA (exp2),
     TEST_f_f (exp2, 0, 1),
     TEST_f_f (exp2, minus_zero, 1),
     TEST_f_f (exp2, plus_infty, plus_infty),
@@ -8088,7 +7991,6 @@ static const struct test_f_f_data exp2_test_data[] =
     TEST_f_f (exp2, 16383, 0x1p16383L),
     TEST_f_f (exp2, -16400, 0x1p-16400L),
 #endif
-    END_DATA (exp2)
   };
 
 static void
@@ -8096,13 +7998,12 @@ exp2_test (void)
 {
   START (exp2);
   RUN_TEST_LOOP_f_f (exp2, exp2_test_data, );
-  END (exp2);
+  END;
 }
 
 
 static const struct test_f_f_data expm1_test_data[] =
   {
-    START_DATA (expm1),
     TEST_f_f (expm1, 0, 0),
     TEST_f_f (expm1, minus_zero, minus_zero),
 
@@ -8150,7 +8051,6 @@ static const struct test_f_f_data expm1_test_data[] =
     TEST_f_f (expm1, 100000.0, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (expm1, max_value, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (expm1, -max_value, -1),
-    END_DATA (expm1)
   };
 
 static void
@@ -8158,13 +8058,12 @@ expm1_test (void)
 {
   START (expm1);
   RUN_TEST_LOOP_f_f (expm1, expm1_test_data, );
-  END (expm1);
+  END;
 }
 
 
 static const struct test_f_f_data fabs_test_data[] =
   {
-    START_DATA (fabs),
     TEST_f_f (fabs, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_f (fabs, minus_zero, 0, NO_INEXACT_EXCEPTION),
 
@@ -8174,7 +8073,6 @@ static const struct test_f_f_data fabs_test_data[] =
 
     TEST_f_f (fabs, 38.0, 38.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (fabs, -M_El, M_El, NO_INEXACT_EXCEPTION),
-    END_DATA (fabs)
   };
 
 static void
@@ -8182,13 +8080,12 @@ fabs_test (void)
 {
   START (fabs);
   RUN_TEST_LOOP_f_f (fabs, fabs_test_data, );
-  END (fabs);
+  END;
 }
 
 
 static const struct test_ff_f_data fdim_test_data[] =
   {
-    START_DATA (fdim),
     TEST_ff_f (fdim, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fdim, 9, 0, 9, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fdim, 0, 9, 0, NO_INEXACT_EXCEPTION),
@@ -8216,7 +8113,6 @@ static const struct test_ff_f_data fdim_test_data[] =
     TEST_ff_f (fdim, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
 
     TEST_ff_f (fdim, plus_infty, plus_infty, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (fdim)
   };
 
 static void
@@ -8224,35 +8120,12 @@ fdim_test (void)
 {
   START (fdim);
   RUN_TEST_LOOP_ff_f (fdim, fdim_test_data, );
-  END (fdim);
-}
-
-
-static const struct test_f_i_data finite_test_data[] =
-  {
-    START_DATA (finite),
-    TEST_f_b (finite, 0, 1, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, minus_zero, 1, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, 10, 1, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, min_subnorm_value, 1, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, plus_infty, 0, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, minus_infty, 0, NO_INEXACT_EXCEPTION),
-    TEST_f_b (finite, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (finite)
-  };
-
-static void
-finite_test (void)
-{
-  START (finite);
-  RUN_TEST_LOOP_f_b (finite, finite_test_data, );
-  END (finite);
+  END;
 }
 
 
 static const struct test_f_f_data floor_test_data[] =
   {
-    START_DATA (floor),
     TEST_f_f (floor, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (floor, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_f_f (floor, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
@@ -8345,7 +8218,6 @@ static const struct test_f_f_data floor_test_data[] =
     TEST_f_f (floor, 0xf.ffffffffffffff8p+47L, 0xf.fffffffffffep+47L),
     TEST_f_f (floor, -0x8.000000000000004p+48L, -0x8.000000000001p+48L),
 #endif
-    END_DATA (floor)
   };
 
 static void
@@ -8353,13 +8225,12 @@ floor_test (void)
 {
   START (floor);
   RUN_TEST_LOOP_f_f (floor, floor_test_data, );
-  END (floor);
+  END;
 }
 
 
 static const struct test_fff_f_data fma_test_data[] =
   {
-    START_DATA (fma),
     TEST_fff_f (fma, 1.0, 2.0, 3.0, 5.0),
     TEST_fff_f (fma, qnan_value, 2.0, 3.0, qnan_value),
     TEST_fff_f (fma, 1.0, qnan_value, 3.0, qnan_value),
@@ -8639,7 +8510,6 @@ static const struct test_fff_f_data fma_test_data[] =
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, 0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1p16319L),
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, -0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1p16319L),
 #endif
-    END_DATA (fma)
   };
 
 static void
@@ -8647,13 +8517,12 @@ fma_test (void)
 {
   START (fma);
   RUN_TEST_LOOP_fff_f (fma, fma_test_data, );
-  END (fma);
+  END;
 }
 
 
 static const struct test_fff_f_data fma_towardzero_test_data[] =
   {
-    START_DATA (fma_towardzero),
     TEST_fff_f (fma, plus_zero, plus_zero, plus_zero, plus_zero),
     TEST_fff_f (fma, plus_zero, plus_zero, minus_zero, plus_zero),
     TEST_fff_f (fma, plus_zero, minus_zero, plus_zero, plus_zero),
@@ -8856,7 +8725,6 @@ static const struct test_fff_f_data fma_towardzero_test_data[] =
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, 0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x0.ffffffffffffffffffffffffffff8p16319L),
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, -0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1p16319L),
 #endif
-    END_DATA (fma_towardzero)
   };
 
 static void
@@ -8864,13 +8732,12 @@ fma_test_towardzero (void)
 {
   START (fma_towardzero);
   RUN_TEST_LOOP_fff_f (fma, fma_towardzero_test_data, FE_TOWARDZERO);
-  END (fma_towardzero);
+  END;
 }
 
 
 static const struct test_fff_f_data fma_downward_test_data[] =
   {
-    START_DATA (fma_downward),
     TEST_fff_f (fma, plus_zero, plus_zero, plus_zero, plus_zero),
     TEST_fff_f (fma, plus_zero, plus_zero, minus_zero, minus_zero),
     TEST_fff_f (fma, plus_zero, minus_zero, plus_zero, minus_zero),
@@ -9073,7 +8940,6 @@ static const struct test_fff_f_data fma_downward_test_data[] =
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, 0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1p16319L),
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, -0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1.0000000000000000000000000001p16319L),
 #endif
-    END_DATA (fma_downward)
   };
 
 static void
@@ -9081,13 +8947,12 @@ fma_test_downward (void)
 {
   START (fma_downward);
   RUN_TEST_LOOP_fff_f (fma, fma_downward_test_data, FE_DOWNWARD);
-  END (fma_downward);
+  END;
 }
 
 
 static const struct test_fff_f_data fma_upward_test_data[] =
   {
-    START_DATA (fma_upward),
     TEST_fff_f (fma, plus_zero, plus_zero, plus_zero, plus_zero),
     TEST_fff_f (fma, plus_zero, plus_zero, minus_zero, plus_zero),
     TEST_fff_f (fma, plus_zero, minus_zero, plus_zero, plus_zero),
@@ -9290,7 +9155,6 @@ static const struct test_fff_f_data fma_upward_test_data[] =
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, 0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x0.ffffffffffffffffffffffffffff8p16319L),
     TEST_fff_f (fma, 0x1.0000000000000000000000000001p-16382L, -0x1.0000000000000000000000000001p-66L, -0x1p16319L, -0x1p16319L),
 #endif
-    END_DATA (fma_upward)
   };
 
 static void
@@ -9298,13 +9162,12 @@ fma_test_upward (void)
 {
   START (fma_upward);
   RUN_TEST_LOOP_fff_f (fma, fma_upward_test_data, FE_UPWARD);
-  END (fma_upward);
+  END;
 }
 
 
 static const struct test_ff_f_data fmax_test_data[] =
   {
-    START_DATA (fmax),
     TEST_ff_f (fmax, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmax, minus_zero, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmax, 9, 0, 9, NO_INEXACT_EXCEPTION),
@@ -9333,7 +9196,6 @@ static const struct test_ff_f_data fmax_test_data[] =
     TEST_ff_f (fmax, qnan_value, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmax, qnan_value, minus_infty, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmax, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
-    END_DATA (fmax)
   };
 
 static void
@@ -9341,13 +9203,12 @@ fmax_test (void)
 {
   START (fmax);
   RUN_TEST_LOOP_ff_f (fmax, fmax_test_data, );
-  END (fmax);
+  END;
 }
 
 
 static const struct test_ff_f_data fmin_test_data[] =
   {
-    START_DATA (fmin),
     TEST_ff_f (fmin, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmin, minus_zero, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmin, 9, 0, 0, NO_INEXACT_EXCEPTION),
@@ -9375,7 +9236,6 @@ static const struct test_ff_f_data fmin_test_data[] =
     TEST_ff_f (fmin, qnan_value, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmin, qnan_value, minus_infty, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_ff_f (fmin, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
-    END_DATA (fmin)
   };
 
 static void
@@ -9383,13 +9243,12 @@ fmin_test (void)
 {
   START (fmin);
   RUN_TEST_LOOP_ff_f (fmin, fmin_test_data, );
-  END (fmin);
+  END;
 }
 
 
 static const struct test_ff_f_data fmod_test_data[] =
   {
-    START_DATA (fmod),
     /* fmod (+0, y) == +0 for y != 0.  */
     TEST_ff_f (fmod, 0, 3, 0, NO_INEXACT_EXCEPTION),
 
@@ -9424,7 +9283,6 @@ static const struct test_ff_f_data fmod_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381
     TEST_ff_f (fmod, 0x0.fffffffffffffffep-16382L, 0x1p-16445L, plus_zero, NO_INEXACT_EXCEPTION),
 #endif
-    END_DATA (fmod)
   };
 
 static void
@@ -9432,13 +9290,12 @@ fmod_test (void)
 {
   START (fmod);
   RUN_TEST_LOOP_ff_f (fmod, fmod_test_data, );
-  END (fmod);
+  END;
 }
 
 
 static const struct test_f_i_data fpclassify_test_data[] =
   {
-    START_DATA (fpclassify),
     TEST_f_i (fpclassify, qnan_value, FP_NAN, NO_INEXACT_EXCEPTION),
     TEST_f_i (fpclassify, plus_infty, FP_INFINITE, NO_INEXACT_EXCEPTION),
     TEST_f_i (fpclassify, minus_infty, FP_INFINITE, NO_INEXACT_EXCEPTION),
@@ -9446,7 +9303,6 @@ static const struct test_f_i_data fpclassify_test_data[] =
     TEST_f_i (fpclassify, minus_zero, FP_ZERO, NO_INEXACT_EXCEPTION),
     TEST_f_i (fpclassify, 1000, FP_NORMAL, NO_INEXACT_EXCEPTION),
     TEST_f_i (fpclassify, min_subnorm_value, FP_SUBNORMAL, NO_INEXACT_EXCEPTION),
-    END_DATA (fpclassify)
   };
 
 static void
@@ -9454,13 +9310,12 @@ fpclassify_test (void)
 {
   START (fpclassify);
   RUN_TEST_LOOP_f_i_tg (fpclassify, fpclassify_test_data, );
-  END (fpclassify);
+  END;
 }
 
 
 static const struct test_f_f1_data frexp_test_data[] =
   {
-    START_DATA (frexp),
     TEST_fI_f1 (frexp, plus_infty, plus_infty, IGNORE, NO_INEXACT_EXCEPTION),
     TEST_fI_f1 (frexp, minus_infty, minus_infty, IGNORE, NO_INEXACT_EXCEPTION),
     TEST_fI_f1 (frexp, qnan_value, qnan_value, IGNORE, NO_INEXACT_EXCEPTION),
@@ -9470,7 +9325,6 @@ static const struct test_f_f1_data frexp_test_data[] =
 
     TEST_fI_f1 (frexp, 12.8L, 0.8L, 4, NO_INEXACT_EXCEPTION),
     TEST_fI_f1 (frexp, -27.34L, -0.854375L, 5, NO_INEXACT_EXCEPTION),
-    END_DATA (frexp)
   };
 
 static void
@@ -9480,38 +9334,11 @@ frexp_test (void)
 
   START (frexp);
   RUN_TEST_LOOP_fI_f1 (frexp, frexp_test_data, , x);
-  END (frexp);
-}
-
-
-static const struct test_f_f1_data gamma_test_data[] =
-  {
-    START_DATA (gamma),
-    TEST_f_f1 (gamma, plus_infty, plus_infty, 1),
-    TEST_f_f1 (gamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
-    TEST_f_f1 (gamma, -3, plus_infty, IGNORE, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
-    TEST_f_f1 (gamma, minus_infty, plus_infty, IGNORE),
-    TEST_f_f1 (gamma, qnan_value, qnan_value, IGNORE),
-
-    TEST_f_f1 (gamma, 1, 0, 1),
-    TEST_f_f1 (gamma, 3, M_LN2l, 1),
-
-    TEST_f_f1 (gamma, 0.5, M_LOG_SQRT_PIl, 1),
-    TEST_f_f1 (gamma, -0.5, M_LOG_2_SQRT_PIl, -1),
-    END_DATA (gamma)
-  };
-
-static void
-gamma_test (void)
-{
-  START (gamma);
-  RUN_TEST_LOOP_f_f1 (gamma, gamma_test_data, , signgam);
-  END (gamma);
+  END;
 }
 
 static const struct test_ff_f_data hypot_test_data[] =
   {
-    START_DATA (hypot),
     TEST_ff_f (hypot, plus_infty, 1, plus_infty),
     TEST_ff_f (hypot, minus_infty, 1, plus_infty),
 
@@ -9560,7 +9387,19 @@ static const struct test_ff_f_data hypot_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MAX_EXP >= 16384 && !defined TEST_INLINE
     TEST_ff_f (hypot, 0x3p16381L, 0x4p16381L, 0x5p16381L),
 #endif
-    END_DATA (hypot)
+
+    TEST_ff_f (hypot, 0x1p-149L, 0x1p-149L, 1.9817352931807469938024533350782879785095e-45L, UNDERFLOW_EXCEPTION_FLOAT),
+
+#ifndef TEST_FLOAT
+    TEST_ff_f (hypot, 0x1p-1074L, 0x1p-1074L, 6.9871433705131320800651344656990806305791e-324L, UNDERFLOW_EXCEPTION_DOUBLE),
+#endif
+
+#if defined TEST_LDOUBLE && LDBL_MIN_EXP <= -16381 && !defined TEST_INLINE
+    TEST_ff_f (hypot, 0x1p-16445L, 0x1p-16445L, 5.1550906155442528702558159159596215039925e-4951L, UNDERFLOW_EXCEPTION),
+# if LDBL_MANT_DIG >= 113
+    TEST_ff_f (hypot, 0x1p-16494L, 0x1p-16494L, 9.1572804726500807075521065242888978445857e-4966L, UNDERFLOW_EXCEPTION),
+# endif
+#endif
   };
 
 static void
@@ -9568,13 +9407,12 @@ hypot_test (void)
 {
   START (hypot);
   RUN_TEST_LOOP_ff_f (hypot, hypot_test_data, );
-  END (hypot);
+  END;
 }
 
 
 static const struct test_f_i_data ilogb_test_data[] =
   {
-    START_DATA (ilogb),
     TEST_f_i (ilogb, 1, 0, NO_INEXACT_EXCEPTION),
     TEST_f_i (ilogb, M_El, 1, NO_INEXACT_EXCEPTION),
     TEST_f_i (ilogb, 1024, 10, NO_INEXACT_EXCEPTION),
@@ -9588,7 +9426,6 @@ static const struct test_f_i_data ilogb_test_data[] =
     TEST_f_i (ilogb, plus_infty, INT_MAX, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     /* ilogb (-inf) == INT_MAX plus invalid exception  */
     TEST_f_i (ilogb, minus_infty, INT_MAX, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
-    END_DATA (ilogb)
   };
 
 static void
@@ -9596,12 +9433,11 @@ ilogb_test (void)
 {
   START (ilogb);
   RUN_TEST_LOOP_f_i (ilogb, ilogb_test_data, );
-  END (ilogb);
+  END;
 }
 
 static const struct test_f_i_data isfinite_test_data[] =
   {
-    START_DATA (isfinite),
     TEST_f_b (isfinite, 0, 1, NO_INEXACT_EXCEPTION),
     TEST_f_b (isfinite, minus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_f_b (isfinite, 10, 1, NO_INEXACT_EXCEPTION),
@@ -9609,7 +9445,6 @@ static const struct test_f_i_data isfinite_test_data[] =
     TEST_f_b (isfinite, plus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isfinite, minus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isfinite, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isfinite)
   };
 
 static void
@@ -9617,12 +9452,20 @@ isfinite_test (void)
 {
   START (isfinite);
   RUN_TEST_LOOP_f_b_tg (isfinite, isfinite_test_data, );
-  END (isfinite);
+  END;
+}
+
+static void
+finite_test (void)
+{
+  START (finite);
+  /* finite uses the same test data as isfinite.  */
+  RUN_TEST_LOOP_f_b (finite, isfinite_test_data, );
+  END;
 }
 
 static const struct test_ff_i_data isgreater_test_data[] =
   {
-    START_DATA (isgreater),
     TEST_ff_i (isgreater, minus_zero, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreater, minus_zero, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreater, minus_zero, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
@@ -9639,7 +9482,6 @@ static const struct test_ff_i_data isgreater_test_data[] =
     TEST_ff_i (isgreater, qnan_value, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreater, qnan_value, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreater, qnan_value, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isgreater)
   };
 
 static void
@@ -9647,12 +9489,11 @@ isgreater_test (void)
 {
   START (isgreater);
   RUN_TEST_LOOP_ff_i_tg (isgreater, isgreater_test_data, );
-  END (isgreater);
+  END;
 }
 
 static const struct test_ff_i_data isgreaterequal_test_data[] =
   {
-    START_DATA (isgreaterequal),
     TEST_ff_i (isgreaterequal, minus_zero, minus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreaterequal, minus_zero, plus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreaterequal, minus_zero, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
@@ -9669,7 +9510,6 @@ static const struct test_ff_i_data isgreaterequal_test_data[] =
     TEST_ff_i (isgreaterequal, qnan_value, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreaterequal, qnan_value, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isgreaterequal, qnan_value, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isgreaterequal)
   };
 
 static void
@@ -9677,12 +9517,11 @@ isgreaterequal_test (void)
 {
   START (isgreaterequal);
   RUN_TEST_LOOP_ff_i_tg (isgreaterequal, isgreaterequal_test_data, );
-  END (isgreaterequal);
+  END;
 }
 
 static const struct test_f_i_data isinf_test_data[] =
   {
-    START_DATA (isinf),
     TEST_f_b (isinf, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isinf, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isinf, 10, 0, NO_INEXACT_EXCEPTION),
@@ -9690,7 +9529,6 @@ static const struct test_f_i_data isinf_test_data[] =
     TEST_f_b (isinf, plus_infty, 1, NO_INEXACT_EXCEPTION),
     TEST_f_b (isinf, minus_infty, 1, NO_INEXACT_EXCEPTION),
     TEST_f_b (isinf, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isinf)
   };
 
 static void
@@ -9698,12 +9536,11 @@ isinf_test (void)
 {
   START (isinf);
   RUN_TEST_LOOP_f_b_tg (isinf, isinf_test_data, );
-  END (isinf);
+  END;
 }
 
 static const struct test_ff_i_data isless_test_data[] =
   {
-    START_DATA (isless),
     TEST_ff_i (isless, minus_zero, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isless, minus_zero, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isless, minus_zero, (FLOAT) 1, 1, NO_INEXACT_EXCEPTION),
@@ -9720,7 +9557,6 @@ static const struct test_ff_i_data isless_test_data[] =
     TEST_ff_i (isless, qnan_value, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isless, qnan_value, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isless, qnan_value, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isless)
   };
 
 static void
@@ -9728,12 +9564,11 @@ isless_test (void)
 {
   START (isless);
   RUN_TEST_LOOP_ff_i_tg (isless, isless_test_data, );
-  END (isless);
+  END;
 }
 
 static const struct test_ff_i_data islessequal_test_data[] =
   {
-    START_DATA (islessequal),
     TEST_ff_i (islessequal, minus_zero, minus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessequal, minus_zero, plus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessequal, minus_zero, (FLOAT) 1, 1, NO_INEXACT_EXCEPTION),
@@ -9750,7 +9585,6 @@ static const struct test_ff_i_data islessequal_test_data[] =
     TEST_ff_i (islessequal, qnan_value, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessequal, qnan_value, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessequal, qnan_value, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (islessequal)
   };
 
 static void
@@ -9758,12 +9592,11 @@ islessequal_test (void)
 {
   START (islessequal);
   RUN_TEST_LOOP_ff_i_tg (islessequal, islessequal_test_data, );
-  END (islessequal);
+  END;
 }
 
 static const struct test_ff_i_data islessgreater_test_data[] =
   {
-    START_DATA (islessgreater),
     TEST_ff_i (islessgreater, minus_zero, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessgreater, minus_zero, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessgreater, minus_zero, (FLOAT) 1, 1, NO_INEXACT_EXCEPTION),
@@ -9780,7 +9613,6 @@ static const struct test_ff_i_data islessgreater_test_data[] =
     TEST_ff_i (islessgreater, qnan_value, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessgreater, qnan_value, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (islessgreater, qnan_value, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (islessgreater)
   };
 
 static void
@@ -9788,12 +9620,11 @@ islessgreater_test (void)
 {
   START (islessgreater);
   RUN_TEST_LOOP_ff_i_tg (islessgreater, islessgreater_test_data, );
-  END (islessgreater);
+  END;
 }
 
 static const struct test_f_i_data isnan_test_data[] =
   {
-    START_DATA (isnan),
     TEST_f_b (isnan, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnan, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnan, 10, 0, NO_INEXACT_EXCEPTION),
@@ -9801,7 +9632,6 @@ static const struct test_f_i_data isnan_test_data[] =
     TEST_f_b (isnan, plus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnan, minus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnan, qnan_value, 1, NO_INEXACT_EXCEPTION),
-    END_DATA (isnan)
   };
 
 static void
@@ -9809,12 +9639,11 @@ isnan_test (void)
 {
   START (isnan);
   RUN_TEST_LOOP_f_b_tg (isnan, isnan_test_data, );
-  END (isnan);
+  END;
 }
 
 static const struct test_f_i_data isnormal_test_data[] =
   {
-    START_DATA (isnormal),
     TEST_f_b (isnormal, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnormal, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnormal, 10, 1, NO_INEXACT_EXCEPTION),
@@ -9822,7 +9651,6 @@ static const struct test_f_i_data isnormal_test_data[] =
     TEST_f_b (isnormal, plus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnormal, minus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (isnormal, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (isnormal)
   };
 
 static void
@@ -9830,12 +9658,11 @@ isnormal_test (void)
 {
   START (isnormal);
   RUN_TEST_LOOP_f_b_tg (isnormal, isnormal_test_data, );
-  END (isnormal);
+  END;
 }
 
 static const struct test_f_i_data issignaling_test_data[] =
   {
-    START_DATA (issignaling),
     TEST_f_b (issignaling, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (issignaling, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (issignaling, 10, 0, NO_INEXACT_EXCEPTION),
@@ -9843,7 +9670,6 @@ static const struct test_f_i_data issignaling_test_data[] =
     TEST_f_b (issignaling, plus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (issignaling, minus_infty, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (issignaling, qnan_value, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (issignaling)
   };
 
 static void
@@ -9851,12 +9677,11 @@ issignaling_test (void)
 {
   START (issignaling);
   RUN_TEST_LOOP_f_b_tg (issignaling, issignaling_test_data, );
-  END (issignaling);
+  END;
 }
 
 static const struct test_ff_i_data isunordered_test_data[] =
   {
-    START_DATA (isunordered),
     TEST_ff_i (isunordered, minus_zero, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isunordered, minus_zero, plus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isunordered, minus_zero, (FLOAT) 1, 0, NO_INEXACT_EXCEPTION),
@@ -9873,7 +9698,6 @@ static const struct test_ff_i_data isunordered_test_data[] =
     TEST_ff_i (isunordered, qnan_value, plus_zero, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isunordered, qnan_value, (FLOAT) 1, 1, NO_INEXACT_EXCEPTION),
     TEST_ff_i (isunordered, qnan_value, qnan_value, 1, NO_INEXACT_EXCEPTION),
-    END_DATA (isunordered)
   };
 
 static void
@@ -9881,12 +9705,11 @@ isunordered_test (void)
 {
   START (isunordered);
   RUN_TEST_LOOP_ff_i_tg (isunordered, isunordered_test_data, );
-  END (isunordered);
+  END;
 }
 
 static const struct test_f_f_data j0_test_data[] =
   {
-    START_DATA (j0),
     /* j0 is the Bessel function of the first kind of order 0 */
     TEST_f_f (j0, qnan_value, qnan_value),
     TEST_f_f (j0, plus_infty, 0),
@@ -9913,7 +9736,6 @@ static const struct test_f_f_data j0_test_data[] =
     TEST_f_f (j0, 0x1p16382L, -1.2193782500509000574176799046642541129387e-2466L),
     TEST_f_f (j0, 0x1p16383L, 9.5859502826270374691362975419147645151233e-2467L),
 #endif
-    END_DATA (j0)
   };
 
 static void
@@ -9921,13 +9743,12 @@ j0_test (void)
 {
   START (j0);
   RUN_TEST_LOOP_f_f (j0, j0_test_data, );
-  END (j0);
+  END;
 }
 
 
 static const struct test_f_f_data j1_test_data[] =
   {
-    START_DATA (j1),
     /* j1 is the Bessel function of the first kind of order 1 */
     TEST_f_f (j1, qnan_value, qnan_value),
     TEST_f_f (j1, plus_infty, 0),
@@ -9953,7 +9774,6 @@ static const struct test_f_f_data j1_test_data[] =
     TEST_f_f (j1, 0x1p16382L, 8.0839224448726336195866026476176740513439e-2467L),
     TEST_f_f (j1, 0x1p16383L, -3.8895531955766020648617743624167352352217e-2467L),
 #endif
-    END_DATA (j1)
   };
 
 static void
@@ -9961,12 +9781,11 @@ j1_test (void)
 {
   START (j1);
   RUN_TEST_LOOP_f_f (j1, j1_test_data, );
-  END (j1);
+  END;
 }
 
 static const struct test_if_f_data jn_test_data[] =
   {
-    START_DATA (jn),
     /* jn is the Bessel function of the first kind of order n.  */
     /* jn (0, x) == j0 (x)  */
     TEST_if_f (jn, 0, qnan_value, qnan_value),
@@ -10032,7 +9851,6 @@ static const struct test_if_f_data jn_test_data[] =
 
     /* Bug 14155: spurious exception may occur.  */
     TEST_if_f (jn, 2, 0x1.ffff62p+99L, -4.43860668048170034334926693188979974489e-16L, UNDERFLOW_EXCEPTION_OK),
-    END_DATA (jn)
   };
 
 static void
@@ -10040,13 +9858,12 @@ jn_test (void)
 {
   START (jn);
   RUN_TEST_LOOP_if_f (jn, jn_test_data, );
-  END (jn);
+  END;
 }
 
 
 static const struct test_fi_f_data ldexp_test_data[] =
   {
-    START_DATA (ldexp),
     TEST_fi_f (ldexp, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_fi_f (ldexp, minus_zero, 0, minus_zero, NO_INEXACT_EXCEPTION),
 
@@ -10059,7 +9876,6 @@ static const struct test_fi_f_data ldexp_test_data[] =
 
     /* ldexp (x, 0) == x.  */
     TEST_fi_f (ldexp, 1.0L, 0L, 1.0L, NO_INEXACT_EXCEPTION),
-    END_DATA (ldexp)
   };
 
 static void
@@ -10067,13 +9883,12 @@ ldexp_test (void)
 {
   START (ldexp);
   RUN_TEST_LOOP_fi_f (ldexp, ldexp_test_data, );
-  END (ldexp);
+  END;
 }
 
 
 static const struct test_f_f1_data lgamma_test_data[] =
   {
-    START_DATA (lgamma),
     TEST_f_f1 (lgamma, plus_infty, plus_infty, 1),
     TEST_f_f1 (lgamma, 0, plus_infty, 1, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f1 (lgamma, minus_zero, plus_infty, -1, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
@@ -10093,7 +9908,6 @@ static const struct test_f_f1_data lgamma_test_data[] =
     TEST_f_f1 (lgamma, -0.5, M_LOG_2_SQRT_PIl, -1),
     TEST_f_f1 (lgamma, 0.7L, 0.260867246531666514385732417016759578L, 1),
     TEST_f_f1 (lgamma, 1.2L, -0.853740900033158497197028392998854470e-1L, 1),
-    END_DATA (lgamma)
   };
 
 static void
@@ -10101,13 +9915,21 @@ lgamma_test (void)
 {
   START (lgamma);
   RUN_TEST_LOOP_f_f1 (lgamma, lgamma_test_data, , signgam);
-  END (lgamma);
+  END;
+}
+
+static void
+gamma_test (void)
+{
+  START (gamma);
+  /* gamma uses the same test data as lgamma.  */
+  RUN_TEST_LOOP_f_f1 (gamma, lgamma_test_data, , signgam);
+  END;
 }
 
 
 static const struct test_f_l_data lrint_test_data[] =
   {
-    START_DATA (lrint),
     /* XXX this test is incomplete.  We need to have a way to specifiy
        the rounding method and test the critical cases.  So far, only
        unproblematic numbers are tested.  */
@@ -10130,7 +9952,6 @@ static const struct test_f_l_data lrint_test_data[] =
     TEST_f_l (lrint, 281474976710656.025L, 281474976710656, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (lrint)
   };
 
 static void
@@ -10138,13 +9959,12 @@ lrint_test (void)
 {
   START (lrint);
   RUN_TEST_LOOP_f_l (lrint, lrint_test_data, );
-  END (lrint);
+  END;
 }
 
 
 static const struct test_f_l_data lrint_tonearest_test_data[] =
   {
-    START_DATA (lrint_tonearest),
     TEST_f_l (lrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10167,7 +9987,6 @@ static const struct test_f_l_data lrint_tonearest_test_data[] =
     TEST_f_l (lrint, 281474976710656.025L, 281474976710656, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (lrint_tonearest)
   };
 
 static void
@@ -10175,13 +9994,12 @@ lrint_test_tonearest (void)
 {
   START (lrint_tonearest);
   RUN_TEST_LOOP_f_l (lrint, lrint_tonearest_test_data, FE_TONEAREST);
-  END (lrint_tonearest);
+  END;
 }
 
 
 static const struct test_f_l_data lrint_towardzero_test_data[] =
   {
-    START_DATA (lrint_towardzero),
     TEST_f_l (lrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10204,7 +10022,6 @@ static const struct test_f_l_data lrint_towardzero_test_data[] =
     TEST_f_l (lrint, 281474976710656.025L, 281474976710656, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (lrint_towardzero)
   };
 
 static void
@@ -10212,13 +10029,12 @@ lrint_test_towardzero (void)
 {
   START (lrint_towardzero);
   RUN_TEST_LOOP_f_l (lrint, lrint_towardzero_test_data, FE_TOWARDZERO);
-  END (lrint_towardzero);
+  END;
 }
 
 
 static const struct test_f_l_data lrint_downward_test_data[] =
   {
-    START_DATA (lrint_downward),
     TEST_f_l (lrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10241,7 +10057,6 @@ static const struct test_f_l_data lrint_downward_test_data[] =
     TEST_f_l (lrint, 281474976710656.025L, 281474976710656, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (lrint_downward)
   };
 
 static void
@@ -10249,13 +10064,12 @@ lrint_test_downward (void)
 {
   START (lrint_downward);
   RUN_TEST_LOOP_f_l (lrint, lrint_downward_test_data, FE_DOWNWARD);
-  END (lrint_downward);
+  END;
 }
 
 
 static const struct test_f_l_data lrint_upward_test_data[] =
   {
-    START_DATA (lrint_upward),
     TEST_f_l (lrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_l (lrint, 0.2L, 1, INEXACT_EXCEPTION),
@@ -10278,7 +10092,6 @@ static const struct test_f_l_data lrint_upward_test_data[] =
     TEST_f_l (lrint, 281474976710656.025L, 281474976710657, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (lrint_upward)
   };
 
 static void
@@ -10286,13 +10099,12 @@ lrint_test_upward (void)
 {
   START (lrint_upward);
   RUN_TEST_LOOP_f_l (lrint, lrint_upward_test_data, FE_UPWARD);
-  END (lrint_upward);
+  END;
 }
 
 
 static const struct test_f_L_data llrint_test_data[] =
   {
-    START_DATA (llrint),
     /* XXX this test is incomplete.  We need to have a way to specifiy
        the rounding method and test the critical cases.  So far, only
        unproblematic numbers are tested.  */
@@ -10420,7 +10232,6 @@ static const struct test_f_L_data llrint_test_data[] =
     TEST_f_L (llrint, -9223372036854775807.0L, -9223372036854775807LL, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (llrint)
   };
 
 static void
@@ -10428,12 +10239,11 @@ llrint_test (void)
 {
   START (llrint);
   RUN_TEST_LOOP_f_L (llrint, llrint_test_data, );
-  END (llrint);
+  END;
 }
 
 static const struct test_f_L_data llrint_tonearest_test_data[] =
   {
-    START_DATA (llrint_tonearest),
     TEST_f_L (llrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10557,7 +10367,6 @@ static const struct test_f_L_data llrint_tonearest_test_data[] =
     TEST_f_L (llrint, -9223372036854775807.0L, -9223372036854775807LL, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (llrint_tonearest)
   };
 
 static void
@@ -10565,12 +10374,11 @@ llrint_test_tonearest (void)
 {
   START (llrint_tonearest);
   RUN_TEST_LOOP_f_L (llrint, llrint_tonearest_test_data, FE_TONEAREST);
-  END (llrint_tonearest);
+  END;
 }
 
 static const struct test_f_L_data llrint_towardzero_test_data[] =
   {
-    START_DATA (llrint_towardzero),
     TEST_f_L (llrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10694,7 +10502,6 @@ static const struct test_f_L_data llrint_towardzero_test_data[] =
     TEST_f_L (llrint, -9223372036854775807.0L, -9223372036854775807LL, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (llrint_towardzero)
   };
 
 static void
@@ -10702,12 +10509,11 @@ llrint_test_towardzero (void)
 {
   START (llrint_towardzero);
   RUN_TEST_LOOP_f_L (llrint, llrint_towardzero_test_data, FE_TOWARDZERO);
-  END (llrint_towardzero);
+  END;
 }
 
 static const struct test_f_L_data llrint_downward_test_data[] =
   {
-    START_DATA (llrint_downward),
     TEST_f_L (llrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, 0.2L, 0, INEXACT_EXCEPTION),
@@ -10827,7 +10633,6 @@ static const struct test_f_L_data llrint_downward_test_data[] =
     TEST_f_L (llrint, -9223372036854775807.0L, -9223372036854775807LL, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (llrint_downward)
   };
 
 static void
@@ -10835,12 +10640,11 @@ llrint_test_downward (void)
 {
   START (llrint_downward);
   RUN_TEST_LOOP_f_L (llrint, llrint_downward_test_data, FE_DOWNWARD);
-  END (llrint_downward);
+  END;
 }
 
 static const struct test_f_L_data llrint_upward_test_data[] =
   {
-    START_DATA (llrint_upward),
     TEST_f_L (llrint, 0.0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, minus_zero, 0, NO_INEXACT_EXCEPTION),
     TEST_f_L (llrint, 0.2L, 1, INEXACT_EXCEPTION),
@@ -10958,7 +10762,6 @@ static const struct test_f_L_data llrint_upward_test_data[] =
     TEST_f_L (llrint, -9223372036854775807.0L, -9223372036854775807LL, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (llrint_upward)
   };
 
 static void
@@ -10966,13 +10769,12 @@ llrint_test_upward (void)
 {
   START (llrint_upward);
   RUN_TEST_LOOP_f_L (llrint, llrint_upward_test_data, FE_UPWARD);
-  END (llrint_upward);
+  END;
 }
 
 
 static const struct test_f_f_data log_test_data[] =
   {
-    START_DATA (log),
     TEST_f_f (log, 0, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (log, minus_zero, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
 
@@ -10989,7 +10791,6 @@ static const struct test_f_f_data log_test_data[] =
     TEST_f_f (log, 2, M_LN2l),
     TEST_f_f (log, 10, M_LN10l),
     TEST_f_f (log, 0.75L, -0.287682072451780927439219005993827432L),
-    END_DATA (log)
   };
 
 static void
@@ -10997,13 +10798,12 @@ log_test (void)
 {
   START (log);
   RUN_TEST_LOOP_f_f (log, log_test_data, );
-  END (log);
+  END;
 }
 
 
 static const struct test_f_f_data log10_test_data[] =
   {
-    START_DATA (log10),
     TEST_f_f (log10, 0, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (log10, minus_zero, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
 
@@ -11023,7 +10823,6 @@ static const struct test_f_f_data log10_test_data[] =
     TEST_f_f (log10, 10000.0, 4),
     TEST_f_f (log10, M_El, M_LOG10El),
     TEST_f_f (log10, 0.75L, -0.124938736608299953132449886193870744L),
-    END_DATA (log10)
   };
 
 static void
@@ -11031,13 +10830,12 @@ log10_test (void)
 {
   START (log10);
   RUN_TEST_LOOP_f_f (log10, log10_test_data, );
-  END (log10);
+  END;
 }
 
 
 static const struct test_f_f_data log1p_test_data[] =
   {
-    START_DATA (log1p),
     TEST_f_f (log1p, 0, 0),
     TEST_f_f (log1p, minus_zero, minus_zero),
 
@@ -11053,7 +10851,6 @@ static const struct test_f_f_data log1p_test_data[] =
 
     TEST_f_f (log1p, -0.25L, -0.287682072451780927439219005993827432L),
     TEST_f_f (log1p, -0.875, -2.07944154167983592825169636437452970L),
-    END_DATA (log1p)
   };
 
 static void
@@ -11061,13 +10858,12 @@ log1p_test (void)
 {
   START (log1p);
   RUN_TEST_LOOP_f_f (log1p, log1p_test_data, );
-  END (log1p);
+  END;
 }
 
 
 static const struct test_f_f_data log2_test_data[] =
   {
-    START_DATA (log2),
     TEST_f_f (log2, 0, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (log2, minus_zero, minus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
 
@@ -11085,7 +10881,6 @@ static const struct test_f_f_data log2_test_data[] =
     TEST_f_f (log2, 16.0, 4),
     TEST_f_f (log2, 256.0, 8),
     TEST_f_f (log2, 0.75L, -.415037499278843818546261056052183492L),
-    END_DATA (log2)
   };
 
 static void
@@ -11093,13 +10888,12 @@ log2_test (void)
 {
   START (log2);
   RUN_TEST_LOOP_f_f (log2, log2_test_data, );
-  END (log2);
+  END;
 }
 
 
 static const struct test_f_f_data logb_test_data[] =
   {
-    START_DATA (logb),
     TEST_f_f (logb, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_f_f (logb, minus_infty, plus_infty, NO_INEXACT_EXCEPTION),
 
@@ -11128,7 +10922,6 @@ static const struct test_f_f_data logb_test_data[] =
     TEST_f_f (logb, 0x1p-16400L, -16400, NO_INEXACT_EXCEPTION),
     TEST_f_f (logb, 0x.00000000001p-16382L, -16426, NO_INEXACT_EXCEPTION),
 #endif
-    END_DATA (logb)
   };
 
 static void
@@ -11136,12 +10929,11 @@ logb_test (void)
 {
   START (logb);
   RUN_TEST_LOOP_f_f (logb, logb_test_data, );
-  END (logb);
+  END;
 }
 
 static const struct test_f_f_data logb_downward_test_data[] =
   {
-    START_DATA (logb_downward),
     /* IEEE 754-2008 says (section 5.3.3) that "logB(1) is +0.".  Libm
        should not return -0 from logb in any rounding mode.  PowerPC32 has
        failed with this test for power4 logb (and logbl on all PowerPC
@@ -11152,7 +10944,6 @@ static const struct test_f_f_data logb_downward_test_data[] =
 
     /* BZ #887  */
     TEST_f_f (logb, 1.000e+0, plus_zero, NO_INEXACT_EXCEPTION),
-    END_DATA (logb_downward)
   };
 
 static void
@@ -11160,12 +10951,11 @@ logb_test_downward (void)
 {
   START (logb_downward);
   RUN_TEST_LOOP_f_f (logb, logb_downward_test_data, FE_DOWNWARD);
-  END (logb_downward);
+  END;
 }
 
 static const struct test_f_l_data lround_test_data[] =
   {
-    START_DATA (lround),
     /* TODO: missing +/-Inf as well as qNaN tests.  */
     TEST_f_l (lround, 0, 0),
     TEST_f_l (lround, minus_zero, 0),
@@ -11200,7 +10990,6 @@ static const struct test_f_l_data lround_test_data[] =
     TEST_f_l (lround, 0x1.fffffep+23, 16777215),
     TEST_f_l (lround, -0x1.fffffep+23, -16777215),
 #endif
-    END_DATA (lround)
   };
 
 static void
@@ -11208,13 +10997,12 @@ lround_test (void)
 {
   START (lround);
   RUN_TEST_LOOP_f_l (lround, lround_test_data, );
-  END (lround);
+  END;
 }
 
 
 static const struct test_f_L_data llround_test_data[] =
   {
-    START_DATA (llround),
     /* TODO: missing +/-Inf as well as qNaN tests.  */
     TEST_f_L (llround, 0, 0),
     TEST_f_L (llround, minus_zero, 0),
@@ -11377,7 +11165,6 @@ static const struct test_f_L_data llround_test_data[] =
     TEST_f_L (llround, 9223372036854775807.0L, 9223372036854775807LL),
     TEST_f_L (llround, -9223372036854775807.0L, -9223372036854775807LL),
 #endif
-    END_DATA (llround)
   };
 
 static void
@@ -11385,12 +11172,11 @@ llround_test (void)
 {
   START (llround);
   RUN_TEST_LOOP_f_L (llround, llround_test_data, );
-  END (llround);
+  END;
 }
 
 static const struct test_fF_f1_data modf_test_data[] =
   {
-    START_DATA (modf),
     TEST_fF_f1 (modf, plus_infty, 0, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_fF_f1 (modf, minus_infty, minus_zero, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_fF_f1 (modf, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
@@ -11401,7 +11187,6 @@ static const struct test_fF_f1_data modf_test_data[] =
     TEST_fF_f1 (modf, 20, 0, 20, NO_INEXACT_EXCEPTION),
     TEST_fF_f1 (modf, 21, 0, 21, NO_INEXACT_EXCEPTION),
     TEST_fF_f1 (modf, 89.5, 0.5, 89, NO_INEXACT_EXCEPTION),
-    END_DATA (modf)
   };
 
 static void
@@ -11411,14 +11196,12 @@ modf_test (void)
 
   START (modf);
   RUN_TEST_LOOP_fF_f1 (modf, modf_test_data, , x);
-  END (modf);
+  END;
 }
 
 
 static const struct test_f_f_data nearbyint_test_data[] =
   {
-    START_DATA (nearbyint),
-
     TEST_f_f (nearbyint, 0.0, 0.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (nearbyint, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
     TEST_f_f (nearbyint, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
@@ -11462,8 +11245,6 @@ static const struct test_f_f_data nearbyint_test_data[] =
     TEST_f_f (nearbyint, -562949953421312.75, -562949953421313.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (nearbyint, -1125899906842624.75, -1125899906842625.0, NO_INEXACT_EXCEPTION),
 #endif
-
-    END_DATA (nearbyint)
   };
 
 static void
@@ -11471,13 +11252,11 @@ nearbyint_test (void)
 {
   START (nearbyint);
   RUN_TEST_LOOP_f_f (nearbyint, nearbyint_test_data, );
-  END (nearbyint);
+  END;
 }
 
 static const struct test_ff_f_data nextafter_test_data[] =
   {
-    START_DATA (nextafter),
-
     TEST_ff_f (nextafter, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (nextafter, minus_zero, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (nextafter, 0, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
@@ -11502,7 +11281,6 @@ static const struct test_ff_f_data nextafter_test_data[] =
 
     /* XXX We need the hexadecimal FP number representation here for further
        tests.  */
-    END_DATA (nextafter)
   };
 
 static void
@@ -11511,13 +11289,12 @@ nextafter_test (void)
 
   START (nextafter);
   RUN_TEST_LOOP_ff_f (nextafter, nextafter_test_data, );
-  END (nextafter);
+  END;
 }
 
 
 static const struct test_ff_f_data_nexttoward nexttoward_test_data[] =
   {
-    START_DATA (nexttoward),
     TEST_ff_f (nexttoward, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (nexttoward, minus_zero, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (nexttoward, 0, minus_zero, minus_zero, NO_INEXACT_EXCEPTION),
@@ -11599,7 +11376,6 @@ static const struct test_ff_f_data_nexttoward nexttoward_test_data[] =
     TEST_ff_f (nexttoward, -1.0, -0x0.ffffffffffffffffffffffffffff8p0L, -0x0.fffffffffffff8p0, NO_INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (nexttoward)
   };
 
 static void
@@ -11607,13 +11383,12 @@ nexttoward_test (void)
 {
   START (nexttoward);
   RUN_TEST_LOOP_ff_f (nexttoward, nexttoward_test_data, );
-  END (nexttoward);
+  END;
 }
 
 
 static const struct test_ff_f_data pow_test_data[] =
   {
-    START_DATA (pow),
     TEST_ff_f (pow, 0, 0, 1),
     TEST_ff_f (pow, 0, minus_zero, 1),
     TEST_ff_f (pow, minus_zero, 0, 1),
@@ -12311,7 +12086,6 @@ static const struct test_ff_f_data pow_test_data[] =
     TEST_ff_f (pow, 1.01L, -min_subnorm_value, 1.0L),
 
     TEST_ff_f (pow, 2.0L, -100000.0L, plus_zero, UNDERFLOW_EXCEPTION),
-    END_DATA (pow)
   };
 
 static void
@@ -12320,16 +12094,14 @@ pow_test (void)
 
   START (pow);
   RUN_TEST_LOOP_ff_f (pow, pow_test_data, );
-  END (pow);
+  END;
 }
 
 
 static const struct test_ff_f_data pow_tonearest_test_data[] =
   {
-    START_DATA (pow_tonearest),
     TEST_ff_f (pow, 1.0625L, 1.125L, 1.070582293028761362162622578677070098674L),
     TEST_ff_f (pow, 1.5L, 1.03125L, 1.519127098714743184071644334163037684948L),
-    END_DATA (pow_tonearest)
   };
 
 static void
@@ -12337,16 +12109,14 @@ pow_test_tonearest (void)
 {
   START (pow_tonearest);
   RUN_TEST_LOOP_ff_f (pow, pow_tonearest_test_data, FE_TONEAREST);
-  END (pow_tonearest);
+  END;
 }
 
 
 static const struct test_ff_f_data pow_towardzero_test_data[] =
   {
-    START_DATA (pow_towardzero),
     TEST_ff_f (pow, 1.0625L, 1.125L, 1.070582293028761362162622578677070098674L),
     TEST_ff_f (pow, 1.5L, 1.03125L, 1.519127098714743184071644334163037684948L),
-    END_DATA (pow_towardzero)
   };
 
 static void
@@ -12354,16 +12124,14 @@ pow_test_towardzero (void)
 {
   START (pow_towardzero);
   RUN_TEST_LOOP_ff_f (pow, pow_towardzero_test_data, FE_TOWARDZERO);
-  END (pow_towardzero);
+  END;
 }
 
 
 static const struct test_ff_f_data pow_downward_test_data[] =
   {
-    START_DATA (pow_downward),
     TEST_ff_f (pow, 1.0625L, 1.125L, 1.070582293028761362162622578677070098674L),
     TEST_ff_f (pow, 1.5L, 1.03125L, 1.519127098714743184071644334163037684948L),
-    END_DATA (pow_downward)
   };
 
 static void
@@ -12371,16 +12139,14 @@ pow_test_downward (void)
 {
   START (pow_downward);
   RUN_TEST_LOOP_ff_f (pow, pow_downward_test_data, FE_DOWNWARD);
-  END (pow_downward);
+  END;
 }
 
 
 static const struct test_ff_f_data pow_upward_test_data[] =
   {
-    START_DATA (pow_upward),
     TEST_ff_f (pow, 1.0625L, 1.125L, 1.070582293028761362162622578677070098674L),
     TEST_ff_f (pow, 1.5L, 1.03125L, 1.519127098714743184071644334163037684948L),
-    END_DATA (pow_upward)
   };
 
 static void
@@ -12388,13 +12154,12 @@ pow_test_upward (void)
 {
   START (pow_upward);
   RUN_TEST_LOOP_ff_f (pow, pow_upward_test_data, FE_UPWARD);
-  END (pow_upward);
+  END;
 }
 
 
 static const struct test_ff_f_data remainder_test_data[] =
   {
-    START_DATA (remainder),
     TEST_ff_f (remainder, 1, 0, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, 1, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, plus_infty, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
@@ -12418,7 +12183,6 @@ static const struct test_ff_f_data remainder_test_data[] =
     TEST_ff_f (remainder, -1.625, -1.0, 0.375, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 5.0, 2.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 3.0, 2.0, -1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (remainder)
   };
 
 static void
@@ -12426,13 +12190,21 @@ remainder_test (void)
 {
   START (remainder);
   RUN_TEST_LOOP_ff_f (remainder, remainder_test_data, );
-  END (remainder);
+  END;
+}
+
+static void
+drem_test (void)
+{
+  START (drem);
+  /* drem uses the same test data as remainder.  */
+  RUN_TEST_LOOP_ff_f (drem, remainder_test_data, );
+  END;
 }
 
 
 static const struct test_ff_f_data remainder_tonearest_test_data[] =
   {
-    START_DATA (remainder_tonearest),
     TEST_ff_f (remainder, 1, 0, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, 1, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, plus_infty, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
@@ -12456,7 +12228,6 @@ static const struct test_ff_f_data remainder_tonearest_test_data[] =
     TEST_ff_f (remainder, -1.625, -1.0, 0.375, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 5.0, 2.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 3.0, 2.0, -1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (remainder_tonearest)
   };
 
 static void
@@ -12464,13 +12235,21 @@ remainder_test_tonearest (void)
 {
   START (remainder_tonearest);
   RUN_TEST_LOOP_ff_f (remainder, remainder_tonearest_test_data, FE_TONEAREST);
-  END (remainder_tonearest);
+  END;
+}
+
+static void
+drem_test_tonearest (void)
+{
+  START (drem_tonearest);
+  /* drem uses the same test data as remainder.  */
+  RUN_TEST_LOOP_ff_f (drem, remainder_tonearest_test_data, FE_TONEAREST);
+  END;
 }
 
 
 static const struct test_ff_f_data remainder_towardzero_test_data[] =
   {
-    START_DATA (remainder_towardzero),
     TEST_ff_f (remainder, 1, 0, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, 1, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, plus_infty, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
@@ -12494,7 +12273,6 @@ static const struct test_ff_f_data remainder_towardzero_test_data[] =
     TEST_ff_f (remainder, -1.625, -1.0, 0.375, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 5.0, 2.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 3.0, 2.0, -1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (remainder_towardzero)
   };
 
 static void
@@ -12502,13 +12280,21 @@ remainder_test_towardzero (void)
 {
   START (remainder_towardzero);
   RUN_TEST_LOOP_ff_f (remainder, remainder_towardzero_test_data, FE_TOWARDZERO);
-  END (remainder_towardzero);
+  END;
+}
+
+static void
+drem_test_towardzero (void)
+{
+  START (drem_towardzero);
+  /* drem uses the same test data as remainder.  */
+  RUN_TEST_LOOP_ff_f (drem, remainder_towardzero_test_data, FE_TOWARDZERO);
+  END;
 }
 
 
 static const struct test_ff_f_data remainder_downward_test_data[] =
   {
-    START_DATA (remainder_downward),
     TEST_ff_f (remainder, 1, 0, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, 1, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, plus_infty, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
@@ -12532,7 +12318,6 @@ static const struct test_ff_f_data remainder_downward_test_data[] =
     TEST_ff_f (remainder, -1.625, -1.0, 0.375, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 5.0, 2.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 3.0, 2.0, -1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (remainder_downward)
   };
 
 static void
@@ -12540,13 +12325,21 @@ remainder_test_downward (void)
 {
   START (remainder_downward);
   RUN_TEST_LOOP_ff_f (remainder, remainder_downward_test_data, FE_DOWNWARD);
-  END (remainder_downward);
+  END;
+}
+
+static void
+drem_test_downward (void)
+{
+  START (drem_downward);
+  /* drem uses the same test data as remainder.  */
+  RUN_TEST_LOOP_ff_f (drem, remainder_downward_test_data, FE_DOWNWARD);
+  END;
 }
 
 
 static const struct test_ff_f_data remainder_upward_test_data[] =
   {
-    START_DATA (remainder_upward),
     TEST_ff_f (remainder, 1, 0, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, 1, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_ff_f (remainder, plus_infty, minus_zero, qnan_value, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION|ERRNO_EDOM),
@@ -12570,7 +12363,6 @@ static const struct test_ff_f_data remainder_upward_test_data[] =
     TEST_ff_f (remainder, -1.625, -1.0, 0.375, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 5.0, 2.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_ff_f (remainder, 3.0, 2.0, -1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (remainder_upward)
   };
 
 static void
@@ -12578,12 +12370,20 @@ remainder_test_upward (void)
 {
   START (remainder_upward);
   RUN_TEST_LOOP_ff_f (remainder, remainder_upward_test_data, FE_UPWARD);
-  END (remainder_upward);
+  END;
+}
+
+static void
+drem_test_upward (void)
+{
+  START (drem_upward);
+  /* drem uses the same test data as remainder.  */
+  RUN_TEST_LOOP_ff_f (drem, remainder_upward_test_data, FE_UPWARD);
+  END;
 }
 
 static const struct test_ffI_f1_data remquo_test_data[] =
   {
-    START_DATA (remquo),
     TEST_ffI_f1 (remquo, 1, 0, qnan_value, IGNORE, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION),
     TEST_ffI_f1 (remquo, 1, minus_zero, qnan_value, IGNORE, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION),
     TEST_ffI_f1 (remquo, plus_infty, 1, qnan_value, IGNORE, NO_INEXACT_EXCEPTION|INVALID_EXCEPTION),
@@ -12597,7 +12397,6 @@ static const struct test_ffI_f1_data remquo_test_data[] =
 
     TEST_ffI_f1 (remquo, 5, 2, 1, 2, NO_INEXACT_EXCEPTION),
     TEST_ffI_f1 (remquo, 3, 2, -1, 2, NO_INEXACT_EXCEPTION),
-    END_DATA (remquo)
   };
 
 static void
@@ -12608,12 +12407,11 @@ remquo_test (void)
 
   START (remquo);
   RUN_TEST_LOOP_ffI_f1 (remquo, remquo_test_data, , x);
-  END (remquo);
+  END;
 }
 
 static const struct test_f_f_data rint_test_data[] =
   {
-    START_DATA (rint),
     /* TODO: missing qNaN tests.  */
 
     TEST_f_f (rint, 0.0, 0.0, NO_INEXACT_EXCEPTION),
@@ -12730,7 +12528,6 @@ static const struct test_f_f_data rint_test_data[] =
     TEST_f_f (rint, 10141204801825835211973625643009.5L, 10141204801825835211973625643010.0L, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (rint)
   };
 
 static void
@@ -12738,12 +12535,11 @@ rint_test (void)
 {
   START (rint);
   RUN_TEST_LOOP_f_f (rint, rint_test_data, );
-  END (rint);
+  END;
 }
 
 static const struct test_f_f_data rint_tonearest_test_data[] =
   {
-    START_DATA (rint_tonearest),
     TEST_f_f (rint, 2.0, 2.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.5, 2.0, INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.0, 1.0, NO_INEXACT_EXCEPTION),
@@ -12813,7 +12609,6 @@ static const struct test_f_f_data rint_tonearest_test_data[] =
     TEST_f_f (rint, -9007199254740993.5000000000001L, -9007199254740994.0L, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (rint_tonearest)
   };
 
 static void
@@ -12821,12 +12616,11 @@ rint_test_tonearest (void)
 {
   START (rint_tonearest);
   RUN_TEST_LOOP_f_f (rint, rint_tonearest_test_data, FE_TONEAREST);
-  END (rint_tonearest);
+  END;
 }
 
 static const struct test_f_f_data rint_towardzero_test_data[] =
   {
-    START_DATA (rint_towardzero),
     TEST_f_f (rint, 2.0, 2.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.5, 1.0, INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.0, 1.0, NO_INEXACT_EXCEPTION),
@@ -12896,7 +12690,6 @@ static const struct test_f_f_data rint_towardzero_test_data[] =
     TEST_f_f (rint, -9007199254740993.5000000000001L, -9007199254740993.0L, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (rint_towardzero)
   };
 
 static void
@@ -12904,12 +12697,11 @@ rint_test_towardzero (void)
 {
   START (rint_towardzero);
   RUN_TEST_LOOP_f_f (rint, rint_towardzero_test_data, FE_TOWARDZERO);
-  END (rint_towardzero);
+  END;
 }
 
 static const struct test_f_f_data rint_downward_test_data[] =
   {
-    START_DATA (rint_downward),
     TEST_f_f (rint, 2.0, 2.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.5, 1.0, INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.0, 1.0, NO_INEXACT_EXCEPTION),
@@ -12979,7 +12771,6 @@ static const struct test_f_f_data rint_downward_test_data[] =
     TEST_f_f (rint, -9007199254740993.5000000000001L, -9007199254740994.0L, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (rint_downward)
   };
 
 static void
@@ -12987,12 +12778,11 @@ rint_test_downward (void)
 {
   START (rint_downward);
   RUN_TEST_LOOP_f_f (rint, rint_downward_test_data, FE_DOWNWARD);
-  END (rint_downward);
+  END;
 }
 
 static const struct test_f_f_data rint_upward_test_data[] =
   {
-    START_DATA (rint_upward),
     TEST_f_f (rint, 2.0, 2.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.5, 2.0, INEXACT_EXCEPTION),
     TEST_f_f (rint, 1.0, 1.0, NO_INEXACT_EXCEPTION),
@@ -13062,7 +12852,6 @@ static const struct test_f_f_data rint_upward_test_data[] =
     TEST_f_f (rint, -9007199254740993.5000000000001L, -9007199254740993.0L, INEXACT_EXCEPTION),
 # endif
 #endif
-    END_DATA (rint_upward)
   };
 
 static void
@@ -13070,12 +12859,11 @@ rint_test_upward (void)
 {
   START (rint_upward);
   RUN_TEST_LOOP_f_f (rint, rint_upward_test_data, FE_UPWARD);
-  END (rint_upward);
+  END;
 }
 
 static const struct test_f_f_data round_test_data[] =
   {
-    START_DATA (round),
     /* TODO: missing +/-Inf as well as qNaN tests.  */
 
     TEST_f_f (round, 0, 0, NO_INEXACT_EXCEPTION),
@@ -13168,7 +12956,6 @@ static const struct test_f_f_data round_test_data[] =
     TEST_f_f (round, 10141204801825835211973625643008.75L, 10141204801825835211973625643009.0L),
     TEST_f_f (round, 10141204801825835211973625643009.5L, 10141204801825835211973625643010.0L),
 #endif
-    END_DATA (round)
   };
 
 static void
@@ -13176,13 +12963,12 @@ round_test (void)
 {
   START (round);
   RUN_TEST_LOOP_f_f (round, round_test_data, );
-  END (round);
+  END;
 }
 
 
 static const struct test_ff_f_data scalb_test_data[] =
   {
-    START_DATA (scalb),
     TEST_ff_f (scalb, 2.0, 0.5, qnan_value, INVALID_EXCEPTION),
     TEST_ff_f (scalb, 3.0, -2.5, qnan_value, INVALID_EXCEPTION),
 
@@ -13232,7 +13018,6 @@ static const struct test_ff_f_data scalb_test_data[] =
 
     TEST_ff_f (scalb, 0.8L, 4, 12.8L),
     TEST_ff_f (scalb, -0.854375L, 5, -27.34L),
-    END_DATA (scalb)
   };
 
 static void
@@ -13241,13 +13026,12 @@ scalb_test (void)
 
   START (scalb);
   RUN_TEST_LOOP_ff_f (scalb, scalb_test_data, );
-  END (scalb);
+  END;
 }
 
 
 static const struct test_fi_f_data scalbn_test_data[] =
   {
-    START_DATA (scalbn),
     TEST_fi_f (scalbn, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_fi_f (scalbn, minus_zero, 0, minus_zero, NO_INEXACT_EXCEPTION),
 
@@ -13268,7 +13052,6 @@ static const struct test_fi_f_data scalbn_test_data[] =
     TEST_fi_f (scalbn, min_value, INT_MIN, plus_zero, INEXACT_EXCEPTION|UNDERFLOW_EXCEPTION),
     TEST_fi_f (scalbn, min_value / 4, INT_MAX, plus_infty, INEXACT_EXCEPTION|OVERFLOW_EXCEPTION),
     TEST_fi_f (scalbn, min_value / 4, INT_MIN, plus_zero, INEXACT_EXCEPTION|UNDERFLOW_EXCEPTION),
-    END_DATA (scalbn)
   };
 
 static void
@@ -13277,13 +13060,12 @@ scalbn_test (void)
 
   START (scalbn);
   RUN_TEST_LOOP_fi_f (scalbn, scalbn_test_data, );
-  END (scalbn);
+  END;
 }
 
 
 static const struct test_fl_f_data scalbln_test_data[] =
   {
-    START_DATA (scalbln),
     TEST_fl_f (scalbln, 0, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_fl_f (scalbln, minus_zero, 0, minus_zero, NO_INEXACT_EXCEPTION),
 
@@ -13324,7 +13106,6 @@ static const struct test_fl_f_data scalbln_test_data[] =
     TEST_fl_f (scalbln, min_value / 4, 0x88000000L, plus_infty, INEXACT_EXCEPTION|OVERFLOW_EXCEPTION),
     TEST_fl_f (scalbln, min_value / 4, -0x88000000L, plus_zero, INEXACT_EXCEPTION|UNDERFLOW_EXCEPTION),
 #endif
-    END_DATA (scalbln)
   };
 
 static void
@@ -13333,13 +13114,12 @@ scalbln_test (void)
 
   START (scalbln);
   RUN_TEST_LOOP_fl_f (scalbln, scalbln_test_data, );
-  END (scalbln);
+  END;
 }
 
 
 static const struct test_f_i_data signbit_test_data[] =
   {
-    START_DATA (signbit),
     /* TODO: missing qNaN tests.  */
     TEST_f_b (signbit, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_b (signbit, minus_zero, 1, NO_INEXACT_EXCEPTION),
@@ -13350,7 +13130,6 @@ static const struct test_f_i_data signbit_test_data[] =
     TEST_f_b (signbit, -1, 1, NO_INEXACT_EXCEPTION),
     /* signbit (x) == 0 for x >= 0.  */
     TEST_f_b (signbit, 1, 0, NO_INEXACT_EXCEPTION),
-    END_DATA (signbit)
   };
 
 static void
@@ -13358,13 +13137,12 @@ signbit_test (void)
 {
   START (signbit);
   RUN_TEST_LOOP_f_b_tg (signbit, signbit_test_data, );
-  END (signbit);
+  END;
 }
 
 
 static const struct test_f_f_data sin_test_data[] =
   {
-    START_DATA (sin),
     TEST_f_f (sin, 0, 0),
     TEST_f_f (sin, minus_zero, minus_zero),
     TEST_f_f (sin, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -13402,7 +13180,6 @@ static const struct test_f_f_data sin_test_data[] =
     TEST_f_f (sin, 0x1.fffffep+127, -5.21876523333658540551505357019806722935726e-01L),
     TEST_f_f (sin, 0x1p+50, 4.96396515208940840876821859865411368093356e-01L),
     TEST_f_f (sin, 0x1p+28, -9.86198211836975655703110310527108292055548e-01L),
-    END_DATA (sin)
   };
 
 static void
@@ -13410,13 +13187,12 @@ sin_test (void)
 {
   START (sin);
   RUN_TEST_LOOP_f_f (sin, sin_test_data, );
-  END (sin);
+  END;
 }
 
 
 static const struct test_f_f_data sin_tonearest_test_data[] =
   {
-    START_DATA (sin_tonearest),
     TEST_f_f (sin, 1, 0.8414709848078965066525023216302989996226L),
     TEST_f_f (sin, 2, 0.9092974268256816953960198659117448427023L),
     TEST_f_f (sin, 3, 0.1411200080598672221007448028081102798469L),
@@ -13427,7 +13203,6 @@ static const struct test_f_f_data sin_tonearest_test_data[] =
     TEST_f_f (sin, 8, 0.9893582466233817778081235982452886721164L),
     TEST_f_f (sin, 9, 0.4121184852417565697562725663524351793439L),
     TEST_f_f (sin, 10, -0.5440211108893698134047476618513772816836L),
-    END_DATA (sin_tonearest)
   };
 
 static void
@@ -13435,13 +13210,12 @@ sin_test_tonearest (void)
 {
   START (sin_tonearest);
   RUN_TEST_LOOP_f_f (sin, sin_tonearest_test_data, FE_TONEAREST);
-  END (sin_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data sin_towardzero_test_data[] =
   {
-    START_DATA (sin_towardzero),
     TEST_f_f (sin, 1, 0.8414709848078965066525023216302989996226L),
     TEST_f_f (sin, 2, 0.9092974268256816953960198659117448427023L),
     TEST_f_f (sin, 3, 0.1411200080598672221007448028081102798469L),
@@ -13452,7 +13226,6 @@ static const struct test_f_f_data sin_towardzero_test_data[] =
     TEST_f_f (sin, 8, 0.9893582466233817778081235982452886721164L),
     TEST_f_f (sin, 9, 0.4121184852417565697562725663524351793439L),
     TEST_f_f (sin, 10, -0.5440211108893698134047476618513772816836L),
-    END_DATA (sin_towardzero)
   };
 
 static void
@@ -13460,13 +13233,12 @@ sin_test_towardzero (void)
 {
   START (sin_towardzero);
   RUN_TEST_LOOP_f_f (sin, sin_towardzero_test_data, FE_TOWARDZERO);
-  END (sin_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data sin_downward_test_data[] =
   {
-    START_DATA (sin_downward),
     TEST_f_f (sin, 1, 0.8414709848078965066525023216302989996226L),
     TEST_f_f (sin, 2, 0.9092974268256816953960198659117448427023L),
     TEST_f_f (sin, 3, 0.1411200080598672221007448028081102798469L),
@@ -13477,7 +13249,6 @@ static const struct test_f_f_data sin_downward_test_data[] =
     TEST_f_f (sin, 8, 0.9893582466233817778081235982452886721164L),
     TEST_f_f (sin, 9, 0.4121184852417565697562725663524351793439L),
     TEST_f_f (sin, 10, -0.5440211108893698134047476618513772816836L),
-    END_DATA (sin_downward)
   };
 
 static void
@@ -13485,13 +13256,12 @@ sin_test_downward (void)
 {
   START (sin_downward);
   RUN_TEST_LOOP_f_f (sin, sin_downward_test_data, FE_DOWNWARD);
-  END (sin_downward);
+  END;
 }
 
 
 static const struct test_f_f_data sin_upward_test_data[] =
   {
-    START_DATA (sin_upward),
     TEST_f_f (sin, 1, 0.8414709848078965066525023216302989996226L),
     TEST_f_f (sin, 2, 0.9092974268256816953960198659117448427023L),
     TEST_f_f (sin, 3, 0.1411200080598672221007448028081102798469L),
@@ -13502,7 +13272,6 @@ static const struct test_f_f_data sin_upward_test_data[] =
     TEST_f_f (sin, 8, 0.9893582466233817778081235982452886721164L),
     TEST_f_f (sin, 9, 0.4121184852417565697562725663524351793439L),
     TEST_f_f (sin, 10, -0.5440211108893698134047476618513772816836L),
-    END_DATA (sin_upward)
   };
 
 static void
@@ -13510,13 +13279,12 @@ sin_test_upward (void)
 {
   START (sin_upward);
   RUN_TEST_LOOP_f_f (sin, sin_upward_test_data, FE_UPWARD);
-  END (sin_upward);
+  END;
 }
 
 
 static const struct test_fFF_11_data sincos_test_data[] =
   {
-    START_DATA (sincos),
     TEST_fFF_11 (sincos, 0, 0, 1),
 
     TEST_fFF_11 (sincos, minus_zero, minus_zero, 1),
@@ -13575,7 +13343,6 @@ static const struct test_fFF_11_data sincos_test_data[] =
     TEST_fFF_11 (sincos, 0x1.fffffep+127, -5.21876523333658540551505357019806722935726e-01L, 8.53021039830304158051791467692161107353094e-01L),
     TEST_fFF_11 (sincos, 0x1p+50, 4.96396515208940840876821859865411368093356e-01L, 8.68095904660550604334592502063501320395739e-01L),
     TEST_fFF_11 (sincos, 0x1p+28, -9.86198211836975655703110310527108292055548e-01L, -1.65568979490578758865468278195361551113358e-01L),
-    END_DATA (sincos)
   };
 
 static void
@@ -13585,12 +13352,11 @@ sincos_test (void)
 
   START (sincos);
   RUN_TEST_LOOP_fFF_11 (sincos, sincos_test_data, , sin_res, cos_res);
-  END (sincos);
+  END;
 }
 
 static const struct test_f_f_data sinh_test_data[] =
   {
-    START_DATA (sinh),
     TEST_f_f (sinh, 0, 0),
     TEST_f_f (sinh, minus_zero, minus_zero),
 
@@ -13602,7 +13368,6 @@ static const struct test_f_f_data sinh_test_data[] =
 
     TEST_f_f (sinh, 0.75L, 0.822316731935829980703661634446913849L),
     TEST_f_f (sinh, 0x8p-32L, 1.86264514923095703232705808926175479e-9L),
-    END_DATA (sinh)
   };
 
 static void
@@ -13610,17 +13375,15 @@ sinh_test (void)
 {
   START (sinh);
   RUN_TEST_LOOP_f_f (sinh, sinh_test_data, );
-  END (sinh);
+  END;
 }
 
 
 static const struct test_f_f_data sinh_tonearest_test_data[] =
   {
-    START_DATA (sinh_tonearest),
     TEST_f_f (sinh, 22, 1792456423.065795780701106568345764104225L),
     TEST_f_f (sinh, 23, 4872401723.124451299966006944252978187305L),
     TEST_f_f (sinh, 24, 13244561064.92173614705070540368454568168L),
-    END_DATA (sinh_tonearest)
   };
 
 static void
@@ -13628,17 +13391,15 @@ sinh_test_tonearest (void)
 {
   START (sinh_tonearest);
   RUN_TEST_LOOP_f_f (sinh, sinh_tonearest_test_data, FE_TONEAREST);
-  END (sinh_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data sinh_towardzero_test_data[] =
   {
-    START_DATA (sinh_towardzero),
     TEST_f_f (sinh, 22, 1792456423.065795780701106568345764104225L),
     TEST_f_f (sinh, 23, 4872401723.124451299966006944252978187305L),
     TEST_f_f (sinh, 24, 13244561064.92173614705070540368454568168L),
-    END_DATA (sinh_towardzero)
   };
 
 static void
@@ -13646,17 +13407,15 @@ sinh_test_towardzero (void)
 {
   START (sinh_towardzero);
   RUN_TEST_LOOP_f_f (sinh, sinh_towardzero_test_data, FE_TOWARDZERO);
-  END (sinh_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data sinh_downward_test_data[] =
   {
-    START_DATA (sinh_downward),
     TEST_f_f (sinh, 22, 1792456423.065795780701106568345764104225L),
     TEST_f_f (sinh, 23, 4872401723.124451299966006944252978187305L),
     TEST_f_f (sinh, 24, 13244561064.92173614705070540368454568168L),
-    END_DATA (sinh_downward)
   };
 
 static void
@@ -13664,17 +13423,15 @@ sinh_test_downward (void)
 {
   START (sinh_downward);
   RUN_TEST_LOOP_f_f (sinh, sinh_downward_test_data, FE_DOWNWARD);
-  END (sinh_downward);
+  END;
 }
 
 
 static const struct test_f_f_data sinh_upward_test_data[] =
   {
-    START_DATA (sinh_upward),
     TEST_f_f (sinh, 22, 1792456423.065795780701106568345764104225L),
     TEST_f_f (sinh, 23, 4872401723.124451299966006944252978187305L),
     TEST_f_f (sinh, 24, 13244561064.92173614705070540368454568168L),
-    END_DATA (sinh_upward)
   };
 
 static void
@@ -13682,13 +13439,12 @@ sinh_test_upward (void)
 {
   START (sinh_upward);
   RUN_TEST_LOOP_f_f (sinh, sinh_upward_test_data, FE_UPWARD);
-  END (sinh_upward);
+  END;
 }
 
 
 static const struct test_f_f_data sqrt_test_data[] =
   {
-    START_DATA (sqrt),
     TEST_f_f (sqrt, 0, 0, NO_INEXACT_EXCEPTION),
     TEST_f_f (sqrt, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
     TEST_f_f (sqrt, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
@@ -13707,7 +13463,6 @@ static const struct test_f_f_data sqrt_test_data[] =
     TEST_f_f (sqrt, 6642.25, 81.5, NO_INEXACT_EXCEPTION),
     TEST_f_f (sqrt, 15190.5625L, 123.25L, NO_INEXACT_EXCEPTION),
     TEST_f_f (sqrt, 0.75L, 0.866025403784438646763723170752936183L, INEXACT_EXCEPTION),
-    END_DATA (sqrt)
   };
 
 static void
@@ -13715,13 +13470,12 @@ sqrt_test (void)
 {
   START (sqrt);
   RUN_TEST_LOOP_f_f (sqrt, sqrt_test_data, );
-  END (sqrt);
+  END;
 }
 
 
 static const struct test_f_f_data tan_test_data[] =
   {
-    START_DATA (tan),
     TEST_f_f (tan, 0, 0),
     TEST_f_f (tan, minus_zero, minus_zero),
     TEST_f_f (tan, plus_infty, qnan_value, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -13780,7 +13534,6 @@ static const struct test_f_f_data tan_test_data[] =
 #if defined TEST_LDOUBLE && LDBL_MAX_EXP >= 16384
     TEST_f_f (tan, 0x1p16383L, 0.422722393732022337800504160054440141575L),
 #endif
-    END_DATA (tan)
   };
 
 static void
@@ -13788,13 +13541,12 @@ tan_test (void)
 {
   START (tan);
   RUN_TEST_LOOP_f_f (tan, tan_test_data, );
-  END (tan);
+  END;
 }
 
 
 static const struct test_f_f_data tan_tonearest_test_data[] =
   {
-    START_DATA (tan_tonearest),
     TEST_f_f (tan, 1, 1.5574077246549022305069748074583601730873L),
     TEST_f_f (tan, 2, -2.1850398632615189916433061023136825434320L),
     TEST_f_f (tan, 3, -0.1425465430742778052956354105339134932261L),
@@ -13805,7 +13557,6 @@ static const struct test_f_f_data tan_tonearest_test_data[] =
     TEST_f_f (tan, 8, -6.7997114552203786999252627596086333648814L),
     TEST_f_f (tan, 9, -0.4523156594418098405903708757987855343087L),
     TEST_f_f (tan, 10, 0.6483608274590866712591249330098086768169L),
-    END_DATA (tan_tonearest)
   };
 
 static void
@@ -13813,13 +13564,12 @@ tan_test_tonearest (void)
 {
   START (tan_tonearest);
   RUN_TEST_LOOP_f_f (tan, tan_tonearest_test_data, FE_TONEAREST);
-  END (tan_tonearest);
+  END;
 }
 
 
 static const struct test_f_f_data tan_towardzero_test_data[] =
   {
-    START_DATA (tan_towardzero),
     TEST_f_f (tan, 1, 1.5574077246549022305069748074583601730873L),
     TEST_f_f (tan, 2, -2.1850398632615189916433061023136825434320L),
     TEST_f_f (tan, 3, -0.1425465430742778052956354105339134932261L),
@@ -13830,7 +13580,6 @@ static const struct test_f_f_data tan_towardzero_test_data[] =
     TEST_f_f (tan, 8, -6.7997114552203786999252627596086333648814L),
     TEST_f_f (tan, 9, -0.4523156594418098405903708757987855343087L),
     TEST_f_f (tan, 10, 0.6483608274590866712591249330098086768169L),
-    END_DATA (tan_towardzero)
   };
 
 static void
@@ -13838,13 +13587,12 @@ tan_test_towardzero (void)
 {
   START (tan_towardzero);
   RUN_TEST_LOOP_f_f (tan, tan_towardzero_test_data, FE_TOWARDZERO);
-  END (tan_towardzero);
+  END;
 }
 
 
 static const struct test_f_f_data tan_downward_test_data[] =
   {
-    START_DATA (tan_downward),
     TEST_f_f (tan, 1, 1.5574077246549022305069748074583601730873L),
     TEST_f_f (tan, 2, -2.1850398632615189916433061023136825434320L),
     TEST_f_f (tan, 3, -0.1425465430742778052956354105339134932261L),
@@ -13855,7 +13603,6 @@ static const struct test_f_f_data tan_downward_test_data[] =
     TEST_f_f (tan, 8, -6.7997114552203786999252627596086333648814L),
     TEST_f_f (tan, 9, -0.4523156594418098405903708757987855343087L),
     TEST_f_f (tan, 10, 0.6483608274590866712591249330098086768169L),
-    END_DATA (tan_downward)
   };
 
 static void
@@ -13863,13 +13610,12 @@ tan_test_downward (void)
 {
   START (tan_downward);
   RUN_TEST_LOOP_f_f (tan, tan_downward_test_data, FE_DOWNWARD);
-  END (tan_downward);
+  END;
 }
 
 
 static const struct test_f_f_data tan_upward_test_data[] =
   {
-    START_DATA (tan_upward),
     TEST_f_f (tan, 1, 1.5574077246549022305069748074583601730873L),
     TEST_f_f (tan, 2, -2.1850398632615189916433061023136825434320L),
     TEST_f_f (tan, 3, -0.1425465430742778052956354105339134932261L),
@@ -13880,7 +13626,6 @@ static const struct test_f_f_data tan_upward_test_data[] =
     TEST_f_f (tan, 8, -6.7997114552203786999252627596086333648814L),
     TEST_f_f (tan, 9, -0.4523156594418098405903708757987855343087L),
     TEST_f_f (tan, 10, 0.6483608274590866712591249330098086768169L),
-    END_DATA (tan_upward)
   };
 
 static void
@@ -13888,13 +13633,12 @@ tan_test_upward (void)
 {
   START (tan_upward);
   RUN_TEST_LOOP_f_f (tan, tan_upward_test_data, FE_UPWARD);
-  END (tan_upward);
+  END;
 }
 
 
 static const struct test_f_f_data tanh_test_data[] =
   {
-    START_DATA (tanh),
     TEST_f_f (tanh, 0, 0),
     TEST_f_f (tanh, minus_zero, minus_zero),
 
@@ -13912,7 +13656,6 @@ static const struct test_f_f_data tanh_test_data[] =
 
     /* 2^-57  */
     TEST_f_f (tanh, 0x1p-57L, 6.938893903907228377647697925567626953125e-18L),
-    END_DATA (tanh)
   };
 
 static void
@@ -13920,12 +13663,11 @@ tanh_test (void)
 {
   START (tanh);
   RUN_TEST_LOOP_f_f (tanh, tanh_test_data, );
-  END (tanh);
+  END;
 }
 
 static const struct test_f_f_data tgamma_test_data[] =
   {
-    START_DATA (tgamma),
     TEST_f_f (tgamma, plus_infty, plus_infty),
     TEST_f_f (tgamma, max_value, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
     TEST_f_f (tgamma, 0, plus_infty, DIVIDE_BY_ZERO_EXCEPTION|ERRNO_ERANGE),
@@ -14444,7 +14186,6 @@ static const struct test_f_f_data tgamma_test_data[] =
     TEST_f_f (tgamma, 0x6.db8c603359a971081bc4a2e9dfd4p+8L, plus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
 # endif
 #endif
-    END_DATA (tgamma)
   };
 
 static void
@@ -14452,13 +14193,12 @@ tgamma_test (void)
 {
   START (tgamma);
   RUN_TEST_LOOP_f_f (tgamma, tgamma_test_data, );
-  END (tgamma);
+  END;
 }
 
 
 static const struct test_f_f_data trunc_test_data[] =
   {
-    START_DATA (trunc),
     TEST_f_f (trunc, plus_infty, plus_infty, NO_INEXACT_EXCEPTION),
     TEST_f_f (trunc, minus_infty, minus_infty, NO_INEXACT_EXCEPTION),
     TEST_f_f (trunc, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
@@ -14560,7 +14300,6 @@ static const struct test_f_f_data trunc_test_data[] =
     TEST_f_f (trunc, 10141204801825835211973625643008.75L, 10141204801825835211973625643008.0L),
     TEST_f_f (trunc, 10141204801825835211973625643009.5L, 10141204801825835211973625643009.0L),
 #endif
-    END_DATA (trunc)
   };
 
 static void
@@ -14568,12 +14307,11 @@ trunc_test (void)
 {
   START (trunc);
   RUN_TEST_LOOP_f_f (trunc, trunc_test_data, );
-  END (trunc);
+  END;
 }
 
 static const struct test_f_f_data y0_test_data[] =
   {
-    START_DATA (y0),
     /* y0 is the Bessel function of the second kind of order 0 */
     TEST_f_f (y0, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (y0, -max_value, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -14612,7 +14350,6 @@ static const struct test_f_f_data y0_test_data[] =
     TEST_f_f (y0, 0x1p-90L, -3.9788212322585974036636501709188067393195e+1L),
     TEST_f_f (y0, 0x1p-100L, -4.420092432563900590456563035154802121284e+1L),
     TEST_f_f (y0, 0x1p-110L, -4.861363632869203777249475899390797503250e+1L),
-    END_DATA (y0)
   };
 
 static void
@@ -14620,13 +14357,12 @@ y0_test (void)
 {
   START (y0);
   RUN_TEST_LOOP_f_f (y0, y0_test_data, );
-  END (y0);
+  END;
 }
 
 
 static const struct test_f_f_data y1_test_data[] =
   {
-    START_DATA (y1),
     /* y1 is the Bessel function of the second kind of order 1 */
     TEST_f_f (y1, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
     TEST_f_f (y1, -max_value, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -14665,7 +14401,6 @@ static const struct test_f_f_data y1_test_data[] =
     TEST_f_f (y1, 0x1p-90L, -7.8809710601457349582707849528059121757126e+26L),
     TEST_f_f (y1, 0x1p-100L, -8.0701143655892325972692837916732540679297e+29L),
     TEST_f_f (y1, 0x1p-110L, -8.2637971103633741796037466026734121655600e+32L),
-    END_DATA (y1)
   };
 
 static void
@@ -14673,13 +14408,12 @@ y1_test (void)
 {
   START (y1);
   RUN_TEST_LOOP_f_f (y1, y1_test_data, );
-  END (y1);
+  END;
 }
 
 
 static const struct test_if_f_data yn_test_data[] =
   {
-    START_DATA (yn),
     /* yn is the Bessel function of the second kind of order n */
     /* yn (0, x) == y0 (x)  */
     TEST_if_f (yn, 0, -1.0, minus_infty, INVALID_EXCEPTION|ERRNO_EDOM),
@@ -14733,7 +14467,6 @@ static const struct test_if_f_data yn_test_data[] =
     /* Check whether yn returns correct value for LDBL_MIN, DBL_MIN,
        and FLT_MIN.  See Bug 14173.  */
     TEST_if_f (yn, 10, min_value, minus_infty, OVERFLOW_EXCEPTION|ERRNO_ERANGE),
-    END_DATA (yn)
   };
 
 static void
@@ -14741,19 +14474,17 @@ yn_test (void)
 {
   START (yn);
   RUN_TEST_LOOP_if_f (yn, yn_test_data, );
-  END (yn);
+  END;
 }
 
 
 static const struct test_f_f_data significand_test_data[] =
   {
-    START_DATA (significand),
     /* significand returns the mantissa of the exponential representation.  */
     /* TODO: missing +/-Inf as well as qNaN tests.  */
     TEST_f_f (significand, 4.0, 1.0, NO_INEXACT_EXCEPTION),
     TEST_f_f (significand, 6.0, 1.5, NO_INEXACT_EXCEPTION),
     TEST_f_f (significand, 8.0, 1.0, NO_INEXACT_EXCEPTION),
-    END_DATA (significand)
   };
 
 static void
@@ -14761,7 +14492,7 @@ significand_test (void)
 {
   START (significand);
   RUN_TEST_LOOP_f_f (significand, significand_test_data, );
-  END (significand);
+  END;
 }
 
 
@@ -14847,31 +14578,54 @@ parse_opt (int key, char *arg, struct argp_state *state)
   return 0;
 }
 
-#if 0
-/* function to check our ulp calculation.  */
+/* Verify that our ulp () implementation is behaving as expected
+   or abort.  */
 void
 check_ulp (void)
 {
-  int i;
-
-  FLOAT u, diff, ulp;
-  /* This gives one ulp.  */
-  u = FUNC(nextafter) (10, 20);
-  check_equal (10.0, u, 1, &diff, &ulp);
-  printf ("One ulp: % .4" PRINTF_NEXPR "\n", ulp);
-
-  /* This gives one more ulp.  */
-  u = FUNC(nextafter) (u, 20);
-  check_equal (10.0, u, 2, &diff, &ulp);
-  printf ("two ulp: % .4" PRINTF_NEXPR "\n", ulp);
-
-  /* And now calculate 100 ulp.  */
-  for (i = 2; i < 100; i++)
-    u = FUNC(nextafter) (u, 20);
-  check_equal (10.0, u, 100, &diff, &ulp);
-  printf ("100 ulp: % .4" PRINTF_NEXPR "\n", ulp);
+   FLOAT ulps, value;
+   int i;
+   /* Check ulp of zero is a subnormal value...  */
+   ulps = ulp (0x0.0p0);
+   if (fpclassify (ulps) != FP_SUBNORMAL)
+     {
+       fprintf (stderr, "ulp (0x0.0p0) is not FP_SUBNORMAL!\n");
+       exit (EXIT_FAILURE);
+     }
+   /* Check that the ulp of one is a normal value... */
+   ulps = ulp (1.0L);
+   if (fpclassify (ulps) != FP_NORMAL)
+     {
+       fprintf (stderr, "ulp (1.0L) is not FP_NORMAL\n");
+       exit (EXIT_FAILURE);
+     }
+   /* Compute the nearest representable number from 10 towards 20.
+      The result is 10 + 1ulp.  We use this to check the ulp function.  */
+   value = FUNC(nextafter) (10, 20);
+   ulps = ULPDIFF (value, 10);
+   if (ulps > 1.0L)
+     {
+       fprintf (stderr, "The value of ulp (10+1ulp,10) is greater than 1 ulp.\n");
+       exit (EXIT_FAILURE);
+     }
+   /* This gives one more ulp.  */
+   value = FUNC(nextafter) (value, 20);
+   ulps = ULPDIFF (value, 10);
+   if (ulps > 2.0L)
+     {
+       fprintf (stderr, "The value of ulp (10+2ulp,10) is greater than 2 ulp.\n");
+       exit (EXIT_FAILURE);
+     }
+   /* And now calculate 100 ulp.  */
+   for (i = 2; i < 100; i++)
+     value = FUNC(nextafter) (value, 20);
+   ulps = ULPDIFF (value, 10);
+   if (ulps > 100.0L)
+     {
+       fprintf (stderr, "The value of ulp (10+100ulp,10) is greater than 100 ulp.\n");
+       exit (EXIT_FAILURE);
+     }
 }
-#endif
 
 int
 main (int argc, char **argv)
@@ -14922,9 +14676,7 @@ main (int argc, char **argv)
   initialize ();
   printf (TEST_MSG);
 
-#if 0
   check_ulp ();
-#endif
 
   /* Keep the tests a wee bit ordered (according to ISO C99).  */
   /* Classification macros:  */
@@ -15001,6 +14753,7 @@ main (int argc, char **argv)
   logb_test ();
   logb_test_downward ();
   modf_test ();
+  pow10_test ();
   ilogb_test ();
   scalb_test ();
   scalbn_test ();
@@ -15050,6 +14803,11 @@ main (int argc, char **argv)
   trunc_test ();
 
   /* Remainder functions:  */
+  drem_test ();
+  drem_test_tonearest ();
+  drem_test_towardzero ();
+  drem_test_downward ();
+  drem_test_upward ();
   fmod_test ();
   remainder_test ();
   remainder_test_tonearest ();

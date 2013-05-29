@@ -1,3 +1,18 @@
+2013-05-28  Mike Frysinger  <vapier@gentoo.org>
+
+	* locale/programs/locarchive.c (create_archive): Inlucde fname in
+	error message.
+	(enlarge_archive): Likewise.
+
+2013-05-28  Ben North  <ben@redfrontdoor.org>
+
+	* manual/arith.texi (frexp): It is the magnitude of the return
+	value which lies in [0.5, 1), not the return value itself.
+
+2013-05-28  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
 2013-05-26  Thomas Schwinge  <thomas@codesourcery.com>
 
 	* stdio-common/bug26.c (main): Correct fscanf template.

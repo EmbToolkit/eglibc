@@ -1,3 +1,9 @@
+2013-05-29  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15465]
+	* sysdeps/aarch64/dl-machine.h (elf_machine_rela): Use
+	RTLD_PROGNAME.
+
 2013-05-23  Venkataranmanan Kumar  <venkataramanan.kumar@linaro.org>
 
 	* sysdeps/aarch64/machine-gmon.h: Remove.
@@ -82,7 +88,7 @@
 
 2013-01-23  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/strncmp.S: New file.
+	* sysdeps/aarch64/strncmp.S: New file.
 
 2013-01-23  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
@@ -91,23 +97,23 @@
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/strlen.S: New file.
+	* sysdeps/aarch64/strlen.S: New file.
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/strcmp.S: New file.
+	* sysdeps/aarch64/strcmp.S: New file.
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/bzero.S: New file.
+	* sysdeps/aarch64/bzero.S: New file.
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/memmove.S: New file.
+	* sysdeps/aarch64/memmove.S: New file.
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * sysdeps/aarch64/memcpy.S: New file.
+	* sysdeps/aarch64/memcpy.S: New file.
 
 2013-01-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 

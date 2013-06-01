@@ -1,4 +1,73 @@
-2012-05-30  Jeff Law  <law@redhat.com>
+2013-05-31  Carlos O'Donell  <carlos@redhat.com>
+
+	* po/be.po: Revert last change.
+	* po/zh_CN.po: Likewise.
+	* po/header.pot: Likewise.
+
+2013-05-31  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makefile ($(common-objpfx)linkobj/libc.so): Define
+	link-libc-deps to empty as target-specific variable.
+	* Makerules (link-libc-args): New variable.
+	(libc-for-link): Likewise.
+	(link-libc-deps): Likewise.
+	(lib%.so): Depend on $(link-libc-deps).  Link with
+	$(link-libc-args).
+	(build-module): Link with $(link-libc-args).
+	(build-module-asneeded): Likewise.
+	(build-module-helper-objlist): Filter out $(link-libc-deps) from
+	list of objects.
+	($(common-objpfx)libc.so): Define link-libc-deps to empty as
+	target-specific variable.
+	($(extra-modules-build:%=$(objpfx)%.so)): Depend on
+	$(link-libc-deps) instead of libc.so and libc_nonshared.a.
+	* crypt/Makefile ($(objpfx)libcrypt.so): Remove dependencies on
+	libc.
+	* debug/Makefile ($(objpfx)libSegFault.so): Remove dependencies on
+	libc and ld.so.
+	($(objpfx)libpcprofile.so): Likewise.
+	* dlfcn/Makefile (LDLIBS-bug-atexit3-lib.so): Remove ld.so and
+	libc_nonshared.a.
+	($(objpfx)libdl.so): Remove dependencies on libc and ld.so.
+	* hesiod/Makefile ($(objpfx)libnss_hesiod.so): Likewise.
+	* iconvdata/extra-module.mk ($(objpfx)$(mod).so): Depend on
+	$(link-libc-deps).
+	($(objpfx)$(mod).so): Remove dependencies on libc and ld.so.
+	* locale/Makefile ($(objpfx)libBrokenLocale.so): Likewise.
+	* login/Makefile ($(objpfx)libutil.so): Likewise.
+	* malloc/Makefile ($(objpfx)libmemusage.so): Likewise.
+	* math/Makefile ($(objpfx)libm.so): Likewise.
+	* nis/Makefile ($(services:%=$(objpfx)libnss_%.so)
+	$(objpfx)libnsl.so): Define libc-for-link as target-specific
+	variable instead of depending directly on libc.
+	* nss/Makefile ($(services:%=$(objpfx)libnss_%.so)): Likewise.
+	($(objpfx)/libnss_test1.so): Change dependencies on libc to
+	$(link-libc-deps).
+	* resolv/Makefile ($(objpfx)libresolv.so): Remove dependencies on
+	libc.
+	[$(have-ssp) = yes] (LDLIBS-resolv.so): Remove variable.
+	($(objpfx)libnss_dns.so): Remove dependencies on libc.
+	($(objpfx)libanl.so): Likewise.
+	* rt/Makefile ($(objpfx)librt.so): Remove dependencies on libc and
+	ld.so.
+	* stdlib/Makefile ($(objpfx)tst-putenvmod.so): Depend on
+	$(link-libc-deps).
+	* sysdeps/i386/fpu/Makefile: Remove file.
+	* sysdeps/powerpc/fpu/Makefile [$(subdir) = math]
+	($(objpfx)libm.so): Remove dependency on ld.so.
+
+2013-05-30  Patsy Franklin  <pfrankli@redhat.com>
+
+	[BZ # 15553]
+	* nis/yp_xdr.c (XDRMAXNAME): Define.
+	(XDRMAXRECORD): Define.
+	(xdr_domainname): Use XDRMAXNAME.
+	(xdr_mapname): Likewise.
+	(xdr_peername): Likewise.
+	(xdr_keydat): Use XDRMAXRECORD.
+	(xdr_valdat): Likewise.
+
+2013-05-30  Jeff Law  <law@redhat.com>
 
 	[BZ #14256]
 	* manual/errno.texi (ESTALE): Update to account for more than

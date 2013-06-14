@@ -1,3 +1,7 @@
+2013-06-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/bits/endian.h (__BYTE_ORDER): Default to little.
+
 2012-11-29  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/tile/__tls_get_addr.S: Fix TLS module initialization bug.

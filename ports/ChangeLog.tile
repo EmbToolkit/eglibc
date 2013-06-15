@@ -1,3 +1,7 @@
+2013-06-12  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* sysdeps/tile/bits/endian.h (__BYTE_ORDER): Default to little.
+
 2012-09-06  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* sysdeps/unix/sysv/linux/tile/sys/procfs.h: Fix type of prfpregset_t.

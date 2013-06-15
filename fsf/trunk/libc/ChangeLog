@@ -1,3 +1,23 @@
+2013-06-14  Liubov Dmitrieva  <liubov.dmitrieva@intel.com>
+
+	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features):
+	Set bit_Fast_Unaligned_Load for Intel Silvermont architecture.
+
+2013-06-14  Siddhesh Poyarekar  <siddhesh@redhat.com>
+	    H.J. Lu  <hjl.tools@gmail.com>
+
+	[BZ #15627]
+	* sysdeps/x86_64/rtld-memset.c: Remove file.
+	* sysdeps/x86_64/rtld-memset.S: New file.
+
+2013-06-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* stdlib/tst-strtod-round.c: Include <math-tests.h>.
+	(test_in_one_mode): Take arguments for whether the rounding mode
+	is supported for each floating-point type.
+	(do_test): Pass new arguments to test_in_one_mode using
+	ROUNDING_TESTS.
+
 2013-06-13  Roland McGrath  <roland@hack.frob.com>
 
 	* posix/tst-waitid.c (do_test): Distinguish different instances of

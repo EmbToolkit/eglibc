@@ -1,3 +1,39 @@
+2013-06-15  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15631]
+	* sysdeps/ieee754/dbl-64/e_sqrt.c (__ieee754_sqrt): Save and
+	restore exception state around main square root computation, then
+	check for inexactness explicitly.
+
+	* math/libm-test.inc (fma_test_data): Add another test.
+
+2013-06-15  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* manual/threads.texi (Non-POSIX Extensions): New document
+	node.  Document pthread_getattr_default_np and
+	pthread_setattr_default_np.
+
+	* Versions.def (libpthread): Add GLIBC_2.18.
+	* sysdeps/unix/sysv/linux/i386/nptl/libpthread.abilist: Update.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/sh/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/nptl/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/nptl/libpthread.abilist:
+	Likewise.
+
 2013-06-14  Liubov Dmitrieva  <liubov.dmitrieva@intel.com>
 
 	* sysdeps/x86_64/multiarch/init-arch.c (__init_cpu_features):

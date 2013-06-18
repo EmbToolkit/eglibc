@@ -1,3 +1,27 @@
+2013-06-17  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* nptl/sysdeps/powerpc/tls.h (tcbhead_t): Add Event-Based Branch
+	fields.
+
+2013-06-17  Roland McGrath  <roland@hack.frob.com>
+
+	* scripts/sysd-rules.awk: Sort sysd_rules_patterns by descending
+	length of target pattern, then descending length of dependency pattern.
+	* configure.in (AWK): Require gawk 3.1.2 or newer.
+	* manual/install.texi (Tools for Compilation): Say that we do.
+	* configure: Regenerated.
+
+	* Makerules [inhibit-sysdep-asm] (check-inhibit-asm): Variable removed.
+	($(common-objpfx)sysd-rules): Replace shell logic with running ...
+	* scripts/sysd-rules.awk: ... this new script.
+	* sysdeps/mach/hurd/Makefile (inhibit-sysdep-asm): Use a regexp rather
+	than a glob-style pattern.
+
+2013-06-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/test-misc.c (main): Do not treat incorrectly rounded
+	conversions as failure unless ROUNDING_TESTS passes.
+
 2013-06-15  Joseph Myers  <joseph@codesourcery.com>
 
 	[BZ #15631]

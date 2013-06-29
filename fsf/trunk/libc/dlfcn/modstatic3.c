@@ -1,4 +1,5 @@
-/* Copyright (C) 2012-2013 Free Software Foundation, Inc.
+/* DSO used for dlopen testing with a static executable.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -15,24 +16,16 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sys/auxv.h>
-#include <ldsodefs.h>
+unsigned int foo;
 
-
-unsigned long int
-__getauxval (unsigned long int type)
+unsigned int
+getfoo (void)
 {
-  ElfW(auxv_t) *p;
-
-  if (type == AT_HWCAP)
-    return GLRO(dl_hwcap);
-  else if (type == AT_HWCAP2)
-    return GLRO(dl_hwcap2);
-
-  for (p = GLRO(dl_auxv); p->a_type != AT_NULL; p++)
-    if (p->a_type == type)
-      return p->a_un.a_val;
-  return 0;
+  return foo;
 }
 
-weak_alias (__getauxval, getauxval)
+void
+setfoo (unsigned int f)
+{
+  foo = f;
+}

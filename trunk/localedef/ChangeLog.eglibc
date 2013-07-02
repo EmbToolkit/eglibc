@@ -1,3 +1,8 @@
+2013-07-02  Joseph Myers  <joseph@codesourcery.com>
+
+	* include/libc-mmap.h: Copy from glibc.
+	* include/libc-internal.h: Copy from glibc (cut down).
+
 2013-03-06  Joseph Myers  <joseph@codesourcery.com>
 
 	* include/sys/cdefs.h (__attribute_malloc__): Define if not

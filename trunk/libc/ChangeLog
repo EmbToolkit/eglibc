@@ -1,3 +1,57 @@
+2013-08-20  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/s390/sys/procfs.h (struct elf_prstatus):
+	Align 32 bit compat elf_greg to 8 bytes.
+
+2013-08-20  Andreas Arnez  <arnez@linux.vnet.ibm.com>
+
+	* elf/setup-vdso.h (setup_vdso): Fix missing string termination.
+
+2013-08-20  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* string/strcoll_l.c (coll_seq): New structure.
+	(get_next_seq_cached): New function.
+	(get_next_seq): New function.
+	(do_compare): New function.
+	(STRCOLL): Use GNU style definition.  Simplify implementation
+	by using get_next_seq, get_next_seq_cached and do_compare.
+
+2013-08-16  Florian Weimer  <fweimer@redhat.com>
+
+	[BZ #14699]
+	CVE-2013-4237
+	* sysdeps/posix/dirstream.h (struct __dirstream): Add errcode
+	member.
+	* sysdeps/posix/opendir.c (__alloc_dir): Initialize errcode
+	member.
+	* sysdeps/posix/rewinddir.c (rewinddir): Reset errcode member.
+	* sysdeps/posix/readdir_r.c (__READDIR_R): Enforce NAME_MAX limit.
+	Return delayed error code.  Remove GETDENTS_64BIT_ALIGNED
+	conditional.
+	* sysdeps/unix/sysv/linux/wordsize-64/readdir_r.c: Do not define
+	GETDENTS_64BIT_ALIGNED.
+	* sysdeps/unix/sysv/linux/i386/readdir64_r.c: Likewise.
+	* manual/filesys.texi (Reading/Closing Directory): Document
+	ENAMETOOLONG return value of readdir_r.  Recommend readdir more
+	strongly.
+	* manual/conf.texi (Limits for Files): Add portability note to
+	NAME_MAX, PATH_MAX.
+	(Pathconf): Add portability note for _PC_NAME_MAX, _PC_PATH_MAX.
+
+2013-08-13  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15749]
+	* sysdeps/ieee754/ldbl-96/s_cbrtl.c (__cbrtl): Use fabsl instead
+	of fabs.
+	* math/libm-test.inc (cbrt_test_data) [TEST_LDOUBLE &&
+	LDBL_MAX_EXP >= 16384]: Add tests for it.
+
+2013-08-12  David S. Miller  <davem@davemloft.net>
+
+	* version.h (RELEASE): Set to "development".
+	(VERSION): Set to "2.18.90".
+	* NEWS: Add 2.19 section.
+
 2013-08-03  David S. Miller  <davem@davemloft.net>
 
 	* po/ko.po: Update Korean translation from translation project.

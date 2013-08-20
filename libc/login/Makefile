@@ -33,10 +33,15 @@ routines-$(OPTION_EGLIBC_BSD) += setlogin
 
 CFLAGS-grantpt.c = -DLIBEXECDIR='"$(libexecdir)"'
 
-others = pt_chown
 others-$(OPTION_EGLIBC_UTMP) += utmpdump
+
+include ../Makeconfig
+
+ifeq (yes,$(build-pt-chown))
+others += pt_chown
 others-pie = pt_chown
 install-others-programs = $(inst_libexecdir)/pt_chown
+endif
 
 subdir-dirs = programs
 vpath %.c programs

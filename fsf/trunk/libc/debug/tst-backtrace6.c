@@ -1,7 +1,7 @@
-/* Compute projection of complex double value to Riemann sphere.
-   Copyright (C) 1997-2013 Free Software Foundation, Inc.
+/* Test backtrace and backtrace_symbols for signal frames, where a
+   system call was interrupted by a signal.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,5 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <complex.h>
-#include <math.h>
-
-
-__complex__ double
-__cproj (__complex__ double x)
-{
-  if (__isinf_ns (__real__ x) || __isinf_ns (__imag__ x))
-    {
-      __complex__ double res;
-
-      __real__ res = INFINITY;
-      __imag__ res = __copysign (0.0, __imag__ x);
-
-      return res;
-    }
-
-  return x;
-}
-weak_alias (__cproj, cproj)
-#ifdef NO_LONG_DOUBLE
-strong_alias (__cproj, __cprojl)
-weak_alias (__cproj, cprojl)
-#endif
+#define SIGACTION_FLAGS SA_SIGINFO
+#include <debug/tst-backtrace5.c>

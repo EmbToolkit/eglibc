@@ -1,3 +1,26 @@
+2013-08-26  Roland McGrath  <roland@hack.frob.com>
+
+	* io/lxstat64.c: Just call __xstat64, for parity with stub __lxstat.
+
+	* nss/nss_files/files-key.c: Include <rpc/des_crypt.h>
+	instead of explicitly declaring xdecrypt.
+	* nis/nss_nis/nis-publickey.c: Likewise.
+
+2013-08-26  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15890]
+	* nscd/aicache.c: Include res_hconf.h.
+	(addhstaiX): Initialize res_hconf.
+
+2013-08-26  Andreas Schwab  <schwab@suse.de>
+
+	* stdlib/Makefile (LDFLAGS-tst-tls-atexit): Remove.
+	($(objpfx)tst-tls-atexit): Add dependencies here instead.
+
+2013-08-26  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* nscd/aicache.c (addhstaiX): Fix indentation.
+
 2013-08-25  Mike Frysinger  <vapier@gentoo.org>
 
 	* configure.ac: Quote $build_pt_chown test.

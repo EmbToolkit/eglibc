@@ -1,6 +1,9 @@
-/* Collect network interface list.  Stub version.
+/* Make sure dlopen/dlclose are not marked as leaf functions.
+   See bug-dl-leaf-lib.c for details.
+
    Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Mike Frysinger <vapier@gentoo.org>
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,11 +19,7 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include "ifreq.h"
+#define TEST_FUNCTION lib_main ()
+extern int lib_main (void);
 
-void
-__ifreq (struct ifreq **ifreqs, int *num_ifs, int sockfd)
-{
-  *num_ifs = 0;
-  *ifreqs = NULL;
-}
+#include "../test-skeleton.c"

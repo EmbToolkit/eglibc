@@ -1,3 +1,80 @@
+2013-08-27  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #15897]
+	* dlfcn/Makefile (tests): Add bug-dl-leaf.
+	(modules-names): Add bug-dl-leaf-lib and bug-dl-leaf-lib-cb.
+	($(objpfx)bug-dl-leaf): New rule.
+	($(objpfx)bug-dl-leaf.so): Likewise.
+	($(objpfx)bug-dl-leaf.out): Likewise.
+	($(objpfx)bug-dl-leaf-lib.so): Likewise.
+	($(objpfx)bug-dl-leaf-lib-cb.so): Likewise.
+	* dlfcn/bug-dl-leaf.c: New test.
+	* dlfcn/bug-dl-leaf-lib.c: Likewise.
+	* dlfcn/bug-dl-leaf-lib-cb.c: Likewise.
+	* dlfcn/dlfcn.h (dlopen): Change __THROW to __THROWNL.
+	(dlclose): Likewise.
+	(dlmopen): Likewise.
+
+2013-08-27  Roland McGrath  <roland@hack.frob.com>
+
+	* include/netdb.h [!_ISOMAC]:
+	Don't include <tls.h>.
+	(h_errno, __libc_h_errno): Move declaration and macros out of
+	[_LIBC_REENTRANT].
+
+	* include/resolv.h [_RESOLV_H_]:
+	Don't include <tls.h>.
+	(__resp, _res): Move declaration and macro out of [_LIBC_REENTRANT].
+	* resolv/res_libc.c: Don't include <tls.h>.
+	(_res): Use __attribute__ ((nocommon)) in place of
+	__attribute__ ((section (".bss"))).
+
+	* Makefile ($(common-objpfx)linkobj/libc_pic.a):
+	If [sunrpc not in $(subdirs)], define to use libc_pic.a directly.
+
+	* resolv/res_send.c (send_dg): Don't try to use ioctl unless [FIONREAD].
+
+	* resolv/res_hconf.c [!NOT_IN_libc] (ifaddrs): Declare
+	only under [SIOCGIFCONF && SIOCGIFNETMASK].
+
+	* resolv/res_mkquery.c: Include <sys/time.h>.
+
+	* inet/ifreq.c: Moved to ...
+	* sysdeps/unix/ifreq.c: ... here.
+	* inet/ifreq.c: New file, true stub version.
+
+	* socket/sa_len.c: New file.
+	* socket/Makefile (aux): Add it.
+	* sysdeps/unix/sysv/linux/Makefile
+	[$(subdir) = socket] (sysdep_routines): Don't add sa_len here.
+	* sysdeps/unix/sysv/linux/sa_len.c: Just #define HAVE_NET*_H
+	and #include <socket/sa_len.c>.
+	* sysdeps/unix/sysv/linux/s390/sa_len.c: Just #define
+	HAVE_NETIUCV_IUCV_H and #include <sysdeps/unix/sysv/linux/sa_len.c>.
+
+	* sysdeps/unix/bsd/bsd4.4/bits/socket.h: Moved to ...
+	* bits/socket.h: ... here.
+
+	* sysdeps/unix/bsd/bsd4.4/bits/socket.h (enum __socket_type):
+	Add SOCK_CLOEXEC, SOCK_NONBLOCK with values from FreeBSD.
+	(SOCK_MAX, SOCK_TYPE_MASK): New macros.
+
+2013-08-27  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15736]
+	* locale/categories.def (LC_CTYPE): Add "nonascii-case" element.
+	* string/Makefile (test-strcasecmp-ENV, test-strncasecmp-ENV)
+	(test-strcasecmp-ifunc-ENV, test-strncasecmp-ifunc-ENV): Define.
+	* string/test-strcasecmp.c (test_main): Run tests in several
+	locales.
+	* string/test-strncasecmp.c (test_main): Likewise.
+
+	* sysdeps/i386/i686/multiarch/strcmp-sse4.S (__strcasecmp_sse4_2)
+	(__strncasecmp_sse4_2) [PIC]: Restore %ebx before falling through
+	to __strcasecmp_nonascii and __strncasecmp_nonascii.
+	* sysdeps/i386/i686/multiarch/strcmp-ssse3.S (__strcasecmp_ssse3)
+	(__strncasecmp_ssse3) [PIC]: Likewise.
+
 2013-08-26  Roland McGrath  <roland@hack.frob.com>
 
 	* io/lxstat64.c: Just call __xstat64, for parity with stub __lxstat.

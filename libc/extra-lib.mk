@@ -92,13 +92,13 @@ $(objpfx)$(patsubst %,$(libtype.oS),$(lib:lib%=%)): \
 	$(build-extra-lib)
 endif
 
-# eglibc: ifeq ($(versioning),yes)
+ifeq ($(versioning),yes)
 # Add the version script to the dependencies of the shared library.
 $(objpfx)$(lib).so: $(firstword $($(lib)-map) \
 				$(addprefix $(common-objpfx), \
 					    $(filter $(lib).map, \
 						     $(version-maps))))
-# eglibc: endif
+endif
 
 endif
 

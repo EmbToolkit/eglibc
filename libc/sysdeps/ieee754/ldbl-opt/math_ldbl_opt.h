@@ -10,15 +10,14 @@
   SHLIB_COMPAT(lib, introduced, LONG_DOUBLE_COMPAT_VERSION)
 #define long_double_symbol(lib, local, symbol) \
   long_double_symbol_1 (lib, local, symbol, LONG_DOUBLE_COMPAT_VERSION)
-#if defined SHARED
+#if defined SHARED && defined DO_VERSIONING
 # define ldbl_hidden_def(local, name) libc_hidden_ver (local, name)
 # define ldbl_strong_alias(name, aliasname) \
   strong_alias (name, __GL_##name##_##aliasname) \
   long_double_symbol (libc, __GL_##name##_##aliasname, aliasname);
 # define ldbl_weak_alias(name, aliasname) \
-  weak_alias (name, __GL_##name##_##aliasname)				\
-  long_double_symbol (libc, __GL_##name##_##aliasname, aliasname)	\
-  versioned_weak;
+  weak_alias (name, __GL_##name##_##aliasname) \
+  long_double_symbol (libc, __GL_##name##_##aliasname, aliasname);
 # define long_double_symbol_1(lib, local, symbol, version) \
   versioned_symbol (lib, local, symbol, version)
 #else

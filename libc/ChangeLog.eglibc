@@ -1,3 +1,19 @@
+2013-08-29  Joseph Myers  <joseph@codesourcery.com>
+
+	* Makerules, elf/Makefile, elf/do-rel.h, extra-lib.mk,
+	include/libc-symbols.h, include/shlib-compat.h, nptl/Makefile,
+	nptl/pthread_kill_other_threads.c, resolv/res_libc.c,
+	scripts/versions.awk, sysdeps/ieee754/ldbl-128ibm/s_finitel.c,
+	sysdeps/ieee754/ldbl-128ibm/s_isinfl.c,
+	sysdeps/ieee754/ldbl-128ibm/s_isnanl.c,
+	sysdeps/ieee754/ldbl-128ibm/strtold_l.c,
+	sysdeps/ieee754/ldbl-opt/math_ldbl_opt.h,
+	sysdeps/powerpc/longjmp.c, sysdeps/powerpc/powerpc32/dl-machine.c,
+	sysdeps/wordsize-32/divdi3.c: Revert --disable-versioning support
+	changes.
+	* Makerules: Change $(versioning) conditional in local code to
+	$(build-shared).
+
 2013-08-20  Joseph Myers  <joseph@codesourcery.com>
 
 	* debug/tst-backtrace6.c: Remove.

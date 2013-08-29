@@ -144,9 +144,9 @@ extern __thread struct __res_state *__libc_resp
 
 /* We declare this with compat_symbol so that it's not
    visible at link time.  Programs must use the accessor functions.  */
-#if defined SHARED
+#if defined SHARED && defined DO_VERSIONING
 # include <shlib-compat.h>
-invisible_compat_symbol (libc, _res, GLIBC_2_0);
+compat_symbol (libc, _res, _res, GLIBC_2_0);
 #endif
 
 #include <shlib-compat.h>

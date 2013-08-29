@@ -105,7 +105,6 @@ $(common-objpfx)%.latest: $(common-objpfx)abi-versions.h
 	sed -n '/ VERSION_$*_/{s/^.*_\([A-Z0-9_]*\).*$$/\1/;h;};$${g;p;}' \
 	    $(common-objpfx)abi-versions.h > $@T
 	mv -f $@T $@
-abi_versions_file := $(common-objpfx)abi-versions.h
 endif # avoid-generated
 endif # $(versioning) = yes
 
@@ -284,9 +283,7 @@ endif
 
 # Generate version maps, but wait until sysdep-subdirs is known
 ifeq ($(sysd-sorted-done),t)
-# eglibc: Even when not using symbol versioning we still need to generate
-# eglibc: version maps to make all the necessary symbols global.
-# eglibc: ifeq ($(versioning),yes)
+ifeq ($(versioning),yes)
 -include $(common-objpfx)sysd-versions
 $(addprefix $(common-objpfx),$(version-maps)): $(common-objpfx)sysd-versions
 common-generated += $(version-maps)
@@ -314,7 +311,7 @@ $(common-objpfx)Versions.all: $(..)scripts/firstversions.awk \
 # See %.v/%.v.i implicit rules in Makeconfig.
 $(common-objpfx)Versions.v.i: $(wildcard $(subdirs:%=$(..)%/Versions)) \
 			      $(wildcard $(sysdirs:%=%/Versions)) \
-			      $(abi_versions_file) \
+			      $(common-objpfx)abi-versions.h \
 			      $(sysd-versions-force)
 $(common-objpfx)sysd-versions: $(common-objpfx)Versions.all \
 			       $(common-objpfx)Versions.v \
@@ -323,12 +320,11 @@ $(common-objpfx)sysd-versions: $(common-objpfx)Versions.all \
 	  cat $(word 2,$^) \
 	  | LC_ALL=C $(AWK) -v buildroot=$(common-objpfx) -v defsfile=$< \
 			    -v move_if_change='$(move-if-change)' \
-			    -v versioning=$(versioning) \
 			    -f $(word 3,$^); \
 	) > $@T
 	mv -f $@T $@
 endif # avoid-generated
-# eglibc: endif # $(versioning) = yes
+endif # $(versioning) = yes
 endif # sysd-sorted-done
 
 # Generate .dT files as we compile.
@@ -425,12 +421,12 @@ ifeq (yes,$(build-shared))
 
 # Reference map file only when versioning is selected and a map file name
 # is given.
-# eglibc: ifeq ($(versioning),yes)
+ifeq ($(versioning),yes)
 map-file = $(firstword $($(@F:.so=-map)) \
 		       $(addprefix $(common-objpfx), \
 				   $(filter $(@F:.so=.map),$(version-maps))))
 load-map-file = $(map-file:%=-Wl,--version-script=%)
-# eglibc: endif
+endif
 
 # Compiler arguments to use to link a shared object with libc and
 # ld.so.  This is intended to be as similar as possible to a default
@@ -588,13 +584,6 @@ generated += libc_pic.opts libc_pic.os.clean
 libc_pic_clean := .clean
 endif
 
-ifneq ($(versioning),yes)
-# When EGLIBC is built without symbol versioning, local copy of
-# unwind-dw2-fde-glibc.c is not compiled, so we need to link against
-# libgcc_eh to get _Unwind_Find_FDE.
-libc_gcclibs := -lgcc_eh
-endif
-
 # Do not filter ld.so out of libc.so link.
 $(common-objpfx)libc.so: link-libc-deps = # empty
 
@@ -604,10 +593,10 @@ $(common-objpfx)libc.so: $(elfobjdir)/soinit.os \
 			 $(elfobjdir)/sofini.os \
 			 $(elfobjdir)/interp.os $(elfobjdir)/ld.so \
 			 $(shlib-lds)
-	$(build-shlib) $(libc_gcclibs)
-# eglibc: ifeq ($(versioning),yes)
+	$(build-shlib)
+ifeq ($(versioning),yes)
 $(common-objpfx)libc.so: $(common-objpfx)libc.map
-# eglibc: endif
+endif
 common-generated += libc.so libc_pic.os
 ifndef subdir
 install-extras := soinit.o sofini.o
@@ -870,7 +859,7 @@ install-lib := $(install-lib) $(install-lib.so-versioned:%.so=%_pic.a)
 install-lib := $(filter-out libpthread_pic.a,$(install-lib))
 # Despite having a soname libhurduser and libmachuser do not use symbol
 # versioning, so don't install the corresponding .map files.
-ifeq ($(versioning),yes)
+ifeq ($(build-shared),yes)
 install-map := $(patsubst %.so,%.map,\
 			$(foreach L,$(install-lib.so-versioned),$(notdir $L)))
 install-map := $(filter-out libhurduser.map libmachuser.map libpthread.map,$(install-map))

@@ -1,3 +1,49 @@
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* csu/init-first.c: Fix then/than typos.
+	* locale/programs/ld-collate.c: Likewise.
+	* locale/programs/linereader.h: Likewise.
+	* manual/charset.texi: Likewise.
+	* manual/filesys.texi: Likewise.
+	* manual/stdio.texi: Likewise.
+	* manual/string.texi: Likewise.
+	* stdlib/fmtmsg.c: Likewise.
+	* sysdeps/i386/stpncpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memset.S: Likewise.
+
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* elf/dl-open.c: Fix typos.
+	* iconvdata/gbbig5.c: Likewise.
+	* iconvdata/iso-2022-jp.c: Likewise.
+	* iconv/gconv_int.h: Likewise.
+	* iconv/loop.c: Likewise.
+	* nis/rpcsvc/nis.h: Likewise.
+	* resolv/ns_name.c: Likewise.
+	* stdio-common/vfscanf.c: Likewise.
+	* streams/stropts.h: Likewise.
+	* sunrpc/rpc_thread.c: Likewise.
+	* sysdeps/i386/strpbrk.S: Likewise.
+	* sysdeps/ieee754/k_standard.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/e_expl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_expl.c: Likewise.
+	* sysdeps/mach/hurd/dl-sysdep.c: Likewise.
+	* sysdeps/mach/hurd/profil.c: Likewise.
+	* sysdeps/s390/dl-procinfo.h: Likewise.
+	* sysdeps/unix/sysv/linux/i386/chown.c: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/chown.c: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/makecontext.c: Likewise.
+	* sysdeps/x86_64/dl-trampoline.S: Likewise.
+	* sysdeps/x86_64/multiarch/strcmp-sse42.S: Likewise.
+
+2013-08-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/rawmemchr.S: Delete.
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c: Remove rawmemchr ifunc.
+
 2013-08-29  Ondřej Bílka  <neleai@seznam.cz>
 
 	* sysdeps/unix/sysv/linux/powerpc/aix/aix-dirent.h: Remove

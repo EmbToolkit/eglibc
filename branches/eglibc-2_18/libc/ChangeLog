@@ -1,3 +1,8 @@
+2013-08-22  David S. Miller  <davem@davemloft.net>
+
+	* po/ca.po: Update Catalan translation from translation project.
+	* po/uk.po: Add Ukrainian translations from translation project.
+
 2013-08-03  David S. Miller  <davem@davemloft.net>
 
 	* po/ko.po: Update Korean translation from translation project.

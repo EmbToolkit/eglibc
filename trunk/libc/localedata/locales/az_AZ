@@ -207,7 +207,8 @@ noexpr  "<U005E><U005B><U0059><U0079><U004E><U006E><U005D><U002E><U002A>"
 END LC_MESSAGES
 
 LC_MONETARY
-int_curr_symbol           "<U0041><U005A><U004D><U0020>"
+% AZN
+int_curr_symbol           "<U0041><U005A><U004E><U0020>"
 currency_symbol           "<U006D><U0061><U006E><U002E>"
 mon_decimal_point         "<U002E>"
 mon_thousands_sep         "<U0020>"
@@ -291,6 +292,9 @@ postal_fmt "???"
 country_ab2 "<U0041><U005A>"
 country_ab3 "<U0041><U005A><U0045>"
 country_num 031
+% AZ
+country_car    "<U0041><U005A>"
+
 END LC_ADDRESS
 
 LC_TELEPHONE

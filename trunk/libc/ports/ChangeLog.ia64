@@ -1,3 +1,30 @@
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/ia64/fpu/libm_reduce.S: Fix typos.
+	* sysdeps/ia64/fpu/s_erfcf.S: Likewise.
+	* sysdeps/ia64/fpu/s_erfcl.S: Likewise.
+	* sysdeps/ia64/fpu/s_erfc.S: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/nptl/__sigstack_longjmp.c: Likewise.
+
+2013-08-29   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/ia64/fpu/e_acoshl.S: Fix typos.
+	* sysdeps/ia64/fpu/e_logf.S: Likewise.
+	* sysdeps/ia64/fpu/e_log.S: Likewise.
+	* sysdeps/ia64/fpu/libm_lgammaf.S: Likewise.
+	* sysdeps/ia64/fpu/libm_lgammal.S: Likewise.
+	* sysdeps/ia64/fpu/s_log1p.S: Likewise.
+	* sysdeps/ia64/fpu/w_tgammal.S: Likewise.
+
+2013-08-21   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/ia64/fpu/e_atanhl.S: Fix typos.
+	* sysdeps/ia64/fpu/e_log2l.S: Likewise.
+	* sysdeps/ia64/fpu/e_logl.S: Likewise.
+	* sysdeps/ia64/fpu/fraiseexcpt.c: Likewise.
+	* sysdeps/ia64/fpu/libm_lgammal.S: Likewise.
+	* sysdeps/ia64/fpu/s_log1pl.S: Likewise.
+
 2013-07-04  Andreas Jaeger  <aj@suse.de>
 
 	* sysdeps/unix/sysv/linux/ia64/sys/ptrace.h (PTRACE_LISTEN):

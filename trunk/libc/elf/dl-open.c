@@ -158,7 +158,7 @@ add_to_global (struct link_map *new)
   return 0;
 }
 
-/* Search link maps in all namespaces for the DSO that containes the object at
+/* Search link maps in all namespaces for the DSO that contains the object at
    address ADDR.  Returns the pointer to the link map of the matching DSO, or
    NULL if a match is not found.  */
 struct link_map *
@@ -396,7 +396,7 @@ dl_open_worker (void *a)
 	  /* If this here is the shared object which we want to profile
 	     make sure the profile is started.  We can find out whether
 	     this is necessary or not by observing the `_dl_profile_map'
-	     variable.  If it was NULL but is not NULL afterwars we must
+	     variable.  If it was NULL but is not NULL afterwards we must
 	     start the profiling.  */
 	  struct link_map *old_profile_map = GL(dl_profile_map);
 

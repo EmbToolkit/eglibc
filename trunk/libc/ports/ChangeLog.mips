@@ -1,3 +1,29 @@
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/mips/memcpy.S: Fix then/than typos.
+
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/mips/memcpy.S: Fix typos.
+
+2013-08-29  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/mips/ldsodefs.h (VALID_ELF_ABIVERSION):
+	Use ELFOSABI_GNU instead of ELFOSABI_LINUX.
+
+2013-08-29   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/mips/sys/asm.h: Fix typos.
+
+2013-08-22  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* sysdeps/mips/fpu_control.h: Document bits reserved for
+	architecture implementers.
+	(_FPU_RESERVED): Clear bit #21.
+	* sysdeps/mips/fpu/fedisblxcpt.c (fedisableexcept): Don't clear
+	reserved bits.
+	* sysdeps/mips/fpu/feenablxcpt.c (feenableexcept): Likewise.
+
 2013-07-02  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/mips/mips32/libm-test-ulps: Regenerated.

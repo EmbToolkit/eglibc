@@ -119,7 +119,7 @@ struct translit_include_t
 #define TABLE idx_table
 #define ELEMENT uint32_t
 #define DEFAULT ((uint32_t) ~0)
-#define NO_FINALIZE
+#define NO_ADD_LOCALE
 #include "3level.h"
 
 #define TABLE wcwidth_table
@@ -3542,7 +3542,7 @@ add_locale_wctype_table (struct locale_file *file, struct wctype_table *t)
   size_t i, j, k;
   uint32_t reorder3[t->level3_size];
   uint32_t reorder2[t->level2_size];
-  uint32_t level1_offset, level2_offset, level3_offset;
+  uint32_t level2_offset, level3_offset;
 
   /* Uniquify level3 blocks.  */
   k = 0;
@@ -3598,8 +3598,6 @@ add_locale_wctype_table (struct locale_file *file, struct wctype_table *t)
     + (t->level2_size << t->q) * sizeof (uint32_t)
     + (t->level3_size << t->p) * sizeof (uint32_t);
 
-  level1_offset =
-    5 * sizeof (uint32_t);
   level2_offset =
     5 * sizeof (uint32_t)
     + t->level1_size * sizeof (uint32_t);

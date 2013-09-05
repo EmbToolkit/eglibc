@@ -1,3 +1,12 @@
+2013-09-05  Joseph Myers  <joseph@codesourcery.com>
+
+	* locale/programs/3level.h, locale/programs/ld-collate.c,
+	locale/programs/ld-ctype.c, locale/programs/locarchive.c,
+	locale/programs/locfile.c, locale/programs/locfile.h: Revert
+	spurious differences from glibc, fix coding standards and
+	otherwise align with
+	<https://sourceware.org/ml/libc-alpha/2013-09/msg00148.html>.
+
 2013-08-29  Joseph Myers  <joseph@codesourcery.com>
 
 	* Makerules, elf/Makefile, elf/do-rel.h, extra-lib.mk,

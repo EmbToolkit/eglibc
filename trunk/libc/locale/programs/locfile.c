@@ -656,8 +656,8 @@ add_locale_char (struct locale_file *file, char value)
 }
 
 /* Start building an element that contains several different pieces of data.
-   Subsequent calls to add_locale_*() will add data to the same element up
-   till the next call to end_locale_structure().  The element's alignment
+   Subsequent calls to add_locale_* will add data to the same element up
+   till the next call to end_locale_structure.  The element's alignment
    is dictated by the first piece of data added to it.  */
 void
 start_locale_structure (struct locale_file *file)
@@ -666,8 +666,8 @@ start_locale_structure (struct locale_file *file)
   file->structure_stage = 1;
 }
 
-/* Finish a structure element that was started by start_locale_structure().
-   Empty structures are OK and behave like add_locale_empty().  */
+/* Finish a structure element that was started by start_locale_structure.
+   Empty structures are OK and behave like add_locale_empty.  */
 void
 end_locale_structure (struct locale_file *file)
 {
@@ -677,9 +677,9 @@ end_locale_structure (struct locale_file *file)
 }
 
 /* Start building data that goes before the next element's recorded offset.
-   Subsequent calls to add_locale_*() will add data to the file without
+   Subsequent calls to add_locale_* will add data to the file without
    treating any of it as the start of a new element.  Calling
-   end_locale_prelude() switches back to the usual behavior.  */
+   end_locale_prelude switches back to the usual behavior.  */
 void
 start_locale_prelude (struct locale_file *file)
 {
@@ -687,7 +687,7 @@ start_locale_prelude (struct locale_file *file)
   file->structure_stage = 3;
 }
 
-/* End a block started by start_locale_prelude().  */
+/* End a block started by start_locale_prelude.  */
 void
 end_locale_prelude (struct locale_file *file)
 {

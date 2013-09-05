@@ -169,7 +169,7 @@ struct symbol_t
 #define ELEMENT struct element_t *
 #define DEFAULT NULL
 #define ITERATE
-#define NO_FINALIZE
+#define NO_ADD_LOCALE
 #include "3level.h"
 
 /* Sparse table of int32_t.  */
@@ -1194,7 +1194,6 @@ range is not lower than that of the last character"), "LC_COLLATE");
 		{
 		  struct element_t *elem;
 		  size_t namelen;
-		  void *ptr;
 
 		  /* I don't think this can ever happen.  */
 		  assert (seq->name != NULL);
@@ -1207,6 +1206,7 @@ range is not lower than that of the last character"), "LC_COLLATE");
 		  /* Now we are ready to insert the new value in the
 		     sequence.  Find out whether the element is
 		     already known.  */
+		  void *ptr;
 		  if (find_entry (&collate->seq_table, seq->name, namelen,
 				  &ptr) != 0)
 		    {
@@ -1360,13 +1360,13 @@ order for `%.*s' already defined at %s:%Zu"),
 	      struct charseq *seq;
 	      uint32_t wc;
 	      int cnt;
-	      void *ptr;
 
 	      /* Generate the name.  */
 	      sprintf (buf + preflen, base == 10 ? "%0*ld" : "%0*lX",
 		       (int) (lenfrom - preflen), from);
 
 	      /* Look whether this name is already defined.  */
+	      void *ptr;
 	      if (find_entry (&collate->seq_table, buf, symlen, &ptr) == 0)
 		{
 		  /* Copy back the result.  */
@@ -2340,7 +2340,7 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
     obstack_1grow (&weightpool, 0);
 
   /* Now add the four tables.  */
-  add_locale_uint32_array (&file, tablemb, 256);
+  add_locale_uint32_array (&file, (const uint32_t *) tablemb, 256);
   add_locale_raw_obstack (&file, &weightpool);
   add_locale_raw_obstack (&file, &extrapool);
   add_locale_raw_obstack (&file, &indirectpool);

@@ -26,7 +26,8 @@
 #include "localedef.h"
 
 /* Structure for storing the contents of a category file.  */
-struct locale_file {
+struct locale_file
+{
   size_t n_elements, next_element;
   uint32_t *offsets;
   struct obstack data;
@@ -134,6 +135,7 @@ extern void start_locale_prelude (struct locale_file *file);
 extern void end_locale_prelude (struct locale_file *file);
 extern void write_locale_data (const char *output_path, int catidx,
 			       const char *category, struct locale_file *file);
+
 
 /* Entrypoints for the parsers of the individual categories.  */
 

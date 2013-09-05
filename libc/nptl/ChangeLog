@@ -1,3 +1,26 @@
+2013-09-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/cancellation.S
+	[SHARED && DO_VERSIONING && !NO_HIDDEN]: Change conditional to
+	[SHARED && !NO_HIDDEN].
+
+2013-09-03  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15921]
+	* tst-cleanup2.c (do_test): New volatile variable RET to
+	return success.
+
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/pthread/pthread.h: Fix typos.
+	* sysdeps/unix/sysv/linux/internaltypes.h: Likewise.
+	* tst-cancel4.c: Likewise.
+
+2013-08-21   Ondřej Bílka  <neleai@seznam.cz>
+
+	* pthread_getschedparam.c: Fix typos.
+	* sysdeps/unix/sysv/linux/register-atfork.c: Likewise.
+
 2013-07-23  David S. Miller  <davem@davemloft.net>
 
 	* tst-cancel4.c (WRITE_BUFFER_SIZE): Adjust comment.

@@ -38,7 +38,7 @@ sysdep_headers += sys/mount.h sys/acct.h sys/sysctl.h \
 		  bits/socket_type.h bits/syscall.h bits/sysctl.h \
 		  bits/mman-linux.h
 
-tests += tst-clone
+tests += tst-clone tst-fanotify
 
 # Generate the list of SYS_* macros for the system calls (__NR_* macros).
 
@@ -120,7 +120,7 @@ ifeq ($(subdir),socket)
 sysdep_headers += net/if_ppp.h net/ppp-comp.h \
 		  net/ppp_defs.h net/if_arp.h net/route.h net/ethernet.h \
 		  net/if_slip.h net/if_packet.h net/if_shaper.h
-sysdep_routines += cmsg_nxthdr sa_len
+sysdep_routines += cmsg_nxthdr
 endif
 
 ifeq ($(subdir),sunrpc)

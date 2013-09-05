@@ -1,3 +1,503 @@
+2013-09-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* conform/conformtest.pl (newtoken): Treat tokens not allowed as
+	errors.
+	(top level): Treat second token from macro or constant entries for
+	allowed headers as allowed.
+	* include/complex.h: Condition internal declarations on
+	[!_ISOMAC].
+	* include/fenv.h: Condition include of <stdbool.h> and internal
+	declarations on [!_ISOMAC].
+
+2013-09-04  Chris Leonard  <cjl@sugarlabs,.org>
+
+     [BZ #15923]
+	* locale/iso-4217.def: Update iso-1427.def and related occurrences.
+
+2013-09-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.in (--enable-versioning): Remove configure option.
+	(libc_cv_asm_symver_directive): Remove configure test.
+	(libc_cv_ld_version_script_option): Likewise.
+	(VERSIONING): Remove variable and AC_SUBST.
+	(DO_VERSIONING): Remove AC_DEFINE.
+	* configure: Regenerated.
+	* config.h.in (DO_VERSIONING): Remove macro.
+	* Makerules [$(versioning) = yes]: Change conditionals to
+	[$(build-shared) = yes].
+	* config.make.in (versioning): Remove variable.
+	* dlfcn/Makefile [$(versioning) = yes]: Change conditionals to
+	[$(build-shared) = yes].
+	* dlfcn/modstatic2.c (test) [DO_VERSIONING]: Remove conditional.
+	* dlfcn/tststatic2.c (main) [DO_VERSIONING]: Likewise.
+	* elf/Makefile [$(versioning) = yes]: Change conditionals to
+	[$(build-shared) = yes].
+	* extra-lib.mk [$(versioning) = yes]: Likewise.
+	* hurd/Makefile [$(versioning) = yes]: Likewise.
+	* hurd/geteuids.c [SHARED && DO_VERSIONING]: Change conditional to
+	[SHARED].
+	* include/libc-symbols.h [DO_VERSIONING]: Change conditional to
+	[SHARED].
+	[SHARED && DO_VERSIONING && !NO_HIDDEN]: Change conditional to
+	[SHARED && !NO_HIDDEN].
+	* include/shlib-compat.h [DO_VERSIONING]: Change conditional to
+	[SHARED].
+	[SHARED && DO_VERSIONING]: Likewise..
+	* libio/Makefile [$(versioning) = yes]: Change conditionals to
+	[$(build-shared) = yes].
+	* manual/install.texi (--disable-versioning): Remove
+	documentation.
+	* INSTALL: Regenerated.
+	* resolv/res_libc.c [SHARED && DO_VERSIONING]: Change conditional
+	to [SHARED].
+	* sunrpc/Makefile [$(versioning) = yes]: Change conditional to
+	[$(build-shared) = yes].
+	* sysdeps/gnu/Makefile [$(versioning) = yes]: Likewise.
+	* sysdeps/i386/i686/multiarch/strstr-c.c
+	[SHARED && DO_VERSIONING && !NO_HIDDEN]: Change conditional to
+	[SHARED && !NO_HIDDEN].
+	* sysdeps/ieee754/ldbl-opt/math_ldbl_opt.h
+	[SHARED && DO_VERSIONING]: Change conditional to [SHARED].
+	* sysdeps/powerpc/powerpc32/dl-machine.c
+	[SHARED && !(DO_VERSIONING - 0)]: Remove conditional error.
+	* sysdeps/powerpc/powerpc32/sysdep.h
+	[SHARED && DO_VERSIONING && PIC && !NO_HIDDEN]: Change conditional
+	to [SHARED && PIC && !NO_HIDDEN].
+	* sysdeps/wordsize-32/divdi3.c [SHARED && DO_VERSIONING]: Change
+	conditional to [SHARED].
+
+2013-09-04   Will Newton  <will.newton@linaro.org>
+
+	* benchtests/bench-timing.h (TIMING_PRINT_MEAN): New macro.
+	* benchtests/bench-string.h: Include bench-timing.h instead
+	of including hp-timing.h directly. (INNER_LOOP_ITERS): New
+	define. (HP_TIMING_BEST): Delete macro. (test_init): Remove
+	call to HP_TIMING_DIFF_INIT.
+	* benchtests/bench-memccpy.c: Use bench-timing.h macros
+	instead of hp-timing.h macros.
+	* benchtests/bench-memchr.c: Likewise.
+	* benchtests/bench-memcmp.c: Likewise.
+	* benchtests/bench-memcpy.c: Likewise.
+	* benchtests/bench-memmem.c: Likewise.
+	* benchtests/bench-memmove.c: Likewise.
+	* benchtests/bench-memset.c: Likewise.
+	* benchtests/bench-rawmemchr.c: Likewise.
+	* benchtests/bench-strcasecmp.c: Likewise.
+	* benchtests/bench-strcasestr.c: Likewise.
+	* benchtests/bench-strcat.c: Likewise.
+	* benchtests/bench-strchr.c: Likewise.
+	* benchtests/bench-strcmp.c: Likewise.
+	* benchtests/bench-strcpy.c: Likewise.
+	* benchtests/bench-strcpy_chk.c: Likewise.
+	* benchtests/bench-strlen.c: Likewise.
+	* benchtests/bench-strncasecmp.c: Likewise.
+	* benchtests/bench-strncat.c: Likewise.
+	* benchtests/bench-strncmp.c: Likewise.
+	* benchtests/bench-strncpy.c: Likewise.
+	* benchtests/bench-strnlen.c: Likewise.
+	* benchtests/bench-strpbrk.c: Likewise.
+	* benchtests/bench-strrchr.c: Likewise.
+	* benchtests/bench-strspn.c: Likewise.
+	* benchtests/bench-strstr.c: Likewise.
+
+2013-09-04  Will Newton  <will.newton@linaro.org>
+
+	* benchtests/Makefile: Use LDLIBS instead of LDFLAGS.
+
+2013-09-03  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15427]
+	* sysdeps/ieee754/flt-32/e_lgammaf_r.c (__ieee754_lgammaf_r): Use
+	2**-30 instead of 2**-70 as threshold for returning -log(|x|).
+	* math/libm-test.inc (lgamma_test_data): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-09-03   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/strcmp-sse2-unaligned.S: New file.
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c (__libc_ifunc_impl_list):
+	Add ifunc.
+	* sysdeps/x86_64/multiarch/Makefile (sysdep_routines):
+	Add strcmp-sse2-unaligned
+	* sysdeps/x86_64/multiarch/strcmp.S (strcmp): Add ifunc.
+
+2013-09-02  Mike Frysinger  <vapier@gentoo.org>
+
+	* Versions.def (libc): Add GLIBC_2.19.
+
+2013-09-02  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/tst-fanotify.c: New test.
+	* sysdeps/unix/sysv/linux/Makefile (tests): Add tst-fanotify.
+
+2013-09-02  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #14155]
+	* sysdeps/ieee754/flt-32/e_jnf.c (__ieee754_jnf): Use double for
+	intermediate calculations in recurrence.
+	(__ieee754_ynf): Likewise.
+	* math/libm-test.inc (jn_test_data): Do not allow spurious
+	underflow exception.  Add more tests.
+	(yn_test_data): Add more tests.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-09-02   Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Fix typo.
+
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* csu/init-first.c: Fix then/than typos.
+	* locale/programs/ld-collate.c: Likewise.
+	* locale/programs/linereader.h: Likewise.
+	* manual/charset.texi: Likewise.
+	* manual/filesys.texi: Likewise.
+	* manual/stdio.texi: Likewise.
+	* manual/string.texi: Likewise.
+	* stdlib/fmtmsg.c: Likewise.
+	* sysdeps/i386/stpncpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memset.S: Likewise.
+
+2013-08-30   Ondřej Bílka  <neleai@seznam.cz>
+
+	* elf/dl-open.c: Fix typos.
+	* iconvdata/gbbig5.c: Likewise.
+	* iconvdata/iso-2022-jp.c: Likewise.
+	* iconv/gconv_int.h: Likewise.
+	* iconv/loop.c: Likewise.
+	* nis/rpcsvc/nis.h: Likewise.
+	* resolv/ns_name.c: Likewise.
+	* stdio-common/vfscanf.c: Likewise.
+	* streams/stropts.h: Likewise.
+	* sunrpc/rpc_thread.c: Likewise.
+	* sysdeps/i386/strpbrk.S: Likewise.
+	* sysdeps/ieee754/k_standard.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/e_expl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_expl.c: Likewise.
+	* sysdeps/mach/hurd/dl-sysdep.c: Likewise.
+	* sysdeps/mach/hurd/profil.c: Likewise.
+	* sysdeps/s390/dl-procinfo.h: Likewise.
+	* sysdeps/unix/sysv/linux/i386/chown.c: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/chown.c: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/makecontext.c: Likewise.
+	* sysdeps/x86_64/dl-trampoline.S: Likewise.
+	* sysdeps/x86_64/multiarch/strcmp-sse42.S: Likewise.
+
+2013-08-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/rawmemchr.S: Delete.
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c: Remove rawmemchr ifunc.
+
+2013-08-29  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/unix/sysv/linux/powerpc/aix/aix-dirent.h: Remove
+	aix specific files.
+	* sysdeps/unix/sysv/linux/powerpc/aix/aix-errno.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/aix-stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/aix-termios.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/direntconv.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/errnoconv.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/statconv.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/tcgetattr.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/aix/tcsetattr.c: Likewise.
+
+2013-08-29  Thomas Schwinge  <thomas@codesourcery.com>
+	    Roland McGrath  <roland@hack.frob.com>
+
+	* sysdeps/mach/hurd/errnos.awk (BEGIN): Emit ESUCCESS.
+	* sysdeps/mach/hurd/bits/errno.h: Regenerate.
+
+2013-08-29  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	* sysdeps/mach/hurd/i386/init-first.c (init1): Use
+	__executable_start symbol instead of _start.
+
+2013-08-29  Thomas Schwinge  <thomas@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/ldsodefs.h (VALID_ELF_HEADER)
+	(VALID_ELF_OSABI, VALID_ELF_ABIVERSION, MORE_ELF_HEADER_DATA):
+	Move macros to...
+	* sysdeps/gnu/ldsodefs.h: ... this new file.
+
+	* sysdeps/unix/sysv/linux/ldsodefs.h (VALID_ELF_OSABI)
+	(VALID_ELF_ABIVERSION, MORE_ELF_HEADER_DATA): Use ELFOSABI_GNU
+	instead of ELFOSABI_LINUX.
+
+	[BZ #15522] strtod ("nan(N)") returning a sNaN in some cases
+	* stdlib/strtof_l.c (SET_MANTISSA): Rewrite.
+	* stdlib/strtod_l.c (SET_MANTISSA): Likewise.
+	* sysdeps/ieee754/ldbl-64-128/strtold_l.c (SET_MANTISSA):
+	Likewise.
+	* sysdeps/ieee754/ldbl-96/strtold_l.c (SET_MANTISSA): Likewise.
+	* sysdeps/ieee754/ldbl-128/strtold_l.c (SET_MANTISSA): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/strtold_l.c (SET_MANTISSA):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/ieee754.h
+	(ibm_extended_long_double): Add ieee_nan member.
+	* stdlib/tst-strtod6.c (test): New function, renamed from do_test.
+	(do_test): New function.
+
+	* math/basic-test.c (TEST_CONVERT): New macro, renamed from
+	TEST_TRUNC.
+	(convert_dfsf_test, convert_tfsf_test, convert_tfdf_test): New
+	functions, renamed from truncdfsf_test, trunctfsf_test,
+	trunctfdf_test.
+	(convert_sfdf_test, convert_sftf_test, convert_dftf_test): New
+	functions.
+	(do_test): Run all these.
+
+2013-08-29   Ondřej Bílka  <neleai@seznam.cz>
+
+	* argp/argp-help.c: Fix typos.
+	* argp/argp-parse.c: Likewise.
+	* debug/backtracesyms.c: Likewise.
+	* elf/elf.h: Likewise.
+	* malloc/malloc.c: Likewise.
+	* nis/nis_print.c: Likewise.
+	* resolv/res_comp.c: Likewise.
+	* stdlib/stdlib.h: Likewise.
+	* sunrpc/clnt_tcp.c: Likewise.
+	* sunrpc/clnt_udp.c: Likewise.
+	* sunrpc/clnt_unix.c: Likewise.
+	* sysdeps/unix/bsd/ptsname.c: Likewise.
+	* sysdeps/unix/sysv/linux/ifaddrs.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/libc-start.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext-common.S:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S:
+	Likewise.
+	* sysdeps/unix/sysv/linux/ptsname.c: Likewise.
+
+2013-08-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* nscd/aicache.c (addhstaiX): Use __glibc_unlikely.
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Likewise.
+
+2013-08-27  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #15897]
+	* dlfcn/Makefile (tests): Add bug-dl-leaf.
+	(modules-names): Add bug-dl-leaf-lib and bug-dl-leaf-lib-cb.
+	($(objpfx)bug-dl-leaf): New rule.
+	($(objpfx)bug-dl-leaf.so): Likewise.
+	($(objpfx)bug-dl-leaf.out): Likewise.
+	($(objpfx)bug-dl-leaf-lib.so): Likewise.
+	($(objpfx)bug-dl-leaf-lib-cb.so): Likewise.
+	* dlfcn/bug-dl-leaf.c: New test.
+	* dlfcn/bug-dl-leaf-lib.c: Likewise.
+	* dlfcn/bug-dl-leaf-lib-cb.c: Likewise.
+	* dlfcn/dlfcn.h (dlopen): Change __THROW to __THROWNL.
+	(dlclose): Likewise.
+	(dlmopen): Likewise.
+
+2013-08-27  Roland McGrath  <roland@hack.frob.com>
+
+	* include/netdb.h [!_ISOMAC]:
+	Don't include <tls.h>.
+	(h_errno, __libc_h_errno): Move declaration and macros out of
+	[_LIBC_REENTRANT].
+
+	* include/resolv.h [_RESOLV_H_]:
+	Don't include <tls.h>.
+	(__resp, _res): Move declaration and macro out of [_LIBC_REENTRANT].
+	* resolv/res_libc.c: Don't include <tls.h>.
+	(_res): Use __attribute__ ((nocommon)) in place of
+	__attribute__ ((section (".bss"))).
+
+	* Makefile ($(common-objpfx)linkobj/libc_pic.a):
+	If [sunrpc not in $(subdirs)], define to use libc_pic.a directly.
+
+	* resolv/res_send.c (send_dg): Don't try to use ioctl unless [FIONREAD].
+
+	* resolv/res_hconf.c [!NOT_IN_libc] (ifaddrs): Declare
+	only under [SIOCGIFCONF && SIOCGIFNETMASK].
+
+	* resolv/res_mkquery.c: Include <sys/time.h>.
+
+	* inet/ifreq.c: Moved to ...
+	* sysdeps/unix/ifreq.c: ... here.
+	* inet/ifreq.c: New file, true stub version.
+
+	* socket/sa_len.c: New file.
+	* socket/Makefile (aux): Add it.
+	* sysdeps/unix/sysv/linux/Makefile
+	[$(subdir) = socket] (sysdep_routines): Don't add sa_len here.
+	* sysdeps/unix/sysv/linux/sa_len.c: Just #define HAVE_NET*_H
+	and #include <socket/sa_len.c>.
+	* sysdeps/unix/sysv/linux/s390/sa_len.c: Just #define
+	HAVE_NETIUCV_IUCV_H and #include <sysdeps/unix/sysv/linux/sa_len.c>.
+
+	* sysdeps/unix/bsd/bsd4.4/bits/socket.h: Moved to ...
+	* bits/socket.h: ... here.
+
+	* sysdeps/unix/bsd/bsd4.4/bits/socket.h (enum __socket_type):
+	Add SOCK_CLOEXEC, SOCK_NONBLOCK with values from FreeBSD.
+	(SOCK_MAX, SOCK_TYPE_MASK): New macros.
+
+2013-08-27  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15736]
+	* locale/categories.def (LC_CTYPE): Add "nonascii-case" element.
+	* string/Makefile (test-strcasecmp-ENV, test-strncasecmp-ENV)
+	(test-strcasecmp-ifunc-ENV, test-strncasecmp-ifunc-ENV): Define.
+	* string/test-strcasecmp.c (test_main): Run tests in several
+	locales.
+	* string/test-strncasecmp.c (test_main): Likewise.
+
+	* sysdeps/i386/i686/multiarch/strcmp-sse4.S (__strcasecmp_sse4_2)
+	(__strncasecmp_sse4_2) [PIC]: Restore %ebx before falling through
+	to __strcasecmp_nonascii and __strncasecmp_nonascii.
+	* sysdeps/i386/i686/multiarch/strcmp-ssse3.S (__strcasecmp_ssse3)
+	(__strncasecmp_ssse3) [PIC]: Likewise.
+
+2013-08-26  Roland McGrath  <roland@hack.frob.com>
+
+	* io/lxstat64.c: Just call __xstat64, for parity with stub __lxstat.
+
+	* nss/nss_files/files-key.c: Include <rpc/des_crypt.h>
+	instead of explicitly declaring xdecrypt.
+	* nis/nss_nis/nis-publickey.c: Likewise.
+
+2013-08-26  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15890]
+	* nscd/aicache.c: Include res_hconf.h.
+	(addhstaiX): Initialize res_hconf.
+
+2013-08-26  Andreas Schwab  <schwab@suse.de>
+
+	* stdlib/Makefile (LDFLAGS-tst-tls-atexit): Remove.
+	($(objpfx)tst-tls-atexit): Add dependencies here instead.
+
+2013-08-26  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* nscd/aicache.c (addhstaiX): Fix indentation.
+
+2013-08-25  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.ac: Quote $build_pt_chown test.
+	* configure: Regenerated.
+
+2013-08-23  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15532]
+	* math/s_cexp.c (__cexp): Return NaN + i0 for NaN + i0 argument.
+	* math/s_cexpf.c (__cexpf): Likewise.
+	* math/s_cexpl.c (__cexpl): Likewise.
+	* math/libm-test.inc (cexp_test_data): Correct expected return
+	value for NaN + i0.  Add another test.
+
+2013-08-22  David S. Miller  <davem@davemloft.net>
+
+	* po/ca.po: Update Catalan translation from translation project.
+	* po/uk.po: Add Ukrainian translations from translation project.
+
+2013-08-21  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15797]
+	* math/s_fdim.c (__fdim): Check for infinite arguments if result
+	is infinite, not alongside NaN test.
+	* math/s_fdimf.c (__fdimf): Likewise.
+	* math/s_fdiml.c (__fdiml): Likewise.
+	* math/libm-test.inc (fdim_test_data): Add more tests.  Test that
+	errno is unchanged.
+
+2013-08-21   Ondřej Bílka  <neleai@seznam.cz>
+
+	* argp/argp-help.c: Fix typos.
+	* crypt/speeds.c: Likewise.
+	* csu/check_fds.c: Likewise.
+	* elf/dl-load.c: Likewise.
+	* elf/dl-open.c: Likewise.
+	* elf/reldep3.c: Likewise.
+	* elf/reldep.c: Likewise.
+	* elf/sprof.c: Likewise.
+	* iconv/iconv_charmap.c: Likewise.
+	* iconv/skeleton.c: Likewise.
+	* iconv/strtab.c: Likewise.
+	* io/lockf64.c: Likewise.
+	* libio/libioP.h: Likewise.
+	* resolv/gai_notify.c: Likewise.
+	* resolv/ns_name.c: Likewise.
+	* resolv/ns_samedomain.c: Likewise.
+	* resolv/res_send.c: Likewise.
+	* stdlib/random.c: Likewise.
+	* sunrpc/rpc/xdr.h: Likewise.
+	* sysdeps/i386/fpu/fraiseexcpt.c: Likewise.
+	* sysdeps/i386/i686/multiarch/memcmp-sse4.S: Likewise.
+	* sysdeps/i386/i686/multiarch/memset-sse2-rep.S: Likewise.
+	* sysdeps/i386/i686/multiarch/memset-sse2.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strcat-sse2.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strcmp-sse4.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strcmp-ssse3.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strcpy-sse2.S: Likewise.
+	* sysdeps/mach/hurd/check_fds.c: Likewise.
+	* sysdeps/powerpc/powerpc32/cell/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/cell/memcpy.S: Likewise.
+	* sysdeps/pthread/aio_notify.c: Likewise.
+	* sysdeps/sparc/fpu/fraiseexcpt.c: Likewise.
+	* sysdeps/unix/sysv/linux/socketcall.h: Likewise.
+	* sysdeps/x86_64/fpu/fraiseexcpt.c: Likewise.
+	* sysdeps/x86_64/multiarch/strcpy-sse2-unaligned.S: Likewise.
+	* sysdeps/x86/fpu/bits/fenv.h: Likewise.
+
+2013-08-21  Liubov Dmitrieva  <liubov.dmitrieva@intel.com>
+
+	* sysdeps/i386/i686/multiarch/strcmp.S: Skip SSE4_2
+	version if bit_Slow_SSE4_2 is set.
+	* sysdeps/i386/i686/multiarch/strncase.S: Likewise.
+	* sysdeps/i386/i686/multiarch/strcasecmp.S: Likewise.
+
+2013-07-23  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	[BZ #15867]
+	* sysdeps/powerpc/powerpc32/backtrace.c (__backtrace): Handle signal
+	trampoline stack frame information.
+	* sysdeps/powerpc/powerpc64/backtrace.c (__backtrace): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h
+	(__vdso_sigtramp_rt64): New variable: PPC64 signal trampoline.
+	(__vdso_sigtramp32): New variable: PPC32 signal trampoline.
+	(__vdso_sigtramp_rt32): New variable: PPC32 signal trampoline.
+	* sysdeps/unix/sysv/linux/powerpc/init-first.c
+	(_libc_vdso_platform_setup): Initialize the signal trampolines.
+	* debug/tst-backtrace5.c (fn): Add an option set modify sigaction
+	sa_flags value.
+	* debug/tst-backtrace6.c: New file: check backtrace for signal frames,
+	interrupting a syscall and set with option SA_SIGINFO.
+
+2013-08-20  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15531]
+	* math/s_cproj.c (__cproj): Only return an infinity if one part of
+	argument is infinite.
+	* math/s_cprojf.c (__cprojf): Likewise.
+	* math/s_cprojl.c (__cprojl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_cprojl.c (__cprojl): Likewise.
+	* math/libm-test.inc (cproj_test_data): Add more tests.
+
+	* sysdeps/unix/sysv/linux/mmap64.c: Include <string.h>.
+
+	* sysdeps/unix/sysv/linux/mmap64.c (__mmap64)
+	[MMAP2_PAGE_SHIFT == -1]: Use __getpagesize to determine page
+	size.  Use __ffs to determine corresponding shift.
+
+2013-08-20  Joseph Myers  <joseph@codesourcery.com>
+	    Roland McGrath  <roland@hack.frob.com>
+
+	* Makefile (INSTALL): Remove trailing blank lines from output of
+	makeinfo.
+
 2013-08-20  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
 
 	* sysdeps/unix/sysv/linux/s390/sys/procfs.h (struct elf_prstatus):

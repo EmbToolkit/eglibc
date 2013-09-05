@@ -47,7 +47,8 @@ LC_MONETARY
 % These are generated based on XML base Locale definition file
 % for IBM Class for Unicode/Java
 %
-int_curr_symbol       "<U0053><U0044><U0044><U0020>"
+% SDG
+int_curr_symbol       "<U0053><U0044><U0047><U0020>"
 currency_symbol       "<U062C><U002E><U0633><U002E>"
 mon_decimal_point     "<U002E>"
 mon_thousands_sep     "<U002C>"
@@ -184,6 +185,8 @@ postal_fmt  "<U0025><U007A><U0025><U0063><U0025><U0054><U0025><U0073>/
 country_ab2 "<U0053><U0044>"
 country_ab3 "<U0053><U0044><U004E>"
 country_num 736
+% SUD
+country_car    "<U0053><U0055><U0044>"
 
 END LC_ADDRESS
 

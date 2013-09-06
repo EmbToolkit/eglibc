@@ -545,12 +545,12 @@ int swap_endianness_p;
 /* The target's value of __align__(uint32_t) - 1.  */
 unsigned int uint32_align_mask = 3;
 
-/* When called outside a start_locale_structure()/end_locale_structure()
-   or start_locale_prelude()/end_locale_prelude() block, record that the
+/* When called outside a start_locale_structure/end_locale_structure
+   or start_locale_prelude/end_locale_prelude block, record that the
    next byte in FILE's obstack will be the first byte of a new element.
-   Do likewise for the first call inside a start_locale_structure()/
-   end_locale_structure() block.  */
-static inline void
+   Do likewise for the first call inside a start_locale_structure/
+   end_locale_structure block.  */
+static void
 record_offset (struct locale_file *file)
 {
   if (file->structure_stage < 2)

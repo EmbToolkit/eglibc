@@ -1,6 +1,7 @@
-/* Measure memchr functions.
+/* Test and measure memrchr functions.
    Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Written by Jakub Jelinek <jakub@redhat.com>, 1999.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,34 +17,30 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef USE_AS_MEMRCHR
-# define TEST_MAIN
-# define TEST_NAME "memchr"
-# include "bench-string.h"
+#define TEST_MAIN
+#define TEST_NAME "memrchr"
+#include "test-string.h"
 
 typedef char *(*proto_t) (const char *, int, size_t);
-char *simple_memchr (const char *, int, size_t);
+char *simple_memrchr (const char *, int, size_t);
 
-IMPL (simple_memchr, 0)
-IMPL (memchr, 1)
+IMPL (simple_memrchr, 0)
+IMPL (memrchr, 1)
 
 char *
-simple_memchr (const char *s, int c, size_t n)
+simple_memrchr (const char *s, int c, size_t n)
 {
+  s = s + n;
   while (n--)
-    if (*s++ == (char) c)
-      return (char *) s - 1;
+    if (*--s == (char) c)
+      return (char *) s;
   return NULL;
 }
-#endif
 
 static void
 do_one_test (impl_t *impl, const char *s, int c, size_t n, char *exp_res)
 {
   char *res = CALL (impl, s, c, n);
-  size_t i, iters = INNER_LOOP_ITERS;
-  timing_t start, stop, cur;
-
   if (res != exp_res)
     {
       error (0, 0, "Wrong result in function %s %p %p", impl->name,
@@ -51,17 +48,6 @@ do_one_test (impl_t *impl, const char *s, int c, size_t n, char *exp_res)
       ret = 1;
       return;
     }
-
-  TIMING_NOW (start);
-  for (i = 0; i < iters; ++i)
-    {
-      CALL (impl, s, c, n);
-    }
-  TIMING_NOW (stop);
-
-  TIMING_DIFF (cur, start, stop);
-
-  TIMING_PRINT_MEAN ((double) cur, (double) iters);
 }
 
 static void
@@ -94,12 +80,61 @@ do_test (size_t align, size_t pos, size_t len, int seek_char)
       buf1[align + len] = seek_char;
     }
 
-  printf ("Length %4zd, alignment %2zd:", pos, align);
-
   FOR_EACH_IMPL (impl, 0)
     do_one_test (impl, (char *) (buf1 + align), seek_char, len, result);
+}
 
-  putchar ('\n');
+static void
+do_random_tests (void)
+{
+  size_t i, j, n, align, pos, len;
+  int seek_char;
+  char *result;
+  unsigned char *p = buf1 + page_size - 512;
+
+  for (n = 0; n < ITERATIONS; n++)
+    {
+      align = random () & 15;
+      pos = random () & 511;
+      if (pos + align >= 512)
+	pos = 511 - align - (random () & 7);
+      len = random () & 511;
+      if (pos >= len)
+	len = pos + (random () & 7);
+      if (len + align >= 512)
+        len = 512 - align - (random () & 7);
+      seek_char = random () & 255;
+      j = len + align + 64;
+      if (j > 512)
+        j = 512;
+
+      for (i = 0; i < j; i++)
+	{
+	  if (i == pos + align)
+	    p[i] = seek_char;
+	  else
+	    {
+	      p[i] = random () & 255;
+	      if (p[i] == seek_char)
+		p[i] = seek_char + 13;
+	    }
+	}
+
+      if (pos < len)
+	result = (char *) (p + pos + align);
+      else
+	result = NULL;
+
+      FOR_EACH_IMPL (impl, 1)
+	if (CALL (impl, (char *) (p + align), seek_char, len) != result)
+	  {
+	    error (0, 0, "Iteration %zd - wrong result in function %s (%zd, %d, %zd, %zd) %p != %p, p %p",
+		   n, impl->name, align, seek_char, len, pos,
+		   CALL (impl, (char *) (p + align), seek_char, len),
+		   result, p);
+	    ret = 1;
+	  }
+    }
 }
 
 int
@@ -127,6 +162,7 @@ test_main (void)
       do_test (0, i, i + 1, 0);
     }
 
+  do_random_tests ();
   return ret;
 }
 

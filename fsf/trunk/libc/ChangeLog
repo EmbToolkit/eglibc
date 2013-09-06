@@ -1,3 +1,20 @@
+2013-09-05  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/power7/memrchr.S (__memrchr): Fix invalid
+	memory access for final bytes in some large inputs.
+	* sysdeps/powerpc/powerpc64/power7/memrchr.S (__memrchr): Likewise.
+
+2013-09-05  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* string/test-memrchr.c: New file.
+	* string/test-memrchr-ifunc.c: New file.
+	* string/Makefile: Add new memrchr testcase.
+
+2013-09-05  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/tst-fanotify.c (do_test): Skip test when
+	fanotify_init returns EPERM.
+
 2013-09-04  Joseph Myers  <joseph@codesourcery.com>
 
 	* conform/conformtest.pl (newtoken): Treat tokens not allowed as

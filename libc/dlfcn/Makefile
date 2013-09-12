@@ -40,6 +40,7 @@ tests = glrefmain failtest tst-dladdr default errmsg1 tstcxaatexit \
 	tstatexit bug-dl-leaf
 
 tests-$(OPTION_EGLIBC_CXX_TESTS) += bug-atexit3 
+endif
 modules-names = glreflib1 glreflib2 glreflib3 failtestmod defaultmod1 \
 		defaultmod2 errmsg1mod modatexit modcxaatexit \
 		bug-dlsym1-lib1 bug-dlsym1-lib2 bug-atexit1-lib \

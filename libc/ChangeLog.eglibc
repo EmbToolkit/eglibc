@@ -1,3 +1,7 @@
+2013-09-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* dlfcn/Makefile: Restore endif lost in last merge.
+
 2013-09-05  Joseph Myers  <joseph@codesourcery.com>
 
 	* locale/programs/3level.h, locale/programs/ld-collate.c,

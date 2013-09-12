@@ -1,4 +1,56 @@
-2013-09-10   Ondřej Bílka  <neleai@seznam.cz>
+2013-09-11  Jia Liu  <proljc@gmail.com>
+
+	* sunrpc/rpc/types.h [__APPLE_CC__]: Define __u_char_defined and
+	__daddr_t_defined.
+	[__FreeBSD__]: Likewise.
+
+2013-09-11  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Remove: __strchr_sse42.
+	* sysdeps/x86_64/multiarch/strchr.S (__strchr_sse42): Remove.
+	(strchr): Remove __strchr_sse42 ifunc selection.
+	* sysdeps/x86_64/strchr.S (strchr): Use optimized implementation.
+	* sysdeps/x86_64/strchrnul.S: Include sysdeps/x86_64/strchr.S.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	* benchtests/bench-timing.h (TIMING_INIT): Rename ITERS
+	parameter to RES. Remove hardcoded 1000 value.
+	* benchtests/bench-skeleton.c (main): Pass RES parameter
+	to TIMING_INIT and multiply result by 1000.
+
+2013-09-10  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-09-11  Andreas Schwab  <schwab@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/fcntl-linux.h (__O_TMPFILE): Define
+	if not defined.
+	(O_TMPFILE) [__USE_GNU]: Define.
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (__O_TMPFILE):
+	Define.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15857]
+	* malloc/malloc.c (__libc_memalign): Check the value of bytes
+	does not overflow.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15856]
+	* malloc/malloc.c (__libc_valloc): Check the value of bytes
+	does not overflow.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15855]
+	* malloc/malloc.c (__libc_pvalloc): Check the value of bytes
+	does not overflow.
+
+2013-09-10  Ondřej Bílka  <neleai@seznam.cz>
 
 	* sysdeps/ieee754/dbl-64/e_j0.c: Remove DO_NOT_USE_THIS conditionals.
 	* sysdeps/ieee754/dbl-64/e_j1.c: Likewise.

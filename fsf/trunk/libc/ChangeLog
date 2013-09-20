@@ -1,3 +1,51 @@
+2013-09-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (POLYNOMIAL2): New macro.
+	(POLYNOMIAL): Likewise.
+	(TAYLOR_SINCOS): Likewise.
+	(TAYLOR_SLOW): Likewise.
+	(__sin): Use TAYLOR_SINCOS.
+	(__cos): Likewise.
+	(slow): Use TAYLOR_SLOW.
+	(sloww): Likewise.
+	(bsloww): Likewise.
+	(csloww): Likewise.
+
+2013-09-19  Liubov Dmitrieva  <liubov.dmitrieva@intel.com>
+
+	* stdlib/strtod_l.c: Fix buffer overrun.
+
+2013-09-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile (bench): Add sincos.
+	* benchtests/bench-sincos.c: New file.
+
+	* math/libm-test.inc (cos_test_data): New test inputs.
+	(sin_test_data): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (SINCOS_TABLE_LOOKUP): New
+	macro.
+	(__sin): Use it.
+	(__cos): Likewise.
+	(slow1): Likewise.
+	(slow2): Likewise.
+	(sloww1): Likewise.
+	(sloww2): Likewise.
+	(bsloww1): Likewise.
+	(bsloww2): Likewise.
+	(cslow2): Likewise.
+	(csloww1): Likewise.
+	(csloww2): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (reduce_and_compute): New
+	function.
+	(__sin): Use it.
+	(__cos): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (__sin): Remove redundant
+	gotos.
+	(__cos): Likewise.
+
 2013-09-18  Maciej W. Rozycki  <macro@codesourcery.com>
 
 	* config.h.in (HAVE_MIPS_NAN2008): New macro.

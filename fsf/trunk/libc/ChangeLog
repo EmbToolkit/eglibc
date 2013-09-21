@@ -1,3 +1,64 @@
+2013-09-20  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* include/string.h (__ffs): Declare as hidden.
+	* string/ffs.c (__ffs): Define as hidden.
+	* sysdeps/i386/ffs.c (__ffs): Likewise.
+	* sysdeps/i386/i686/ffs.c (__ffs): Likewise.
+	* sysdeps/powerpc/ffs.c (__ffs): Likewise.
+	* sysdeps/s390/ffs.c (__ffs): Likewise.
+	* sysdeps/x86_64/ffs.c (__ffs): Likewise.
+
+2013-09-20  Alexandre Oliva <aoliva@redhat.com>
+
+	* NEWS: Mention malloc probes.
+
+	* malloc/arena.c (new_heap): New memory_heap_new probe.
+	(grow_heap): New memory_heap_more probe.
+	(shrink_heap): New memory_heap_less probe.
+	(heap_trim): New memory_heap_free probe.
+	* malloc/malloc.c (sysmalloc): New memory_sbrk_more probe.
+	(systrim): New memory_sbrk_less probe.
+	* manual/probes.texi: Document them.
+
+	* malloc/arena.c (arena_get_retry): Add memory_arena_retry probe.
+	* manual/probes.texi: Document it.
+
+	* malloc/malloc.c (__libc_malloc): Add memory_malloc_retry probe.
+	(__libc_realloc): Add memory_realloc_retry probe.
+	(__libc_memalign): Add memory_memalign_retry probe.
+	(__libc_valloc): Add memory_valloc_retry probe.
+	(__libc_pvalloc): Add memory_pvalloc_retry probe.
+	(__libc_calloc): Add memory_calloc_retry probe.
+	* manual/probes.texi: Document them.
+
+	* malloc/arena.c (get_free_list): Add probe
+	memory_arena_reuse_free_list.
+	(reused_arena) [PER_THREAD]: Add probes memory_arena_reuse_wait
+	and memory_arena_reuse.
+	(arena_get2) [!PER_THREAD]: Likewise.
+	* malloc/malloc.c (__libc_realloc) [!PER_THREAD]: Add probe
+	memory_arena_reuse_realloc.
+	* manual/probes.texi: Document them.
+
+	* malloc/malloc.c (__libc_free): Add
+	memory_mallopt_free_dyn_thresholds probe.
+	(__libc_mallopt): Add multiple memory_mallopt probes.
+	* manual/probes.texi: Document them.
+
+	* malloc/malloc.c: Include stap-probe.h.
+	(__libc_mallopt): Add memory_mallopt probe.
+	* malloc/arena.c (_int_new_arena): Add memory_arena_new probe.
+	* manual/probes.texi: New.
+	* manual/Makefile (chapters): Add probes.
+	* manual/threads.texi: Set next node.
+
+2013-09-19  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15963, #13985]
+	* locale/iso-639.def: Add Chiga (cgg) and Chinese (gan, hak,
+	czh, cjy, lzh, cmn, mnp, cdo, czo, cpx, wuu, hsn, yue).
+	Add `Chinese' to `nan' entry name.
+
 2013-09-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* sysdeps/ieee754/dbl-64/s_sin.c (POLYNOMIAL2): New macro.
@@ -371,7 +432,7 @@
 
 2013-09-04  Chris Leonard  <cjl@sugarlabs,.org>
 
-     [BZ #15923]
+	[BZ #15923]
 	* locale/iso-4217.def: Update iso-1427.def and related occurrences.
 
 2013-09-04  Joseph Myers  <joseph@codesourcery.com>

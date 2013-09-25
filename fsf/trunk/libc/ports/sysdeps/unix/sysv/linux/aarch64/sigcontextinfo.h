@@ -1,4 +1,4 @@
-/* AArch64 definitions for profiling support.
+/* AArch64 definitions for signal handling calling conventions.
    Copyright (C) 1996-2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,19 +16,20 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-/* Accept 'frompc' address as argument from the function that calls
-   __mcount for profiling.  Use  __builtin_return_address (0)
-   for the 'selfpc' address.  */
+#include <sys/ucontext.h>
+#include "kernel-features.h"
 
-#include <sysdep.h>
+#define SIGCONTEXT siginfo_t *_si, struct ucontext *
+#define GET_PC(ctx) ((void *) (ctx)->uc_mcontext.pc)
 
-static void mcount_internal (u_long frompc, u_long selfpc);
+/* There is no reliable way to get the sigcontext unless we use a
+   three-argument signal handler.  */
+#define __sigaction(sig, act, oact) ({ \
+  (act)->sa_flags |= SA_SIGINFO; \
+  (__sigaction) (sig, act, oact); \
+})
 
-#define _MCOUNT_DECL(frompc, selfpc) \
-static inline void mcount_internal (u_long frompc, u_long selfpc)
-
-#define MCOUNT                                                    \
-void __mcount (void *frompc)                                      \
-{                                                                 \
-  mcount_internal ((u_long) frompc, (u_long) RETURN_ADDRESS (0)); \
-}
+#define sigaction(sig, act, oact) ({ \
+  (act)->sa_flags |= SA_SIGINFO; \
+  (sigaction) (sig, act, oact); \
+})

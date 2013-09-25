@@ -81,6 +81,7 @@ ca_FR.UTF-8/UTF-8 \
 ca_FR/ISO-8859-15 \
 ca_IT.UTF-8/UTF-8 \
 ca_IT/ISO-8859-15 \
+cmn_TW/UTF-8 \
 crh_UA/UTF-8 \
 cs_CZ.UTF-8/UTF-8 \
 cs_CZ/ISO-8859-2 \
@@ -230,6 +231,7 @@ gu_IN/UTF-8 \
 gv_GB.UTF-8/UTF-8 \
 gv_GB/ISO-8859-1 \
 ha_NG/UTF-8 \
+hak_TW/UTF-8 \
 he_IL.UTF-8/UTF-8 \
 he_IL/ISO-8859-8 \
 hi_IN/UTF-8 \

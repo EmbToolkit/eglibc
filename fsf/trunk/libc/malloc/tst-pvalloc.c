@@ -16,7 +16,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <errno.h>
-#include <stdlib.h>
+#include <malloc.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -40,44 +40,44 @@ do_test (void)
 
   errno = 0;
 
-  p = valloc (-1);
+  p = pvalloc (-1);
 
   save = errno;
 
   if (p != NULL)
-    merror ("valloc (-1) succeeded.");
+    merror ("pvalloc (-1) succeeded.");
 
   if (p == NULL && save != ENOMEM)
-    merror ("valloc (-1) errno is not set correctly");
+    merror ("pvalloc (-1) errno is not set correctly");
 
   errno = 0;
 
-  p = valloc (-pagesize);
+  p = pvalloc (-pagesize);
 
   save = errno;
 
   if (p != NULL)
-    merror ("valloc (-pagesize) succeeded.");
+    merror ("pvalloc (-pagesize) succeeded.");
 
   if (p == NULL && save != ENOMEM)
-    merror ("valloc (-pagesize) errno is not set correctly");
+    merror ("pvalloc (-pagesize) errno is not set correctly");
 
-  p = valloc (0);
+  p = pvalloc (0);
 
   if (p == NULL)
-    merror ("valloc (0) failed.");
+    merror ("pvalloc (0) failed.");
 
   free (p);
 
-  p = valloc (32);
+  p = pvalloc (32);
 
   if (p == NULL)
-    merror ("valloc (32) failed.");
+    merror ("pvalloc (32) failed.");
 
   ptrval = (unsigned long)p;
 
   if (p == NULL)
-    merror ("valloc (32) failed.");
+    merror ("pvalloc (32) failed.");
 
   if ((ptrval & (pagesize - 1)) != 0)
     merror ("returned pointer is not page aligned.");

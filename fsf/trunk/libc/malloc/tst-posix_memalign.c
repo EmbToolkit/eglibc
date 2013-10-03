@@ -34,53 +34,60 @@ static int
 do_test (void)
 {
   void *p;
+  int ret;
   unsigned long pagesize = getpagesize();
   unsigned long ptrval;
-  int save;
 
-  errno = 0;
+  p = NULL;
 
-  p = valloc (-1);
+  ret = posix_memalign (&p, sizeof (void *), -1);
 
-  save = errno;
+  if (ret != ENOMEM)
+    merror ("posix_memalign (&p, sizeof (void *), -1) succeeded.");
 
-  if (p != NULL)
-    merror ("valloc (-1) succeeded.");
+  if (ret == ENOMEM && p != NULL)
+    merror ("returned an error but pointer was modified");
 
-  if (p == NULL && save != ENOMEM)
-    merror ("valloc (-1) errno is not set correctly");
+  p = NULL;
 
-  errno = 0;
+  ret = posix_memalign (&p, pagesize, -pagesize);
 
-  p = valloc (-pagesize);
+  if (ret != ENOMEM)
+    merror ("posix_memalign (&p, pagesize, -pagesize) succeeded.");
 
-  save = errno;
+  p = NULL;
 
-  if (p != NULL)
-    merror ("valloc (-pagesize) succeeded.");
+  ret = posix_memalign (&p, sizeof (void *), 0);
 
-  if (p == NULL && save != ENOMEM)
-    merror ("valloc (-pagesize) errno is not set correctly");
-
-  p = valloc (0);
-
-  if (p == NULL)
-    merror ("valloc (0) failed.");
+  if (ret != 0 || p == NULL)
+    merror ("posix_memalign (&p, sizeof (void *), 0) failed.");
 
   free (p);
 
-  p = valloc (32);
+  ret = posix_memalign (&p, 0x300, 10);
 
-  if (p == NULL)
-    merror ("valloc (32) failed.");
+  if (ret != EINVAL)
+    merror ("posix_memalign (&p, 0x300, 10) succeeded.");
+
+  ret = posix_memalign (&p, 0, 10);
+
+  if (ret != EINVAL)
+    merror ("posix_memalign (&p, 0, 10) succeeded.");
+
+  p = NULL;
+
+  ret = posix_memalign (&p, 0x100, 10);
+
+  if (ret != 0)
+    merror ("posix_memalign (&p, 0x100, 10) failed.");
+
+  if (ret == 0 && p == NULL)
+    merror ("returned success but pointer is NULL");
 
   ptrval = (unsigned long)p;
 
-  if (p == NULL)
-    merror ("valloc (32) failed.");
-
-  if ((ptrval & (pagesize - 1)) != 0)
-    merror ("returned pointer is not page aligned.");
+  if (ret == 0 && (ptrval & 0xff))
+    merror ("pointer is not aligned to 0x100");
 
   free (p);
 

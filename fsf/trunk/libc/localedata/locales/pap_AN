@@ -2,6 +2,13 @@ comment_char %
 escape_char  /
 % Distribution and use is free, also for commercial purposes.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This locale is replaced by pap_AW and pap_CW and should be removed in
+% release 2.21.  AN line of iso-3177.def should also be removed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 LC_IDENTIFICATION
 title "Papiamento Language for the (Netherland) Antilles"
 source "informations from native speaker"

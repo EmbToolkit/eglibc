@@ -1,4 +1,4 @@
-/* Save current context.
+/* Save current context and jump to a new context.
    Copyright (C) 2002-2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -24,20 +24,22 @@
 #include <asm/ptrace.h>
 #include "ucontext_i.h"
 
-#define __CONTEXT_FUNC_NAME __getcontext
+#include <context-e500.h>
+
+#define __CONTEXT_FUNC_NAME __swapcontext
 #undef __CONTEXT_ENABLE_FPRS
 #undef __CONTEXT_ENABLE_VRS
 
-#include "getcontext-common.S"
+# include "swapcontext-common.S"
 
-versioned_symbol (libc, __getcontext, getcontext, GLIBC_2_3_4)
+versioned_symbol (libc, __swapcontext, swapcontext, GLIBC_2_3_4)
 
 #if SHLIB_COMPAT (libc, GLIBC_2_3_3, GLIBC_2_3_4)
 
 /* For the nofpu case the old/new versions are the same function.  */
-strong_alias (__getcontext, __novec_getcontext)
+strong_alias (__swapcontext, __novec_swapcontext)
 
-compat_symbol (libc, __novec_getcontext, getcontext, GLIBC_2_3_3)
+compat_symbol (libc, __novec_swapcontext, swapcontext, GLIBC_2_3_3)
 
 #endif
 
@@ -47,12 +49,12 @@ compat_symbol (libc, __novec_getcontext, getcontext, GLIBC_2_3_3)
 #include <bits/errno.h>
 
 	compat_text_section
-ENTRY (__getcontext_stub)
+ENTRY (__swapcontext_stub)
 	li	r3,ENOSYS
 	b	__syscall_error@local
-END (__getcontext_stub)
+END (__swapcontext_stub)
 	.previous
 
-compat_symbol (libc, __getcontext_stub, getcontext, GLIBC_2_1)
+compat_symbol (libc, __swapcontext_stub, swapcontext, GLIBC_2_1)
 
 #endif

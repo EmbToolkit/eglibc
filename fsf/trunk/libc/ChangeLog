@@ -1,3 +1,532 @@
+2013-10-04  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	* sysdeps/mach/hurd/fork.c (_hurd_atfork_prepare_hook,
+	_hurd_atfork_child_hook, _hurd_atfork_parent_hook): New hooks.
+	(__fork): Call _hurd_atfork_prepare_hook hooks before all locking, call
+	_hurd_atfork_parent_hook or _hurd_atfork_child_hook after all unlocking.
+
+2013-10-04  Ryan S. Arnold  <ryan.arnold@linaro.org>
+
+	* misc/swapon.c (swapon): Update definition, adding FLAGS parameter to
+	match prototype.
+
+2013-10-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/powerpc32/Makefile [$(with-fp) = yes] (+cflags):
+	Move -mhard-float appending from
+	ports/sysdeps/powerpc/powerpc32/Makefile.
+	[$(with-fp) = yes] (ASFLAGS): Likewise.
+	[$(with-fp) = yes] (sysdep-LDFLAGS): Likewise.
+	* sysdeps/powerpc/nofpu: Move directory from
+	ports/sysdeps/powerpc/nofpu.
+	* sysdeps/powerpc/soft-fp: Move directory from
+	ports/sysdeps/powerpc/soft-fp.
+	* sysdeps/powerpc/powerpc32/405: Move directory from
+	ports/sysdeps/powerpc/powerpc32/405.
+	* sysdeps/powerpc/powerpc32/440: Move directory from
+	ports/sysdeps/powerpc/powerpc32/440.
+	* sysdeps/powerpc/powerpc32/464: Move directory from
+	ports/sysdeps/powerpc/powerpc32/464.
+	* sysdeps/powerpc/powerpc32/476: Move directory from
+	ports/sysdeps/powerpc/powerpc32/476.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/405: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/405.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/440: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/440.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/464: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/464.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/476: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/476.
+	* README: Update for powerpc-*-linux-gnu software floating point
+	support in libc.
+
+	* sysdeps/unix/sysv/linux/configure.in (powerpc/powerpc32): Change
+	case to powerpc/powerpc32*.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+
+	* sysdeps/powerpc/fpu_control.h [__NO_FPRS__ && !_SOFT_FLOAT]
+	(_FPU_MASK_OM): Define as 0x04.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_UM): Define as 0x08.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RESERVED): Define as
+	0x00c10080.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_DEFAULT): Define as
+	0x0000003c.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_IEEE): Define as _FPU_DEFAULT.
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use
+	getcontext_e500.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use
+	setcontext_e500.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use getcontext_e500
+	and setcontext_e500.
+
+2013-10-04  Chris Leonard  <cjl@sugarlabs,.org>
+
+	* locale/iso-3166.def: Update iso-1366.def and related occurrences
+
+2013-10-04  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* manual/threads.texi (Default Thread Attributes): Fix typo.
+
+2013-10-04  Will Newton  <will.newton@linaro.org>
+
+	* malloc/Makefile: Add tst-memalign.
+	* malloc/tst-memalign.c: New file.
+
+	* malloc/tst-posix_memalign.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Add space after cast.
+
+	* malloc/tst-pvalloc.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Remove duplicate check for NULL pointer.
+	Add space after cast.
+
+	* malloc/tst-valloc.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Remove duplicate check for NULL pointer.
+	Add space after cast.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/dl-machine.c (__process_machine_rela):
+	Use stdint types in rather than __attribute__((mode())).
+	* sysdeps/powerpc/powerpc64/dl-machine.h (elf_machine_rela): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/dl-machine.c (__process_machine_rela):
+	Correct handling of unaligned relocs for little-endian.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (elf_machine_rela): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* configure.in: Map powerpc64le and powerpcle to base_machine/machine.
+	* configure: Regenerate.
+	* nptl/shlib-versions: Powerpc*le starts at 2.18.
+	* shlib-versions: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* string/tester.c (test_memrchr): Increment reported test cycle.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* string/test-memcpy.c (do_one_test): When reporting errors, print
+	string address and don't overrun end of string.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/memchr.S: Replace rlwimi with
+	insrdi.  Make better use of reg selection to speed exit slightly.
+	Schedule entry path a little better.  Remove useless "are we done"
+	checks on entry to main loop.  Handle wrapping around zero address.
+	Correct main loop count.  Handle single left-over word from main
+	loop inline rather than by using loop_small.  Remove extra word
+	case in loop_small caused by wrong loop count.  Add little-endian
+	support.
+	* sysdeps/powerpc/powerpc32/power7/memchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memrchr.S: Likewise.  Use proper
+	cache hint.
+	* sysdeps/powerpc/powerpc32/power7/memrchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/rawmemchr.S: Add little-endian
+	support.  Avoid rlwimi.
+	* sysdeps/powerpc/powerpc32/power7/rawmemchr.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/memset.S: Replace rlwimi with
+        insrdi.  Formatting.
+	* sysdeps/powerpc/powerpc64/power4/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memset.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/power4/memcpy.S: Add little endian support.
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/mempcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/mempcpy.S: Likewise.  Make better
+	use of regs.  Use power7 mtocrf.  Tidy function tails.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/memcmp.S: Add little-endian support.
+	Formatting.  Consistently use rXXX register defines or rN defines.
+	Use early exit labels that avoid restoring unused non-volatile regs.
+	Make cr field use more consistent with rWORDn compares.  Rename
+	regs used as shift registers for unaligned loop, using rN defines
+	for short lifetime/multiple use regs.
+	* sysdeps/powerpc/powerpc64/power4/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcmp.S: Likewise.  Exit with
+	addi 1,1,64 to pop stack frame.  Simplify return value code.
+	* sysdeps/powerpc/powerpc32/power4/memcmp.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strchr.S (strchr): Add little-endian
+	support.  Correct typos, formatting.  Optimize tail.  Use insrdi
+	rather than rlwimi.
+	* sysdeps/powerpc/powerpc32/power7/strchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strchrnul.S (__strchrnul): Add
+	little-endian support.  Correct typos.
+	* sysdeps/powerpc/powerpc32/power7/strchrnul.S: Likewise.  Use insrdi
+	rather than rlwimi.
+	* sysdeps/powerpc/powerpc64/strchr.S (rTMP4, rTMP5): Define.  Use
+	in loop and entry code to keep "and." results.
+	(strchr): Add little-endian support.  Comment.  Move cntlzd
+	earlier in tail.
+	* sysdeps/powerpc/powerpc32/strchr.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/strcpy.S: Add little-endian support:
+	* sysdeps/powerpc/powerpc32/strcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/stpcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/stpcpy.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/strcmp.S (rTMP2): Define as r0.
+	(rTMP): Define as r11.
+	(strcmp): Add little-endian support.  Optimise tail.
+	* sysdeps/powerpc/powerpc32/strcmp.S: Similarly.
+	* sysdeps/powerpc/powerpc64/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strnlen.S (strnlen): Add
+	little-endian support.  Remove unnecessary "are we done" tests.
+	Handle "s" wrapping around zero and extremely large "size".
+	Correct main loop count.  Handle single left-over word from main
+	loop inline rather than by using small_loop.  Correct comments.
+	Delete "zero" tail, use "end_max" instead.
+	* sysdeps/powerpc/powerpc32/power7/strnlen.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strlen.S (strlen): Add little-endian
+	support.  Don't branch over align.
+	* sysdeps/powerpc/powerpc32/power7/strlen.S: Likewise.
+	* sysdeps/powerpc/powerpc64/strlen.S (strlen): Add little-endian
+	support.  Rearrange tmp reg use to suit.  Comment.
+	* sysdeps/powerpc/powerpc32/strlen.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/bits/sigstack.h: New file.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S: Use
+	conditional form of branch and link when obtaining pc.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/makecontext.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext-common.S: Use
+	HIWORD/LOWORD.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S: Ditto.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S: Ditto.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/longjmp.c: Use proper symbol versioning macros.
+	* sysdeps/powerpc/novmx-longjmp.c: Likewise.
+	* sysdeps/powerpc/powerpc32/bsd-_setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/bsd-setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/mcount.c: Likewise.
+	* sysdeps/powerpc/powerpc32/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/setjmp.S: Likewise.
+	* nptl/sysdeps/unix/sysv/linux/powerpc/pt-longjmp.c: Likewise.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+	    Alistair Popple <alistair@ozlabs.au.ibm.com>
+	    Alan Modra <amodra@gmail.com>
+
+	[BZ #15723]
+	* sysdeps/powerpc/jmpbuf-offsets.h: Comment fix.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp-common.S: Correct
+	_dl_hwcap access for little-endian.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp-common.S: Likewise.  Don't
+	destroy vmx regs when saving unaligned.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S: Correct CR load.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S: Likewise CR save.  Don't
+	destroy vmx regs when saving unaligned.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/power4/hp-timing.h (HP_TIMING_NOW):
+	Don't use a union to pack hi/low value.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/s_ceilf.S: Correct float constants
+	for little-endian.
+	* sysdeps/powerpc/powerpc64/fpu/s_floorf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_nearbyintf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_rintf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_roundf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_truncf.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/fpu/s_roundf.S: Increase alignment of
+	constants to usual value for .cst8 section, and remove redundant
+	high address load.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llround.S: Use float
+	constant for 0x1p52.  Load little-endian words of double from
+	correct stack offsets.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/sysdep.h (LOWORD, HIWORD, HISHORT): Define.
+	* sysdeps/powerpc/powerpc32/fpu/s_copysign.S: Load little-endian
+	words of double from correct stack offsets.
+	* sysdeps/powerpc/powerpc32/fpu/s_copysignl.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/s_lrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/s_lround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llrintf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5+/fpu/s_llround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5+/fpu/s_lround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llrintf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_finite.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_isinf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_finite.S: Use HISHORT.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_isinf.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu_control.h (_FPU_GETCW): Rewrite using
+	64-bit int/double union.
+	(_FPU_SETCW): Likewise.
+	* sysdeps/powerpc/fpu/tst-setcontext-fpscr.c (_GET_DI_FPSCR): Likewise.
+	(_SET_DI_FPSCR, _GET_SI_FPSCR, _SET_SI_FPSCR): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu/s_llround.c (__llround): Rewrite.
+	* sysdeps/powerpc/fpu/s_llroundf.c (__llroundf): Rewrite.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu/s_float_bitwise.h (__float_and_test28): Don't
+	use vector int constants.
+	(__float_and_test24, __float_and8, __float_get_exp): Likewise.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/fpu/fenv_libc.h (fenv_union_t): Replace int
+	array with long long.
+	* sysdeps/powerpc/fpu/e_sqrt.c (__slow_ieee754_sqrt): Adjust.
+	* sysdeps/powerpc/fpu/e_sqrtf.c (__slow_ieee754_sqrtf): Adjust.
+	* sysdeps/powerpc/fpu/fclrexcpt.c (__feclearexcept): Adjust.
+	* sysdeps/powerpc/fpu/fedisblxcpt.c (fedisableexcept): Adjust.
+	* sysdeps/powerpc/fpu/feenablxcpt.c (feenableexcept): Adjust.
+	* sysdeps/powerpc/fpu/fegetexcept.c (__fegetexcept): Adjust.
+	* sysdeps/powerpc/fpu/feholdexcpt.c (feholdexcept): Adjust.
+	* sysdeps/powerpc/fpu/fesetenv.c (__fesetenv): Adjust.
+	* sysdeps/powerpc/fpu/feupdateenv.c (__feupdateenv): Adjust.
+	* sysdeps/powerpc/fpu/fgetexcptflg.c (__fegetexceptflag): Adjust.
+	* sysdeps/powerpc/fpu/fraiseexcpt.c (__feraiseexcept): Adjust.
+	* sysdeps/powerpc/fpu/fsetexcptflg.c (__fesetexceptflag): Adjust.
+	* sysdeps/powerpc/fpu/ftestexcept.c (fetestexcept): Adjust.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/bits/mathinline.h (__signbitf): Use builtin.
+	(__signbit): Likewise.  Correct for little-endian.
+	(__signbitl): Call __signbit.
+	(lrint): Correct for little-endian.
+	(lrintf): Call lrint.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_sqrtl.c (mynumber): Replace
+	union 32-bit int array member with 64-bit int array.
+	(t515, tm256): Double rather than long double.
+	(__ieee754_sqrtl): Rewrite using 64-bit arithmetic.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/ieee754.h (union ieee854_long_double):
+	Delete.
+	(IEEE854_LONG_DOUBLE_BIAS): Delete.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h: Don't include ieee854
+	version of math_ldbl.h.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	[BZ #15734], [BZ #15735]
+	* sysdeps/ieee754/ldbl-128ibm/e_fmodl.c (__ieee754_fmodl): Rewrite
+	all uses of ieee875 long double macros and unions.  Simplify test
+	for 0.0L.  Correct |x|<|y| and |x|=|y| test.  Use
+	ldbl_extract_mantissa value for ix,iy exponents.  Properly
+	normalize after ldbl_extract_mantissa, and don't add hidden bit
+	already handled.  Don't treat low word of ieee854 mantissa like
+	low word of IBM long double and mask off bit when testing for
+	zero.
+	* sysdeps/ieee754/ldbl-128ibm/e_hypotl.c (__ieee754_hypotl): Rewrite
+	all uses of ieee875 long double macros and unions.  Simplify tests
+	for 0.0L and inf.  Correct double adjustment of k.  Delete dead code
+	adjusting ha,hb.  Simplify code setting kld.  Delete two600 and
+	two1022, instead use their values.  Recognise that tests for large
+	"a" and small "b" are mutually exclusive.  Rename vars.  Comment.
+	* sysdeps/ieee754/ldbl-128ibm/e_remainderl.c (__ieee754_remainderl):
+	Rewrite all uses of ieee875 long double macros and unions.  Simplify
+	test for 0.0L and nan.  Correct negation.
+	* sysdeps/ieee754/ldbl-128ibm/s_erfl.c (__erfl): Rewrite all uses of
+	ieee875 long double macros and unions.  Correct output for large
+	magnitude x.  Correct absolute value calculation.
+	(__erfcl): Likewise.
+	* math/libm-test.inc: Add tests for errors discovered in IBM long
+	double versions of fmodl, remainderl, erfl and erfcl.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_atan2l.c (__ieee754_atan2l): Rewrite
+	all uses of ieee854 long double macros and unions.  Simplify tests
+	for long doubles that are fully specified by the high double.
+	* sysdeps/ieee754/ldbl-128ibm/e_gammal_r.c (__ieee754_gammal_r):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_ilogbl.c (__ieee754_ilogbl): Likewise.
+	Remove dead code too.
+	* sysdeps/ieee754/ldbl-128ibm/e_jnl.c (__ieee754_jnl): Likewise.
+	(__ieee754_ynl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_log10l.c (__ieee754_log10l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_logl.c (__ieee754_logl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_powl.c (__ieee754_powl): Likewise.
+	Remove dead code too.
+	* sysdeps/ieee754/ldbl-128ibm/k_tanl.c (__kernel_tanl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_expm1l.c (__expm1l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_frexpl.c (__frexpl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_isinf_nsl.c (__isinf_nsl): Likewise.
+	Simplify.
+	* sysdeps/ieee754/ldbl-128ibm/s_isinfl.c (___isinfl): Likewise.
+	Simplify.
+	* sysdeps/ieee754/ldbl-128ibm/s_log1pl.c (__log1pl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_modfl.c (__modfl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (__nextafterl): Likewise.
+	Comment on variable precision.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttoward.c (__nexttoward): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttowardf.c (__nexttowardf):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_remquol.c (__remquol): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalblnl.c (__scalblnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalbnl.c (__scalbnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_tanhl.c (__tanhl): Likewise.
+	* sysdeps/powerpc/fpu/libm-test-ulps: Adjust tan_towardzero ulps.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h (ldbl_high): Define.
+	* sysdeps/ieee754/ldbl-128ibm/e_acoshl.c (__ieee754_acoshl): Rewrite
+	all uses of ieee854 long double macros and unions.
+	* sysdeps/ieee754/ldbl-128ibm/e_acosl.c (__ieee754_acosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_asinl.c (__ieee754_asinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_atanhl.c (__ieee754_atanhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_coshl.c (__ieee754_coshl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_log2l.c (__ieee754_log2l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_rem_pio2l.c (__ieee754_rem_pio2l):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_sinhl.c (__ieee754_sinhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_cosl.c (__kernel_cosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_sincosl.c (__kernel_sincosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_sinl.c (__kernel_sinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_asinhl.c (__asinhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_atanl.c (__atanl): Likewise.
+	Simplify sign and nan test too.
+	* sysdeps/ieee754/ldbl-128ibm/s_cosl.c (__cosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_fabsl.c (__fabsl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_finitel.c (___finitel): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_fpclassifyl.c (___fpclassifyl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_isnanl.c (___isnanl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_issignalingl.c (__issignalingl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_logbl.c (__logbl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_signbitl.c (___signbitl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_sincosl.c (__sincosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_sinl.c (__sinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_tanl.c (__tanl): Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logbl.c (__logbl): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* stdio-common/printf_size.c (__printf_size): Don't use
+	union ieee854_long_double in fpnum union.
+	* stdio-common/printf_fphex.c (__printf_fphex): Likewise.  Use
+	signbit macro to retrieve sign from long double.
+	* stdio-common/printf_fp.c (___printf_fp): Use signbit macro to
+	retrieve sign from long double.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c: Adjust for fpnum change.
+	* sysdeps/ieee754/ldbl-128/printf_fphex.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/printf_fphex.c: Likewise.
+	* sysdeps/x86_64/fpu/printf_fphex.c: Likewise.
+	* math/test-misc.c (main): Don't use union ieee854_long_double.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	[BZ #15680]
+	* sysdeps/ieee754/ldbl-128ibm/e_rem_pio2l.c: Comment fix.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c
+	(PRINT_FPHEX_LONG_DOUBLE): Tidy code by moving -53 into ediff
+	calculation.  Remove unnecessary test for denormal exponent.
+	* sysdeps/ieee754/ldbl-128ibm/ldbl2mpn.c (__mpn_extract_long_double):
+	Correct handling of denormals.  Avoid undefined shift behaviour.
+	Correct normalisation of low mantissa when low double is denormal.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h
+	(ldbl_extract_mantissa): Likewise.  Comment.  Use uint64_t* for hi64.
+	(ldbl_insert_mantissa): Make both hi64 and lo64 parms uint64_t.
+	Correct normalisation of low mantissa.  Test for overflow of high
+	mantissa and normalise.
+	(ldbl_nearbyint): Use more readable constant for two52.
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c
+	(__mpn_construct_long_double): Fix test for overflow of high
+	mantissa and correct normalisation.  Avoid undefined shift.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/ieee754.h
+	(union ibm_extended_long_double): Define as an array of ieee754_double.
+	(IBM_EXTENDED_LONG_DOUBLE_BIAS): Delete.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c: Update all references
+	to ibm_extended_long_double and IBM_EXTENDED_LONG_DOUBLE_BIAS.
+	* sysdeps/ieee754/ldbl-128ibm/e_exp10l.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_expl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/ldbl2mpn.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nearbyintl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/strtold_l.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/x2y2m1l.c: Likewise.
+
 2013-10-03  Joseph Myers  <joseph@codesourcery.com>
 
 	* locale/programs/locarchive.c (add_locale): Use constant 4096 for

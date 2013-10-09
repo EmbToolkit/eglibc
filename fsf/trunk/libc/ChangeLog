@@ -1,3 +1,66 @@
+2013-10-08  Yogesh Chaudhari  <mr.yogesh@gmail.com>
+
+	[BZ #156]
+	* manual/socket.texi: Added statement about buffer
+	for gethostbyname2_r.
+
+2013-10-08  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/memset.S (ALIGN): Macro removed.
+	Use .p2align directive instead, throughout.
+	* sysdeps/x86_64/multiarch/memcmp-sse4.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcmp-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-sse2-unaligned.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3-back.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/strcmp-sse2-unaligned.S: Likewise.
+	* sysdeps/x86_64/strchr.S: Likewise.
+	* sysdeps/x86_64/strrchr.S: Likewise.
+
+2013-10-08  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/e_pow.c: Fix code formatting.
+
+	* sysdeps/ieee754/dbl-64/e_exp.c: Fix code formatting.
+
+	* sysdeps/generic/math_private.h (__mpsin1): Remove
+	declaration.
+	(__mpcos1): Likewise.
+	(__mpsin): New argument __range_reduce.
+	(__mpcos): Likewise.
+	* sysdeps/ieee754/dbl-64/s_sin.c: Likewise.
+	(slow): Use __mpsin and __mpcos.
+	(slow1): Likewise.
+	(slow2): Likewise.
+	(sloww): Likewise.
+	(sloww1): Likewise.
+	(sloww2): Likewise.
+	(bsloww): Likewise.
+	(bsloww1): Likewise.
+	(bsloww2): Likewise.
+	(cslow2): Likewise.
+	(csloww): Likewise.
+	(csloww1): Likewise.
+	(csloww2): Likewise.
+	* sysdeps/ieee754/dbl-64/sincos32.c (__mpsin): Add argument
+	range_reduce.  Merge in __mpsin1.
+	(__mpcos): Likewise.
+	(__mpsin1): Remove.
+	(__mpcos1): Likewise.
+
+2013-10-07  Joseph Myers  <joseph@codesourcery.com>
+
+	* locale/loadlocale.c (_nl_intern_locale_data): Use
+	LOCFILE_ALIGNED_P.
+	* locale/programs/3level.h (CONCAT(add_locale_,TABLE)): Use
+	LOCFILE_ALIGN_UP and LOCFILE_ALIGN.
+	* locale/programs/ld-collate.c (obstack_int32_grow): Assert that
+	obstack data is appropriately aligned.
+	(obstack_int32_grow_fast): Likewise.
+	* locale/programs/ld-ctype.c (ctype_output): Use LOCFILE_ALIGN.
+	* locale/programs/locfile.c (add_locale_uint32): Likewise.
+	(add_locale_uint32_array): Likewise.
+
 2013-10-07  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* benchtests/Makefile: Remove ARGLIST and RET variables.

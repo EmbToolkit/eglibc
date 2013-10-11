@@ -1,3 +1,49 @@
+2013-10-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2013-10-10  Joseph Myers  <joseph@codsourcery.com>
+
+	* sysdeps/powerpc/nofpu/Makefile [$(subdir) = math]
+	(CFLAGS-e_hypotl.c): Add -fno-builtin-fabsl.
+	[$(subdir) = math] (CFLAGS-w_acosl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_asinl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_atanhl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_j0l.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_j1l.c): Likewise.
+
+	* sysdeps/ieee754/ldbl-128ibm/e_acosl.c (__ieee754_acosl): Check
+	for NaNs before doing comparisons on argument.
+	* sysdeps/ieee754/ldbl-128ibm/e_asinl.c (__ieee754_asinl):
+	Likewise.
+
+2013-10-10  Will Newton  <will.newton@linaro.org>
+
+	* malloc/hooks.c (memalign_check): Ensure the value of bytes
+	passed to _int_memalign does not overflow.
+
+2013-10-10  Torvald Riegel  <triegel@redhat.com>
+
+	* scripts/bench.pl: Add include-sources directive.
+	* benchtests/README: Update documentation.
+
+2013-10-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/soft-fp.h (FP_INIT_EXCEPTIONS): New macro.
+	* soft-fp/extenddftf2.c (__extenddftf2): Use FP_INIT_EXCEPTIONS
+	instead of FP_INIT_ROUNDMODE.
+	* soft-fp/extendsfdf2.c (__extendsfdf2): Likewise.
+	* soft-fp/extendsftf2.c (__extendsftf2): Likewise.
+
+	[BZ #16034]
+	* soft-fp/op-common.h (_FP_NEG): Document input as raw.  Do not
+	copy class of input value.
+	* soft-fp/negdf2.c (__negdf2): Use raw unpacking and packing.  Do
+	not handle exceptions.
+	* soft-fp/negsf2.c (__negsf2): Likewise.
+	* soft-fp/negtf2.c (__negtf2): Likewise.
+	* sysdeps/sparc/sparc32/soft-fp/q_neg.c (_Q_neg): Likewise.
+
 2013-10-09  Joseph Myers  <joseph@codesourcery.com>
 
 	* soft-fp/op-4.h (_FP_FRAC_DISASSEMBLE_4): Remove trailing

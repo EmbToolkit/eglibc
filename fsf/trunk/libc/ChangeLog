@@ -1,3 +1,75 @@
+2013-10-11  Siddhesh Poyarekar  <siddhesh@redhat.com>
+	    Jeff Law  <law@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/e_atan2.c: Include stap-probe.h.
+	(atan2Mp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/e_log.c: include stap-probe.h.
+	(__ieee754_log): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/s_atan.c: Include stap-probe.h.
+	(atanMp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/s_tan.c: Include stap-probe.h.
+	(tanMp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/slowexp.c: Include stap-probe.h.
+	(__slowexp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/slowpow.c: Include stap-probe.h.
+	(__slowpow): Add systemtap probe marker.
+	* manual/probes.texi: Document probes.
+
+2013-10-11  Eric Biggers  <ebiggers3@gmail.com>
+
+	[BZ #15362]
+	* libio/fileops.c (_IO_new_file_write): Return count of bytes
+	written.
+	(_IO_new_file_xsputn): Don't return EOF if nothing has been
+	written.
+	* libio/iofwrite.c (_IO_fwrite): Return count if bytes were
+	written to buffer but not flushed.
+	* libio/iofwrite_u.c:  Likewise.
+	* libio/iopadn.c:  Return bytes returned even if EOF was
+	encountered.
+	* libio/iowpadn.c:  Likewise.
+	* stdio-common/vfprintf.c [COMPILE_WPRINTF] (PAD): Return error
+	if _IO_padn does not write the whole buffer.
+	[!COMPILE_WPRINTF] (PAD): Likewise.
+
+2013-10-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/posix/dirstream.h (struct __dirstream): Fix alignment of
+	directory block.
+
+2013-10-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/extendxftf2.c: Use copyright year range.  Use URL
+	instead of FSF address.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+
+	* soft-fp/extendxftf2.c: New file.  Copied from libgcc.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+
 2013-10-10  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/fpu/libm-test-ulps: Update.

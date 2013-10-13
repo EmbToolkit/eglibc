@@ -1,3 +1,113 @@
+2013-10-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/double.h: Indent preprocessor directives inside #if.
+	* soft-fp/extended.h: Likewise.
+	* soft-fp/op-2.h: Likewise.
+	* soft-fp/op-4.h: Likewise.
+	* soft-fp/op-common.h: Likewise.
+	* soft-fp/quad.h: Likewise.
+	* soft-fp/single.h: Likewise.
+	* soft-fp/soft-fp.h: Likewise.
+
+2013-10-12   Yuri Chornoivan <yurchor@ukr.net>
+
+	* iconv/iconv_prog.c: Fix typos.
+	* stdio-common/psiginfo-data.h: Likewise.
+
+2013-10-12   Reuben Thomas <rrt@sc3d.org>
+
+	[BZ #15764]
+	* locale/setlocale.c: Fix typo.
+
+2013-10-12  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #16036]
+	* soft-fp/unorddf2.c (__unorddf2): Raise "invalid" exception for
+	signaling NaN arguments.
+	* soft-fp/unordsf2.c (__unordsf2): Likewise.
+	* soft-fp/unordtf2.c (__unordtf2): Likewise.
+
+	[BZ #14910]
+	* soft-fp/gedf2.c (__gedf2): Raise "invalid" exception for all
+	unordered operands.
+	* soft-fp/gesf2.c (__gesf2): Likewise.
+	* soft-fp/getf2.c (__getf2): Likewise.
+	* soft-fp/ledf2.c (__ledf2): Likewise.
+	* soft-fp/lesf2.c (__lesf2): Likewise.
+	* soft-fp/letf2.c (__letf2): Likewise.
+
+	* soft-fp/eqdf2.c (__eqdf2): Use FP_INIT_EXCEPTIONS.
+	* soft-fp/eqsf2.c (__eqsf2): Likewise.
+	* soft-fp/eqtf2.c (__eqtf2): Likewise.
+	* soft-fp/fixdfdi.c (__fixdfdi): Likewise.
+	* soft-fp/fixdfsi.c (__fixdfsi): Likewise.
+	* soft-fp/fixdfti.c (__fixdfti): Likewise.
+	* soft-fp/fixsfdi.c (__fixsfdi): Likewise.
+	* soft-fp/fixsfsi.c (__fixsfsi): Likewise.
+	* soft-fp/fixsfti.c (__fixsfti): Likewise.
+	* soft-fp/fixtfdi.c (__fixtfdi): Likewise.
+	* soft-fp/fixtfsi.c (__fixtfsi): Likewise.
+	* soft-fp/fixtfti.c (__fixtfti): Likewise.
+	* soft-fp/fixunsdfdi.c (__fixunsdfdi): Likewise.
+	* soft-fp/fixunsdfsi.c (__fixunsdfsi): Likewise.
+	* soft-fp/fixunsdfti.c (__fixunsdfti): Likewise.
+	* soft-fp/fixunssfdi.c (__fixunssfdi): Likewise.
+	* soft-fp/fixunssfsi.c (__fixunssfsi): Likewise.
+	* soft-fp/fixunssfti.c (__fixunssfti): Likewise.
+	* soft-fp/fixunstfdi.c (__fixunstfdi): Likewise.
+	* soft-fp/fixunstfsi.c (__fixunstfsi): Likewise.
+	* soft-fp/fixunstfti.c (__fixunstfti): Likewise.
+	* soft-fp/floatdidf.c (__floatdidf): Use FP_INIT_ROUNDMODE.
+	* soft-fp/floatdisf.c (__floatdisf): Likewise.
+	* soft-fp/floatsisf.c (__floatsisf): Likewise.
+	* soft-fp/floattidf.c (__floattidf): Likewise.
+	* soft-fp/floattisf.c (__floattisf): Likewise.
+	* soft-fp/floattitf.c (__floattitf): Likewise.
+	* soft-fp/floatundidf.c (__floatundidf): Likewise.
+	* soft-fp/floatundisf.c (__floatundisf): Likewise.
+	* soft-fp/floatunsisf.c (__floatunsisf): Likewise.
+	* soft-fp/floatuntidf.c (__floatuntidf): Likewise.
+	* soft-fp/floatuntisf.c (__floatuntisf): Likewise.
+	* soft-fp/floatuntitf.c (__floatuntitf): Likewise.
+	* soft-fp/gedf2.c (__gedf2): Use FP_INIT_EXCEPTIONS.
+	* soft-fp/gesf2.c (__gesf2): Likewise.
+	* soft-fp/getf2.c (__getf2): Likewise.
+	* soft-fp/ledf2.c (__ledf2): Likewise.
+	* soft-fp/lesf2.c (__lesf2): Likewise.
+	* soft-fp/letf2.c (__letf2): Likewise.
+
+	* soft-fp/soft-fp.h [FP_NO_EXCEPTIONS] (FP_SET_EXCEPTION):
+	Undefine and redefine.
+	[FP_NO_EXCEPTIONS] (FP_CUR_EXCEPTIONS): Likewise.
+	[FP_NO_EXCEPTIONS] (FP_TRAPPING_EXCEPTIONS): Likewise.
+	[FP_NO_EXCEPTIONS] (FP_ROUNDMODE): Likewise.
+	* soft-fp/floatditf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatditf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatsidf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatsidf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatsitf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatsitf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunditf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunditf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunsidf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunsidf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunsitf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunsitf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+
+	[BZ #16032]
+	* soft-fp/op-2.h (_FP_DIV_MEAT_2_udiv): Shift numerator right
+	without decrementing exponent if mantissa >= that for the
+	denominator, not >.
+	(_FP_DIV_MEAT_2_gmp): Test numerator mantissa >= that for the
+	denominator, not >.  Decrement exponent in < case instead of
+	incrementing in >= case.
+	* soft-fp/op-4.h (_FP_DIV_MEAT_4_udiv): Shift numerator right
+	without decrementing exponent if mantissa >= that for the
+	denominator, not >.
+
+	* soft-fp/op-common.h (_FP_TO_INT): Reverse test of sign for
+	computing saturated result for unsigned overflow.
+
 2013-10-11  Siddhesh Poyarekar  <siddhesh@redhat.com>
 	    Jeff Law  <law@redhat.com>
 

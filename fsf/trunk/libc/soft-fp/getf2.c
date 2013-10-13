@@ -37,10 +37,11 @@ CMPtype __getf2(TFtype a, TFtype b)
   FP_DECL_Q(A); FP_DECL_Q(B);
   CMPtype r;
 
+  FP_INIT_EXCEPTIONS;
   FP_UNPACK_RAW_Q(A, a);
   FP_UNPACK_RAW_Q(B, b);
   FP_CMP_Q(r, A, B, -2);
-  if (r == -2 && (FP_ISSIGNAN_Q(A) || FP_ISSIGNAN_Q(B)))
+  if (r == -2)
     FP_SET_EXCEPTION(FP_EX_INVALID);
   FP_HANDLE_EXCEPTIONS;
 

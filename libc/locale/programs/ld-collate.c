@@ -44,9 +44,9 @@ static inline void
 __attribute ((always_inline))
 obstack_int32_grow (struct obstack *obstack, int32_t data)
 {
+  assert (LOCFILE_ALIGNED_P (obstack_object_size (obstack)));
   data = maybe_swap_uint32 (data);
-  if (sizeof (int32_t) == sizeof (int)
-      && (obstack_object_size (obstack) & (__alignof__ (int) - 1)) == 0)
+  if (sizeof (int32_t) == sizeof (int))
     obstack_int_grow (obstack, data);
   else
     obstack_grow (obstack, &data, sizeof (int32_t));
@@ -56,9 +56,9 @@ static inline void
 __attribute ((always_inline))
 obstack_int32_grow_fast (struct obstack *obstack, int32_t data)
 {
+  assert (LOCFILE_ALIGNED_P (obstack_object_size (obstack)));
   data = maybe_swap_uint32 (data);
-  if (sizeof (int32_t) == sizeof (int)
-      && (obstack_object_size (obstack) & (__alignof__ (int) - 1)) == 0)
+  if (sizeof (int32_t) == sizeof (int))
     obstack_int_grow_fast (obstack, data);
   else
     obstack_grow (obstack, &data, sizeof (int32_t));
@@ -2080,6 +2080,7 @@ add_to_tablewc (uint32_t ch, struct element_t *runp)
 	      weightidx = output_weightwc (atwc.weightpool, atwc.collate,
 					   runp);
 
+	      assert (runp->nwcs > 0);
 	      added = (1 + 1 + runp->nwcs - 1) * sizeof (int32_t);
 	      if (sizeof (int) == sizeof (int32_t))
 		obstack_make_room (atwc.extrapool, added);
@@ -2157,6 +2158,12 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 	  obstack_1grow_fast (&weightpool, sect->rules[j]);
 	++i;
       }
+  /* And align the output.  */
+  i = (nrules * i) % LOCFILE_ALIGN;
+  if (i > 0)
+    do
+      obstack_1grow (&weightpool, '\0');
+    while (++i < LOCFILE_ALIGN);
 
   add_locale_raw_obstack (&file, &weightpool);
 
@@ -2202,7 +2209,7 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 	struct element_t *runp = collate->mbheads[ch];
 	struct element_t *lastp;
 
-	assert ((obstack_object_size (&extrapool) & uint32_align_mask) == 0);
+	assert (LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)));
 
 	tablemb[ch] = -obstack_object_size (&extrapool);
 
@@ -2227,11 +2234,9 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 		struct element_t *curp;
 
 		/* Compute how much space we will need.  */
-		added = ((sizeof (int32_t) + 1 + 2 * (runp->nmbs - 1)
-			  + uint32_align_mask)
-			 & ~uint32_align_mask);
-		assert ((obstack_object_size (&extrapool)
-			 & uint32_align_mask) == 0);
+		added = LOCFILE_ALIGN_UP (sizeof (int32_t) + 1
+					  + 2 * (runp->nmbs - 1));
+		assert (LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)));
 		obstack_make_room (&extrapool, added);
 
 		/* More than one consecutive entry.  We mark this by having
@@ -2288,11 +2293,9 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 		/* Output the weight info.  */
 		weightidx = output_weight (&weightpool, collate, runp);
 
-		added = ((sizeof (int32_t) + 1 + runp->nmbs - 1
-			  + uint32_align_mask)
-			 & ~uint32_align_mask);
-		assert ((obstack_object_size (&extrapool)
-			 & uint32_align_mask) == 0);
+		added = LOCFILE_ALIGN_UP (sizeof (int32_t) + 1
+					  + runp->nmbs - 1);
+		assert (LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)));
 		obstack_make_room (&extrapool, added);
 
 		obstack_int32_grow_fast (&extrapool, weightidx);
@@ -2304,7 +2307,7 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 	      }
 
 	    /* Add alignment bytes if necessary.  */
-	    while ((obstack_object_size (&extrapool) & uint32_align_mask) != 0)
+	    while (!LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)))
 	      obstack_1grow_fast (&extrapool, '\0');
 
 	    /* Next entry.  */
@@ -2313,14 +2316,13 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 	  }
 	while (runp != NULL);
 
-	assert ((obstack_object_size (&extrapool) & uint32_align_mask) == 0);
+	assert (LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)));
 
 	/* If the final entry in the list is not a single character we
 	   add an UNDEFINED entry here.  */
 	if (lastp->nmbs != 1)
 	  {
-	    int added = ((sizeof (int32_t) + 1 + 1 + uint32_align_mask)
-			 & ~uint32_align_mask);
+	    int added = LOCFILE_ALIGN_UP (sizeof (int32_t) + 1 + 1);
 	    obstack_make_room (&extrapool, added);
 
 	    obstack_int32_grow_fast (&extrapool, 0);
@@ -2330,13 +2332,13 @@ collate_output (struct localedef_t *locale, const struct charmap_t *charmap,
 	    obstack_1grow_fast (&extrapool, 0);
 
 	    /* Add alignment bytes if necessary.  */
-	    while ((obstack_object_size (&extrapool) & uint32_align_mask) != 0)
+	    while (!LOCFILE_ALIGNED_P (obstack_object_size (&extrapool)))
 	      obstack_1grow_fast (&extrapool, '\0');
 	  }
       }
 
   /* Add padding to the tables if necessary.  */
-  while ((obstack_object_size (&weightpool) & uint32_align_mask) != 0)
+  while (!LOCFILE_ALIGNED_P (obstack_object_size (&weightpool)))
     obstack_1grow (&weightpool, 0);
 
   /* Now add the four tables.  */

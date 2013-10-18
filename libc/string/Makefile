@@ -63,6 +63,8 @@ tests-$(OPTION_EGLIBC_LOCALE_CODE) \
 tests-ifunc := $(strop-tests:%=test-%-ifunc)
 tests += $(tests-ifunc)
 
+xtests = tst-strcoll-overflow
+
 include ../Rules
 
 tester-ENV = LANGUAGE=C

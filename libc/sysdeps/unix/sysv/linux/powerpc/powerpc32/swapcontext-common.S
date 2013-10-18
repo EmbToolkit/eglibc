@@ -152,15 +152,15 @@ ENTRY(__CONTEXT_FUNC_NAME)
 #  ifdef SHARED
 	lwz     r7,_rtld_global_ro@got(r7)
 	mtlr    r8
-	lwz     r7,RTLD_GLOBAL_RO_DL_HWCAP_OFFSET+4(r7)
+	lwz     r7,RTLD_GLOBAL_RO_DL_HWCAP_OFFSET+LOWORD(r7)
 #  else
 	lwz     r7,_dl_hwcap@got(r7)
 	mtlr    r8
-	lwz     r7,4(r7)
+	lwz     r7,LOWORD(r7)
 #  endif
 # else
-	lis	r7,(_dl_hwcap+4)@ha
-	lwz     r7,(_dl_hwcap+4)@l(r7)
+	lis	r7,(_dl_hwcap+LOWORD)@ha
+	lwz     r7,(_dl_hwcap+LOWORD)@l(r7)
 # endif
 
 # ifdef __CONTEXT_ENABLE_VRS
@@ -265,8 +265,8 @@ ENTRY(__CONTEXT_FUNC_NAME)
 # endif /* __CONTEXT_ENABLE_VRS */
 #endif /* __CONTEXT_ENABLE_FPRS */
 
-#ifdef __GETCONTEXT_EXTRA
-	__GETCONTEXT_EXTRA
+#ifdef __CONTEXT_ENABLE_E500
+	getcontext_e500
 #endif
 
 /* Restore ucontext (parm1) from stack.  */
@@ -312,14 +312,14 @@ ENTRY(__CONTEXT_FUNC_NAME)
 	mtlr    r8
 #   ifdef SHARED
 	lwz     r7,_rtld_global_ro@got(r7)
-	lwz     r7,RTLD_GLOBAL_RO_DL_HWCAP_OFFSET+4(r7)
+	lwz     r7,RTLD_GLOBAL_RO_DL_HWCAP_OFFSET+LOWORD(r7)
 #   else
 	lwz     r7,_dl_hwcap@got(r7)
-	lwz     r7,4(r7)
+	lwz     r7,LOWORD(r7)
 #   endif
 #  else
-	lis	r7,(_dl_hwcap+4)@ha
-	lwz     r7,(_dl_hwcap+4)@l(r7)
+	lis	r7,(_dl_hwcap+LOWORD)@ha
+	lwz     r7,(_dl_hwcap+LOWORD)@l(r7)
 #  endif
 	andis.	r7,r7,(PPC_FEATURE_HAS_ALTIVEC >> 16)
 	la	r10,(_UC_VREGS)(r31)
@@ -472,8 +472,8 @@ ENTRY(__CONTEXT_FUNC_NAME)
 	lfd	fp31,_UC_FREGS+(31*8)(r31)
 #endif /* __CONTEXT_ENABLE_FPRS */
 
-#ifdef __SETCONTEXT_EXTRA
-	__SETCONTEXT_EXTRA
+#ifdef __CONTEXT_ENABLE_E500
+	setcontext_e500
 #endif
 
 	/* Restore LR and CCR, and set CTR to the NIP value */

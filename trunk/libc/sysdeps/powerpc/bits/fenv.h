@@ -19,75 +19,6 @@
 # error "Never use <bits/fenv.h> directly; include <fenv.h> instead."
 #endif
 
-#if defined __NO_FPRS__ && !defined _SOFT_FLOAT /* E500 */
-
-/* Define bits representing the exception.  We use the bit positions of
-   the appropriate bits in the SPEFSCR...  */
-enum
-  {
-    FE_INEXACT =
-#define FE_INEXACT	(1 << (63 - 42))
-      FE_INEXACT,
-    FE_INVALID =
-#define FE_INVALID	(1 << (63 - 43))
-      FE_INVALID,
-    FE_DIVBYZERO =
-#define FE_DIVBYZERO	(1 << (63 - 44))
-      FE_DIVBYZERO,
-    FE_UNDERFLOW =
-#define FE_UNDERFLOW	(1 << (63 - 45))
-      FE_UNDERFLOW,
-    FE_OVERFLOW =
-#define FE_OVERFLOW	(1 << (63 - 46))
-      FE_OVERFLOW
-  };
-
-#define FE_ALL_EXCEPT \
-	(FE_INEXACT | FE_DIVBYZERO | FE_UNDERFLOW | FE_OVERFLOW | FE_INVALID)
-
-/* The E500 support all of the four defined rounding modes.  We use
-   the bit pattern in the SPEFSCR as the values for the appropriate
-   macros.  */
-enum
-  {
-    FE_TONEAREST =
-#define FE_TONEAREST	0
-      FE_TONEAREST,
-    FE_TOWARDZERO =
-#define FE_TOWARDZERO	1
-      FE_TOWARDZERO,
-    FE_UPWARD =
-#define FE_UPWARD	2
-      FE_UPWARD,
-    FE_DOWNWARD =
-#define FE_DOWNWARD	3
-      FE_DOWNWARD
-  };
-
-/* Type representing exception flags.  */
-typedef unsigned int fexcept_t;
-
-typedef double fenv_t;
-
-/* If the default argument is used we use this value.  */
-extern const fenv_t __fe_dfl_env;
-#define FE_DFL_ENV	(&__fe_dfl_env)
-
-#ifdef __USE_GNU
-/* Floating-point environment where all exceptions are enabled.  Note that
-   this is not sufficient to give you SIGFPE.  */
-extern const fenv_t __fe_enabled_env;
-# define FE_ENABLED_ENV	(&__fe_enabled_env)
-
-/* Floating-point environment with all exceptions enabled.  Note that
-   just evaluating this value will set the processor into 'FPU
-   exceptions imprecise recoverable' mode, which may cause a significant
-   performance penalty (but have no other visible effect).  */
-extern const fenv_t *__fe_nomask_env (void);
-# define FE_NOMASK_ENV	(__fe_nomask_env ())
-#endif
-
-#else /* PowerPC 6xx floating-point.  */
 
 /* Define bits representing the exception.  We use the bit positions of
    the appropriate bits in the FPSCR...  */
@@ -242,7 +173,5 @@ extern const fenv_t *__fe_mask_env (void);
 # define FE_MASK_ENV	FE_DFL_ENV
 
 __END_DECLS
-
-#endif
 
 #endif

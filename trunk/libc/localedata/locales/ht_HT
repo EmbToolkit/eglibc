@@ -194,6 +194,8 @@ country_ab2  "<U0048><U0054>"
 country_ab3  "<U0048><U0054><U0049>"
 country_num  332
 country_isbn 99935
+% RH
+country_car  "<U0052><U0048>"
 %
 % Kreyòl ayisyen
 lang_name    "<U004B><U0072><U0065><U0079><U00F2><U006C><U0020><U0061><U0079><U0069><U0073><U0079><U0065><U006E>"
@@ -201,6 +203,8 @@ lang_name    "<U004B><U0072><U0065><U0079><U00F2><U006C><U0020><U0061><U0079><U0
 lang_ab      "<U0068><U0074>"
 % hat
 lang_term    "<U0068><U0061><U0074>"
+% hat
+lang_lib    "<U0068><U0061><U0074>"
 END LC_ADDRESS
 
 LC_TELEPHONE

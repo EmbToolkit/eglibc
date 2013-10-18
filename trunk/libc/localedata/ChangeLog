@@ -1,3 +1,257 @@
+2013-10-13  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/he_IL: Adjust language-code fields of LC_ADDRESS.
+	* locales/hi_IN: Likewise.
+	* locales/hne_IN: Likewise.
+	* locales/hr_HR: Likewise.
+	* locales/hsb_DE: Likewise.
+	* locales/ht_HT: Likewise.
+	* locales/hu_HU: Likewise.
+	* locales/hy_AM: Likewise.
+	* locales/ia_FR: Likewise.
+	* locales/id_ID: Likewise.
+	* locales/ig_NG: Likewise.
+	* locales/ik_CA: Likewise.
+	* locales/is_IS: Likewise.
+	* locales/it_CH: Likewise.
+	* locales/it_IT: Likewise.
+	* locales/iu_CA: Likewise.
+
+2013-10-05  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/ff_SN: Adjust language-code fields of LC_ADDRESS.
+	* locales/fil_PH: Likewise.
+	* locales/fo_FO: Likewise.
+	* locales/fr_BE: Likewise.
+	* locales/fr_CA: Likewise.
+	* locales/fr_CH: Likewise.
+	* locales/fr_FR: Likewise.
+	* locales/fr_LU: Likewise.
+	* locales/fur_IT: Likewise.
+	* locales/fy_DE: Likewise.
+	* locales/fy_NL: Likewise.
+	* locales/ga_IE: Likewise.
+	* locales/gez_ER: Likewise.
+	* locales/gez_ET: Likewise.
+	* locales/gl_ES: Likewise.
+	* locales/gu_IN: Likewise.
+	* locales/gv_GB: Likewise.
+
+2013-10-04  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/pap_AN: Copy / modify pap_AN into pap_AW and pap_CW.
+	* locales/pap_AW: Likewise.
+	* locales/pap_CW: Likewise.
+	* SUPPORTED: Add ar_SS, pap_AW, pap_CW.
+
+2013-10-04  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/ar_SD: Split ar_SD into ar_SD and ar_SS
+	* locales/ar_SS: Likewise.
+
+2013-09-25  Michael Bauer  <fios@akerbeltz.org>
+
+	[BZ #15400]
+	* locales/gd_GB: Version 1.2 of gd_GB locale.
+
+2013-09-23  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15609]
+	* locales/cmn_TW: New locale for cmn_TW.
+	* SUPPORTED: Add cmn_TW.
+
+2013-09-23  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15608]
+	* locales/hak_TW: New locale for hak_TW.
+	* SUPPORTED: Add hak_TW.
+
+2013-09-23  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15608]
+	* locales/lzh_TW: New locale for lzh_TW.
+	* SUPPORTED: Add lzh_TW.
+
+2013-09-23  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15608]
+	* locales/nan_TW: New locale for nan_TW.
+	* SUPPORTED: Add nan_TW.
+
+2013-09-15  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/as_IN: Adjust language-code fields of LC_ADDRESS.
+	* locales/ast_ES: Likewise.
+	* locales/ayc_PE: Likewise.
+	* locales/az_AZ: Likewise.
+	* locales/be_BY: Likewise.
+	* locales/bem_ZM: Likewise.
+	* locales/bg_BG: Likewise.
+	* locales/bho_IN: Likewise.
+	* locales/bn_BD: Likewise.
+	* locales/bn_IN: Likewise.
+	* locales/bo_CN: Likewise.
+	* locales/bo_IN: Likewise.
+	* locales/br_FR: Likewise.
+	* locales/brx_IN: Likewise.
+	* locales/bs_BA: Likewise.
+	* locales/ca_AD: Likewise.
+	* locales/ca_ES: Likewise.
+	* locales/ca_FR: Likewise.
+	* locales/ca_IT: Likewise.
+	* locales/crh_UA: Likewise.
+	* locales/csb_PL: Likewise.
+	* locales/cv_RU: Likewise.
+	* locales/da_DK: Likewise.
+	* locales/de_AT: Likewise.
+	* locales/de_BE: Likewise.
+	* locales/de_CH: Likewise.
+	* locales/de_DE: Likewise.
+	* locales/de_LU: Likewise.
+	* locales/doi_IN: Likewise.
+	* locales/dv_MV: Likewise.
+	* locales/dz_BT: Likewise.
+	* locales/el_CY: Likewise.
+	* locales/el_GR: Likewise.
+	* locales/en_AG: Likewise.
+	* locales/en_AU: Likewise.
+	* locales/en_BW: Likewise.
+	* locales/en_CA: Likewise.
+	* locales/en_DK: Likewise.
+	* locales/en_GB: Likewise.
+	* locales/en_HK: Likewise.
+	* locales/en_IE: Likewise.
+	* locales/en_IN: Likewise.
+	* locales/en_NG: Likewise.
+	* locales/en_NZ: Likewise.
+	* locales/en_PH: Likewise.
+	* locales/en_SG: Likewise.
+	* locales/en_US: Likewise.
+	* locales/en_ZA: Likewise.
+	* locales/en_ZM: Likewise.
+	* locales/en_ZW: Likewise.
+	* locales/es_AR: Likewise.
+	* locales/es_BO: Likewise.
+	* locales/es_CL: Likewise.
+	* locales/es_CO: Likewise.
+	* locales/es_CR: Likewise.
+	* locales/es_CU: Likewise.
+	* locales/es_DO: Likewise.
+	* locales/es_EC: Likewise.
+	* locales/es_ES: Likewise.
+	* locales/es_GT: Likewise.
+	* locales/es_HN: Likewise.
+	* locales/es_MX: Likewise.
+	* locales/es_NI: Likewise.
+	* locales/es_PA: Likewise.
+	* locales/es_PE: Likewise.
+	* locales/es_PR: Likewise.
+	* locales/es_PY: Likewise.
+	* locales/es_SV: Likewise.
+	* locales/es_US: Likewise.
+	* locales/es_UY: Likewise.
+	* locales/es_VE: Likewise.
+	* locales/eu_ES: Likewise.
+
+2013-09-21  Chris Leonard  <cjl@sugarlabs.org>
+
+	[BZ#15919]
+	* locales/ak_GH: New locale for ak_GH.
+	* SUPPORTED: Add ak_GH.
+
+2013-09-15  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/aa_DJ: Adjust language-code fields of LC_ADDRESS.
+	* locales/aa_ER: Likewise.
+	* locales/aa_ET: Likewise.
+	* locales/af_ZA: Likewise.
+	* locales/am_ET: Likewise.
+	* locales/ar_AE: Likewise.
+	* locales/ar_BH: Likewise.
+	* locales/ar_DZ: Likewise.
+	* locales/ar_EG: Likewise.
+	* locales/ar_IN: Likewise.
+	* locales/ar_IQ: Likewise.
+	* locales/ar_JO: Likewise.
+	* locales/ar_KW: Likewise.
+	* locales/ar_LB: Likewise.
+	* locales/ar_LY: Likewise.
+	* locales/ar_MA: Likewise.
+	* locales/ar_OM: Likewise.
+	* locales/ar_QA: Likewise.
+	* locales/ar_SA: Likewise.
+	* locales/ar_SD: Likewise.
+	* locales/ar_SY: Likewise.
+	* locales/ar_TN: Likewise.
+	* locales/ar_YE: Likewise.
+
+2013-09-15  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/aa_ER: Add country_car field to LC_ADDRESS.
+	* locales/as_IN: Likewise.
+	* locales/ast_ES: Likewise.
+	* locales/ayc_PE: Likewise.
+	* locales/bem_ZM: Likewise.
+	* locales/ber_DZ: Likewise.
+	* locales/ber_MA: Likewise.
+	* locales/bho_IN: Likewise.
+	* locales/bo_IN: Likewise.
+	* locales/brx_IN: Likewise.
+	* locales/byn_ER: Likewise.
+	* locales/ca_AD: Likewise.
+	* locales/ca_FR: Likewise.
+	* locales/ca_IT: Likewise.
+	* locales/crh_UA: Likewise.
+	* locales/cv_RU: Likewise.
+	* locales/doi_IN: Likewise.
+	* locales/dz_BT: Likewise.
+	* locales/el_CY: Likewise.
+	* locales/en_US: Likewise.
+	* locales/en_ZM: Likewise.
+	* locales/es_CU: Likewise.
+	* locales/ff_SN: Likewise.
+	* locales/fil_PH: Likewise.
+	* locales/gd_GB: Likewise.
+	* locales/hne_IN: Likewise.
+	* locales/ht_HT: Likewise.
+	* locales/kl_GL: Likewise.
+	* locales/kok_IN: Likewise.
+	* locales/ks_IN: Likewise.
+	* locales/lij_IT: Likewise.
+	* locales/mag_IN: Likewise.
+	* locales/mai_IN: Likewise.
+	* locales/mg_MG: Likewise.
+	* locales/mhr_RU: Likewise.
+	* locales/mni_IN: Likewise.
+	* locales/my_MM: Likewise.
+	* locales/nhn_MX: Likewise.
+	* locales/niu_NZ: Likewise.
+	* locales/or_IN: Likewise.
+	* locales/os_RU: Likewise.
+	* locales/pa_PK: Likewise.
+	* locales/quz_PE: Likewise.
+	* locales/rw_RW: Likewise.
+	* locales/sat_IN: Likewise.
+	* locales/sc_IT: Likewise.
+	* locales/sd_IN: Likewise.
+	* locales/sd_IN@devanagari: Likewise.
+	* locales/shs_CA: Likewise.
+	* locales/si_LK: Likewise.
+	* locales/sid_ET: Likewise.
+	* locales/sq_MK: Likewise.
+	* locales/sw_KE: Likewise.
+	* locales/sw_TZ: Likewise.
+	* locales/szl_PL: Likewise.
+	* locales/ta_LK: Likewise.
+	* locales/ti_ER: Likewise.
+	* locales/tig_ER: Likewise.
+	* locales/tl_PH: Likewise.
+	* locales/ts_ZA: Likewise.
+	* locales/unm_US: Likewise.
+	* locales/ur_IN: Likewise.
+	* locales/wa_BE: Likewise.
+	* locales/yi_US: Likewise.
+
 2013-09-06  Chris Leonard  <cjl@sugarlabs,.org>
 
 	* locales/nr_ZA: Deduplicate country_car.
@@ -9,7 +263,7 @@
 
 2013-09-04  Chris Leonard  <cjl@sugarlabs,.org>
 
-     [BZ #15923]
+	[BZ #15923]
 
 	* locales/ar_SD: Update iso-1427.def and related occurrences.
 	* locales/az_AZ: Likewise.

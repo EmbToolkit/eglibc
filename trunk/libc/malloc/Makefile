@@ -27,7 +27,9 @@ all:
 dist-headers := malloc.h
 headers := $(dist-headers) obstack.h mcheck.h
 tests := mallocbug tst-malloc tst-valloc tst-calloc tst-obstack \
-	 tst-mallocstate tst-mcheck tst-mallocfork tst-trim1 tst-malloc-usable
+	 tst-mallocstate tst-mcheck tst-mallocfork tst-trim1 \
+	 tst-malloc-usable tst-realloc tst-posix_memalign \
+	 tst-pvalloc tst-memalign
 test-srcs = tst-mtrace
 
 routines = malloc morecore mcheck mtrace obstack

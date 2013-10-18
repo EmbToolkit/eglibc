@@ -22,6 +22,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -540,7 +541,7 @@ compare_files (const char *filename1, const char *filename2, size_t size,
 
 /* True if the locale files use the opposite endianness to the
    machine running localedef.  */
-int swap_endianness_p;
+bool swap_endianness_p;
 
 /* The target's value of __align__(uint32_t) - 1.  */
 unsigned int uint32_align_mask = 3;
@@ -629,7 +630,7 @@ add_locale_wstring (struct locale_file *file, const uint32_t *string)
 void
 add_locale_uint32 (struct locale_file *file, uint32_t value)
 {
-  align_locale_data (file, sizeof (uint32_t));
+  align_locale_data (file, LOCFILE_ALIGN);
   record_offset (file);
   value = maybe_swap_uint32 (value);
   obstack_grow (&file->data, &value, sizeof (value));
@@ -641,7 +642,7 @@ void
 add_locale_uint32_array (struct locale_file *file,
 			 const uint32_t *data, size_t n_elems)
 {
-  align_locale_data (file, sizeof (uint32_t));
+  align_locale_data (file, LOCFILE_ALIGN);
   record_offset (file);
   obstack_grow (&file->data, data, n_elems * sizeof (uint32_t));
   maybe_swap_uint32_obstack (&file->data, n_elems);

@@ -55,6 +55,59 @@
 #include <math_private.h>
 #include <fenv.h>
 
+/* Helper macros to compute sin of the input values.  */
+#define POLYNOMIAL2(xx) ((((s5.x * (xx) + s4.x) * (xx) + s3.x) * (xx) + s2.x) \
+			 * (xx))
+
+#define POLYNOMIAL(xx) (POLYNOMIAL2 (xx) + s1.x)
+
+/* The computed polynomial is a variation of the Taylor series expansion for
+   sin(a):
+
+   a - a^3/3! + a^5/5! - a^7/7! + a^9/9! + (1 - a^2) * da / 2
+
+   The constants s1, s2, s3, etc. are pre-computed values of 1/3!, 1/5! and so
+   on.  The result is returned to LHS and correction in COR.  */
+#define TAYLOR_SINCOS(xx, a, da, cor) \
+({									      \
+  double t = ((POLYNOMIAL (xx)  * (a) - 0.5 * (da))  * (xx) + (da));	      \
+  double res = (a) + t;							      \
+  (cor) = ((a) - res) + t;						      \
+  res;									      \
+})
+
+/* This is again a variation of the Taylor series expansion with the term
+   x^3/3! expanded into the following for better accuracy:
+
+   bb * x ^ 3 + 3 * aa * x * x1 * x2 + aa * x1 ^ 3 + aa * x2 ^ 3
+
+   The correction term is dx and bb + aa = -1/3!
+   */
+#define TAYLOR_SLOW(x0, dx, cor) \
+({									      \
+  static const double th2_36 = 206158430208.0;	/*    1.5*2**37   */	      \
+  double xx = (x0) * (x0);						      \
+  double x1 = ((x0) + th2_36) - th2_36;					      \
+  double y = aa.x * x1 * x1 * x1;					      \
+  double r = (x0) + y;							      \
+  double x2 = ((x0) - x1) + (dx);					      \
+  double t = (((POLYNOMIAL2 (xx) + bb.x) * xx + 3.0 * aa.x * x1 * x2)	      \
+	      * (x0)  + aa.x * x2 * x2 * x2 + (dx));			      \
+  t = (((x0) - r) + y) + t;						      \
+  double res = r + t;							      \
+  (cor) = (r - res) + t;						      \
+  res;									      \
+})
+
+#define SINCOS_TABLE_LOOKUP(u, sn, ssn, cs, ccs) \
+({									      \
+  int4 k = u.i[LOW_HALF] << 2;						      \
+  sn = __sincostab.x[k];						      \
+  ssn = __sincostab.x[k + 1];						      \
+  cs = __sincostab.x[k + 2];						      \
+  ccs = __sincostab.x[k + 3];						      \
+})
+
 #ifndef SECTION
 # define SECTION
 #endif
@@ -74,10 +127,8 @@ static const double
 
 void __dubsin (double x, double dx, double w[]);
 void __docos (double x, double dx, double w[]);
-double __mpsin (double x, double dx);
-double __mpcos (double x, double dx);
-double __mpsin1 (double x);
-double __mpcos1 (double x);
+double __mpsin (double x, double dx, bool reduce_range);
+double __mpcos (double x, double dx, bool reduce_range);
 static double slow (double x);
 static double slow1 (double x);
 static double slow2 (double x);
@@ -92,6 +143,39 @@ static double cslow2 (double x);
 static double csloww (double x, double dx, double orig);
 static double csloww1 (double x, double dx, double orig);
 static double csloww2 (double x, double dx, double orig, int n);
+
+/* Reduce range of X and compute sin of a + da.  K is the amount by which to
+   rotate the quadrants.  This allows us to use the same routine to compute cos
+   by simply rotating the quadrants by 1.  */
+static inline double
+__always_inline
+reduce_and_compute (double x, double a, double da, unsigned int k)
+{
+  double retval = 0;
+  unsigned int n = __branred (x, &a, &da);
+  k = (n + k) % 4;
+  switch (k)
+    {
+      case 0:
+	if (a * a < 0.01588)
+	  retval = bsloww (a, da, x, n);
+	else
+	  retval = bsloww1 (a, da, x, n);
+	break;
+      case 2:
+	if (a * a < 0.01588)
+	  retval = bsloww (-a, -da, x, n);
+	else
+	  retval = bsloww1 (-a, -da, x, n);
+	break;
+
+      case 1:
+      case 3:
+	retval = bsloww2 (a, da, x, n);
+	break;
+    }
+  return retval;
+}
 
 /*******************************************************************/
 /* An ultimate sin routine. Given an IEEE double machine number x   */
@@ -113,21 +197,16 @@ __sin (double x)
   m = u.i[HIGH_HALF];
   k = 0x7fffffff & m;		/* no sign           */
   if (k < 0x3e500000)		/* if x->0 =>sin(x)=x */
-    {
-      retval = x;
-      goto ret;
-    }
+    retval = x;
  /*---------------------------- 2^-26 < |x|< 0.25 ----------------------*/
   else if (k < 0x3fd00000)
     {
       xx = x * x;
-      /*Taylor series.  */
-      t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + s1.x)
-	   * (xx * x));
+      /* Taylor series.  */
+      t = POLYNOMIAL (xx) * (xx * x);
       res = x + t;
       cor = (x - res) + t;
       retval = (res == res + 1.07 * cor) ? res : slow (x);
-      goto ret;
     }				/*  else  if (k < 0x3fd00000)    */
 /*---------------------------- 0.25<|x|< 0.855469---------------------- */
   else if (k < 0x3feb6000)
@@ -137,16 +216,16 @@ __sin (double x)
       xx = y * y;
       s = y + y * xx * (sn3 + xx * sn5);
       c = xx * (cs2 + xx * (cs4 + xx * cs6));
-      k = u.i[LOW_HALF] << 2;
-      sn = (m > 0) ? __sincostab.x[k] : -__sincostab.x[k];
-      ssn = (m > 0) ? __sincostab.x[k + 1] : -__sincostab.x[k + 1];
-      cs = __sincostab.x[k + 2];
-      ccs = __sincostab.x[k + 3];
+      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
+      if (m <= 0)
+        {
+          sn = -sn;
+	  ssn = -ssn;
+	}
       cor = (ssn + s * ccs - sn * c) + cs * s;
       res = sn + cor;
       cor = (sn - res) + cor;
       retval = (res == res + 1.096 * cor) ? res : slow1 (x);
-      goto ret;
     }				/*   else  if (k < 0x3feb6000)    */
 
 /*----------------------- 0.855469  <|x|<2.426265  ----------------------*/
@@ -167,16 +246,11 @@ __sin (double x)
       xx = y * y;
       s = y + y * xx * (sn3 + xx * sn5);
       c = xx * (cs2 + xx * (cs4 + xx * cs6));
-      k = u.i[LOW_HALF] << 2;
-      sn = __sincostab.x[k];
-      ssn = __sincostab.x[k + 1];
-      cs = __sincostab.x[k + 2];
-      ccs = __sincostab.x[k + 3];
+      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
       cor = (ccs - s * ssn - cs * c) - sn * s;
       res = cs + cor;
       cor = (cs - res) + cor;
       retval = (res == res + 1.020 * cor) ? ((m > 0) ? res : -res) : slow2 (x);
-      goto ret;
     }				/*   else  if (k < 0x400368fd)    */
 
 /*-------------------------- 2.426265<|x|< 105414350 ----------------------*/
@@ -204,14 +278,10 @@ __sin (double x)
 	    }
 	  if (xx < 0.01588)
 	    {
-	      /*Taylor series */
-	      t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx
-		    + s1.x) * a - 0.5 * da) * xx + da;
-	      res = a + t;
-	      cor = (a - res) + t;
+	      /* Taylor series.  */
+	      res = TAYLOR_SINCOS (xx, a, da, cor);
 	      cor = (cor > 0) ? 1.02 * cor + eps : 1.02 * cor - eps;
 	      retval = (res == res + cor) ? res : sloww (a, da, x);
-	      goto ret;
 	    }
 	  else
 	    {
@@ -232,18 +302,13 @@ __sin (double x)
 	      xx = y * y;
 	      s = y + (db + y * xx * (sn3 + xx * sn5));
 	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      k = u.i[LOW_HALF] << 2;
-	      sn = __sincostab.x[k];
-	      ssn = __sincostab.x[k + 1];
-	      cs = __sincostab.x[k + 2];
-	      ccs = __sincostab.x[k + 3];
+	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	      cor = (ssn + s * ccs - sn * c) + cs * s;
 	      res = sn + cor;
 	      cor = (sn - res) + cor;
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: sloww1 (a, da, x));
-	      goto ret;
 	    }
 	  break;
 
@@ -257,11 +322,7 @@ __sin (double x)
 	  u.x = big.x + a;
 	  y = a - (u.x - big.x) + da;
 	  xx = y * y;
-	  k = u.i[LOW_HALF] << 2;
-	  sn = __sincostab.x[k];
-	  ssn = __sincostab.x[k + 1];
-	  cs = __sincostab.x[k + 2];
-	  ccs = __sincostab.x[k + 3];
+	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	  s = y + y * xx * (sn3 + xx * sn5);
 	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
 	  cor = (ccs - s * ssn - cs * c) - sn * s;
@@ -270,11 +331,8 @@ __sin (double x)
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n & 2) ? -res : res)
 		    : sloww2 (a, da, x, n));
-	  goto ret;
-
 	  break;
 	}
-
     }				/*   else  if (k <  0x419921FB )    */
 
 /*---------------------105414350 <|x|< 281474976710656 --------------------*/
@@ -307,14 +365,10 @@ __sin (double x)
 	    }
 	  if (xx < 0.01588)
 	    {
-	      /* Taylor series */
-	      t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx
-		    + s1.x) * a - 0.5 * da) * xx + da;
-	      res = a + t;
-	      cor = (a - res) + t;
+	      /* Taylor series.  */
+	      res = TAYLOR_SINCOS (xx, a, da, cor);
 	      cor = (cor > 0) ? 1.02 * cor + eps : 1.02 * cor - eps;
 	      retval = (res == res + cor) ? res : bsloww (a, da, x, n);
-	      goto ret;
 	    }
 	  else
 	    {
@@ -335,18 +389,13 @@ __sin (double x)
 	      xx = y * y;
 	      s = y + (db + y * xx * (sn3 + xx * sn5));
 	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      k = u.i[LOW_HALF] << 2;
-	      sn = __sincostab.x[k];
-	      ssn = __sincostab.x[k + 1];
-	      cs = __sincostab.x[k + 2];
-	      ccs = __sincostab.x[k + 3];
+	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	      cor = (ssn + s * ccs - sn * c) + cs * s;
 	      res = sn + cor;
 	      cor = (sn - res) + cor;
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: bsloww1 (a, da, x, n));
-	      goto ret;
 	    }
 	  break;
 
@@ -360,11 +409,7 @@ __sin (double x)
 	  u.x = big.x + a;
 	  y = a - (u.x - big.x) + da;
 	  xx = y * y;
-	  k = u.i[LOW_HALF] << 2;
-	  sn = __sincostab.x[k];
-	  ssn = __sincostab.x[k + 1];
-	  cs = __sincostab.x[k + 2];
-	  ccs = __sincostab.x[k + 3];
+	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	  s = y + y * xx * (sn3 + xx * sn5);
 	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
 	  cor = (ccs - s * ssn - cs * c) - sn * s;
@@ -373,40 +418,13 @@ __sin (double x)
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n & 2) ? -res : res)
 		    : bsloww2 (a, da, x, n));
-	  goto ret;
-
 	  break;
 	}
     }				/*   else  if (k <  0x42F00000 )   */
 
 /* -----------------281474976710656 <|x| <2^1024----------------------------*/
   else if (k < 0x7ff00000)
-    {
-      n = __branred (x, &a, &da);
-      switch (n)
-	{
-	case 0:
-	  if (a * a < 0.01588)
-	    retval = bsloww (a, da, x, n);
-	  else
-	    retval = bsloww1 (a, da, x, n);
-	  goto ret;
-	  break;
-	case 2:
-	  if (a * a < 0.01588)
-	    retval = bsloww (-a, -da, x, n);
-	  else
-	    retval = bsloww1 (-a, -da, x, n);
-	  goto ret;
-	  break;
-
-	case 1:
-	case 3:
-	  retval = bsloww2 (a, da, x, n);
-	  goto ret;
-	  break;
-	}
-    }				/*   else  if (k <  0x7ff00000 )    */
+    retval = reduce_and_compute (x, a, da, 0);
 
 /*--------------------- |x| > 2^1024 ----------------------------------*/
   else
@@ -414,10 +432,8 @@ __sin (double x)
       if (k == 0x7ff00000 && u.i[LOW_HALF] == 0)
 	__set_errno (EDOM);
       retval = x / x;
-      goto ret;
     }
 
-ret:
   return retval;
 }
 
@@ -444,11 +460,9 @@ __cos (double x)
   m = u.i[HIGH_HALF];
   k = 0x7fffffff & m;
 
+  /* |x|<2^-27 => cos(x)=1 */
   if (k < 0x3e400000)
-    {
-      retval = 1.0;
-      goto ret;
-    }				/* |x|<2^-27 => cos(x)=1 */
+    retval = 1.0;
 
   else if (k < 0x3feb6000)
     {				/* 2^-27 < |x| < 0.855469 */
@@ -458,16 +472,11 @@ __cos (double x)
       xx = y * y;
       s = y + y * xx * (sn3 + xx * sn5);
       c = xx * (cs2 + xx * (cs4 + xx * cs6));
-      k = u.i[LOW_HALF] << 2;
-      sn = __sincostab.x[k];
-      ssn = __sincostab.x[k + 1];
-      cs = __sincostab.x[k + 2];
-      ccs = __sincostab.x[k + 3];
+      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
       cor = (ccs - s * ssn - cs * c) - sn * s;
       res = cs + cor;
       cor = (cs - res) + cor;
       retval = (res == res + 1.020 * cor) ? res : cslow2 (x);
-      goto ret;
     }				/*   else  if (k < 0x3feb6000)    */
 
   else if (k < 0x400368fd)
@@ -478,13 +487,9 @@ __cos (double x)
       xx = a * a;
       if (xx < 0.01588)
 	{
-	  t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + s1.x)
-	       * a - 0.5 * da) * xx + da;
-	  res = a + t;
-	  cor = (a - res) + t;
+	  res = TAYLOR_SINCOS (xx, a, da, cor);
 	  cor = (cor > 0) ? 1.02 * cor + 1.0e-31 : 1.02 * cor - 1.0e-31;
 	  retval = (res == res + cor) ? res : csloww (a, da, x);
-	  goto ret;
 	}
       else
 	{
@@ -505,18 +510,13 @@ __cos (double x)
 	  xx = y * y;
 	  s = y + (db + y * xx * (sn3 + xx * sn5));
 	  c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	  k = u.i[LOW_HALF] << 2;
-	  sn = __sincostab.x[k];
-	  ssn = __sincostab.x[k + 1];
-	  cs = __sincostab.x[k + 2];
-	  ccs = __sincostab.x[k + 3];
+	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	  cor = (ssn + s * ccs - sn * c) + cs * s;
 	  res = sn + cor;
 	  cor = (sn - res) + cor;
 	  cor = (cor > 0) ? 1.035 * cor + 1.0e-31 : 1.035 * cor - 1.0e-31;
 	  retval = ((res == res + cor) ? ((m) ? res : -res)
 		    : csloww1 (a, da, x));
-	  goto ret;
 	}
 
     }				/*   else  if (k < 0x400368fd)    */
@@ -546,13 +546,9 @@ __cos (double x)
 	    }
 	  if (xx < 0.01588)
 	    {
-	      t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx
-		    + s1.x) * a - 0.5 * da) * xx + da;
-	      res = a + t;
-	      cor = (a - res) + t;
+	      res = TAYLOR_SINCOS (xx, a, da, cor);
 	      cor = (cor > 0) ? 1.02 * cor + eps : 1.02 * cor - eps;
 	      retval = (res == res + cor) ? res : csloww (a, da, x);
-	      goto ret;
 	    }
 	  else
 	    {
@@ -573,18 +569,13 @@ __cos (double x)
 	      xx = y * y;
 	      s = y + (db + y * xx * (sn3 + xx * sn5));
 	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      k = u.i[LOW_HALF] << 2;
-	      sn = __sincostab.x[k];
-	      ssn = __sincostab.x[k + 1];
-	      cs = __sincostab.x[k + 2];
-	      ccs = __sincostab.x[k + 3];
+	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	      cor = (ssn + s * ccs - sn * c) + cs * s;
 	      res = sn + cor;
 	      cor = (sn - res) + cor;
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: csloww1 (a, da, x));
-	      goto ret;
 	    }
 	  break;
 
@@ -598,11 +589,7 @@ __cos (double x)
 	  u.x = big.x + a;
 	  y = a - (u.x - big.x) + da;
 	  xx = y * y;
-	  k = u.i[LOW_HALF] << 2;
-	  sn = __sincostab.x[k];
-	  ssn = __sincostab.x[k + 1];
-	  cs = __sincostab.x[k + 2];
-	  ccs = __sincostab.x[k + 3];
+	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	  s = y + y * xx * (sn3 + xx * sn5);
 	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
 	  cor = (ccs - s * ssn - cs * c) - sn * s;
@@ -611,8 +598,6 @@ __cos (double x)
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n) ? -res : res)
 		    : csloww2 (a, da, x, n));
-	  goto ret;
-
 	  break;
 	}
     }				/*   else  if (k <  0x419921FB )    */
@@ -646,13 +631,9 @@ __cos (double x)
 	    }
 	  if (xx < 0.01588)
 	    {
-	      t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx
-		    + s1.x) * a - 0.5 * da) * xx + da;
-	      res = a + t;
-	      cor = (a - res) + t;
+	      res = TAYLOR_SINCOS (xx, a, da, cor);
 	      cor = (cor > 0) ? 1.02 * cor + eps : 1.02 * cor - eps;
 	      retval = (res == res + cor) ? res : bsloww (a, da, x, n);
-	      goto ret;
 	    }
 	  else
 	    {
@@ -673,18 +654,13 @@ __cos (double x)
 	      xx = y * y;
 	      s = y + (db + y * xx * (sn3 + xx * sn5));
 	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      k = u.i[LOW_HALF] << 2;
-	      sn = __sincostab.x[k];
-	      ssn = __sincostab.x[k + 1];
-	      cs = __sincostab.x[k + 2];
-	      ccs = __sincostab.x[k + 3];
+	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	      cor = (ssn + s * ccs - sn * c) + cs * s;
 	      res = sn + cor;
 	      cor = (sn - res) + cor;
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: bsloww1 (a, da, x, n));
-	      goto ret;
 	    }
 	  break;
 
@@ -698,11 +674,7 @@ __cos (double x)
 	  u.x = big.x + a;
 	  y = a - (u.x - big.x) + da;
 	  xx = y * y;
-	  k = u.i[LOW_HALF] << 2;
-	  sn = __sincostab.x[k];
-	  ssn = __sincostab.x[k + 1];
-	  cs = __sincostab.x[k + 2];
-	  ccs = __sincostab.x[k + 3];
+	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 	  s = y + y * xx * (sn3 + xx * sn5);
 	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
 	  cor = (ccs - s * ssn - cs * c) - sn * s;
@@ -711,49 +683,21 @@ __cos (double x)
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n) ? -res : res)
 		    : bsloww2 (a, da, x, n));
-	  goto ret;
 	  break;
 	}
     }				/*   else  if (k <  0x42F00000 )    */
 
+  /* 281474976710656 <|x| <2^1024 */
   else if (k < 0x7ff00000)
-    {				/* 281474976710656 <|x| <2^1024 */
-
-      n = __branred (x, &a, &da);
-      switch (n)
-	{
-	case 1:
-	  if (a * a < 0.01588)
-	    retval = bsloww (-a, -da, x, n);
-	  else
-	    retval = bsloww1 (-a, -da, x, n);
-	  goto ret;
-	  break;
-	case 3:
-	  if (a * a < 0.01588)
-	    retval = bsloww (a, da, x, n);
-	  else
-	    retval = bsloww1 (a, da, x, n);
-	  goto ret;
-	  break;
-
-	case 0:
-	case 2:
-	  retval = bsloww2 (a, da, x, n);
-	  goto ret;
-	  break;
-	}
-    }				/*   else  if (k <  0x7ff00000 )    */
+    retval = reduce_and_compute (x, a, da, 1);
 
   else
     {
       if (k == 0x7ff00000 && u.i[LOW_HALF] == 0)
 	__set_errno (EDOM);
       retval = x / x;		/* |x| > 2^1024 */
-      goto ret;
     }
 
-ret:
   return retval;
 }
 
@@ -766,18 +710,8 @@ static double
 SECTION
 slow (double x)
 {
-  static const double th2_36 = 206158430208.0;	/*    1.5*2**37   */
-  double y, x1, x2, xx, r, t, res, cor, w[2];
-  x1 = (x + th2_36) - th2_36;
-  y = aa.x * x1 * x1 * x1;
-  r = x + y;
-  x2 = x - x1;
-  xx = x * x;
-  t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + bb.x) * xx
-       + 3.0 * aa.x * x1 * x2) * x + aa.x * x2 * x2 * x2;
-  t = ((x - r) + y) + t;
-  res = r + t;
-  cor = (r - res) + t;
+  double res, cor, w[2];
+  res = TAYLOR_SLOW (x, 0, cor);
   if (res == res + 1.0007 * cor)
     return res;
   else
@@ -786,12 +720,12 @@ slow (double x)
       if (w[0] == w[0] + 1.000000001 * w[1])
 	return (x > 0) ? w[0] : -w[0];
       else
-	return (x > 0) ? __mpsin (x, 0) : -__mpsin (-x, 0);
+	return (x > 0) ? __mpsin (x, 0, false) : -__mpsin (-x, 0, false);
     }
 }
 
 /*******************************************************************************/
-/* Routine compute sin(x) for   0.25<|x|< 0.855469 by  __sincostab.tbl   and Taylor */
+/* Routine compute sin(x) for 0.25<|x|< 0.855469 by __sincostab.tbl and Taylor */
 /* and if result still doesn't accurate enough by mpsin   or dubsin            */
 /*******************************************************************************/
 
@@ -802,18 +736,13 @@ slow1 (double x)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
   y = ABS (x);
   u.x = big.x + y;
   y = y - (u.x - big.x);
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];	/* Data          */
-  ssn = __sincostab.x[k + 1];	/*  from         */
-  cs = __sincostab.x[k + 2];	/*   tables      */
-  ccs = __sincostab.x[k + 3];	/*    __sincostab.tbl */
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = y - y1;
   c1 = (cs + t22) - t22;
@@ -831,7 +760,7 @@ slow1 (double x)
       if (w[0] == w[0] + 1.000000005 * w[1])
 	return (x > 0) ? w[0] : -w[0];
       else
-	return (x > 0) ? __mpsin (x, 0) : -__mpsin (-x, 0);
+	return (x > 0) ? __mpsin (x, 0, false) : -__mpsin (-x, 0, false);
     }
 }
 
@@ -846,7 +775,6 @@ slow2 (double x)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res, del;
   static const double t22 = 6291456.0;
-  int4 k;
   y = ABS (x);
   y = hp0.x - y;
   if (y >= 0)
@@ -864,11 +792,7 @@ slow2 (double x)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = y * del + xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = (y - y1) + del;
   e1 = (sn + t22) - t22;
@@ -889,7 +813,7 @@ slow2 (double x)
       if (w[0] == w[0] + 1.000000005 * w[1])
 	return (x > 0) ? w[0] : -w[0];
       else
-	return (x > 0) ? __mpsin (x, 0) : -__mpsin (-x, 0);
+	return (x > 0) ? __mpsin (x, 0, false) : -__mpsin (-x, 0, false);
     }
 }
 
@@ -905,24 +829,14 @@ static double
 SECTION
 sloww (double x, double dx, double orig)
 {
-  static const double th2_36 = 206158430208.0;	/*    1.5*2**37   */
-  double y, x1, x2, xx, r, t, res, cor, w[2], a, da, xn;
+  double y, t, res, cor, w[2], a, da, xn;
   union
   {
     int4 i[2];
     double x;
   } v;
   int4 n;
-  x1 = (x + th2_36) - th2_36;
-  y = aa.x * x1 * x1 * x1;
-  r = x + y;
-  x2 = (x - x1) + dx;
-  xx = x * x;
-  t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + bb.x) * xx
-       + 3.0 * aa.x * x1 * x2) * x + aa.x * x2 * x2 * x2 + dx;
-  t = ((x - r) + y) + t;
-  res = r + t;
-  cor = (r - res) + t;
+  res = TAYLOR_SLOW (x, dx, cor);
   cor =
     (cor >
      0) ? 1.0005 * cor + ABS (orig) * 3.1e-30 : 1.0005 * cor -
@@ -966,7 +880,7 @@ sloww (double x, double dx, double orig)
 	  if (w[0] == w[0] + cor)
 	    return (a > 0) ? w[0] : -w[0];
 	  else
-	    return __mpsin1 (orig);
+	    return __mpsin (orig, 0, true);
 	}
     }
 }
@@ -985,7 +899,6 @@ sloww1 (double x, double dx, double orig)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -994,11 +907,7 @@ sloww1 (double x, double dx, double orig)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
   c1 = (cs + t22) - t22;
@@ -1028,7 +937,7 @@ sloww1 (double x, double dx, double orig)
       if (w[0] == w[0] + cor)
 	return (x > 0) ? w[0] : -w[0];
       else
-	return __mpsin1 (orig);
+	return __mpsin (orig, 0, true);
     }
 }
 
@@ -1046,7 +955,6 @@ sloww2 (double x, double dx, double orig, int n)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1055,11 +963,7 @@ sloww2 (double x, double dx, double orig, int n)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
@@ -1090,7 +994,7 @@ sloww2 (double x, double dx, double orig, int n)
       if (w[0] == w[0] + cor)
 	return (n & 2) ? -w[0] : w[0];
       else
-	return __mpsin1 (orig);
+	return __mpsin (orig, 0, true);
     }
 }
 
@@ -1106,19 +1010,9 @@ static double
 SECTION
 bsloww (double x, double dx, double orig, int n)
 {
-  static const double th2_36 = 206158430208.0;	/*    1.5*2**37   */
-  double y, x1, x2, xx, r, t, res, cor, w[2];
+  double res, cor, w[2];
 
-  x1 = (x + th2_36) - th2_36;
-  y = aa.x * x1 * x1 * x1;
-  r = x + y;
-  x2 = (x - x1) + dx;
-  xx = x * x;
-  t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + bb.x) * xx
-       + 3.0 * aa.x * x1 * x2) * x + aa.x * x2 * x2 * x2 + dx;
-  t = ((x - r) + y) + t;
-  res = r + t;
-  cor = (r - res) + t;
+  res = TAYLOR_SLOW (x, dx, cor);
   cor = (cor > 0) ? 1.0005 * cor + 1.1e-24 : 1.0005 * cor - 1.1e-24;
   if (res == res + cor)
     return res;
@@ -1132,7 +1026,7 @@ bsloww (double x, double dx, double orig, int n)
       if (w[0] == w[0] + cor)
 	return (x > 0) ? w[0] : -w[0];
       else
-	return (n & 1) ? __mpcos1 (orig) : __mpsin1 (orig);
+	return (n & 1) ? __mpcos (orig, 0, true) : __mpsin (orig, 0, true);
     }
 }
 
@@ -1150,7 +1044,6 @@ bsloww1 (double x, double dx, double orig, int n)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1159,11 +1052,7 @@ bsloww1 (double x, double dx, double orig, int n)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
   c1 = (cs + t22) - t22;
@@ -1188,7 +1077,7 @@ bsloww1 (double x, double dx, double orig, int n)
       if (w[0] == w[0] + cor)
 	return (x > 0) ? w[0] : -w[0];
       else
-	return (n & 1) ? __mpcos1 (orig) : __mpsin1 (orig);
+	return (n & 1) ? __mpcos (orig, 0, true) : __mpsin (orig, 0, true);
     }
 }
 
@@ -1206,7 +1095,6 @@ bsloww2 (double x, double dx, double orig, int n)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1215,11 +1103,7 @@ bsloww2 (double x, double dx, double orig, int n)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
@@ -1245,7 +1129,7 @@ bsloww2 (double x, double dx, double orig, int n)
       if (w[0] == w[0] + cor)
 	return (n & 2) ? -w[0] : w[0];
       else
-	return (n & 1) ? __mpsin1 (orig) : __mpcos1 (orig);
+	return (n & 1) ? __mpsin (orig, 0, true) : __mpcos (orig, 0, true);
     }
 }
 
@@ -1261,7 +1145,6 @@ cslow2 (double x)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1269,11 +1152,7 @@ cslow2 (double x)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = y - y1;
   e1 = (sn + t22) - t22;
@@ -1292,7 +1171,7 @@ cslow2 (double x)
       if (w[0] == w[0] + 1.000000005 * w[1])
 	return w[0];
       else
-	return __mpcos (x, 0);
+	return __mpcos (x, 0, false);
     }
 }
 
@@ -1308,8 +1187,7 @@ static double
 SECTION
 csloww (double x, double dx, double orig)
 {
-  static const double th2_36 = 206158430208.0;	/*    1.5*2**37   */
-  double y, x1, x2, xx, r, t, res, cor, w[2], a, da, xn;
+  double y, t, res, cor, w[2], a, da, xn;
   union
   {
     int4 i[2];
@@ -1317,17 +1195,8 @@ csloww (double x, double dx, double orig)
   } v;
   int4 n;
 
-  x1 = (x + th2_36) - th2_36;
-  y = aa.x * x1 * x1 * x1;
-  r = x + y;
-  x2 = (x - x1) + dx;
-  xx = x * x;
   /* Taylor series */
-  t = (((((s5.x * xx + s4.x) * xx + s3.x) * xx + s2.x) * xx + bb.x) * xx
-       + 3.0 * aa.x * x1 * x2) * x + aa.x * x2 * x2 * x2 + dx;
-  t = ((x - r) + y) + t;
-  res = r + t;
-  cor = (r - res) + t;
+  t = TAYLOR_SLOW (x, dx, cor);
 
   if (cor > 0)
     cor = 1.0005 * cor + ABS (orig) * 3.1e-30;
@@ -1375,7 +1244,7 @@ csloww (double x, double dx, double orig)
 	  if (w[0] == w[0] + cor)
 	    return (a > 0) ? w[0] : -w[0];
 	  else
-	    return __mpcos1 (orig);
+	    return __mpcos (orig, 0, true);
 	}
     }
 }
@@ -1394,7 +1263,6 @@ csloww1 (double x, double dx, double orig)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1403,11 +1271,7 @@ csloww1 (double x, double dx, double orig)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
   c1 = (cs + t22) - t22;
@@ -1435,7 +1299,7 @@ csloww1 (double x, double dx, double orig)
       if (w[0] == w[0] + cor)
 	return (x > 0) ? w[0] : -w[0];
       else
-	return __mpcos1 (orig);
+	return __mpcos (orig, 0, true);
     }
 }
 
@@ -1454,7 +1318,6 @@ csloww2 (double x, double dx, double orig, int n)
   mynumber u;
   double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
   static const double t22 = 6291456.0;
-  int4 k;
 
   y = ABS (x);
   u.x = big.x + y;
@@ -1463,11 +1326,7 @@ csloww2 (double x, double dx, double orig, int n)
   xx = y * y;
   s = y * xx * (sn3 + xx * sn5);
   c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  k = u.i[LOW_HALF] << 2;
-  sn = __sincostab.x[k];
-  ssn = __sincostab.x[k + 1];
-  cs = __sincostab.x[k + 2];
-  ccs = __sincostab.x[k + 3];
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
 
   y1 = (y + t22) - t22;
   y2 = (y - y1) + dx;
@@ -1496,7 +1355,7 @@ csloww2 (double x, double dx, double orig, int n)
       if (w[0] == w[0] + cor)
 	return (n) ? -w[0] : w[0];
       else
-	return __mpcos1 (orig);
+	return __mpcos (orig, 0, true);
     }
 }
 

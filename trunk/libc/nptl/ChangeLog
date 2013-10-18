@@ -1,3 +1,25 @@
+2013-10-04  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* tst-mutex8.c (check_type) [ENABLE_PI]: Handle ENOTSUP failure
+	from pthread_mutex_init.
+
+2013-10-01  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15988]
+	* pthread_cond_broadcast.c (__pthread_cond_broadcast)
+	[lll_futex_cmp_requeue_pi && __ASSUME_REQUEUE_PI]: Use
+	USE_REQUEUE_PI.
+	* pthread_cond_signal.c (__pthread_cond_signal)
+	[lll_futex_cmd_requeue_pi && __ASSUME_REQUEUE_PI]: Likewise.
+
+2013-09-27  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/pthread/bits/libc-lock.h [_LIBC && (!NOT_IN_libc ||
+	IS_IN_libpthread)] (__libc_lock_fini_recursive): Use the mutex
+	member of the argument.
+	(__libc_lock_trylock_recursive): Likewise.
+	(__libc_lock_unlock_recursive): Likewise.
+
 2013-09-04  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/unix/sysv/linux/x86_64/cancellation.S

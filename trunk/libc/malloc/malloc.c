@@ -1878,6 +1878,8 @@ static int perturb_byte;
 #define free_perturb(p, n) memset (p, perturb_byte & 0xff, n)
 
 
+#include <stap-probe.h>
+
 /* ------------------- Support for multiple arenas -------------------- */
 #include "arena.c"
 
@@ -2214,15 +2216,6 @@ static void do_check_malloc_state(mstate av)
   /* top chunk is OK */
   check_chunk(av, av->top);
 
-  /* sanity checks for statistics */
-
-  assert(mp_.n_mmaps <= mp_.max_n_mmaps);
-
-  assert((unsigned long)(av->system_mem) <=
-	 (unsigned long)(av->max_system_mem));
-
-  assert((unsigned long)(mp_.mmapped_mem) <=
-	 (unsigned long)(mp_.max_mmapped_mem));
 }
 #endif
 
@@ -2446,8 +2439,10 @@ static void* sysmalloc(INTERNAL_SIZE_T nb, mstate av)
     below even if we cannot call MORECORE.
   */
 
-  if (size > 0)
+  if (size > 0) {
     brk = (char*)(MORECORE(size));
+    LIBC_PROBE (memory_sbrk_more, 2, brk, size);
+  }
 
   if (brk != (char*)(MORECORE_FAILURE)) {
     /* Call the `morecore' hook if necessary.  */
@@ -2745,6 +2740,8 @@ static int systrim(size_t pad, mstate av)
 	(*hook) ();
       new_brk = (char*)(MORECORE(0));
 
+      LIBC_PROBE (memory_sbrk_less, 2, new_brk, extra);
+
       if (new_brk != (char*)MORECORE_FAILURE) {
 	released = (long)(current_brk - new_brk);
 
@@ -2854,6 +2851,7 @@ __libc_malloc(size_t bytes)
     return 0;
   victim = _int_malloc(ar_ptr, bytes);
   if(!victim) {
+    LIBC_PROBE (memory_malloc_retry, 1, bytes);
     ar_ptr = arena_get_retry(ar_ptr, bytes);
     if (__builtin_expect(ar_ptr != NULL, 1)) {
       victim = _int_malloc(ar_ptr, bytes);
@@ -2894,6 +2892,8 @@ __libc_free(void* mem)
       {
 	mp_.mmap_threshold = chunksize (p);
 	mp_.trim_threshold = 2 * mp_.mmap_threshold;
+	LIBC_PROBE (memory_mallopt_free_dyn_thresholds, 2,
+		    mp_.mmap_threshold, mp_.trim_threshold);
       }
     munmap_chunk(p);
     return;
@@ -2973,6 +2973,7 @@ __libc_realloc(void* oldmem, size_t bytes)
 #endif
 
 #if !defined PER_THREAD
+  LIBC_PROBE (memory_arena_reuse_realloc, 1, ar_ptr);
   /* As in malloc(), remember this arena for the next allocation. */
   tsd_setspecific(arena_key, (void *)ar_ptr);
 #endif
@@ -2986,6 +2987,7 @@ __libc_realloc(void* oldmem, size_t bytes)
   if (newp == NULL)
     {
       /* Try harder to allocate memory in other arenas.  */
+      LIBC_PROBE (memory_realloc_retry, 2, bytes, oldmem);
       newp = __libc_malloc(bytes);
       if (newp != NULL)
 	{
@@ -3015,11 +3017,19 @@ __libc_memalign(size_t alignment, size_t bytes)
   /* Otherwise, ensure that it is at least a minimum chunk size */
   if (alignment <  MINSIZE) alignment = MINSIZE;
 
+  /* Check for overflow.  */
+  if (bytes > SIZE_MAX - alignment - MINSIZE)
+    {
+      __set_errno (ENOMEM);
+      return 0;
+    }
+
   arena_get(ar_ptr, bytes + alignment + MINSIZE);
   if(!ar_ptr)
     return 0;
   p = _int_memalign(ar_ptr, alignment, bytes);
   if(!p) {
+    LIBC_PROBE (memory_memalign_retry, 2, bytes, alignment);
     ar_ptr = arena_get_retry (ar_ptr, bytes);
     if (__builtin_expect(ar_ptr != NULL, 1)) {
       p = _int_memalign(ar_ptr, alignment, bytes);
@@ -3046,6 +3056,13 @@ __libc_valloc(size_t bytes)
 
   size_t pagesz = GLRO(dl_pagesize);
 
+  /* Check for overflow.  */
+  if (bytes > SIZE_MAX - pagesz - MINSIZE)
+    {
+      __set_errno (ENOMEM);
+      return 0;
+    }
+
   void *(*hook) (size_t, size_t, const void *) =
     force_reg (__memalign_hook);
   if (__builtin_expect (hook != NULL, 0))
@@ -3056,6 +3073,7 @@ __libc_valloc(size_t bytes)
     return 0;
   p = _int_valloc(ar_ptr, bytes);
   if(!p) {
+    LIBC_PROBE (memory_valloc_retry, 1, bytes);
     ar_ptr = arena_get_retry (ar_ptr, bytes);
     if (__builtin_expect(ar_ptr != NULL, 1)) {
       p = _int_memalign(ar_ptr, pagesz, bytes);
@@ -3082,6 +3100,13 @@ __libc_pvalloc(size_t bytes)
   size_t page_mask = GLRO(dl_pagesize) - 1;
   size_t rounded_bytes = (bytes + page_mask) & ~(page_mask);
 
+  /* Check for overflow.  */
+  if (bytes > SIZE_MAX - 2*pagesz - MINSIZE)
+    {
+      __set_errno (ENOMEM);
+      return 0;
+    }
+
   void *(*hook) (size_t, size_t, const void *) =
     force_reg (__memalign_hook);
   if (__builtin_expect (hook != NULL, 0))
@@ -3090,6 +3115,7 @@ __libc_pvalloc(size_t bytes)
   arena_get(ar_ptr, bytes + 2*pagesz + MINSIZE);
   p = _int_pvalloc(ar_ptr, bytes);
   if(!p) {
+    LIBC_PROBE (memory_pvalloc_retry, 1, bytes);
     ar_ptr = arena_get_retry (ar_ptr, bytes + 2*pagesz + MINSIZE);
     if (__builtin_expect(ar_ptr != NULL, 1)) {
       p = _int_memalign(ar_ptr, pagesz, rounded_bytes);
@@ -3166,6 +3192,7 @@ __libc_calloc(size_t n, size_t elem_size)
 	 av == arena_for_chunk(mem2chunk(mem)));
 
   if (mem == 0) {
+    LIBC_PROBE (memory_calloc_retry, 1, sz);
     av = arena_get_retry (av, sz);
     if (__builtin_expect(av != NULL, 1)) {
       mem = _int_malloc(av, sz);
@@ -4674,21 +4701,29 @@ int __libc_mallopt(int param_number, int value)
   /* Ensure initialization/consolidation */
   malloc_consolidate(av);
 
+  LIBC_PROBE (memory_mallopt, 2, param_number, value);
+
   switch(param_number) {
   case M_MXFAST:
-    if (value >= 0 && value <= MAX_FAST_SIZE) {
-      set_max_fast(value);
-    }
+    if (value >= 0 && value <= MAX_FAST_SIZE)
+      {
+	LIBC_PROBE (memory_mallopt_mxfast, 2, value, get_max_fast ());
+	set_max_fast(value);
+      }
     else
       res = 0;
     break;
 
   case M_TRIM_THRESHOLD:
+    LIBC_PROBE (memory_mallopt_trim_threshold, 3, value,
+		mp_.trim_threshold, mp_.no_dyn_threshold);
     mp_.trim_threshold = value;
     mp_.no_dyn_threshold = 1;
     break;
 
   case M_TOP_PAD:
+    LIBC_PROBE (memory_mallopt_top_pad, 3, value,
+		mp_.top_pad, mp_.no_dyn_threshold);
     mp_.top_pad = value;
     mp_.no_dyn_threshold = 1;
     break;
@@ -4699,33 +4734,45 @@ int __libc_mallopt(int param_number, int value)
       res = 0;
     else
       {
+	LIBC_PROBE (memory_mallopt_mmap_threshold, 3, value,
+		    mp_.mmap_threshold, mp_.no_dyn_threshold);
 	mp_.mmap_threshold = value;
 	mp_.no_dyn_threshold = 1;
       }
     break;
 
   case M_MMAP_MAX:
+    LIBC_PROBE (memory_mallopt_mmap_max, 3, value,
+		mp_.n_mmaps_max, mp_.no_dyn_threshold);
     mp_.n_mmaps_max = value;
     mp_.no_dyn_threshold = 1;
     break;
 
   case M_CHECK_ACTION:
+    LIBC_PROBE (memory_mallopt_check_action, 2, value, check_action);
     check_action = value;
     break;
 
   case M_PERTURB:
+    LIBC_PROBE (memory_mallopt_perturb, 2, value, perturb_byte);
     perturb_byte = value;
     break;
 
 #ifdef PER_THREAD
   case M_ARENA_TEST:
     if (value > 0)
-      mp_.arena_test = value;
+      {
+	LIBC_PROBE (memory_mallopt_arena_test, 2, value, mp_.arena_test);
+	mp_.arena_test = value;
+      }
     break;
 
   case M_ARENA_MAX:
     if (value > 0)
-      mp_.arena_max = value;
+      {
+	LIBC_PROBE (memory_mallopt_arena_max, 2, value, mp_.arena_max);
+	mp_.arena_max = value;
+      }
     break;
 #endif
   }

@@ -28,7 +28,7 @@ typedef unsigned int fpu_control_t;
 # define _FPU_SETCW(cw) (void) (cw)
 extern fpu_control_t __fpu_control;
 
-#elif defined __NO_FPRS__ /* E500 */
+#elif defined __NO_FPRS__ /* e500 */
 
 /* rounding control */
 # define _FPU_RC_NEAREST 0x00   /* RECOMMENDED */
@@ -37,33 +37,28 @@ extern fpu_control_t __fpu_control;
 # define _FPU_RC_ZERO    0x01
 
 /* masking of interrupts */
-#define _FPU_MASK_ZM  0x10 /* zero divide */
-#define _FPU_MASK_OM  0x40 /* overflow */
-#define _FPU_MASK_UM  0x80 /* underflow */
-#define _FPU_MASK_XM  0x40 /* inexact */
-#define _FPU_MASK_IM  0x20 /* invalid operation */
+# define _FPU_MASK_ZM  0x10 /* zero divide */
+# define _FPU_MASK_OM  0x04 /* overflow */
+# define _FPU_MASK_UM  0x08 /* underflow */
+# define _FPU_MASK_XM  0x40 /* inexact */
+# define _FPU_MASK_IM  0x20 /* invalid operation */
 
-#define _FPU_RESERVED 0xff3fff7f /* These bits are reserved are not changed. */
+# define _FPU_RESERVED 0x00c10080 /* These bits are reserved and not changed. */
 
-/* The fdlibm code requires no interrupts for exceptions.  */
-#define _FPU_DEFAULT  0x00000000 /* Default value.  */
-
-/* IEEE:  same as above, but (some) exceptions;
-   we leave the 'inexact' exception off.
- */
-#define _FPU_IEEE     0x000003c0
+/* Correct IEEE semantics require traps to be enabled at the hardware
+   level; the kernel then does the emulation and determines whether
+   generation of signals from those traps was enabled using prctl.  */
+# define _FPU_DEFAULT  0x0000003c /* Default value.  */
+# define _FPU_IEEE     _FPU_DEFAULT
 
 /* Type of the control word.  */
 typedef unsigned int fpu_control_t;
 
 /* Macros for accessing the hardware control word.  */
-#define _FPU_GETCW(__cw) ({ \
-  unsigned int env; \
-  asm volatile ("mfspefscr %0" : "=r" (env)); \
-  (__cw) = env; })
-#define _FPU_SETCW(__cw) ({ \
-  unsigned int env = __cw; \
-  asm volatile ("mtspefscr %0" : : "r" (env)); })
+# define _FPU_GETCW(cw) \
+  __asm__ volatile ("mfspefscr %0" : "=r" (cw))
+# define _FPU_SETCW(cw) \
+  __asm__ volatile ("mtspefscr %0" : : "r" (cw))
 
 /* Default control word set at startup.  */
 extern fpu_control_t __fpu_control;
@@ -96,22 +91,26 @@ extern fpu_control_t __fpu_control;
 # define _FPU_IEEE     0x000000f0
 
 /* Type of the control word.  */
-typedef unsigned int fpu_control_t __attribute__ ((__mode__ (__SI__)));
+typedef unsigned int fpu_control_t;
 
 /* Macros for accessing the hardware control word.  */
-# define _FPU_GETCW(__cw) ( { \
-  union { double d; fpu_control_t cw[2]; } \
-    tmp __attribute__ ((__aligned__(8))); \
-  __asm__ ("mffs 0; stfd%U0 0,%0" : "=m" (tmp.d) : : "fr0"); \
-  (__cw)=tmp.cw[1]; \
-  tmp.cw[1]; } )
-# define _FPU_SETCW(__cw) { \
-  union { double d; fpu_control_t cw[2]; } \
-    tmp __attribute__ ((__aligned__(8))); \
-  tmp.cw[0] = 0xFFF80000; /* More-or-less arbitrary; this is a QNaN. */ \
-  tmp.cw[1] = __cw; \
-  __asm__ ("lfd%U0 0,%0; mtfsf 255,0" : : "m" (tmp.d) : "fr0"); \
-}
+# define _FPU_GETCW(cw)						\
+  ({union { double __d; unsigned long long __ll; } __u;		\
+    register double __fr;					\
+    __asm__ ("mffs %0" : "=f" (__fr));				\
+    __u.__d = __fr;						\
+    (cw) = (fpu_control_t) __u.__ll;				\
+    (fpu_control_t) __u.__ll;					\
+  })
+
+# define _FPU_SETCW(cw)						\
+  { union { double __d; unsigned long long __ll; } __u;		\
+    register double __fr;					\
+    __u.__ll = 0xfff80000LL << 32; /* This is a QNaN.  */	\
+    __u.__ll |= (cw) & 0xffffffffLL;				\
+    __fr = __u.__d;						\
+    __asm__ ("mtfsf 255,%0" : : "f" (__fr));			\
+  }
 
 /* Default control word set at startup.  */
 extern fpu_control_t __fpu_control;

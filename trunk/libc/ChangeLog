@@ -1,3 +1,1855 @@
+2013-10-18  Joseph Myers  <joseph@codesourcery.com>
+	    Aldy Hernandez  <aldyh@redhat.com>
+
+	* sysdeps/powerpc/powerpc32/e500/nofpu/Makefile: New file.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fclrexcpt.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fe_note_change.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fedisblxcpt.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/feenablxcpt.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fegetenv.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fegetexcept.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fegetround.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/feholdexcpt.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fenv_const.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fenv_libc.h: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fesetenv.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fesetround.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/feupdateenv.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fexcepts_from_prctl.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fexcepts_from_spe.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fexcepts_to_prctl.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fexcepts_to_spe.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fgetexcptflg.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fraiseexcept-soft.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fraiseexcpt.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fsetexcptflg.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/ftestexcept.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/get-rounding-mode.h:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/s_fabsf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/spe-raise.c: Likewise.
+	* sysdeps/powerpc/preconfigure: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/e500/nofpu/Implies:
+	Likewise.
+	* sysdeps/powerpc/nofpu/soft-supp.h [__NO_FPRS__ && !_SOFT_FLOAT]:
+	Replace contents of file by #include of <fenv_libc.h>.
+	* sysdeps/powerpc/soft-fp/sfp-machine.h
+	[__NO_FPRS__ && !_SOFT_FLOAT]: Include <fenv_libc.h>, <sysdep.h>
+	and <sys/prctl.h>.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (__feraiseexcept_soft): Declare.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_EX_INEXACT): Define macro.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_EX_INVALID): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_EX_DIVZERO): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_EX_UNDERFLOW): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_EX_OVERFLOW): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FP_DECL_EX): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_INIT_ROUNDMODE): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_INIT_EXCEPTIONS): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_HANDLE_EXCEPTIONS): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_ROUNDMODE): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (FP_TRAPPING_EXCEPTIONS): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/nptl/localplt.data:
+	Allow copysignl PLT reference to be missing.
+
+2013-10-18  Richard Sandiford  <richard@codesourcery.com>
+	    Joseph Myers  <joseph@codesourcery.com
+
+	[BZ #15948]
+	* locale/programs/ld-collate.c (new_element): Handle <U0000> as a
+	single character.
+	(add_to_tablewc): Assert sequence of wide characters is nonempty.
+
+2013-10-18  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* elf/tst-tls-dlinfo.c: Don't include tls.h.
+	* elf/tst-tls1.c: Likewise.
+	* elf/tst-tls10.h: Likewise.
+	* elf/tst-tls14.c: Likewise.
+	* elf/tst-tls2.c: Likewise.
+	* elf/tst-tls3.c: Likewise.
+	* elf/tst-tls4.c: Likewise.
+	* elf/tst-tls5.c: Likewise.
+	* elf/tst-tls6.c: Likewise.
+	* elf/tst-tls7.c: Likewise.
+	* elf/tst-tls8.c: Likewise.
+	* elf/tst-tls9.c: Likewise.
+	* elf/tst-tlsmod1.c: Likewise.
+	* elf/tst-tlsmod13.c: Likewise.
+	* elf/tst-tlsmod13a.c: Likewise.
+	* elf/tst-tlsmod14a.c: Likewise.
+	* elf/tst-tlsmod16a.c: Likewise.
+	* elf/tst-tlsmod16b.c: Likewise.
+	* elf/tst-tlsmod2.c: Likewise.
+	* elf/tst-tlsmod3.c: Likewise.
+	* elf/tst-tlsmod4.c: Likewise.
+	* elf/tst-tlsmod5.c: Likewise.
+	* elf/tst-tlsmod6.c: Likewise.
+
+2013-10-18  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #12486]
+	* malloc/malloc.c: remove checks for statistics.
+
+2013-10-17  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #15277]
+	* inet/inet_net.c (inet_network): Detect additional invalid strings.
+	* inet/tst-network.c: Add testcase.
+
+2013-10-17  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15218]
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Don't use gethostbyaddr
+	to determine canonical name.
+
+2013-10-17  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/ieee754/dbl-64/dbl2mpn.c: Fix formatting.
+	* sysdeps/ieee754/dbl-64/dla.h: Likewise.
+	* sysdeps/ieee754/dbl-64/dosincos.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_acosh.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_atan2.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_cosh.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_exp2.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_fmod.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_gamma_r.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_hypot.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_ilogb.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_j0.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_j1.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_jn.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_log10.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_log2.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_log.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_remainder.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_rem_pio2.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_sinh.c: Likewise.
+	* sysdeps/ieee754/dbl-64/e_sqrt.c: Likewise.
+	* sysdeps/ieee754/dbl-64/halfulp.c: Likewise.
+	* sysdeps/ieee754/dbl-64/k_rem_pio2.c: Likewise.
+	* sysdeps/ieee754/dbl-64/MathLib.h: Likewise.
+	* sysdeps/ieee754/dbl-64/mpa-arch.h: Likewise.
+	* sysdeps/ieee754/dbl-64/mpa.c: Likewise.
+	* sysdeps/ieee754/dbl-64/mpatan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/mpn2dbl.c: Likewise.
+	* sysdeps/ieee754/dbl-64/mptan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/mydefs.h: Likewise.
+	* sysdeps/ieee754/dbl-64/s_asinh.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_atan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_cbrt.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_ceil.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_copysign.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_erf.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_expm1.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_fabs.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_finite.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_floor.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_frexp.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_isinf.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_isinf_ns.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_isnan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_llround.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_log1p.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_logb.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_lrint.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_modf.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_nearbyint.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_remquo.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_rint.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_scalbln.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_scalbn.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_sin.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_sincos.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_tan.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_tanh.c: Likewise.
+
+2013-10-17  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #16041]
+	* soft-fp/op-common.h (FP_EXTEND): When input is a signaling NaN,
+	make result into a quiet NaN.
+
+2013-10-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/adddf3.c: Fix horizontal whitespace.
+	* soft-fp/addsf3.c: Likewise.
+	* soft-fp/addtf3.c: Likewise.
+	* soft-fp/divdf3.c: Likewise.
+	* soft-fp/divsf3.c: Likewise.
+	* soft-fp/divtf3.c: Likewise.
+	* soft-fp/double.h: Likewise.
+	* soft-fp/eqdf2.c: Likewise.
+	* soft-fp/eqsf2.c: Likewise.
+	* soft-fp/eqtf2.c: Likewise.
+	* soft-fp/extenddftf2.c: Likewise.
+	* soft-fp/extended.h: Likewise.
+	* soft-fp/extendsfdf2.c: Likewise.
+	* soft-fp/extendsftf2.c: Likewise.
+	* soft-fp/extendxftf2.c: Likewise.
+	* soft-fp/fixdfdi.c: Likewise.
+	* soft-fp/fixdfsi.c: Likewise.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfdi.c: Likewise.
+	* soft-fp/fixsfsi.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfdi.c: Likewise.
+	* soft-fp/fixtfsi.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfdi.c: Likewise.
+	* soft-fp/fixunsdfsi.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfdi.c: Likewise.
+	* soft-fp/fixunssfsi.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfdi.c: Likewise.
+	* soft-fp/fixunstfsi.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floatdidf.c: Likewise.
+	* soft-fp/floatdisf.c: Likewise.
+	* soft-fp/floatditf.c: Likewise.
+	* soft-fp/floatsidf.c: Likewise.
+	* soft-fp/floatsisf.c: Likewise.
+	* soft-fp/floatsitf.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatundidf.c: Likewise.
+	* soft-fp/floatundisf.c: Likewise.
+	* soft-fp/floatunditf.c: Likewise.
+	* soft-fp/floatunsidf.c: Likewise.
+	* soft-fp/floatunsisf.c: Likewise.
+	* soft-fp/floatunsitf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/fmadf4.c: Likewise.
+	* soft-fp/fmasf4.c: Likewise.
+	* soft-fp/fmatf4.c: Likewise.
+	* soft-fp/gedf2.c: Likewise.
+	* soft-fp/gesf2.c: Likewise.
+	* soft-fp/getf2.c: Likewise.
+	* soft-fp/ledf2.c: Likewise.
+	* soft-fp/lesf2.c: Likewise.
+	* soft-fp/letf2.c: Likewise.
+	* soft-fp/muldf3.c: Likewise.
+	* soft-fp/mulsf3.c: Likewise.
+	* soft-fp/multf3.c: Likewise.
+	* soft-fp/negdf2.c: Likewise.
+	* soft-fp/negsf2.c: Likewise.
+	* soft-fp/negtf2.c: Likewise.
+	* soft-fp/op-1.h: Likewise.
+	* soft-fp/op-2.h: Likewise.
+	* soft-fp/op-4.h: Likewise.
+	* soft-fp/op-8.h: Likewise.
+	* soft-fp/op-common.h: Likewise.
+	* soft-fp/quad.h: Likewise.
+	* soft-fp/single.h: Likewise.
+	* soft-fp/soft-fp.h: Likewise.
+	* soft-fp/sqrtdf2.c: Likewise.
+	* soft-fp/sqrtsf2.c: Likewise.
+	* soft-fp/sqrttf2.c: Likewise.
+	* soft-fp/subdf3.c: Likewise.
+	* soft-fp/subsf3.c: Likewise.
+	* soft-fp/subtf3.c: Likewise.
+	* soft-fp/truncdfsf2.c: Likewise.
+	* soft-fp/trunctfdf2.c: Likewise.
+	* soft-fp/trunctfsf2.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+	* soft-fp/unorddf2.c: Likewise.
+	* soft-fp/unordsf2.c: Likewise.
+	* soft-fp/unordtf2.c: Likewise.
+
+2013-10-15  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/op-2.h (_FP_DIV_MEAT_2_gmp): Remove macro.
+	* soft-fp/soft-fp.h (FP_UNSET_EXCEPTION): Likewise.
+
+2013-10-15   Ondřej Bílka  <neleai@seznam.cz>
+
+	* elf/dl-libc.c: Clear initfini list after freeing.
+
+2013-10-14  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/adddf3.c: Fix vertical whitespace and indentation.
+	* soft-fp/addsf3.c: Likewise.
+	* soft-fp/addtf3.c: Likewise.
+	* soft-fp/divdf3.c: Likewise.
+	* soft-fp/divsf3.c: Likewise.
+	* soft-fp/divtf3.c: Likewise.
+	* soft-fp/double.h: Likewise.
+	* soft-fp/eqdf2.c: Likewise.
+	* soft-fp/eqsf2.c: Likewise.
+	* soft-fp/eqtf2.c: Likewise.
+	* soft-fp/extenddftf2.c: Likewise.
+	* soft-fp/extended.h: Likewise.
+	* soft-fp/extendsfdf2.c: Likewise.
+	* soft-fp/extendsftf2.c: Likewise.
+	* soft-fp/extendxftf2.c: Likewise.
+	* soft-fp/fixdfdi.c: Likewise.
+	* soft-fp/fixdfsi.c: Likewise.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfdi.c: Likewise.
+	* soft-fp/fixsfsi.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfdi.c: Likewise.
+	* soft-fp/fixtfsi.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfdi.c: Likewise.
+	* soft-fp/fixunsdfsi.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfdi.c: Likewise.
+	* soft-fp/fixunssfsi.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfdi.c: Likewise.
+	* soft-fp/fixunstfsi.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floatdidf.c: Likewise.
+	* soft-fp/floatdisf.c: Likewise.
+	* soft-fp/floatditf.c: Likewise.
+	* soft-fp/floatsidf.c: Likewise.
+	* soft-fp/floatsisf.c: Likewise.
+	* soft-fp/floatsitf.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatundidf.c: Likewise.
+	* soft-fp/floatundisf.c: Likewise.
+	* soft-fp/floatunsidf.c: Likewise.
+	* soft-fp/floatunsisf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/fmadf4.c: Likewise.
+	* soft-fp/fmasf4.c: Likewise.
+	* soft-fp/fmatf4.c: Likewise.
+	* soft-fp/gedf2.c: Likewise.
+	* soft-fp/gesf2.c: Likewise.
+	* soft-fp/getf2.c: Likewise.
+	* soft-fp/ledf2.c: Likewise.
+	* soft-fp/lesf2.c: Likewise.
+	* soft-fp/letf2.c: Likewise.
+	* soft-fp/muldf3.c: Likewise.
+	* soft-fp/mulsf3.c: Likewise.
+	* soft-fp/multf3.c: Likewise.
+	* soft-fp/negdf2.c: Likewise.
+	* soft-fp/negsf2.c: Likewise.
+	* soft-fp/negtf2.c: Likewise.
+	* soft-fp/op-1.h: Likewise.
+	* soft-fp/op-2.h: Likewise.
+	* soft-fp/op-4.h: Likewise.
+	* soft-fp/op-8.h: Likewise.
+	* soft-fp/op-common.h: Likewise.
+	* soft-fp/quad.h: Likewise.
+	* soft-fp/single.h: Likewise.
+	* soft-fp/soft-fp.h: Likewise.
+	* soft-fp/sqrtdf2.c: Likewise.
+	* soft-fp/sqrtsf2.c: Likewise.
+	* soft-fp/sqrttf2.c: Likewise.
+	* soft-fp/subdf3.c: Likewise.
+	* soft-fp/subsf3.c: Likewise.
+	* soft-fp/subtf3.c: Likewise.
+	* soft-fp/truncdfsf2.c: Likewise.
+	* soft-fp/trunctfdf2.c: Likewise.
+	* soft-fp/trunctfsf2.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+	* soft-fp/unorddf2.c: Likewise.
+	* soft-fp/unordsf2.c: Likewise.
+	* soft-fp/unordtf2.c: Likewise.
+
+2013-10-14   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #15672]
+	* misc/error.c (error_tail): Fix possible buffer overflow.
+
+2013-10-14  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #13028]
+	* res_send.c(__libc_res_nsend): Correctly copy the nameserver
+	address.
+
+2013-10-14  P. J. McDermott  <pj@pehjota.net>
+
+	[BZ #832]
+	* elf/ldd.bash.in (try_trace): New function.  Delete previous code
+	testing pipefail option.
+
+2013-10-12  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/double.h: Indent preprocessor directives inside #if.
+	* soft-fp/extended.h: Likewise.
+	* soft-fp/op-2.h: Likewise.
+	* soft-fp/op-4.h: Likewise.
+	* soft-fp/op-common.h: Likewise.
+	* soft-fp/quad.h: Likewise.
+	* soft-fp/single.h: Likewise.
+	* soft-fp/soft-fp.h: Likewise.
+
+2013-10-12   Yuri Chornoivan <yurchor@ukr.net>
+
+	* iconv/iconv_prog.c: Fix typos.
+	* stdio-common/psiginfo-data.h: Likewise.
+
+2013-10-12   Reuben Thomas <rrt@sc3d.org>
+
+	[BZ #15764]
+	* locale/setlocale.c: Fix typo.
+
+2013-10-12  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #16036]
+	* soft-fp/unorddf2.c (__unorddf2): Raise "invalid" exception for
+	signaling NaN arguments.
+	* soft-fp/unordsf2.c (__unordsf2): Likewise.
+	* soft-fp/unordtf2.c (__unordtf2): Likewise.
+
+	[BZ #14910]
+	* soft-fp/gedf2.c (__gedf2): Raise "invalid" exception for all
+	unordered operands.
+	* soft-fp/gesf2.c (__gesf2): Likewise.
+	* soft-fp/getf2.c (__getf2): Likewise.
+	* soft-fp/ledf2.c (__ledf2): Likewise.
+	* soft-fp/lesf2.c (__lesf2): Likewise.
+	* soft-fp/letf2.c (__letf2): Likewise.
+
+	* soft-fp/eqdf2.c (__eqdf2): Use FP_INIT_EXCEPTIONS.
+	* soft-fp/eqsf2.c (__eqsf2): Likewise.
+	* soft-fp/eqtf2.c (__eqtf2): Likewise.
+	* soft-fp/fixdfdi.c (__fixdfdi): Likewise.
+	* soft-fp/fixdfsi.c (__fixdfsi): Likewise.
+	* soft-fp/fixdfti.c (__fixdfti): Likewise.
+	* soft-fp/fixsfdi.c (__fixsfdi): Likewise.
+	* soft-fp/fixsfsi.c (__fixsfsi): Likewise.
+	* soft-fp/fixsfti.c (__fixsfti): Likewise.
+	* soft-fp/fixtfdi.c (__fixtfdi): Likewise.
+	* soft-fp/fixtfsi.c (__fixtfsi): Likewise.
+	* soft-fp/fixtfti.c (__fixtfti): Likewise.
+	* soft-fp/fixunsdfdi.c (__fixunsdfdi): Likewise.
+	* soft-fp/fixunsdfsi.c (__fixunsdfsi): Likewise.
+	* soft-fp/fixunsdfti.c (__fixunsdfti): Likewise.
+	* soft-fp/fixunssfdi.c (__fixunssfdi): Likewise.
+	* soft-fp/fixunssfsi.c (__fixunssfsi): Likewise.
+	* soft-fp/fixunssfti.c (__fixunssfti): Likewise.
+	* soft-fp/fixunstfdi.c (__fixunstfdi): Likewise.
+	* soft-fp/fixunstfsi.c (__fixunstfsi): Likewise.
+	* soft-fp/fixunstfti.c (__fixunstfti): Likewise.
+	* soft-fp/floatdidf.c (__floatdidf): Use FP_INIT_ROUNDMODE.
+	* soft-fp/floatdisf.c (__floatdisf): Likewise.
+	* soft-fp/floatsisf.c (__floatsisf): Likewise.
+	* soft-fp/floattidf.c (__floattidf): Likewise.
+	* soft-fp/floattisf.c (__floattisf): Likewise.
+	* soft-fp/floattitf.c (__floattitf): Likewise.
+	* soft-fp/floatundidf.c (__floatundidf): Likewise.
+	* soft-fp/floatundisf.c (__floatundisf): Likewise.
+	* soft-fp/floatunsisf.c (__floatunsisf): Likewise.
+	* soft-fp/floatuntidf.c (__floatuntidf): Likewise.
+	* soft-fp/floatuntisf.c (__floatuntisf): Likewise.
+	* soft-fp/floatuntitf.c (__floatuntitf): Likewise.
+	* soft-fp/gedf2.c (__gedf2): Use FP_INIT_EXCEPTIONS.
+	* soft-fp/gesf2.c (__gesf2): Likewise.
+	* soft-fp/getf2.c (__getf2): Likewise.
+	* soft-fp/ledf2.c (__ledf2): Likewise.
+	* soft-fp/lesf2.c (__lesf2): Likewise.
+	* soft-fp/letf2.c (__letf2): Likewise.
+
+	* soft-fp/soft-fp.h [FP_NO_EXCEPTIONS] (FP_SET_EXCEPTION):
+	Undefine and redefine.
+	[FP_NO_EXCEPTIONS] (FP_CUR_EXCEPTIONS): Likewise.
+	[FP_NO_EXCEPTIONS] (FP_TRAPPING_EXCEPTIONS): Likewise.
+	[FP_NO_EXCEPTIONS] (FP_ROUNDMODE): Likewise.
+	* soft-fp/floatditf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatditf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatsidf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatsidf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatsitf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatsitf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunditf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunditf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunsidf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunsidf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+	* soft-fp/floatunsitf.c (FP_NO_EXCEPTIONS): Define macro.
+	(__floatunsitf): Don't use FP_DECL_EX or FP_HANDLE_EXCEPTIONS.
+
+	[BZ #16032]
+	* soft-fp/op-2.h (_FP_DIV_MEAT_2_udiv): Shift numerator right
+	without decrementing exponent if mantissa >= that for the
+	denominator, not >.
+	(_FP_DIV_MEAT_2_gmp): Test numerator mantissa >= that for the
+	denominator, not >.  Decrement exponent in < case instead of
+	incrementing in >= case.
+	* soft-fp/op-4.h (_FP_DIV_MEAT_4_udiv): Shift numerator right
+	without decrementing exponent if mantissa >= that for the
+	denominator, not >.
+
+	* soft-fp/op-common.h (_FP_TO_INT): Reverse test of sign for
+	computing saturated result for unsigned overflow.
+
+2013-10-11  Siddhesh Poyarekar  <siddhesh@redhat.com>
+	    Jeff Law  <law@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/e_atan2.c: Include stap-probe.h.
+	(atan2Mp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/e_log.c: include stap-probe.h.
+	(__ieee754_log): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/s_atan.c: Include stap-probe.h.
+	(atanMp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/s_tan.c: Include stap-probe.h.
+	(tanMp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/slowexp.c: Include stap-probe.h.
+	(__slowexp): Add systemtap probe marker.
+	* sysdeps/ieee754/dbl-64/slowpow.c: Include stap-probe.h.
+	(__slowpow): Add systemtap probe marker.
+	* manual/probes.texi: Document probes.
+
+2013-10-11  Eric Biggers  <ebiggers3@gmail.com>
+
+	[BZ #15362]
+	* libio/fileops.c (_IO_new_file_write): Return count of bytes
+	written.
+	(_IO_new_file_xsputn): Don't return EOF if nothing has been
+	written.
+	* libio/iofwrite.c (_IO_fwrite): Return count if bytes were
+	written to buffer but not flushed.
+	* libio/iofwrite_u.c:  Likewise.
+	* libio/iopadn.c:  Return bytes returned even if EOF was
+	encountered.
+	* libio/iowpadn.c:  Likewise.
+	* stdio-common/vfprintf.c [COMPILE_WPRINTF] (PAD): Return error
+	if _IO_padn does not write the whole buffer.
+	[!COMPILE_WPRINTF] (PAD): Likewise.
+
+2013-10-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/posix/dirstream.h (struct __dirstream): Fix alignment of
+	directory block.
+
+2013-10-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/extendxftf2.c: Use copyright year range.  Use URL
+	instead of FSF address.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+
+	* soft-fp/extendxftf2.c: New file.  Copied from libgcc.
+	* soft-fp/fixdfti.c: Likewise.
+	* soft-fp/fixsfti.c: Likewise.
+	* soft-fp/fixtfti.c: Likewise.
+	* soft-fp/fixunsdfti.c: Likewise.
+	* soft-fp/fixunssfti.c: Likewise.
+	* soft-fp/fixunstfti.c: Likewise.
+	* soft-fp/floattidf.c: Likewise.
+	* soft-fp/floattisf.c: Likewise.
+	* soft-fp/floattitf.c: Likewise.
+	* soft-fp/floatuntidf.c: Likewise.
+	* soft-fp/floatuntisf.c: Likewise.
+	* soft-fp/floatuntitf.c: Likewise.
+	* soft-fp/trunctfxf2.c: Likewise.
+
+2013-10-10  David S. Miller  <davem@davemloft.net>
+
+	* sysdeps/sparc/fpu/libm-test-ulps: Update.
+
+2013-10-10  Joseph Myers  <joseph@codsourcery.com>
+
+	* sysdeps/powerpc/nofpu/Makefile [$(subdir) = math]
+	(CFLAGS-e_hypotl.c): Add -fno-builtin-fabsl.
+	[$(subdir) = math] (CFLAGS-w_acosl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_asinl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_atanhl.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_j0l.c): Likewise.
+	[$(subdir) = math] (CFLAGS-w_j1l.c): Likewise.
+
+	* sysdeps/ieee754/ldbl-128ibm/e_acosl.c (__ieee754_acosl): Check
+	for NaNs before doing comparisons on argument.
+	* sysdeps/ieee754/ldbl-128ibm/e_asinl.c (__ieee754_asinl):
+	Likewise.
+
+2013-10-10  Will Newton  <will.newton@linaro.org>
+
+	* malloc/hooks.c (memalign_check): Ensure the value of bytes
+	passed to _int_memalign does not overflow.
+
+2013-10-10  Torvald Riegel  <triegel@redhat.com>
+
+	* scripts/bench.pl: Add include-sources directive.
+	* benchtests/README: Update documentation.
+
+2013-10-10  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/soft-fp.h (FP_INIT_EXCEPTIONS): New macro.
+	* soft-fp/extenddftf2.c (__extenddftf2): Use FP_INIT_EXCEPTIONS
+	instead of FP_INIT_ROUNDMODE.
+	* soft-fp/extendsfdf2.c (__extendsfdf2): Likewise.
+	* soft-fp/extendsftf2.c (__extendsftf2): Likewise.
+
+	[BZ #16034]
+	* soft-fp/op-common.h (_FP_NEG): Document input as raw.  Do not
+	copy class of input value.
+	* soft-fp/negdf2.c (__negdf2): Use raw unpacking and packing.  Do
+	not handle exceptions.
+	* soft-fp/negsf2.c (__negsf2): Likewise.
+	* soft-fp/negtf2.c (__negtf2): Likewise.
+	* sysdeps/sparc/sparc32/soft-fp/q_neg.c (_Q_neg): Likewise.
+
+2013-10-09  Joseph Myers  <joseph@codesourcery.com>
+
+	* soft-fp/op-4.h (_FP_FRAC_DISASSEMBLE_4): Remove trailing
+	semicolon.  From Linux kernel.
+
+2013-10-09  Adam Buchbinder  <adam.buchbinder@gmail.com>
+
+	* soft-fp/op-common.h (_FP_UNPACK_CANONICAL): Fix typo in comment.
+
+2013-10-08  Yogesh Chaudhari  <mr.yogesh@gmail.com>
+
+	[BZ #156]
+	* manual/socket.texi: Added statement about buffer
+	for gethostbyname2_r.
+
+2013-10-08  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/memset.S (ALIGN): Macro removed.
+	Use .p2align directive instead, throughout.
+	* sysdeps/x86_64/multiarch/memcmp-sse4.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcmp-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-sse2-unaligned.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3-back.S: Likewise.
+	* sysdeps/x86_64/multiarch/memcpy-ssse3.S: Likewise.
+	* sysdeps/x86_64/multiarch/strcmp-sse2-unaligned.S: Likewise.
+	* sysdeps/x86_64/strchr.S: Likewise.
+	* sysdeps/x86_64/strrchr.S: Likewise.
+
+2013-10-08  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/e_pow.c: Fix code formatting.
+
+	* sysdeps/ieee754/dbl-64/e_exp.c: Fix code formatting.
+
+	* sysdeps/generic/math_private.h (__mpsin1): Remove
+	declaration.
+	(__mpcos1): Likewise.
+	(__mpsin): New argument __range_reduce.
+	(__mpcos): Likewise.
+	* sysdeps/ieee754/dbl-64/s_sin.c: Likewise.
+	(slow): Use __mpsin and __mpcos.
+	(slow1): Likewise.
+	(slow2): Likewise.
+	(sloww): Likewise.
+	(sloww1): Likewise.
+	(sloww2): Likewise.
+	(bsloww): Likewise.
+	(bsloww1): Likewise.
+	(bsloww2): Likewise.
+	(cslow2): Likewise.
+	(csloww): Likewise.
+	(csloww1): Likewise.
+	(csloww2): Likewise.
+	* sysdeps/ieee754/dbl-64/sincos32.c (__mpsin): Add argument
+	range_reduce.  Merge in __mpsin1.
+	(__mpcos): Likewise.
+	(__mpsin1): Remove.
+	(__mpcos1): Likewise.
+
+2013-10-07  Joseph Myers  <joseph@codesourcery.com>
+
+	* locale/loadlocale.c (_nl_intern_locale_data): Use
+	LOCFILE_ALIGNED_P.
+	* locale/programs/3level.h (CONCAT(add_locale_,TABLE)): Use
+	LOCFILE_ALIGN_UP and LOCFILE_ALIGN.
+	* locale/programs/ld-collate.c (obstack_int32_grow): Assert that
+	obstack data is appropriately aligned.
+	(obstack_int32_grow_fast): Likewise.
+	* locale/programs/ld-ctype.c (ctype_output): Use LOCFILE_ALIGN.
+	* locale/programs/locfile.c (add_locale_uint32): Likewise.
+	(add_locale_uint32_array): Likewise.
+
+2013-10-07  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile: Remove ARGLIST and RET variables.
+	($(objpfx)bench-%.c): Pass only function name to the script.
+	* benchtests/README: Update documentation.
+	* benchtests/acos-inputs: Add new directives.
+	* benchtests/acosh-inputs: Likewise.
+	* benchtests/asin-inputs: Likewise.
+	* benchtests/asinh-inputs: Likewise.
+	* benchtests/atan-inputs: Likewise.
+	* benchtests/atanh-inputs: Likewise.
+	* benchtests/cos-inputs: Likewise.
+	* benchtests/cosh-inputs: Likewise.
+	* benchtests/exp-inputs: Likewise.
+	* benchtests/log-inputs: Likewise.
+	* benchtests/pow-inputs: Likewise.
+	* benchtests/rint-inputs: Likewise.
+	* benchtests/sin-inputs: Likewise.
+	* benchtests/sinh-inputs: Likewise.
+	* benchtests/tan-inputs: Likewise.
+	* benchtests/tanh-inputs: Likewise.
+	* scripts/bench.pl: Add support for new directives.
+
+2013-10-07  Alan Modra  <amodra@gmail.com>
+
+	* README: Fix careless merge.
+
+2013-10-05  Alan Modra  <amodra@gmail.com>
+
+	* NEWS: Mention powerpc64le support and bugs fixed.
+	* README: Both big-endian and little-endian powerpc64 supported.
+
+2013-10-04  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	* sysdeps/mach/hurd/fork.c (_hurd_atfork_prepare_hook,
+	_hurd_atfork_child_hook, _hurd_atfork_parent_hook): New hooks.
+	(__fork): Call _hurd_atfork_prepare_hook hooks before all locking, call
+	_hurd_atfork_parent_hook or _hurd_atfork_child_hook after all unlocking.
+
+2013-10-04  Ryan S. Arnold  <ryan.arnold@linaro.org>
+
+	* misc/swapon.c (swapon): Update definition, adding FLAGS parameter to
+	match prototype.
+
+2013-10-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/powerpc32/Makefile [$(with-fp) = yes] (+cflags):
+	Move -mhard-float appending from
+	ports/sysdeps/powerpc/powerpc32/Makefile.
+	[$(with-fp) = yes] (ASFLAGS): Likewise.
+	[$(with-fp) = yes] (sysdep-LDFLAGS): Likewise.
+	* sysdeps/powerpc/nofpu: Move directory from
+	ports/sysdeps/powerpc/nofpu.
+	* sysdeps/powerpc/soft-fp: Move directory from
+	ports/sysdeps/powerpc/soft-fp.
+	* sysdeps/powerpc/powerpc32/405: Move directory from
+	ports/sysdeps/powerpc/powerpc32/405.
+	* sysdeps/powerpc/powerpc32/440: Move directory from
+	ports/sysdeps/powerpc/powerpc32/440.
+	* sysdeps/powerpc/powerpc32/464: Move directory from
+	ports/sysdeps/powerpc/powerpc32/464.
+	* sysdeps/powerpc/powerpc32/476: Move directory from
+	ports/sysdeps/powerpc/powerpc32/476.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/405: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/405.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/440: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/440.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/464: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/464.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/476: Move directory
+	from ports/sysdeps/unix/sysv/linux/powerpc/powerpc32/476.
+	* README: Update for powerpc-*-linux-gnu software floating point
+	support in libc.
+
+	* sysdeps/unix/sysv/linux/configure.in (powerpc/powerpc32): Change
+	case to powerpc/powerpc32*.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+
+	* sysdeps/powerpc/fpu_control.h [__NO_FPRS__ && !_SOFT_FLOAT]
+	(_FPU_MASK_OM): Define as 0x04.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_UM): Define as 0x08.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RESERVED): Define as
+	0x00c10080.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_DEFAULT): Define as
+	0x0000003c.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_IEEE): Define as _FPU_DEFAULT.
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use
+	getcontext_e500.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use
+	setcontext_e500.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S
+	(__CONTEXT_FUNC_NAME) [__CONTEXT_ENABLE_E500]: Use getcontext_e500
+	and setcontext_e500.
+
+2013-10-04  Chris Leonard  <cjl@sugarlabs,.org>
+
+	* locale/iso-3166.def: Update iso-1366.def and related occurrences
+
+2013-10-04  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* manual/threads.texi (Default Thread Attributes): Fix typo.
+
+2013-10-04  Will Newton  <will.newton@linaro.org>
+
+	* malloc/Makefile: Add tst-memalign.
+	* malloc/tst-memalign.c: New file.
+
+	* malloc/tst-posix_memalign.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Add space after cast.
+
+	* malloc/tst-pvalloc.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Remove duplicate check for NULL pointer.
+	Add space after cast.
+
+	* malloc/tst-valloc.c: Add comments.
+	(do_test): Add comments and call free on all potentially
+	allocated pointers. Remove duplicate check for NULL pointer.
+	Add space after cast.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/dl-machine.c (__process_machine_rela):
+	Use stdint types in rather than __attribute__((mode())).
+	* sysdeps/powerpc/powerpc64/dl-machine.h (elf_machine_rela): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/dl-machine.c (__process_machine_rela):
+	Correct handling of unaligned relocs for little-endian.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (elf_machine_rela): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* configure.in: Map powerpc64le and powerpcle to base_machine/machine.
+	* configure: Regenerate.
+	* nptl/shlib-versions: Powerpc*le starts at 2.18.
+	* shlib-versions: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* string/tester.c (test_memrchr): Increment reported test cycle.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* string/test-memcpy.c (do_one_test): When reporting errors, print
+	string address and don't overrun end of string.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/memchr.S: Replace rlwimi with
+	insrdi.  Make better use of reg selection to speed exit slightly.
+	Schedule entry path a little better.  Remove useless "are we done"
+	checks on entry to main loop.  Handle wrapping around zero address.
+	Correct main loop count.  Handle single left-over word from main
+	loop inline rather than by using loop_small.  Remove extra word
+	case in loop_small caused by wrong loop count.  Add little-endian
+	support.
+	* sysdeps/powerpc/powerpc32/power7/memchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memrchr.S: Likewise.  Use proper
+	cache hint.
+	* sysdeps/powerpc/powerpc32/power7/memrchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/rawmemchr.S: Add little-endian
+	support.  Avoid rlwimi.
+	* sysdeps/powerpc/powerpc32/power7/rawmemchr.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/memset.S: Replace rlwimi with
+	insrdi.  Formatting.
+	* sysdeps/powerpc/powerpc64/power4/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/memset.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memset.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/power4/memcpy.S: Add little endian support.
+	* sysdeps/powerpc/powerpc32/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/mempcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/mempcpy.S: Likewise.  Make better
+	use of regs.  Use power7 mtocrf.  Tidy function tails.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/memcmp.S: Add little-endian support.
+	Formatting.  Consistently use rXXX register defines or rN defines.
+	Use early exit labels that avoid restoring unused non-volatile regs.
+	Make cr field use more consistent with rWORDn compares.  Rename
+	regs used as shift registers for unaligned loop, using rN defines
+	for short lifetime/multiple use regs.
+	* sysdeps/powerpc/powerpc64/power4/memcmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/memcmp.S: Likewise.  Exit with
+	addi 1,1,64 to pop stack frame.  Simplify return value code.
+	* sysdeps/powerpc/powerpc32/power4/memcmp.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strchr.S (strchr): Add little-endian
+	support.  Correct typos, formatting.  Optimize tail.  Use insrdi
+	rather than rlwimi.
+	* sysdeps/powerpc/powerpc32/power7/strchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strchrnul.S (__strchrnul): Add
+	little-endian support.  Correct typos.
+	* sysdeps/powerpc/powerpc32/power7/strchrnul.S: Likewise.  Use insrdi
+	rather than rlwimi.
+	* sysdeps/powerpc/powerpc64/strchr.S (rTMP4, rTMP5): Define.  Use
+	in loop and entry code to keep "and." results.
+	(strchr): Add little-endian support.  Comment.  Move cntlzd
+	earlier in tail.
+	* sysdeps/powerpc/powerpc32/strchr.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/strcpy.S: Add little-endian support:
+	* sysdeps/powerpc/powerpc32/strcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc64/stpcpy.S: Likewise.
+	* sysdeps/powerpc/powerpc32/stpcpy.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/strcmp.S (rTMP2): Define as r0.
+	(rTMP): Define as r11.
+	(strcmp): Add little-endian support.  Optimise tail.
+	* sysdeps/powerpc/powerpc32/strcmp.S: Similarly.
+	* sysdeps/powerpc/powerpc64/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strncmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/strncmp.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strnlen.S (strnlen): Add
+	little-endian support.  Remove unnecessary "are we done" tests.
+	Handle "s" wrapping around zero and extremely large "size".
+	Correct main loop count.  Handle single left-over word from main
+	loop inline rather than by using small_loop.  Correct comments.
+	Delete "zero" tail, use "end_max" instead.
+	* sysdeps/powerpc/powerpc32/power7/strnlen.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/power7/strlen.S (strlen): Add little-endian
+	support.  Don't branch over align.
+	* sysdeps/powerpc/powerpc32/power7/strlen.S: Likewise.
+	* sysdeps/powerpc/powerpc64/strlen.S (strlen): Add little-endian
+	support.  Rearrange tmp reg use to suit.  Comment.
+	* sysdeps/powerpc/powerpc32/strlen.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/bits/sigstack.h: New file.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/makecontext.S: Use
+	conditional form of branch and link when obtaining pc.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/makecontext.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/getcontext-common.S: Use
+	HIWORD/LOWORD.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/setcontext-common.S: Ditto.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/swapcontext-common.S: Ditto.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/longjmp.c: Use proper symbol versioning macros.
+	* sysdeps/powerpc/novmx-longjmp.c: Likewise.
+	* sysdeps/powerpc/powerpc32/bsd-_setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/bsd-setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/mcount.c: Likewise.
+	* sysdeps/powerpc/powerpc32/setjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc64/setjmp.S: Likewise.
+	* nptl/sysdeps/unix/sysv/linux/powerpc/pt-longjmp.c: Likewise.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+	    Alistair Popple <alistair@ozlabs.au.ibm.com>
+	    Alan Modra <amodra@gmail.com>
+
+	[BZ #15723]
+	* sysdeps/powerpc/jmpbuf-offsets.h: Comment fix.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp-common.S: Correct
+	_dl_hwcap access for little-endian.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp-common.S: Likewise.  Don't
+	destroy vmx regs when saving unaligned.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S: Correct CR load.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S: Likewise CR save.  Don't
+	destroy vmx regs when saving unaligned.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/power4/hp-timing.h (HP_TIMING_NOW):
+	Don't use a union to pack hi/low value.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/s_ceilf.S: Correct float constants
+	for little-endian.
+	* sysdeps/powerpc/powerpc64/fpu/s_floorf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_nearbyintf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_rintf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_roundf.S: Likewise.
+	* sysdeps/powerpc/powerpc64/fpu/s_truncf.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc32/fpu/s_roundf.S: Increase alignment of
+	constants to usual value for .cst8 section, and remove redundant
+	high address load.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llround.S: Use float
+	constant for 0x1p52.  Load little-endian words of double from
+	correct stack offsets.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/sysdep.h (LOWORD, HIWORD, HISHORT): Define.
+	* sysdeps/powerpc/powerpc32/fpu/s_copysign.S: Load little-endian
+	words of double from correct stack offsets.
+	* sysdeps/powerpc/powerpc32/fpu/s_copysignl.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/s_lrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/s_lround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power4/fpu/s_llrintf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5+/fpu/s_llround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5+/fpu/s_lround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power5/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llrint.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llrintf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power6/fpu/s_llround.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_finite.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_isinf.S: Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_isnan.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_finite.S: Use HISHORT.
+	* sysdeps/powerpc/powerpc64/power7/fpu/s_isinf.S: Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu_control.h (_FPU_GETCW): Rewrite using
+	64-bit int/double union.
+	(_FPU_SETCW): Likewise.
+	* sysdeps/powerpc/fpu/tst-setcontext-fpscr.c (_GET_DI_FPSCR): Likewise.
+	(_SET_DI_FPSCR, _GET_SI_FPSCR, _SET_SI_FPSCR): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu/s_llround.c (__llround): Rewrite.
+	* sysdeps/powerpc/fpu/s_llroundf.c (__llroundf): Rewrite.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/fpu/s_float_bitwise.h (__float_and_test28): Don't
+	use vector int constants.
+	(__float_and_test24, __float_and8, __float_get_exp): Likewise.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/fpu/fenv_libc.h (fenv_union_t): Replace int
+	array with long long.
+	* sysdeps/powerpc/fpu/e_sqrt.c (__slow_ieee754_sqrt): Adjust.
+	* sysdeps/powerpc/fpu/e_sqrtf.c (__slow_ieee754_sqrtf): Adjust.
+	* sysdeps/powerpc/fpu/fclrexcpt.c (__feclearexcept): Adjust.
+	* sysdeps/powerpc/fpu/fedisblxcpt.c (fedisableexcept): Adjust.
+	* sysdeps/powerpc/fpu/feenablxcpt.c (feenableexcept): Adjust.
+	* sysdeps/powerpc/fpu/fegetexcept.c (__fegetexcept): Adjust.
+	* sysdeps/powerpc/fpu/feholdexcpt.c (feholdexcept): Adjust.
+	* sysdeps/powerpc/fpu/fesetenv.c (__fesetenv): Adjust.
+	* sysdeps/powerpc/fpu/feupdateenv.c (__feupdateenv): Adjust.
+	* sysdeps/powerpc/fpu/fgetexcptflg.c (__fegetexceptflag): Adjust.
+	* sysdeps/powerpc/fpu/fraiseexcpt.c (__feraiseexcept): Adjust.
+	* sysdeps/powerpc/fpu/fsetexcptflg.c (__fesetexceptflag): Adjust.
+	* sysdeps/powerpc/fpu/ftestexcept.c (fetestexcept): Adjust.
+
+2013-10-04  Anton Blanchard <anton@au1.ibm.com>
+
+	* sysdeps/powerpc/bits/mathinline.h (__signbitf): Use builtin.
+	(__signbit): Likewise.  Correct for little-endian.
+	(__signbitl): Call __signbit.
+	(lrint): Correct for little-endian.
+	(lrintf): Call lrint.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_sqrtl.c (mynumber): Replace
+	union 32-bit int array member with 64-bit int array.
+	(t515, tm256): Double rather than long double.
+	(__ieee754_sqrtl): Rewrite using 64-bit arithmetic.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/ieee754.h (union ieee854_long_double):
+	Delete.
+	(IEEE854_LONG_DOUBLE_BIAS): Delete.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h: Don't include ieee854
+	version of math_ldbl.h.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	[BZ #15734], [BZ #15735]
+	* sysdeps/ieee754/ldbl-128ibm/e_fmodl.c (__ieee754_fmodl): Rewrite
+	all uses of ieee875 long double macros and unions.  Simplify test
+	for 0.0L.  Correct |x|<|y| and |x|=|y| test.  Use
+	ldbl_extract_mantissa value for ix,iy exponents.  Properly
+	normalize after ldbl_extract_mantissa, and don't add hidden bit
+	already handled.  Don't treat low word of ieee854 mantissa like
+	low word of IBM long double and mask off bit when testing for
+	zero.
+	* sysdeps/ieee754/ldbl-128ibm/e_hypotl.c (__ieee754_hypotl): Rewrite
+	all uses of ieee875 long double macros and unions.  Simplify tests
+	for 0.0L and inf.  Correct double adjustment of k.  Delete dead code
+	adjusting ha,hb.  Simplify code setting kld.  Delete two600 and
+	two1022, instead use their values.  Recognise that tests for large
+	"a" and small "b" are mutually exclusive.  Rename vars.  Comment.
+	* sysdeps/ieee754/ldbl-128ibm/e_remainderl.c (__ieee754_remainderl):
+	Rewrite all uses of ieee875 long double macros and unions.  Simplify
+	test for 0.0L and nan.  Correct negation.
+	* sysdeps/ieee754/ldbl-128ibm/s_erfl.c (__erfl): Rewrite all uses of
+	ieee875 long double macros and unions.  Correct output for large
+	magnitude x.  Correct absolute value calculation.
+	(__erfcl): Likewise.
+	* math/libm-test.inc: Add tests for errors discovered in IBM long
+	double versions of fmodl, remainderl, erfl and erfcl.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/e_atan2l.c (__ieee754_atan2l): Rewrite
+	all uses of ieee854 long double macros and unions.  Simplify tests
+	for long doubles that are fully specified by the high double.
+	* sysdeps/ieee754/ldbl-128ibm/e_gammal_r.c (__ieee754_gammal_r):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_ilogbl.c (__ieee754_ilogbl): Likewise.
+	Remove dead code too.
+	* sysdeps/ieee754/ldbl-128ibm/e_jnl.c (__ieee754_jnl): Likewise.
+	(__ieee754_ynl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_log10l.c (__ieee754_log10l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_logl.c (__ieee754_logl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_powl.c (__ieee754_powl): Likewise.
+	Remove dead code too.
+	* sysdeps/ieee754/ldbl-128ibm/k_tanl.c (__kernel_tanl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_expm1l.c (__expm1l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_frexpl.c (__frexpl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_isinf_nsl.c (__isinf_nsl): Likewise.
+	Simplify.
+	* sysdeps/ieee754/ldbl-128ibm/s_isinfl.c (___isinfl): Likewise.
+	Simplify.
+	* sysdeps/ieee754/ldbl-128ibm/s_log1pl.c (__log1pl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_modfl.c (__modfl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nextafterl.c (__nextafterl): Likewise.
+	Comment on variable precision.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttoward.c (__nexttoward): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nexttowardf.c (__nexttowardf):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_remquol.c (__remquol): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalblnl.c (__scalblnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_scalbnl.c (__scalbnl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_tanhl.c (__tanhl): Likewise.
+	* sysdeps/powerpc/fpu/libm-test-ulps: Adjust tan_towardzero ulps.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h (ldbl_high): Define.
+	* sysdeps/ieee754/ldbl-128ibm/e_acoshl.c (__ieee754_acoshl): Rewrite
+	all uses of ieee854 long double macros and unions.
+	* sysdeps/ieee754/ldbl-128ibm/e_acosl.c (__ieee754_acosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_asinl.c (__ieee754_asinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_atanhl.c (__ieee754_atanhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_coshl.c (__ieee754_coshl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_log2l.c (__ieee754_log2l): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_rem_pio2l.c (__ieee754_rem_pio2l):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_sinhl.c (__ieee754_sinhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_cosl.c (__kernel_cosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_sincosl.c (__kernel_sincosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/k_sinl.c (__kernel_sinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_asinhl.c (__asinhl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_atanl.c (__atanl): Likewise.
+	Simplify sign and nan test too.
+	* sysdeps/ieee754/ldbl-128ibm/s_cosl.c (__cosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_fabsl.c (__fabsl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_finitel.c (___finitel): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_fpclassifyl.c (___fpclassifyl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_isnanl.c (___isnanl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_issignalingl.c (__issignalingl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_logbl.c (__logbl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_signbitl.c (___signbitl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_sincosl.c (__sincosl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_sinl.c (__sinl): Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_tanl.c (__tanl): Likewise.
+	* sysdeps/powerpc/powerpc32/power7/fpu/s_logbl.c (__logbl): Likewise.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* stdio-common/printf_size.c (__printf_size): Don't use
+	union ieee854_long_double in fpnum union.
+	* stdio-common/printf_fphex.c (__printf_fphex): Likewise.  Use
+	signbit macro to retrieve sign from long double.
+	* stdio-common/printf_fp.c (___printf_fp): Use signbit macro to
+	retrieve sign from long double.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c: Adjust for fpnum change.
+	* sysdeps/ieee754/ldbl-128/printf_fphex.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/printf_fphex.c: Likewise.
+	* sysdeps/x86_64/fpu/printf_fphex.c: Likewise.
+	* math/test-misc.c (main): Don't use union ieee854_long_double.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	[BZ #15680]
+	* sysdeps/ieee754/ldbl-128ibm/e_rem_pio2l.c: Comment fix.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c
+	(PRINT_FPHEX_LONG_DOUBLE): Tidy code by moving -53 into ediff
+	calculation.  Remove unnecessary test for denormal exponent.
+	* sysdeps/ieee754/ldbl-128ibm/ldbl2mpn.c (__mpn_extract_long_double):
+	Correct handling of denormals.  Avoid undefined shift behaviour.
+	Correct normalisation of low mantissa when low double is denormal.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h
+	(ldbl_extract_mantissa): Likewise.  Comment.  Use uint64_t* for hi64.
+	(ldbl_insert_mantissa): Make both hi64 and lo64 parms uint64_t.
+	Correct normalisation of low mantissa.  Test for overflow of high
+	mantissa and normalise.
+	(ldbl_nearbyint): Use more readable constant for two52.
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c
+	(__mpn_construct_long_double): Fix test for overflow of high
+	mantissa and correct normalisation.  Avoid undefined shift.
+
+2013-10-04  Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/ieee754/ldbl-128ibm/ieee754.h
+	(union ibm_extended_long_double): Define as an array of ieee754_double.
+	(IBM_EXTENDED_LONG_DOUBLE_BIAS): Delete.
+	* sysdeps/ieee754/ldbl-128ibm/printf_fphex.c: Update all references
+	to ibm_extended_long_double and IBM_EXTENDED_LONG_DOUBLE_BIAS.
+	* sysdeps/ieee754/ldbl-128ibm/e_exp10l.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/e_expl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/ldbl2mpn.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/math_ldbl.h: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/mpn2ldbl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_nearbyintl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/strtold_l.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/x2y2m1l.c: Likewise.
+
+2013-10-03  Joseph Myers  <joseph@codesourcery.com>
+
+	* locale/programs/locarchive.c (add_locale): Use constant 4096 for
+	page size instead of calling getpagesize.
+
+	* locale/localeinfo.h (LOCFILE_ALIGN): New macro.
+	(LOCFILE_ALIGN_MASK): Likewise.
+	(LOCFILE_ALIGN_UP): Likewise.
+	(LOCFILE_ALIGNED_P): Likewise.
+	* locale/programs/ld-collate.c (collate_output): Use the new
+	macros instead of __alignof__ (int32_t).
+	* locale/weight.h (findidx): Likewise.
+
+2013-10-03  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #431]
+	* manual/string.texi: Fix strncat and wcsncat.
+
+2013-10-03  Brooks Moses  <bmoses@google.com>
+
+	[BZ #15915]
+	* Makefile (linkobj/libc_pic.a, linkobj/libc.so): Move rules to...
+	* Makerules: ...here, and adjust associated comments.
+
+2013-10-02  Will Newton  <will.newton@linaro.org>
+
+	* malloc/Makefile: Add tst-pvalloc.
+	* malloc/tst-pvalloc.c: New file.
+
+2013-10-02  Will Newton  <will.newton@linaro.org>
+
+	* malloc/tst-valloc.c: Rewrite to use test-skeleton.c and
+	improve test coverage.
+
+2013-10-02  Will Newton  <will.newton@linaro.org>
+
+	* malloc/Makefile: Add tst-posix_memalign.
+	* malloc/tst-posix_memalign.c: New file.
+
+2013-10-01  Eric Blake  <eblake@redhat.com>
+
+	* posix/glob.c (next_brace_sub, prefix_array, collated_compare):
+	Use __THROWNL rather than __THROW on static functions.
+
+2013-09-30  Petr Machata  <pmachata@redhat.com>
+
+	* elf/elf.h (R_AARCH64_ABS16): New macro.
+	(R_AARCH64_PREL64, R_AARCH64_PREL32): Likewise.
+	(R_AARCH64_PREL16, R_AARCH64_MOVW_UABS_G0): Likewise.
+	(R_AARCH64_MOVW_UABS_G0_NC, R_AARCH64_MOVW_UABS_G1): Likewise.
+	(R_AARCH64_MOVW_UABS_G1_NC, R_AARCH64_MOVW_UABS_G2): Likewise.
+	(R_AARCH64_MOVW_UABS_G2_NC, R_AARCH64_MOVW_UABS_G3): Likewise.
+	(R_AARCH64_MOVW_SABS_G0, R_AARCH64_MOVW_SABS_G1): Likewise.
+	(R_AARCH64_MOVW_SABS_G2, R_AARCH64_LD_PREL_LO19): Likewise.
+	(R_AARCH64_ADR_PREL_LO21, R_AARCH64_ADR_PREL_PG_HI21): Likewise.
+	(R_AARCH64_ADR_PREL_PG_HI21_NC, R_AARCH64_ADD_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST8_ABS_LO12_NC, R_AARCH64_LDST16_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST32_ABS_LO12_NC, R_AARCH64_LDST64_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST128_ABS_LO12_NC, R_AARCH64_TSTBR14): Likewise.
+	(R_AARCH64_CONDBR19, R_AARCH64_JUMP26, R_AARCH64_CALL26): Likewise.
+	(R_AARCH64_MOVW_PREL_G0, R_AARCH64_MOVW_PREL_G0_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G1, R_AARCH64_MOVW_PREL_G1_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G2, R_AARCH64_MOVW_PREL_G2_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G3, R_AARCH64_MOVW_GOTOFF_G0): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G0_NC, R_AARCH64_MOVW_GOTOFF_G1): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G1_NC, R_AARCH64_MOVW_GOTOFF_G2): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G2_NC, R_AARCH64_MOVW_GOTOFF_G3): Likewise.
+	(R_AARCH64_GOTREL64, R_AARCH64_GOTREL32): Likewise.
+	(R_AARCH64_GOT_LD_PREL19, R_AARCH64_LD64_GOTOFF_LO15): Likewise.
+	(R_AARCH64_ADR_GOT_PAGE, R_AARCH64_LD64_GOT_LO12_NC): Likewise.
+	(R_AARCH64_LD64_GOTPAGE_LO15, R_AARCH64_TLSGD_ADR_PREL21): Likewise.
+	(R_AARCH64_TLSGD_ADR_PAGE21, R_AARCH64_TLSGD_ADD_LO12_NC): Likewise.
+	(R_AARCH64_TLSGD_MOVW_G1, R_AARCH64_TLSGD_MOVW_G0_NC): Likewise.
+	(R_AARCH64_TLSLD_ADR_PREL21, R_AARCH64_TLSLD_ADR_PAGE21): Likewise.
+	(R_AARCH64_TLSLD_ADD_LO12_NC, R_AARCH64_TLSLD_MOVW_G1): Likewise.
+	(R_AARCH64_TLSLD_MOVW_G0_NC, R_AARCH64_TLSLD_LD_PREL19): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G2): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G1): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G1_NC): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G0): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_HI12): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST8_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST8_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST16_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST16_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST32_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST32_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST64_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST64_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST128_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST128_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSIE_MOVW_GOTTPREL_G1): Likewise.
+	(R_AARCH64_TLSIE_MOVW_GOTTPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSIE_ADR_GOTTPREL_PAGE21): Likewise.
+	(R_AARCH64_TLSIE_LD64_GOTTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSIE_LD_GOTTPREL_PREL19): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G2): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G1): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G1_NC): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G0): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_HI12): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST8_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST8_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST16_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST16_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST32_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST32_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST64_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST64_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST128_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST128_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSDESC_LD_PREL19): Likewise.
+	(R_AARCH64_TLSDESC_ADR_PREL21): Likewise.
+	(R_AARCH64_TLSDESC_ADR_PAGE21): Likewise.
+	(R_AARCH64_TLSDESC_LD64_LO12): Likewise.
+	(R_AARCH64_TLSDESC_ADD_LO12): Likewise.
+	(R_AARCH64_TLSDESC_OFF_G1): Likewise.
+	(R_AARCH64_TLSDESC_OFF_G0_NC): Likewise.
+	(R_AARCH64_TLSDESC_LDR): Likewise.
+	(R_AARCH64_TLSDESC_ADD): Likewise.
+	(R_AARCH64_TLSDESC_CALL): Likewise.
+
+2013-09-30  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15048]
+	* nscd/aicache.c (addhstaiX): Properly use the cache variable for
+	the nss database lookup.
+	* nscd/initgrcache.c (addinitgroupsX): Likewise.
+	* sysdeps/posix/getaddrinfo.c (gaih_inet): Likewise.
+
+2013-09-28  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/tst-fanotify.c (do_test): Fix style.
+
+2013-09-28  P. J. McDermott  <pj@pehjota.net>
+
+	* sysdeps/unix/Makefile ($(objpfx)stub-syscalls.c): Don't use
+	${Bash-specific parameter/pattern/string} parameter expansion.
+	* sysdeps/unix/make-syscalls.sh: Likewise.
+
+2013-09-27  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	* sysdeps/sh/stackguard-macros.h: New file.
+
+2013-09-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/Makefile (sysdep_routines): Update.
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c: Remove strrchr ifunc.
+	* sysdeps/x86_64/multiarch/strend-sse4.S Remove.
+	* sysdeps/x86_64/multiarch/strrchr-sse2-no-bsf.S Likewise.
+	* sysdeps/x86_64/multiarch/strrchr.S: Likewise.
+	* sysdeps/x86_64/strrchr.S (strrchr): Use optimized implementation.
+
+2013-09-25  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/stackguard-macros.h (POINTER_CHK_GUARD:
+	Fix thread ID register.
+
+2013-09-25  Joseph Myers  <joseph@codesourcery.com>
+
+	* conform/data/sched.h-data [XPG3 || XPG4]: Disable whole file.
+	[POSIX || UNIX98]: Require rather than permitting all symbols from
+	<time.h>.
+	[POSIX || UNIX98] (sched_ss_low_priority): Do not specify optional
+	element of struct sched_param.
+	[POSIX || UNIX98] (sched_ss_repl_period): Likewise.
+	[POSIX || UNIX98] (sched_ss_init_budget): Likewise.
+	[POSIX || UNIX98] (sched_ss_max_repl): Likewise.
+	[POSIX || UNIX98] (SCHED_SPORADIC): Do not specify optional
+	constant.
+
+2013-09-24  Olivier Langlois  <olivier@olivierlanglois.net>
+
+	* stdio-common/tst-long-dbl-fphex.c (do_test): Fix swprintf length
+	argument calculation.
+
+2013-09-24  Joseph Myers  <joseph@codesourcery.com>
+
+	* conform/data/pthread.h-data [POSIX] (PTHREAD_MUTEX_INITIALIZER):
+	Expect macro.
+	[POSIX] (pthread_attr_t): Do not require type.
+	[POSIX] (pthread_cond_t): Likewise.
+	[POSIX] (pthread_condattr_t): Likewise.
+	[POSIX] (pthread_key_t): Likewise.
+	[POSIX] (pthread_mutex_t): Likewise.
+	[POSIX] (pthread_mutexattr_t): Likewise.
+	[POSIX] (pthread_once_t): Likewise.
+	[POSIX] (pthread_t): Likewise.
+	[POSIX-based standards] (pthread_atfork): Expect function.
+
+2013-09-24  Joseph Myers  <joseph@codesourcery.com>
+	    Richard Sandiford  <richard@codesourcery.com>
+
+	* locale/programs/locfile.h: Include <byteswap.h> and <stdbool.h>.
+	(swap_endianness_p): New extern variable.
+	(set_big_endian): New inline function.
+	(maybe_swap_uint32): Likewise.
+	(maybe_swap_uint32_array): Likewise.
+	(maybe_swap_uint32_obstack): Likewise.
+	* locale/programs/locfile.c: Include <stdbool.h>.
+	(swap_endianness_p): New variable.
+	(add_locale_uint32): Call maybe_swap_uint32.
+	(add_locale_uint32_array): Call maybe_swap_uint32_obstack.
+	(write_locale_data): Call maybe_swap_uint32_array.
+	* locale/programs/ld-collate.c (obstack_int32_grow): Call
+	maybe_swap_uint32.
+	(obstack_int32_grow_fast): Likewise.
+	(output_weightwc): Call maybe_swap_uint32_obstack.
+	(collate_output): Likewise.
+	* locale/programs/localedef.c (OPT_LITTLE_ENDIAN): New macro.
+	(OPT_LITTLE_ENDIAN): Likewise.
+	(options): Add --little-endian and --big-endian options.
+	(parse_opt): Handle OPT_LITTLE_ENDIAN and OPT_BIG_ENDIAN.
+	* locale/programs/locarchive.c: Include "locfile.h".
+	(GET): New macro.
+	(SET): Likewise.
+	(INC): Likewise.
+	(create_archive): Use the new macros to access fields of
+	structures directly mapped from or written to locale archives.
+	(oldlocrecentcmp): Likewise.
+	(enlarge_archive): Likewise.
+	(insert_name): Likewise.
+	(add_alias): Likewise.
+	(add_locale): Likewise.
+	(delete_locales_from_archive): Likewise.
+	(show_archive_content): Likewise.
+	(add_locale_to_archive): Likewise.  Use maybe_swap_uint32 on
+	locale data.
+
+2013-09-24  Roland McGrath  <roland@hack.frob.com>
+
+	* manual/freemanuals.texi: Updated from (newly) canonical copy at
+	http://www.gnu.org/doc/freemanuals.texi.
+	* manual/libc.texinfo (Free Manuals): Put the @appendix line here.
+
+2013-09-24  Will Newton  <will.newton@linaro.org>
+
+	* sysdeps/mach/hurd/i386/tls.h (TLS_INIT_TP_EXPENSIVE): Remove
+	macro.
+
+2013-09-23  Joseph Myers  <joseph@codesourcery.com>
+
+	* locale/hashval.h (compute_hashval): Interpret bytes of key as
+	unsigned char.
+
+2013-09-23  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* manual/threads.texi (POSIX Threads): Fix a typo.
+
+2013-09-23  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #14547]
+	* string/tst-strcoll-overflow.c: New test case.
+	* string/Makefile (xtests): Add tst-strcoll-overflow.
+	* string/strcoll_l.c (STRCOLL): Skip allocating memory for
+	cache if string sizes may cause integer overflow.
+
+	[BZ #14547]
+	* string/strcoll_l.c (coll_seq): New members rule, idx,
+	save_idx and back_us.
+	(get_next_seq_nocache): New function.
+	(do_compare_nocache): New function.
+	(STRCOLL): Use get_next_seq_nocache and do_compare_nocache
+	when malloc fails.
+
+2013-09-23  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #15754]
+	* sysdeps/generic/stackguard-macros.h: If PTRGUARD_LOCAL use
+	__pointer_chk_guard_local, otherwise __pointer_chk_guard.
+	* elf/Makefile: Define CFLAGS-tst-ptrguard1-static.c.
+
+	[BZ #15754]
+	* elf/Makefile (tests): Add tst-ptrguard1.
+	(tests-static): Add tst-ptrguard1-static.
+	(tst-ptrguard1-ARGS): Define.
+	(tst-ptrguard1-static-ARGS): Define.
+	* elf/tst-ptrguard1.c: New file.
+	* elf/tst-ptrguard1-static.c: New file.
+	* sysdeps/x86_64/stackguard-macros.h: Define POINTER_CHK_GUARD.
+	* sysdeps/i386/stackguard-macros.h: Likewise.
+	* sysdeps/powerpc/powerpc32/stackguard-macros.h: Likewise.
+	* sysdeps/powerpc/powerpc64/stackguard-macros.h: Likewise.
+	* sysdeps/s390/s390-32/stackguard-macros.h: Likewise.
+	* sysdeps/s390/s390-64/stackguard-macros.h: Likewise.
+	* sysdeps/sparc/sparc32/stackguard-macros.h: Likewise.
+	* sysdeps/sparc/sparc64/stackguard-macros.h: Likewise.
+
+2013-09-23  Hector Marco  <hecmargi@upv.es>
+	    Ismael Ripoll  <iripoll@disca.upv.es>
+	    Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #15754]
+	* sysdeps/generic/stackguard-macros.h: Define
+	__pointer_chk_guard_local and POINTER_CHK_GUARD.
+	* csu/libc-start.c [!SHARED && !THREAD_SET_POINTER_GUARD]:
+	Define __pointer_chk_guard_local.
+	(LIBC_START_MAIN) [!SHARED]: Call _dl_setup_pointer_guard.
+	Use THREAD_SET_POINTER_GUARD or set __pointer_chk_guard_local.
+
+2013-09-15  Vinitha Vijayan <vinitha.vijayann@gmail.com>
+
+	[BZ #15859]
+	* elf/dl-deps.c (_dl_map_object_deps): Remove duplicate declaration.
+
+2013-09-20  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* include/string.h (__ffs): Declare as hidden.
+	* string/ffs.c (__ffs): Define as hidden.
+	* sysdeps/i386/ffs.c (__ffs): Likewise.
+	* sysdeps/i386/i686/ffs.c (__ffs): Likewise.
+	* sysdeps/powerpc/ffs.c (__ffs): Likewise.
+	* sysdeps/s390/ffs.c (__ffs): Likewise.
+	* sysdeps/x86_64/ffs.c (__ffs): Likewise.
+
+2013-09-20  Alexandre Oliva <aoliva@redhat.com>
+
+	* NEWS: Mention malloc probes.
+
+	* malloc/arena.c (new_heap): New memory_heap_new probe.
+	(grow_heap): New memory_heap_more probe.
+	(shrink_heap): New memory_heap_less probe.
+	(heap_trim): New memory_heap_free probe.
+	* malloc/malloc.c (sysmalloc): New memory_sbrk_more probe.
+	(systrim): New memory_sbrk_less probe.
+	* manual/probes.texi: Document them.
+
+	* malloc/arena.c (arena_get_retry): Add memory_arena_retry probe.
+	* manual/probes.texi: Document it.
+
+	* malloc/malloc.c (__libc_malloc): Add memory_malloc_retry probe.
+	(__libc_realloc): Add memory_realloc_retry probe.
+	(__libc_memalign): Add memory_memalign_retry probe.
+	(__libc_valloc): Add memory_valloc_retry probe.
+	(__libc_pvalloc): Add memory_pvalloc_retry probe.
+	(__libc_calloc): Add memory_calloc_retry probe.
+	* manual/probes.texi: Document them.
+
+	* malloc/arena.c (get_free_list): Add probe
+	memory_arena_reuse_free_list.
+	(reused_arena) [PER_THREAD]: Add probes memory_arena_reuse_wait
+	and memory_arena_reuse.
+	(arena_get2) [!PER_THREAD]: Likewise.
+	* malloc/malloc.c (__libc_realloc) [!PER_THREAD]: Add probe
+	memory_arena_reuse_realloc.
+	* manual/probes.texi: Document them.
+
+	* malloc/malloc.c (__libc_free): Add
+	memory_mallopt_free_dyn_thresholds probe.
+	(__libc_mallopt): Add multiple memory_mallopt probes.
+	* manual/probes.texi: Document them.
+
+	* malloc/malloc.c: Include stap-probe.h.
+	(__libc_mallopt): Add memory_mallopt probe.
+	* malloc/arena.c (_int_new_arena): Add memory_arena_new probe.
+	* manual/probes.texi: New.
+	* manual/Makefile (chapters): Add probes.
+	* manual/threads.texi: Set next node.
+
+2013-09-19  Wei-Lun Chao  <bluebat@member.fsf.org>
+
+	[BZ #15963, #13985]
+	* locale/iso-639.def: Add Chiga (cgg) and Chinese (gan, hak,
+	czh, cjy, lzh, cmn, mnp, cdo, czo, cpx, wuu, hsn, yue).
+	Add `Chinese' to `nan' entry name.
+
+2013-09-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (POLYNOMIAL2): New macro.
+	(POLYNOMIAL): Likewise.
+	(TAYLOR_SINCOS): Likewise.
+	(TAYLOR_SLOW): Likewise.
+	(__sin): Use TAYLOR_SINCOS.
+	(__cos): Likewise.
+	(slow): Use TAYLOR_SLOW.
+	(sloww): Likewise.
+	(bsloww): Likewise.
+	(csloww): Likewise.
+
+2013-09-19  Liubov Dmitrieva  <liubov.dmitrieva@intel.com>
+
+	* stdlib/strtod_l.c: Fix buffer overrun.
+
+2013-09-19  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/Makefile (bench): Add sincos.
+	* benchtests/bench-sincos.c: New file.
+
+	* math/libm-test.inc (cos_test_data): New test inputs.
+	(sin_test_data): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (SINCOS_TABLE_LOOKUP): New
+	macro.
+	(__sin): Use it.
+	(__cos): Likewise.
+	(slow1): Likewise.
+	(slow2): Likewise.
+	(sloww1): Likewise.
+	(sloww2): Likewise.
+	(bsloww1): Likewise.
+	(bsloww2): Likewise.
+	(cslow2): Likewise.
+	(csloww1): Likewise.
+	(csloww2): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (reduce_and_compute): New
+	function.
+	(__sin): Use it.
+	(__cos): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (__sin): Remove redundant
+	gotos.
+	(__cos): Likewise.
+
+2013-09-18  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* config.h.in (HAVE_MIPS_NAN2008): New macro.
+	* elf/elf.h (EF_MIPS_NAN2008): Likewise.
+	* sysdeps/generic/ldconfig.h (FLAG_MIPS_LIB32_NAN2008): Likewise.
+	(FLAG_MIPS64_LIBN32_NAN2008): Likewise.
+	(FLAG_MIPS64_LIBN64_NAN2008): Likewise.
+	* elf/cache.c (print_entry): Handle the new cache flags.
+
+2013-09-18  Joseph Myers  <joseph@codesourcery.com>
+	    Aldy Hernandez  <aldyh@redhat.com>
+
+	* sysdeps/powerpc/fpu_control.h [_SOFT_FLOAT || __NO_FPRS__]:
+	Change condition to [_SOFT_FLOAT].
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RC_NEAREST): New macro.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RC_DOWN): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RC_UP): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RC_ZERO): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_ZM): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_OM): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_UM): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_XM): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_MASK_IM): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_RESERVED): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_DEFAULT): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_IEEE): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (fpu_control_t): New typedef.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_GETCW): New macro.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (_FPU_SETCW): Likewise.
+	[__NO_FPRS__ && !_SOFT_FLOAT] (__fpu_control): New variable
+	declaration.
+
+2013-09-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/powerpc/powerpc32/__longjmp-common.S (LOAD_GP): Define
+	macro conditional on [__SPE__ || (__NO_FPRS__ && !_SOFT_FLOAT)].
+	(__longjmp): Use LOAD_GP to load saved GPRs.
+	* sysdeps/powerpc/powerpc32/setjmp-common.S (SAVE_GP): Define
+	macro conditional on [__SPE__ || (__NO_FPRS__ && !_SOFT_FLOAT)].
+	(__sigsetjmp): Use SAVE_GP to save GPRs.
+
+	* sysdeps/powerpc/powerpc32/Makefile [$(with-fp) = no] (+cflags):
+	Do not append -msoft-float.
+	[$(with-fp) = no] (sysdep-LDFLAGS): Likewise.
+
+2013-09-18  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/sincos32.c: Fix code formatting.
+
+2013-09-17  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15966]
+	* sysdeps/powerpc/fpu_control.h [!_SOFT_FLOAT && !__NO_FPRS__]
+	(_FPU_GETCW): Use initial "__" on variable and field names but not
+	on macro parameter name.
+	[!_SOFT_FLOAT && !__NO_FPRS__] (_FPU_SETCW): Likewise.  Use
+	parentheses around reference to macro parameter.
+
+2013-09-13  Richard Sandiford  <richard@codesourcery.com>
+
+	* locale/programs/ld-ctype.c (find_idx): Use uint32_t in
+	prototype.
+	(ctype_startup): Use uint32_t in cast and sizeof for
+	ctype->charnames.
+
+2013-09-11  Jia Liu  <proljc@gmail.com>
+
+	* sunrpc/rpc/types.h [__APPLE_CC__]: Define __u_char_defined and
+	__daddr_t_defined.
+	[__FreeBSD__]: Likewise.
+
+2013-09-11  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Remove: __strchr_sse42.
+	* sysdeps/x86_64/multiarch/strchr.S (__strchr_sse42): Remove.
+	(strchr): Remove __strchr_sse42 ifunc selection.
+	* sysdeps/x86_64/strchr.S (strchr): Use optimized implementation.
+	* sysdeps/x86_64/strchrnul.S: Include sysdeps/x86_64/strchr.S.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	* benchtests/bench-timing.h (TIMING_INIT): Rename ITERS
+	parameter to RES. Remove hardcoded 1000 value.
+	* benchtests/bench-skeleton.c (main): Pass RES parameter
+	to TIMING_INIT and multiply result by 1000.
+
+2013-09-10  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-09-11  Andreas Schwab  <schwab@suse.de>
+
+	* sysdeps/unix/sysv/linux/bits/fcntl-linux.h (__O_TMPFILE): Define
+	if not defined.
+	(O_TMPFILE) [__USE_GNU]: Define.
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h (__O_TMPFILE):
+	Define.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15857]
+	* malloc/malloc.c (__libc_memalign): Check the value of bytes
+	does not overflow.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15856]
+	* malloc/malloc.c (__libc_valloc): Check the value of bytes
+	does not overflow.
+
+2013-09-11  Will Newton  <will.newton@linaro.org>
+
+	[BZ #15855]
+	* malloc/malloc.c (__libc_pvalloc): Check the value of bytes
+	does not overflow.
+
+2013-09-10  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/ieee754/dbl-64/e_j0.c: Remove DO_NOT_USE_THIS conditionals.
+	* sysdeps/ieee754/dbl-64/e_j1.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_erf.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_expm1.c: Likewise.
+	* sysdeps/ieee754/dbl-64/s_log1p.c: Likewise.
+
+2013-09-10  Allan McRae  <allan@archlinux.org>
+
+	[BZ #15748]
+	* manual/arith.texi (Parsing of Floats): Clarify
+	cross-reference.
+
+	[BZ #15849]
+	* manual/install.texi (Running make install): Mention
+	--enable-pt-chown.
+	* INSTALL: Regenerated.
+
+2013-09-09  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	* csu/init-first.c (_init): Remove the !SHARED condition around
+	FPU control word initialization.
+	* elf/dl-support.c (_dl_fpu_control): New variable.
+	(_dl_aux_init) <AT_FPUCW>: Initialize it.
+	* math/test-fpucw.c [!FPU_CONTROL] (FPU_CONTROL): New macro.
+	(main): Replace _FPU_DEFAULT with FPU_CONTROL throughout.
+	* math/test-fpucw-static.c: New file.
+	* math/test-fpucw-ieee.c: New file.
+	* math/test-fpucw-ieee-static.c: New file.
+	* math/Makefile (tests): Add `test-fpucw-ieee' and
+	`$(tests-static)'.
+	(tests-static): New variable.
+	[($(build-shared),yes)] ($(addprefix $(objpfx),$(tests))): Move
+	dependency to...
+	[($(build-shared),yes)]
+	($(addprefix $(objpfx),$(filter-out $(tests-static),$(tests)))):
+	... this.
+	[($(build-shared),yes)] ($(addprefix $(objpfx),$(tests-static))):
+	New dependency.
+
+2013-09-09  Allan McRae  <allan@archlinux.org>
+
+	[BZ #15939]
+	* manual/string.texi (Collation Functions): Fix typo in
+	strcoll example.
+	Reported by Suren Karapetyan <me@suren.karapetyan.name>.
+
+	[BZ #15893]
+	* stdlib/isomac.c (get_null_defines): Fix memory leak.
+
+	[BZ #15892]
+	* libio/memstream.c (open_memstream): Fix memory leak.
+	* libio/wmemstream.c (open_wmemstream): Likewise.
+
+	[BZ #15895]
+	* nscd/netgroupcache.c: Fix nesting of ifdefs.
+
+2013-09-09  Will Newton  <will.newton@linaro.org>
+
+	* malloc/Makefile: Add tst-realloc to tests.
+	* malloc/tst-realloc.c: New file.
+
+2013-09-09  Allan McRae  <allan@archlinux.org>
+
+	[BZ #15844]
+	* COPYING: Update from GNU website to fix FSF address.
+	* COPYING.LIB: Likewise.
+
+2013-09-06  David S. Miller  <davem@davemloft.net>
+
+	* po/zh_TW.po: Update Chinese (traditional) translation from
+	translation project.
+
 2013-09-06  Richard Sandiford  <richard@codesourcery.com>
 	    Joseph Myers  <joseph@codesourcery.com>
 
@@ -132,7 +1984,7 @@
 
 2013-09-04  Chris Leonard  <cjl@sugarlabs,.org>
 
-     [BZ #15923]
+	[BZ #15923]
 	* locale/iso-4217.def: Update iso-1427.def and related occurrences.
 
 2013-09-04  Joseph Myers  <joseph@codesourcery.com>

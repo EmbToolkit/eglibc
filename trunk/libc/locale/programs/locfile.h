@@ -18,6 +18,8 @@
 #ifndef _LOCFILE_H
 #define _LOCFILE_H	1
 
+#include <byteswap.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <sys/uio.h>
 
@@ -67,26 +69,16 @@ extern void write_all_categories (struct localedef_t *definitions,
 				  const char *locname,
 				  const char *output_path);
 
-extern int swap_endianness_p;
+extern bool swap_endianness_p;
 
 extern unsigned int uint32_align_mask;
 
 /* Change the output to be big-endian if BIG_ENDIAN is true and
    little-endian otherwise.  */
 static inline void
-set_big_endian (int big_endian)
+set_big_endian (bool big_endian)
 {
-  swap_endianness_p = ((big_endian != 0) != (__BYTE_ORDER == __BIG_ENDIAN));
-}
-
-/* Swap the order of the bytes in VALUE.  */
-static inline uint32_t
-swap_uint32 (uint32_t value)
-{
-  return (((value & 0x000000ff) << 24)
-	  | ((value & 0x0000ff00) << 8)
-	  | ((value & 0x00ff0000) >> 8)
-	  | ((value & 0xff000000) >> 24));
+  swap_endianness_p = (big_endian != (__BYTE_ORDER == __BIG_ENDIAN));
 }
 
 /* Munge VALUE so that, when stored, it has the correct byte order
@@ -94,7 +86,7 @@ swap_uint32 (uint32_t value)
 static inline uint32_t
 maybe_swap_uint32 (uint32_t value)
 {
-  return swap_endianness_p ? swap_uint32 (value) : value;
+  return swap_endianness_p ? bswap_32 (value) : value;
 }
 
 /* Likewise, but munge an array of N uint32_ts starting at ARRAY.  */
@@ -103,7 +95,7 @@ maybe_swap_uint32_array (uint32_t *array, size_t n)
 {
   if (swap_endianness_p)
     while (n-- > 0)
-      array[n] = swap_uint32 (array[n]);
+      array[n] = bswap_32 (array[n]);
 }
 
 /* Like maybe_swap_uint32_array, but the array of N elements is at

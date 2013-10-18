@@ -19,6 +19,10 @@
 #include <fpu_control.h>
 #include <stdio.h>
 
+#ifndef FPU_CONTROL
+# define FPU_CONTROL _FPU_DEFAULT
+#endif
+
 int
 main (void)
 {
@@ -30,11 +34,11 @@ main (void)
 
   cw &= ~_FPU_RESERVED;
 
-  if (cw != (_FPU_DEFAULT & ~_FPU_RESERVED))
+  if (cw != (FPU_CONTROL & ~_FPU_RESERVED))
     printf ("control word is 0x%lx but should be 0x%lx.\n",
-	    (long int) cw, (long int) (_FPU_DEFAULT & ~_FPU_RESERVED));
+	    (long int) cw, (long int) (FPU_CONTROL & ~_FPU_RESERVED));
 
-  return cw != (_FPU_DEFAULT & ~_FPU_RESERVED);
+  return cw != (FPU_CONTROL & ~_FPU_RESERVED);
 
 #else
   return 0;

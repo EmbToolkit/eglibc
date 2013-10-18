@@ -149,7 +149,8 @@ static const struct argp_option options[] =
     N_("locale.alias file to consult when making archive")},
   { "little-endian", OPT_LITTLE_ENDIAN, NULL, 0,
     N_("Generate little-endian output") },
-  { "big-endian", OPT_BIG_ENDIAN, NULL, 0, N_("Generate big-endian output") },
+  { "big-endian", OPT_BIG_ENDIAN, NULL, 0,
+    N_("Generate big-endian output") },
   { "uint32-align", OPT_UINT32_ALIGN, "ALIGNMENT", 0,
     N_("Set the target's uint32_t alignment in bytes (default 4)") },
   { NULL, 0, NULL, 0, NULL }
@@ -337,10 +338,10 @@ parse_opt (int key, char *arg, struct argp_state *state)
       list_archive = true;
       break;
     case OPT_LITTLE_ENDIAN:
-      set_big_endian (0);
+      set_big_endian (false);
       break;
     case OPT_BIG_ENDIAN:
-      set_big_endian (1);
+      set_big_endian (true);
       break;
     case OPT_UINT32_ALIGN:
       uint32_align_mask = strtol (arg, NULL, 0) - 1;

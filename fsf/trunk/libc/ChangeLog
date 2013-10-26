@@ -1,3 +1,36 @@
+2013-10-04  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/strcpy.S (strcpy): Add word load/store
+	to provide a boost for large inputs with word alignment.
+	* sysdeps/powerpc/powerpc64/stpcpy.S (__stpcpy): Rewrite
+	implementation based on optimized PPC64 strcpy.
+	* sysdeps/powerpc/powerpc64/power7/strcpy.S: New file: optimized
+	strcpy for PPC64/POWER7 based on both doubleword and word load/store.
+	* sysdeps/powerpc/powerpc64/power7/stpcpy.S: New file: optimized
+	stpcpy for PPC64/POWER7 based on PPC64/POWER7 strcpy.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ 2801]
+	* manual/socket.texi (Host Names): Fix gethostbyname_r example.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14876]
+	* time/strptime_l.c (__strptime_internal): 14876 Read timezone entry.
+	* time/tst-strptime.c (day_tests): Add testcase.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ 14029]
+	* manual/pattern.texi: Acknowledge that fnmatch can fail.
+
+2013-10-25  Fabrice Bauzac  <fbauzac@debian71.nce.amadeus.net>
+
+	[BZ #16074]
+	* manual/llio.texi (Memory-mapped I/O): Indicate that mmap returns
+	MAP_FAILED on error.
+
 2013-10-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	[BZ #16072]

@@ -4761,7 +4761,7 @@ $as_echo_n "checking version of $MAKE... " >&6; }
   ac_prog_version=`$MAKE --version 2>&1 | sed -n 's/^.*GNU Make[^0-9]*\([0-9][0-9.]*\).*$/\1/p'`
   case $ac_prog_version in
     '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
-    3.79* | 3.[89]*)
+    3.79* | 3.[89]* | [4-9].* | [1-9][0-9]*)
        ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
     *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
 
@@ -5171,7 +5171,7 @@ $as_echo_n "checking whether $AUTOCONF${ACFLAGS:+ }$ACFLAGS works... " >&6; }
 if ${libc_cv_autoconf_works+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-    if (cd $srcdir; $AUTOCONF $ACFLAGS configure.in > /dev/null 2>&1); then
+    if (cd $srcdir; $AUTOCONF $ACFLAGS configure.ac > /dev/null 2>&1); then
     libc_cv_autoconf_works=yes
   else
     libc_cv_autoconf_works=no

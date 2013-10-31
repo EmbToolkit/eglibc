@@ -1,3 +1,109 @@
+2013-10-31  Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+
+	[BZ #16037]
+	* configure.ac: allow GNU Make 4.0 and greater.
+	* configure: Regenerated.
+
+2013-10-30  Will Newton  <will.newton@linaro.org>
+
+	[BZ #16038]
+	* malloc/hooks.c (memalign_check): Limit alignment to the
+	maximum representable power of two.
+	* malloc/malloc.c (__libc_memalign): Likewise.
+	* malloc/tst-memalign.c (do_test): Add test for very
+	large alignment values.
+	* malloc/tst-posix_memalign.c (do_test): Likewise.
+
+2013-10-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #11087]
+	* malloc/malloc.c (sysmalloc): Compute statistics atomically.
+	(munmap_chunk): Likewise.
+	(mremap_chunk): Likewise.
+
+2013-10-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ 15799]
+	* stdlib/div.c (div): Remove obsolete code.
+	* stdlib/ldiv.c (ldiv): Likewise.
+	* stdlib/lldiv.c (lldiv): Likewise.
+
+2013-10-30  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #16071]
+	* nss/nss_files/files-XXX.c (get_contents_ret): New
+	enumerator.
+	(get_contents): New function.
+	(internal_getent): Use it.  Expand size of LINEBUFLEN.
+
+2013-10-30  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.in: Moved to ...
+	* configure.ac: ... here. Change reference to configure.in
+	to configure.ac.
+	* sysdeps/arm/preconfigure.ac: ... here.
+	configure.in to configure.ac.
+	* sysdeps/gnu/configure.in: Moved to ...
+	* sysdeps/gnu/configure.ac: ... here.
+	* sysdeps/i386/configure.in: Moved to ...
+	* sysdeps/i386/configure.ac: ... here.
+	* sysdeps/ieee754/ldbl-opt/configure.in: Moved to ...
+	* sysdeps/ieee754/ldbl-opt/configure.ac: ... here.
+	* sysdeps/mach/configure.in: Moved to ...
+	* sysdeps/mach/configure.ac: ... here.
+	* sysdeps/mach/hurd/configure.in: Moved to ...
+	* sysdeps/mach/hurd/configure.ac: ... here.
+	* sysdeps/powerpc/configure.in: Moved to ...
+	* sysdeps/powerpc/configure.ac: ... here.
+	* sysdeps/powerpc/powerpc32/configure.in: Moved to ...
+	* sysdeps/powerpc/powerpc32/configure.ac: ... here.
+	* sysdeps/powerpc/powerpc64/configure.in: Moved to ...
+	* sysdeps/powerpc/powerpc64/configure.ac: ... here.
+	* sysdeps/s390/s390-32/configure.in: Moved to ...
+	* sysdeps/s390/s390-32/configure.ac: ... here.
+	* sysdeps/s390/s390-64/configure.in: Moved to ...
+	* sysdeps/s390/s390-64/configure.ac: ... here.
+	* sysdeps/sh/configure.in: Moved to ...
+	* sysdeps/sh/configure.ac: ... here.
+	* sysdeps/sparc/configure.in: Moved to ...
+	* sysdeps/sparc/configure.ac: ... here.
+	* sysdeps/unix/sysv/linux/configure.in: Moved to ...
+	* sysdeps/unix/sysv/linux/configure.ac: ... here.
+	* sysdeps/unix/sysv/linux/powerpc/configure.in: Moved to ...
+	* sysdeps/unix/sysv/linux/powerpc/configure.ac: ... here.
+	* sysdeps/x86_64/configure.in: Moved to ...
+	* sysdeps/x86_64/configure.ac: ... here.
+	* sysdeps/x86_64/preconfigure.in: Moved to ...
+	* sysdeps/x86_64/preconfigure.ac: ... here.
+	* aclocal.m4: Change reference to configure.in to configure.ac.
+	* config.h.in: Likewise.
+	* manual/install.texi: Likewise.
+	* manual/maint.texi: Likewise.
+	* Makefile: Likewise.
+	* malloc/Makefile: Likewise.
+	* nscd/Makefile: Likewise.
+	* Makeconfig: Change reference to configure.in and
+	preconfigure.in to configure.ac and preconfigure.ac
+	respectively.
+	* INSTALL: Regenerated.
+	* configure: Likewise.
+	* sysdeps/gnu/configure: Likewise.
+	* sysdeps/i386/configure: Likewise.
+	* sysdeps/ieee754/ldbl-opt/configure: Likewise.
+	* sysdeps/mach/configure: Likewise.
+	* sysdeps/mach/hurd/configure: Likewise.
+	* sysdeps/powerpc/configure: Likewise.
+	* sysdeps/powerpc/powerpc32/configure: Likewise.
+	* sysdeps/powerpc/powerpc64/configure: Likewise.
+	* sysdeps/s390/s390-32/configure: Likewise.
+	* sysdeps/s390/s390-64/configure: Likewise.
+	* sysdeps/sh/configure: Likewise.
+	* sysdeps/sparc/configure: Likewise.
+	* sysdeps/unix/sysv/linux/configure: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/configure: Likewise.
+	* sysdeps/x86_64/configure: Likewise.
+	* sysdeps/x86_64/preconfigure: Likewise.
+
 2013-10-29  Andreas Schwab  <schwab@suse.de>
 
 	* stdio-common/Makefile (tst-swscanf-ENV): Define.
@@ -25,7 +131,7 @@
 
 2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
 
-	[BZ 2801]
+	[BZ #2801]
 	* manual/socket.texi (Host Names): Fix gethostbyname_r example.
 
 2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
@@ -36,7 +142,7 @@
 
 2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
 
-	[BZ 14029]
+	[BZ #14029]
 	* manual/pattern.texi: Acknowledge that fnmatch can fail.
 
 2013-10-25  Fabrice Bauzac  <fbauzac@debian71.nce.amadeus.net>

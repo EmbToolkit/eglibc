@@ -1,3 +1,21 @@
+2013-10-31  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Add Meadow Mari (mhr).
+
+2013-10-31  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14752], [BZ #15763]
+	* sysdeps/unix/sysv/linux/shm_open.c (shm_open, shm_unlink):
+	Validate name.
+	* rt/tst_shm.c: Add test for escaping directory.
+
+2013-10-31  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15917]
+	* stdio-common/vfscanf.c (_IO_vfwscanf): Handle leading '0' not
+	followed by 'x' as part of digit sequence.
+	* stdio-common/tst-sscanf.c (double_tests2): New tests.
+
 2013-10-31  Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 
 	[BZ #16037]
@@ -23,7 +41,7 @@
 
 2013-10-30  Ondřej Bílka  <neleai@seznam.cz>
 
-	[BZ 15799]
+	[BZ #15799]
 	* stdlib/div.c (div): Remove obsolete code.
 	* stdlib/ldiv.c (ldiv): Likewise.
 	* stdlib/lldiv.c (lldiv): Likewise.

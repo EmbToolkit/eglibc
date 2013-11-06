@@ -1,4 +1,5 @@
-/* Copyright (C) 2005 Free Software Foundation, Inc.
+/* Optimized stpcpy implementation for PowerPC64/POWER7.
+   Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,19 +13,12 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
-#ifndef _PREDEFS_H
-#define _PREDEFS_H
+#define USE_AS_STPCPY
+#include <sysdeps/powerpc/powerpc64/power7/strcpy.S>
 
-#ifndef _STDC_PREDEF_H
-# error "Never use <bits/predefs.h> directly; include <stdc-predef.h> instead."
-#endif
-
-/* We do support the IEC 559 math functionality, real and complex.  */
-#define __STDC_IEC_559__		1
-#define __STDC_IEC_559_COMPLEX__	1
-
-#endif /* predefs.h */
+weak_alias (__stpcpy, stpcpy)
+libc_hidden_def (__stpcpy)
+libc_hidden_builtin_def (stpcpy)

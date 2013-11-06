@@ -1,3 +1,118 @@
+2013-11-04  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/unm_US: Adjust language-code fields of LC_ADDRESS.
+	* locales/wal_ET: Likewise.
+
+2013-11-03  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/quz_PE: Adjust language-code fields of LC_ADDRESS.
+	* locales/szl_PL: Likewise.
+	* locales/ta_IN: Likewise.
+	* locales/ta_LK: Likewise.
+	* locales/te_IN: Likewise.
+	* locales/tg_TJ: Likewise.
+	* locales/tl_PH: Likewise.
+	* locales/tn_ZA: Likewise.
+	* locales/tr_CY: Likewise.
+	* locales/tr_TR: Likewise.
+	* locales/ts_ZA: Likewise.
+	* locales/tt_RU: Likewise.
+	* locales/tt_RU@iqtelif: Likewise.
+	* locales/ug_CN: Likewise.
+	* locales/ur_IN: Likewise.
+	* locales/ur_PK: Likewise.
+	* locales/uz_UZ: Likewise.
+	* locales/uz_UZ@cyrillic: Likewise.
+	* locales/ve_ZA: Likewise.
+	* locales/vi_VN: Likewise.
+	* locales/wa_BE: Likewise.
+	* locales/wal_ET: Likewise.
+	* locales/wo_SN: Likewise.
+	* locales/xh_ZA: Likewise.
+	* locales/yi_US: Likewise.
+	* locales/yue_HK: Likewise.
+	* locales/zh_HK: Likewise.
+	* locales/zh_SG: Likewise.
+
+2013-11-03  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/pa_IN: Adjust language-code fields of LC_ADDRESS.
+	* locales/pa_PK: Likewise.
+	* locales/pl_PL: Likewise.
+	* locales/ps_AF: Likewise.
+	* locales/pt_BR: Likewise.
+	* locales/pt_PT: Likewise.
+	* locales/ru_RU: Likewise.
+	* locales/ru_UA: Likewise.
+	* locales/sa_IN: Likewise.
+	* locales/sat_IN: Likewise.
+	* locales/sc_IT: Likewise.
+	* locales/sd_IN: Likewise.
+	* locales/sd_IN@devanagari: Likewise.
+	* locales/se_NO: Likewise.
+	* locales/si_LK: Likewise.
+	* locales/sk_SK: Likewise.
+	* locales/sl_SI: Likewise.
+	* locales/sq_AL: Likewise.
+	* locales/sq_MK: Likewise.
+	* locales/ss_ZA: Likewise.
+	* locales/st_ZA: Likewise.
+	* locales/sv_SE: Likewise.
+	* locales/sw_KE: Likewise.
+	* locales/sw_TZ: Likewise.
+
+2013-11-01  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/nb_NO: Adjust language-code fields of LC_ADDRESS.
+	* locales/ne_NP: Likewise.
+	* locales/nhn_MX: Likewise.
+	* locales/niu_NU: Likewise.
+	* locales/niu_NZ: Likewise.
+	* locales/nl_AW: Likewise.
+	* locales/nl_BE: Likewise.
+	* locales/nn_NO: Likewise.
+	* locales/nr_ZA: Likewise.
+	* locales/oc_FR: Likewise.
+	* locales/or_IN: Likewise.
+	* locales/os_RU: Likewise.
+
+2013-10-31  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/mag_IN: Adjust language-code fields of LC_ADDRESS.
+	* locales/mai_IN: Likewise.
+	* locales/mg_MG: Likewise.
+	* locales/mhr_RU: Likewise.
+	* locales/mi_NZ: Likewise.
+	* locales/ml_IN: Likewise.
+	* locales/mni_IN: Likewise.
+	* locales/mr_IN: Likewise.
+	* locales/ms_MY: Likewise.
+	* locales/mt_MT: Likewise.
+
+2013-10-29  Chris Leonard  <cjl@sugarlabs.org>
+
+	[BZ #16078]
+	* locales/anp_IN: New locale for anp_IN.
+	* SUPPORTED: Add anp_IN.
+
+2013-10-24  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locales/ja_JP: Adjust language-code fields of LC_ADDRESS.
+	* locales/ka_GE: Likewise.
+	* locales/kk_KZ: Likewise.
+	* locales/kl_GL: Likewise.
+	* locales/kn_IN: Likewise.
+	* locales/ko_KR: Likewise.
+	* locales/kok_IN: Likewise.
+	* locales/ks_IN: Likewise.
+	* locales/ku_TR: Likewise.
+	* locales/kw_GB: Likewise.
+	* locales/ky_KG: Likewise.
+	* locales/lg_UG: Likewise.
+	* locales/lij_IT: Likewise.
+	* locales/lt_LT: Likewise.
+	* locales/lv_LV: Likewise.
+
 2013-10-13  Chris Leonard  <cjl@sugarlabs.org>
 
 	* locales/he_IL: Adjust language-code fields of LC_ADDRESS.

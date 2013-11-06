@@ -1,3 +1,281 @@
+2013-11-06  David S. Miller  <davem@davemloft.net>
+
+	[BZ #15985]
+	* sysdeps/sparc/sparc32/fpu/s_fdim.S (__fdim): Do not use fnegd
+	on pre-v9 cpus, use a fnegs+fmovs sequence instead.
+
+2013-11-06  Will Newton  <will.newton@linaro.org>
+
+	* manual/memory.texi (Malloc Examples): Remove register
+	keyword from examples.
+
+2013-11-04  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Correct Walaita (wal) and add Unami Delaware (unm).
+
+2013-11-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* include/stdc-predef.h [__GCC_IEC_559] (__STDC_IEC_559__): Define
+	depending on [__GCC_IEC_559 > 0].
+	[__GCC_IEC_559_COMPLEX] (__STDC_IEC_559_COMPLEX__): Define
+	depending on [__GCC_IEC_559_COMPLEX > 0].
+
+2013-11-03  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Add Quechua, Southern (quz) and Silesian (szl)
+	to iso-639.def.
+
+2013-11-03  Ondřej Bílka  <neleai@seznam.cz>
+
+	* elf/rtld.c: Remove unused NONTLS_INIT_TP.
+
+2013-11-01  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #16112]
+	* malloc/malloc (malloc_info): Do not handle first bin as
+	special case.
+
+2013-11-01  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Add Central Nahuatl (nhn).
+
+2013-11-01  Bruno Haible  <bruno@clisp.org>
+
+	[BZ #7003]
+	* manual/math.texi (BSD Random): Specify range upper bound as
+	in POSIX.
+
+2013-10-31  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Add Meadow Mari (mhr).
+
+2013-10-31  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14752], [BZ #15763]
+	* sysdeps/unix/sysv/linux/shm_open.c (shm_open, shm_unlink):
+	Validate name.
+	* rt/tst_shm.c: Add test for escaping directory.
+
+2013-10-31  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15917]
+	* stdio-common/vfscanf.c (_IO_vfwscanf): Handle leading '0' not
+	followed by 'x' as part of digit sequence.
+	* stdio-common/tst-sscanf.c (double_tests2): New tests.
+
+2013-10-31  Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+
+	[BZ #16037]
+	* configure.ac: allow GNU Make 4.0 and greater.
+	* configure: Regenerated.
+
+2013-10-30  Will Newton  <will.newton@linaro.org>
+
+	[BZ #16038]
+	* malloc/hooks.c (memalign_check): Limit alignment to the
+	maximum representable power of two.
+	* malloc/malloc.c (__libc_memalign): Likewise.
+	* malloc/tst-memalign.c (do_test): Add test for very
+	large alignment values.
+	* malloc/tst-posix_memalign.c (do_test): Likewise.
+
+2013-10-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #11087]
+	* malloc/malloc.c (sysmalloc): Compute statistics atomically.
+	(munmap_chunk): Likewise.
+	(mremap_chunk): Likewise.
+
+2013-10-30  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #15799]
+	* stdlib/div.c (div): Remove obsolete code.
+	* stdlib/ldiv.c (ldiv): Likewise.
+	* stdlib/lldiv.c (lldiv): Likewise.
+
+2013-10-30  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #16071]
+	* nss/nss_files/files-XXX.c (get_contents_ret): New
+	enumerator.
+	(get_contents): New function.
+	(internal_getent): Use it.  Expand size of LINEBUFLEN.
+
+2013-10-30  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.in: Moved to ...
+	* configure.ac: ... here. Change reference to configure.in
+	to configure.ac.
+	* sysdeps/arm/preconfigure.ac: ... here.
+	configure.in to configure.ac.
+	* sysdeps/gnu/configure.in: Moved to ...
+	* sysdeps/gnu/configure.ac: ... here.
+	* sysdeps/i386/configure.in: Moved to ...
+	* sysdeps/i386/configure.ac: ... here.
+	* sysdeps/ieee754/ldbl-opt/configure.in: Moved to ...
+	* sysdeps/ieee754/ldbl-opt/configure.ac: ... here.
+	* sysdeps/mach/configure.in: Moved to ...
+	* sysdeps/mach/configure.ac: ... here.
+	* sysdeps/mach/hurd/configure.in: Moved to ...
+	* sysdeps/mach/hurd/configure.ac: ... here.
+	* sysdeps/powerpc/configure.in: Moved to ...
+	* sysdeps/powerpc/configure.ac: ... here.
+	* sysdeps/powerpc/powerpc32/configure.in: Moved to ...
+	* sysdeps/powerpc/powerpc32/configure.ac: ... here.
+	* sysdeps/powerpc/powerpc64/configure.in: Moved to ...
+	* sysdeps/powerpc/powerpc64/configure.ac: ... here.
+	* sysdeps/s390/s390-32/configure.in: Moved to ...
+	* sysdeps/s390/s390-32/configure.ac: ... here.
+	* sysdeps/s390/s390-64/configure.in: Moved to ...
+	* sysdeps/s390/s390-64/configure.ac: ... here.
+	* sysdeps/sh/configure.in: Moved to ...
+	* sysdeps/sh/configure.ac: ... here.
+	* sysdeps/sparc/configure.in: Moved to ...
+	* sysdeps/sparc/configure.ac: ... here.
+	* sysdeps/unix/sysv/linux/configure.in: Moved to ...
+	* sysdeps/unix/sysv/linux/configure.ac: ... here.
+	* sysdeps/unix/sysv/linux/powerpc/configure.in: Moved to ...
+	* sysdeps/unix/sysv/linux/powerpc/configure.ac: ... here.
+	* sysdeps/x86_64/configure.in: Moved to ...
+	* sysdeps/x86_64/configure.ac: ... here.
+	* sysdeps/x86_64/preconfigure.in: Moved to ...
+	* sysdeps/x86_64/preconfigure.ac: ... here.
+	* aclocal.m4: Change reference to configure.in to configure.ac.
+	* config.h.in: Likewise.
+	* manual/install.texi: Likewise.
+	* manual/maint.texi: Likewise.
+	* Makefile: Likewise.
+	* malloc/Makefile: Likewise.
+	* nscd/Makefile: Likewise.
+	* Makeconfig: Change reference to configure.in and
+	preconfigure.in to configure.ac and preconfigure.ac
+	respectively.
+	* INSTALL: Regenerated.
+	* configure: Likewise.
+	* sysdeps/gnu/configure: Likewise.
+	* sysdeps/i386/configure: Likewise.
+	* sysdeps/ieee754/ldbl-opt/configure: Likewise.
+	* sysdeps/mach/configure: Likewise.
+	* sysdeps/mach/hurd/configure: Likewise.
+	* sysdeps/powerpc/configure: Likewise.
+	* sysdeps/powerpc/powerpc32/configure: Likewise.
+	* sysdeps/powerpc/powerpc64/configure: Likewise.
+	* sysdeps/s390/s390-32/configure: Likewise.
+	* sysdeps/s390/s390-64/configure: Likewise.
+	* sysdeps/sh/configure: Likewise.
+	* sysdeps/sparc/configure: Likewise.
+	* sysdeps/unix/sysv/linux/configure: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/configure: Likewise.
+	* sysdeps/x86_64/configure: Likewise.
+	* sysdeps/x86_64/preconfigure: Likewise.
+
+2013-10-29  Andreas Schwab  <schwab@suse.de>
+
+	* stdio-common/Makefile (tst-swscanf-ENV): Define.
+
+2013-10-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/pow-inputs: Add new inputs.
+
+	* benchtests/exp-inputs: Add new inputs.
+
+	* sysdeps/ieee754/dbl-64/sincos32.c (__sin32): Consolidate
+	conditional check for return value.
+	(__cos32): Likewise.
+
+2013-10-26  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/strcpy.S (strcpy): Add word load/store
+	to provide a boost for large inputs with word alignment.
+	* sysdeps/powerpc/powerpc64/stpcpy.S (__stpcpy): Rewrite
+	implementation based on optimized PPC64 strcpy.
+	* sysdeps/powerpc/powerpc64/power7/strcpy.S: New file: optimized
+	strcpy for PPC64/POWER7 based on both doubleword and word load/store.
+	* sysdeps/powerpc/powerpc64/power7/stpcpy.S: New file: optimized
+	stpcpy for PPC64/POWER7 based on PPC64/POWER7 strcpy.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #2801]
+	* manual/socket.texi (Host Names): Fix gethostbyname_r example.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14876]
+	* time/strptime_l.c (__strptime_internal): 14876 Read timezone entry.
+	* time/tst-strptime.c (day_tests): Add testcase.
+
+2013-10-25   Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14029]
+	* manual/pattern.texi: Acknowledge that fnmatch can fail.
+
+2013-10-25  Fabrice Bauzac  <fbauzac@debian71.nce.amadeus.net>
+
+	[BZ #16074]
+	* manual/llio.texi (Memory-mapped I/O): Indicate that mmap returns
+	MAP_FAILED on error.
+
+2013-10-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #16072]
+	* sysdeps/posix/getaddrinfo.c (gethosts): Allocate tmpbuf on
+	heap for large requests.
+
+2013-10-25  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #9954]
+	* sysdeps/posix/getaddrinfo.c (rfc3484_sort): do not assign native
+	result if the result has no associated interface.
+	* sysdeps/posix/getaddrinfo.c (getaddrinfo): correctly detect
+	interface for all 127.X.Y.Z addresses.
+
+2013-10-24  Chris Leonard  <cjl@sugarlabs.org>
+
+	* locale/iso-639.def: Add Ligurian (lij)
+
+2013-10-21  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #15825]
+	* sunrpc/rpc_main.c: Document rpcgen -5.
+
+2013-10-19  Michael Stahl  <mstahl@redhat.com>
+
+	* elf/rtld.c (do_preload): Print the reason why preloading failed.
+
+2013-10-19  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #10278]
+	* posix/glob.c: Match only directories when trailing slash is present.
+	* posix/tst-gnuglob.c (my_opendir): Do not open files.
+	(main): Add testcase.
+
+2013-10-19  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #15670]
+	* time/tzfile.c (__tzfile_read): Replace alloca with malloc.
+
+2013-10-18  Carlos O'Donell  <carlos@redhat.com>
+
+	* manual/crypt.texi (Cryptographic Functions): Using SunRPC and
+	AUTH_DES will prevent FIPS 140-2 compliance. Add vindex for
+	AUTH_DES and cindex for FIPS 140-2.
+	(DES Encryption): Add cindex FIPS 46-3.
+
+	* locale/locarchive.h (struct locarhandle): Add fname.
+	* locale/programs/localedef.c (main): Pass ARGV[remaining]
+	if an optional argument was specified to --list-archive,
+	otherwise NULL.
+	* locale/programs/locarchive.c (show_archive_content): Take new
+	argument fname and pass it via ah.fname to open_archive.
+	* locale/programs/localedef.h: Update decl.
+	(open_archive): If AH->fname is non-null, open that file
+	rather than the default file name, and don't ignore ENOENT.
+	(create_archive): Set AH.fname to NULL.
+	(delete_locales_from_archive): Likewise.
+	(add_locales_to_archive): Likewise.
+	* locale/programs/locfile.c (write_all_categories): Likewise.
+
 2013-10-18  Joseph Myers  <joseph@codesourcery.com>
 	    Aldy Hernandez  <aldyh@redhat.com>
 

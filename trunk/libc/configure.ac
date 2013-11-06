@@ -984,7 +984,7 @@ AC_CHECK_PROG_VER(CC, ${ac_tool_prefix}gcc ${ac_tool_prefix}cc, -v,
   critic_missing="$critic_missing gcc")
 AC_CHECK_PROG_VER(MAKE, gnumake gmake make, --version,
   [GNU Make[^0-9]*\([0-9][0-9.]*\)],
-  [3.79* | 3.[89]*], critic_missing="$critic_missing make")
+  [3.79* | 3.[89]* | [4-9].* | [1-9][0-9]*], critic_missing="$critic_missing make")
 
 AC_CHECK_PROG_VER(MSGFMT, gnumsgfmt gmsgfmt msgfmt, --version,
   [GNU gettext.* \([0-9]*\.[0-9.]*\)],
@@ -1010,7 +1010,7 @@ xno|x|x:) AUTOCONF=no ;;
 *)
   AC_CACHE_CHECK(dnl
 whether $AUTOCONF${ACFLAGS:+ }$ACFLAGS works, libc_cv_autoconf_works, [dnl
-  if (cd $srcdir; $AUTOCONF $ACFLAGS configure.in > /dev/null 2>&1); then
+  if (cd $srcdir; $AUTOCONF $ACFLAGS configure.ac > /dev/null 2>&1); then
     libc_cv_autoconf_works=yes
   else
     libc_cv_autoconf_works=no
@@ -2155,7 +2155,7 @@ AC_SUBST(static_nss)
 
 AC_SUBST(DEFINES)
 
-dnl See sysdeps/mach/configure.in for this variable.
+dnl See sysdeps/mach/configure.ac for this variable.
 AC_SUBST(mach_interface_list)
 
 VERSION=`sed -n -e 's/^#define VERSION "\([^"]*\)"/\1/p' < $srcdir/version.h`

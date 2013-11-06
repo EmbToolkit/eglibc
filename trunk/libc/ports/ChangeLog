@@ -1,13 +1,7 @@
-2013-10-04  Alan Modra  <amodra@gmail.com>
+2013-10-30  Mike Frysinger  <vapier@gentoo.org>
 
-	* sysdeps/ia64/fpu/printf_fphex.c: Adjust for fpnum change.
-
-2013-09-02  Mike Frysinger  <vapier@gentoo.org>
-
-	* sysdeps/unix/sysv/linux/hppa/syscalls.list (fanotify_mark): New
-	entry.
-	* sysdeps/unix/sysv/linux/hppa/Versions (libc): Add GLIBC_2.19 and
-	fanotify_mark.
+	* README: Change references to preconfigure.in to
+	preconfigure.ac.
 
 2013-01-02  Joseph Myers  <joseph@codesourcery.com>
 

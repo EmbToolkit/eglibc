@@ -197,7 +197,22 @@ gaih_inet_serv (const char *servicename, const struct gaih_typeproto *tp,
 				&rc, &herrno, NULL, &localcanon));	      \
     if (rc != ERANGE || herrno != NETDB_INTERNAL)			      \
       break;								      \
-    tmpbuf = extend_alloca (tmpbuf, tmpbuflen, 2 * tmpbuflen);		      \
+    if (!malloc_tmpbuf && __libc_use_alloca (alloca_used + 2 * tmpbuflen))    \
+      tmpbuf = extend_alloca_account (tmpbuf, tmpbuflen, 2 * tmpbuflen,	      \
+				      alloca_used);			      \
+    else								      \
+      {									      \
+	char *newp = realloc (malloc_tmpbuf ? tmpbuf : NULL,		      \
+			      2 * tmpbuflen);				      \
+	if (newp == NULL)						      \
+	  {								      \
+	    result = -EAI_MEMORY;					      \
+	    goto free_and_return;					      \
+	  }								      \
+	tmpbuf = newp;							      \
+	malloc_tmpbuf = true;						      \
+	tmpbuflen = 2 * tmpbuflen;					      \
+      }									      \
   }									      \
   if (status == NSS_STATUS_SUCCESS && rc == 0)				      \
     h = &th;								      \
@@ -209,7 +224,8 @@ gaih_inet_serv (const char *servicename, const struct gaih_typeproto *tp,
 	{								      \
 	  __set_h_errno (herrno);					      \
 	  _res.options |= old_res_options & RES_USE_INET6;		      \
-	  return -EAI_SYSTEM;						      \
+	  result = -EAI_SYSTEM;						      \
+	  goto free_and_return;						      \
 	}								      \
       if (herrno == TRY_AGAIN)						      \
 	no_data = EAI_AGAIN;						      \
@@ -1666,13 +1682,13 @@ rfc3484_sort (const void *p1, const void *p2, void *arg)
 
 	      /* Fill in the results in all the records.  */
 	      for (int i = 0; i < src->nresults; ++i)
-		if (src->results[i].index == a1_index)
+		if (a1_index != -1 && src->results[i].index == a1_index)
 		  {
 		    assert (src->results[i].native == -1
 			    || src->results[i].native == a1_native);
 		    src->results[i].native = a1_native;
 		  }
-		else if (src->results[i].index == a2_index)
+		else if (a2_index != -1 && src->results[i].index == a2_index)
 		  {
 		    assert (src->results[i].native == -1
 			    || src->results[i].native == a2_native);
@@ -2532,7 +2548,14 @@ getaddrinfo (const char *name, const char *service,
 			  tmp.addr[0] = 0;
 			  tmp.addr[1] = 0;
 			  tmp.addr[2] = htonl (0xffff);
-			  tmp.addr[3] = sinp->sin_addr.s_addr;
+			  /* Special case for lo interface, the source address
+			     being possibly different than the interface
+			     address. */
+			  if ((ntohl(sinp->sin_addr.s_addr) & 0xff000000)
+			      == 0x7f000000)
+			    tmp.addr[3] = htonl(0x7f000001);
+			  else
+			    tmp.addr[3] = sinp->sin_addr.s_addr;
 			}
 		      else
 			{

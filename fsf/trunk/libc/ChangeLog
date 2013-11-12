@@ -1,3 +1,20 @@
+2013-11-11  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	[BZ #387]
+	* elf/dl-object.c (_dl_new_object): Initialize L_NAME from NEWNAME if
+	it is empty.
+
+2013-11-11  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+        * benchtests/Makefile: Add bench-strtod.
+        * benchtests/bench-strtod.c: New file: strtod benchtest
+
+2013-11-11  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #16153]
+	* nscd/nscd_getserv_r.c (__nscd_getservbyport_r): Don't include
+	terminating NUL in key length.
+
 2013-11-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
 	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h (VDSO_IFUNC_RET):

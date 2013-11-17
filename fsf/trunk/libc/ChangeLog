@@ -1,3 +1,131 @@
+2013-11-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/libm-test.inc (TEST_NAN_SIGN): New macro.
+	(NO_TEST_INLINE): Update value.
+	(ERRNO_UNCHANGED): Likewise.
+	(ERRNO_EDOM): Likewise.
+	(ERRNO_ERANGE): Likewise.
+	(IGNORE_RESULT): Likewise.
+	(check_float_internal): Check signs of NaN results if
+	TEST_NAN_SIGN used.
+	(check_complex): Pass TEST_NAN_SIGN flag through to second
+	check_float_internal call.
+	(copysign_test_data): Add tests with quiet NaNs as second
+	argument.  Use TEST_NAN_SIGN.
+	(fabs_test_data): Add test of negative quiet NaN argument.  Use
+	TEST_NAN_SIGN.
+	(signbit_test_data): Add tests of quiet NaN argument.
+	* math/gen-libm-test.pl (parse_args): Handle TEST_NAN_SIGN.
+
+	* math/gen-libm-test.pl (show_exceptions): Take extra argument
+	$ignore_result.
+	(parse_args): Handle function results specified as IGNORE.
+	* math/libm-test.inc (IGNORE_RESULT): New macro.
+	(check_float_internal): Do not check numerical result if flag
+	IGNORE_RESULT set.
+	(check_complex): Pass through IGNORE_RESULT to second
+	check_float_internal call.
+	(check_int): Do not check numerical result if flag IGNORE_RESULT
+	set.
+	(check_long): Likewise.
+	(check_bool): Likewise.
+	(check_longlong): Likewise.
+	(lrint_test_data): Add tests of infinite and NaN arguments.
+	(lrint_tonearest_test_data): Likewise.
+	(lrint_towardzero_test_data): Likewise.
+	(lrint_downward_test_data): Likewise.
+	(lrint_upward_test_data): Likewise.
+	(llrint_test_data): Likewise.
+	(llrint_tonearest_test_data): Likewise.
+	(llrint_towardzero_test_data): Likewise.
+	(llrint_downward_test_data): Likewise.
+	(llrint_upward_test_data): Likewise.
+	(lround_test_data): Likewise.
+	(llround_test_data): Likewise.
+
+	* math/libm-test.inc (NO_TEST_INLINE): New macro.
+	(ERRNO_UNCHANGED): Update value.
+	(ERRNO_EDOM): Likewise.
+	(ERRNO_ERANGE): Likewise.
+	(NO_TEST_INLINE_FLOAT): New macro.
+	(NO_TEST_INLINE_DOUBLE): Likewise.
+	(enable_test): New function.
+	(RUN_TEST_f_f): Check enable_test before running test.
+	(RUN_TEST_2_f): Likewise.
+	(RUN_TEST_fff_f): Likewise.
+	(RUN_TEST_c_f): Likewise.
+	(RUN_TEST_f_f1): Likewise.
+	(RUN_TEST_fF_f1): Likewise.
+	(RUN_TEST_fI_f1): Likewise.
+	(RUN_TEST_ffI_f1): Likewise.
+	(RUN_TEST_c_c): Likewise.
+	(RUN_TEST_cc_c): Likewise.
+	(RUN_TEST_f_i): Likewise.
+	(RUN_TEST_f_i_tg): Likewise.
+	(RUN_TEST_ff_i_tg): Likewise.
+	(RUN_TEST_f_b): Likewise.
+	(RUN_TEST_f_b_tg): Likewise.
+	(RUN_TEST_f_l): Likewise.
+	(RUN_TEST_f_L): Likewise.
+	(RUN_TEST_fFF_11): Likewise.
+	(asinh_test_data): Use NO_TEST_INLINE instead of [!TEST_INLINE]
+	conditionals.
+	(cosh_test_data): Likewise.
+	(exp_test_data): Likewise.
+	(expm1_test_data): Likewise.
+	(hypot_test_data): Likewise.
+	(pow_test_data): Likewise.
+	(sinh_test_data): Likewise.
+	(tanh_test_data): Likewise.
+	* math/gen-libm-test.pl (parse_args): Allow NO_TEST_INLINE as
+	flags argument.
+
+	* libm-test.inc (acos_test_data): Disallow inexact exceptions for
+	tests with quiet NaN input and output.
+	(acosh_test_data): Likewise.
+	(asin_test_data): Likewise.
+	(asinh_test_data): Likewise.
+	(atan_test_data): Likewise.
+	(atanh_test_data): Likewise.
+	(atan2_test_data): Likewise.
+	(cbrt_test_data): Likewise.
+	(cos_test_data): Likewise.
+	(cosh_test_data): Likewise.
+	(erf_test_data): Likewise.
+	(erfc_test_data): Likewise.
+	(exp_test_data): Likewise.
+	(exp10_test_data): Likewise.
+	(exp2_test_data): Likewise.
+	(expm1_test_data): Likewise.
+	(hypot_test_data): Likewise.
+	(j0_test_data): Likewise.
+	(j1_test_data): Likewise.
+	(jn_test_data): Likewise.
+	(lgamma_test_data): Likewise.
+	(log_test_data): Likewise.
+	(log10_test_data): Likewise.
+	(log1p_test_data): Likewise.
+	(log2_test_data): Likewise.
+	(pow_test_data): Likewise.
+	(scalb_test_data): Likewise.
+	(sin_test_data): Likewise.
+	(sincos_test_data): Likewise.
+	(sinh_test_data): Likewise.
+	(tan_test_data): Likewise.
+	(tanh_test_data): Likewise.
+	(tgamma_test_data): Likewise.
+	(y0_test_data): Likewise.
+	(y1_test_data): Likewise.
+	(yn_test_data): Likewise.
+
+	[BZ #16167]
+	* sysdeps/i386/fpu/e_pow.S (__ieee754_pow): Check for first
+	argument being NaN and avoid computations with second argument in
+	that case.
+	* sysdeps/i386/fpu/e_powf.S (__ieee754_powf): Likewise.
+	* sysdeps/i386/fpu/e_powl.S (__ieee754_powl): Likewise.
+	* sysdeps/x86_64/fpu/e_powl.S (__ieee754_powl): Likewise.
+
 2013-11-15  Arun Kumar Pyasi <arun@chitwanix.com>
 
 	* locale/iso-639.def: Add Chitwani Tharu (the).

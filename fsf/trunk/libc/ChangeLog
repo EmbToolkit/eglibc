@@ -1,3 +1,66 @@
+2013-11-18  Chris Metcalf  <cmetcalf@tilera.com>
+
+	* math/test-fpucw-ieee.c [!defined _FPU_IEEE] (FPU_CONTROL):
+	Omit definition of FPU_CONTROL and use default if no _FPU_IEEE.
+
+2013-11-18  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	* elf/Makefile (tst-auxv): New test.
+	* elf/tst-auxv.c: New
+	* elf/rtld.c (dl_main): Adjust AT_EXECFN
+
+2013-11-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* include/libc-symbols.h (__hidden_proto): Add argument "thread".
+	(hidden_proto): Caller changed.
+	(hidden_tls_proto): New macro.
+	(libc_hidden_tls_proto): Likewise.
+	(rtld_hidden_tls_proto): Likewise.
+	(libm_hidden_tls_proto): Likewise.
+	(libresolv_hidden_tls_proto): Likewise.
+	(librt_hidden_tls_proto): Likewise.
+	(libdl_hidden_tls_proto): Likewise.
+	(libnss_files_hidden_tls_proto): Likewise.
+	(libnsl_hidden_tls_proto): Likewise.
+	(libnss_nisplus_hidden_tls_proto): Likewise.
+	(libutil_hidden_tls_proto): Likewise.
+
+2013-11-18  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #10253]
+	* elf/dl-load.c (fillin_rpath): Add linkmap parameter and expand path.
+	(decompose_rpath): Defer expansion to fillin_rpath.
+	(_dl_init_paths): Pass linkmap to fillin_rpath.
+
+2013-11-18  Rajalakshmi Srinivasaraghavan  <raji@linux.vnet.ibm.com>
+
+	* benchtests/Makefile: Add strsep.
+	* benchtests/bench-strsep.c: New file: strsep benchtest.
+	* benchtests/bench-strsep-ifunc.c: New file: strsep benchtest.
+
+2013-11-18  Andreas Schwab  <schwab@suse.de>
+
+	* locale/programs/locale.c (show_info) [case byte]: Check for
+	'\377' instead of '\177'.
+	* locale/C-monetary.c (not_available): Always use "\377".
+	* stdlib/strfmon_l.c (__vstrfmon_l): Use -2 as marker for
+	unspecified p_sign_posn and n_sign_posn.  Check for '\377' to
+	detect unavailable sign_posn locale elements.
+	* locale/localeconv.c (__localeconv): For grouping and
+	mon_grouping handle "\177" and "\377" like no grouping.
+	(INT_ELEM): New macro.  Use it to set all numeric members.
+	* locale/programs/ld-monetary.c (monetary_read)
+	<tok_mon_grouping>: Normalize single -1 to the empty string.
+	* locale/programs/ld-numeric.c (numeric_read) <tok_grouping>:
+	Likewise.
+
+2013-11-07  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #16055]
+	* stdio-common/vfscanf.c (_IO_vfscanf_internal): Limit width
+	when we match (nil).
+	* stdio-common/tst-sscanf.c (struct test): Add testcase.
+
 2013-11-16  Joseph Myers  <joseph@codesourcery.com>
 
 	* math/libm-test.inc (TEST_NAN_SIGN): New macro.

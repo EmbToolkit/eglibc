@@ -1,4 +1,4 @@
-/* FPU control word overridden initialization test.
+/* Measure IFUNC implementations of strsep function.
    Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,12 +16,5 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifdef _FPU_IEEE
-/* Some architectures don't have _FPU_IEEE.  */
-# define FPU_CONTROL _FPU_IEEE
-#endif
-
-#include "test-fpucw.c"
-
-/* Preempt the library's definition of `__fpu_control'.  */
-fpu_control_t __fpu_control = FPU_CONTROL;
+#define TEST_IFUNC 1
+#include "bench-strsep.c"

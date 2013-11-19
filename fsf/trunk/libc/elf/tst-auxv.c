@@ -1,5 +1,4 @@
-/* FPU control word overridden initialization test.
-   Copyright (C) 2013 Free Software Foundation, Inc.
+/* Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,12 +15,31 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifdef _FPU_IEEE
-/* Some architectures don't have _FPU_IEEE.  */
-# define FPU_CONTROL _FPU_IEEE
-#endif
+#include <elf.h>
+#include <link.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <misc/sys/auxv.h>
 
-#include "test-fpucw.c"
+static int
+do_test (int argc, char *argv[])
+{
+  const char *execfn = (const char *) getauxval (AT_EXECFN);
 
-/* Preempt the library's definition of `__fpu_control'.  */
-fpu_control_t __fpu_control = FPU_CONTROL;
+  if (execfn == NULL)
+    {
+      printf ("No AT_EXECFN found, test skipped\n");
+      return 0;
+    }
+
+  if (strcmp (argv[0], execfn) != 0)
+    {
+      printf ("Mismatch: argv[0]: %s vs. AT_EXECFN: %s\n", argv[0], execfn);
+      return 1;
+    }
+
+  return 0;
+}
+
+#include "../test-skeleton.c"

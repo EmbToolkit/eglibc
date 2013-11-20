@@ -1,3 +1,89 @@
+2013-11-20  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* manual/probes.texi (Mathematical Function Probes): Add
+	documentation for sin, cos, asin and acos probes.
+	* sysdeps/ieee754/dbl-64/sincos32.c: Include stap-probe.h.
+	(__sin32): Add slowasin probe.
+	(__cos32): Add slowacos probe.
+	(__mpsin): Add slowsin probe.
+	(__mpcos): Add slowcos probe.
+
+2013-11-19  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15483]
+	* sysdeps/powerpc/nofpu/sim-full.c (__sim_exceptions): Change to
+	thread-local __sim_exceptions_thread and global
+	__sim_exceptions_global.
+	(__sim_disabled_exceptions): Change to thread-local
+	__sim_disabled_exceptions_thread and global
+	__sim_disabled_exceptions_global.
+	(__sim_round_mode): Change to thread-local __sim_round_mode_thread
+	and global __sim_round_mode_global.
+	(__simulate_exceptions): Use thread-local floating-point state and
+	set global state from it as needed.
+	* sysdeps/powerpc/nofpu/Versions (GLIBC_PRIVATE): Add
+	__sim_exceptions_thread, __sim_disabled_exceptions_thread and
+	__sim_round_mode_thread.
+	* sysdeps/powerpc/nofpu/soft-supp.h: Include <shlib-compat.h>.
+	(__sim_exceptions): Change to thread-local __sim_exceptions_thread
+	and global __sim_exceptions_global.
+	(__sim_disabled_exceptions): Change to thread-local
+	__sim_disabled_exceptions_thread and global
+	__sim_disabled_exceptions_global.
+	(__sim_round_mode): Change to thread-local __sim_round_mode_thread
+	and global __sim_round_mode_global.
+	[SIM_GLOBAL_COMPAT] (SIM_COMPAT_SYMBOL): New macro.
+	(SIM_SET_GLOBAL): Likewise.
+	* sysdeps/powerpc/soft-fp/sfp-machine.h
+	[!(__NO_FPRS__ && !_SOFT_FLOAT)] (FP_ROUNDMODE): Use
+	__sim_round_mode_thread.
+	[!(__NO_FPRS__ && !_SOFT_FLOAT)] (FP_TRAPPING_EXCEPTIONS): Use
+	__sim_disabled_exceptions_thread.
+	(__sim_exceptions): Change to __sim_exceptions_thread.
+	(__sim_disabled_exceptions): Change to
+	__sim_disabled_exceptions_thread.
+	(__sim_round_mode): Change to __sim_round_mode_thread.
+	* sysdeps/powerpc/nofpu/fclrexcpt.c (__feclearexcept): Use
+	thread-local floating-point state and set global state from it as
+	needed.
+	* sysdeps/powerpc/nofpu/fedisblxcpt.c (fedisableexcept): Likewise.
+	* sysdeps/powerpc/nofpu/feenablxcpt.c: Include "soft-supp.h".
+	(__sim_disabled_exceptions): Remove extern declaration.
+	(feenableexcept): Use thread-local floating-point state and set
+	global state from it as needed.
+	* sysdeps/powerpc/nofpu/fegetenv.c (__sim_exceptions): Remove
+	extern declaration.
+	(__sim_disabled_exceptions): Likewise.
+	(__sim_round_mode): Likewise.
+	(__fegetenv): Use thread-local floating-point state.
+	* sysdeps/powerpc/nofpu/fegetexcept.c (fegetexcept): Likewise.
+	* sysdeps/powerpc/nofpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/powerpc/nofpu/fesetenv.c (__fesetenv): Use thread-local
+	floating-point state and set global state from it as needed.
+	* sysdeps/powerpc/nofpu/fesetround.c (fesetround): Likewise.
+	* sysdeps/powerpc/nofpu/feupdateenv.c (__feupdateenv): Likewise.
+	* sysdeps/powerpc/nofpu/fgetexcptflg.c (__fegetexceptflag):
+	Likewise.
+	* sysdeps/powerpc/nofpu/fraiseexcpt.c (__feraiseexcept): Likewise.
+	* sysdeps/powerpc/nofpu/fsetexcptflg.c (__fesetexceptflag):
+	Likewise.
+	sysdeps/powerpc/nofpu/ftestexcept.c (fetestexcept): Likewise.
+	* sysdeps/powerpc/nofpu/get-rounding-mode.h (get_rounding_mode):
+	Use __sim_round_mode_thread.
+	* math/test-fenv-tls.c: New file.
+	* math/Makefile (tests): Add test-fenv-tls.
+	($(objpfx)test-fenv-tls): Depend on
+	$(common-objpfx)nptl/libpthread.so.
+
+2013-11-19  Andreas Schwab  <schwab@suse.de>
+
+	* locale/programs/locale.c (show_info): Decode wordarray elements.
+	* locale/categories.def (LC_MONETARY): Add element for
+	_NL_MONETARY_CRNCYSTR.
+	* locale/C-monetary.c (conversion_rate): New variable.
+	(_nl_C_LC_MONETARY): Use it for _NL_MONETARY_CONVERSION_RATE
+	element.
+
 2013-11-18  Chris Metcalf  <cmetcalf@tilera.com>
 
 	* math/test-fpucw-ieee.c [!defined _FPU_IEEE] (FPU_CONTROL):
@@ -242,7 +328,7 @@
 
 2013-11-13  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
-        * elf/dl-lookup.c (_dl_lookup_symbol_x): If UNDEF_MAP is false
+	* elf/dl-lookup.c (_dl_lookup_symbol_x): If UNDEF_MAP is false
 	set reference_name to "" to avoid passing NULL to DSO_FILENAME.
 
 2013-11-13  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
@@ -268,8 +354,8 @@
 
 2013-11-11  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
-        * benchtests/Makefile: Add bench-strtod.
-        * benchtests/bench-strtod.c: New file: strtod benchtest
+	* benchtests/Makefile: Add bench-strtod.
+	* benchtests/bench-strtod.c: New file: strtod benchtest
 
 2013-11-11  Andreas Schwab  <schwab@suse.de>
 

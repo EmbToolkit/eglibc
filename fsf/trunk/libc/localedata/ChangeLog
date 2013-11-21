@@ -1,3 +1,8 @@
+2013-11-20  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #15601]
+	* locales/or_IN: Rename Oriya to Odia.
+
 2013-11-18  Chris Leonard  <cjl@sugarlabs.org>
 
 	[BZ #16144]
@@ -1237,7 +1242,7 @@
 
 2012-04-12  Mike Frysinger  <vapier@gentoo.org>
 
-        [BZ #3768]
+	[BZ #3768]
 	* locales/en_GB (LC_TIME): Set am_pm and t_fmt_ampm fields.
 	* locales/cy_GB (LC_TIME): Likewise.  Also copy date_fmt from en_GB.
 

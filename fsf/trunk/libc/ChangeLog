@@ -1,3 +1,157 @@
+2013-11-26  Uros Bizjak  <ubizjak@gmail.com>
+
+	* soft-fp/op-4.h (_FP_FRAC_ASSEMBLE_4): Check rsize against
+	_FP_W_TYPE_SIZE to avoid "left shift count >= width of type"
+	warning.
+
+2013-11-26  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/feenablxcpt.c (feenableexcept): Use
+	__fe_nomask_env_priv instead of __fe_nomask_env to avoid a PLT call.
+	* sysdeps/powerpc/fpu/fesetenv.c (__fesetenv): Likewise.
+	* sysdeps/powerpc/fpu/feupdateenv.c (__feupdateenv): Likewise.
+	* sysdeps/powerpc/fpu/fenv_libc.h (__fe_nomask_env): Rename to
+	__fe_nomask_env_priv and attribute_hidden.
+	* sysdeps/powerpc/fpu/fenv_private.h (libc_fesetenv_ppc): Likewise.
+	(libc_feupdateenv_test_ppc): Likewise.
+	(libc_feresetround_ppc): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/fe_nomask.c
+	(__fe_nomask_env): Rename to __fe_nomask_env_priv and adjust
+	compat_symbol macro.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/fpu/fe_nomask.c
+	(__fe_nomask_env): Likewise.
+	* sysdeps/powerpc/fpu/fe_nomask.c (__fe_nomask_env): Likewise.
+
+2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* string/Makefile: Remove ifunc tests.
+	* string/test-string.h: Define TEST_IFUNC.
+	* string/test-bcopy-ifunc.c: Remove.
+	* string/test-bzero-ifunc.c: Likewise.
+	* string/test-memccpy-ifunc.c: Likewise.
+	* string/test-memchr-ifunc.c: Likewise.
+	* string/test-memcmp-ifunc.c: Likewise.
+	* string/test-memcpy-ifunc.c: Likewise.
+	* string/test-memmem-ifunc.c: Likewise.
+	* string/test-memmove-ifunc.c: Likewise.
+	* string/test-mempcpy-ifunc.c: Likewise.
+	* string/test-memrchr-ifunc.c: Likewise.
+	* string/test-memset-ifunc.c: Likewise.
+	* string/test-rawmemchr-ifunc.c: Likewise.
+	* string/test-stpcpy-ifunc.c: Likewise.
+	* string/test-stpncpy-ifunc.c: Likewise.
+	* string/test-strcasecmp-ifunc.c: Likewise.
+	* string/test-strcasestr-ifunc.c: Likewise.
+	* string/test-strcat-ifunc.c: Likewise.
+	* string/test-strchr-ifunc.c: Likewise.
+	* string/test-strchrnul-ifunc.c: Likewise.
+	* string/test-strcmp-ifunc.c: Likewise.
+	* string/test-strcpy-ifunc.c: Likewise.
+	* string/test-strcspn-ifunc.c: Likewise.
+	* string/test-strlen-ifunc.c: Likewise.
+	* string/test-strncasecmp-ifunc.c: Likewise.
+	* string/test-strncat-ifunc.c: Likewise.
+	* string/test-strncmp-ifunc.c: Likewise.
+	* string/test-strncpy-ifunc.c: Likewise.
+	* string/test-strnlen-ifunc.c: Likewise.
+	* string/test-strpbrk-ifunc.c: Likewise.
+	* string/test-strrchr-ifunc.c: Likewise.
+	* string/test-strspn-ifunc.c: Likewise.
+	* string/test-strstr-ifunc.c: Likewise.
+
+2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* benchtests/Makefile: Remove ifunc tests.
+	* benchtests/bench-string.h: Define TEST_IFUNC.
+	* benchtests/bench-bcopy-ifunc.c: Remove.
+	* benchtests/bench-bzero-ifunc.c: Likewise.
+	* benchtests/bench-memccpy-ifunc.c: Likewise.
+	* benchtests/bench-memchr-ifunc.c: Likewise.
+	* benchtests/bench-memcmp-ifunc.c: Likewise.
+	* benchtests/bench-memcpy-ifunc.c: Likewise.
+	* benchtests/bench-memmem-ifunc.c: Likewise.
+	* benchtests/bench-memmove-ifunc.c: Likewise.
+	* benchtests/bench-mempcpy-ifunc.c: Likewise.
+	* benchtests/bench-memrchr-ifunc.c: Likewise.
+	* benchtests/bench-memset-ifunc.c: Likewise.
+	* benchtests/bench-rawmemchr-ifunc.c: Likewise.
+	* benchtests/bench-stpcpy_chk-ifunc.c: Likewise.
+	* benchtests/bench-stpcpy-ifunc.c: Likewise.
+	* benchtests/bench-stpncpy-ifunc.c: Likewise.
+	* benchtests/bench-strcasecmp-ifunc.c: Likewise.
+	* benchtests/bench-strcasestr-ifunc.c: Likewise.
+	* benchtests/bench-strcat-ifunc.c: Likewise.
+	* benchtests/bench-strchr-ifunc.c: Likewise.
+	* benchtests/bench-strchrnul-ifunc.c: Likewise.
+	* benchtests/bench-strcmp-ifunc.c: Likewise.
+	* benchtests/bench-strcpy_chk-ifunc.c: Likewise.
+	* benchtests/bench-strcpy-ifunc.c: Likewise.
+	* benchtests/bench-strcspn-ifunc.c: Likewise.
+	* benchtests/bench-strlen-ifunc.c: Likewise.
+	* benchtests/bench-strncasecmp-ifunc.c: Likewise.
+	* benchtests/bench-strncat-ifunc.c: Likewise.
+	* benchtests/bench-strncmp-ifunc.c: Likewise.
+	* benchtests/bench-strncpy-ifunc.c: Likewise.
+	* benchtests/bench-strnlen-ifunc.c: Likewise.
+	* benchtests/bench-strpbrk-ifunc.c: Likewise.
+	* benchtests/bench-strrchr-ifunc.c: Likewise.
+	* benchtests/bench-strsep-ifunc.c: Likewise.
+	* benchtests/bench-strspn-ifunc.c: Likewise.
+	* benchtests/bench-strstr-ifunc.c: Likewise.
+
+2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/x86_64/dl-tlsdesc.S (_dl_tlsdesc_resolve_hold): Fix typo.
+
+2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* resolv/netdb.h: Use __glibc_reserved instead __unused.
+	* rt/aio.h: Likewise.
+	* sysdeps/gnu/bits/utmp.h: Likewise.
+	* sysdeps/gnu/bits/utmpx.h: Likewise.
+	* sysdeps/gnu/netinet/ip_icmp.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/ipc.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/msq.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/sem.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/kernel_stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/ntp_gettimex.c: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/ipc.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/msq.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/sem.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/kernel_stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/sys/ucontext.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/ipc.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/msq.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/sem.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/utmp.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/utmpx.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/utmp32.h: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/utmpx32.h: Likewise.
+	* sysdeps/unix/sysv/linux/sh/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/fcntl.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/ipc.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/msq.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/sem.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/kernel_stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/kernel_stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/xstatconv.c: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sys/procfs.h: Likewise.
+	* sysdeps/unix/sysv/linux/sys/timex.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86/bits/msq.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86/bits/sem.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86/bits/shm.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86/bits/stat.h: Likewise.
+	* sysdeps/unix/sysv/linux/xstatconv.c: Likewise.
+	* sysdeps/x86/fpu/bits/fenv.h: Likewise.
+
 2013-11-25  Carlos O'Donell  <carlos@redhat.com>
 
 	[BZ #16245]

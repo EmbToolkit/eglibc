@@ -20,9 +20,6 @@
 #include <fenv_libc.h>
 #include <libc-symbols.h>
 
-int __feraiseexcept_soft (int);
-libc_hidden_proto (__feraiseexcept_soft)
-
 #define __FERAISEEXCEPT_INTERNAL __feraiseexcept_soft
 #include "spe-raise.c"
 libc_hidden_def (__feraiseexcept_soft)

@@ -1,7 +1,7 @@
-/* Return current rounding direction.
-   Copyright (C) 1997-2013 Free Software Foundation, Inc.
+/* Install given floating-point environment and raise exceptions for
+   atomic compound assignment.  e500 version.
+   Copyright (C) 2004-2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Richard Henderson <rth@tamu.edu>, 1997
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -18,14 +18,29 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <fenv_libc.h>
+#include <stdlib.h>
+#include <sysdep.h>
+#include <sys/prctl.h>
 
-int
-fegetround (void)
+void
+__atomic_feupdateenv (const fenv_t *envp)
 {
-  unsigned long fpcr;
+  int exc;
+  fenv_union_t u;
+  INTERNAL_SYSCALL_DECL (err);
+  int r;
 
-  __asm__ __volatile__("excb; mf_fpcr %0" : "=f"(fpcr));
+  /* Save the currently set exceptions.  */
+  exc = fegetenv_register () & SPEFSCR_ALL_EXCEPT;
 
-  return (fpcr >> FPCR_ROUND_SHIFT) & 3;
+  u.fenv = *envp;
+
+  fesetenv_register (u.l[1]);
+  r = INTERNAL_SYSCALL (prctl, err, 2, PR_SET_FPEXC,
+			u.l[0] | PR_FP_EXC_SW_ENABLE);
+  if (INTERNAL_SYSCALL_ERROR_P (r, err))
+    abort ();
+
+  /* Raise (if appropriate) saved exceptions. */
+  __feraiseexcept_soft (exc);
 }
-libm_hidden_def (fegetround)

@@ -1,3 +1,89 @@
+2013-11-28  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/math.texi (Errors in Math Functions): Document accuracy
+	goals.
+
+	[BZ #15004]
+	* sysdeps/ieee754/ldbl-96/e_atan2l.c: Remove file.
+	* sysdeps/ieee754/ldbl-96/e_ilogbl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/e_remainderl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_ceill.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_fabsl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_finitel.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_floorl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_fpclassifyl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_isinfl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_isnanl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_logbl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_nearbyintl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_nextafterl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_rintl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_scalbnl.c: Likewise.
+	* sysdeps/ieee754/ldbl-96/s_truncl.c: Likewise.
+
+	* sysdeps/powerpc/nofpu/atomic-feclearexcept.c: New file.
+	* sysdeps/powerpc/nofpu/atomic-feholdexcept.c: Likewise.
+	* sysdeps/powerpc/nofpu/atomic-feupdateenv.c: Likewise.
+	* sysdeps/powerpc/nofpu/flt-rounds.c: Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/atomic-feclearexcept.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/atomic-feholdexcept.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/atomic-feupdateenv.c:
+	Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/flt-rounds.c: Likewise.
+	* sysdeps/powerpc/nofpu/Makefile [$(subdir) = soft-fp]
+	(sysdep_routines): Add atomic-feholdexcept, atomic-feclearexcept,
+	atomic-feupdateenv and flt-rounds.
+	* sysdeps/powerpc/nofpu/Versions (libc): Add
+	__atomic_feholdexcept, __atomic_feclearexcept,
+	__atomic_feupdateenv and __flt_rounds to GLIBC_2.19.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fenv_libc.h
+	(__feraiseexcept_soft): Declare and use libc_hidden_proto here.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fraiseexcept-soft.c
+	(__feraiseexcept_soft): Don't declare and use libc_hidden_proto
+	here.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/nptl/libc.abilist:
+	Update.
+
+	* manual/arith.texi (FP Exceptions): Document that exceptions may
+	not be raised when matherr is used.
+	(Math Error Reporting): Document overflow in directed rounding
+	modes.  Document that errno may not be set when finite values are
+	returned on overflow.  Document intent to set errno on underflow
+	only for underflow to zero.
+
+	[BZ #16271]
+	* sysdeps/ieee754/dbl-64/e_sqrt.c (__ieee754_sqrt): Set
+	round-to-nearest then adjust result for other rounding modes.
+	* include/fenv.h (fegetround): Use libm_hidden_proto.
+	* math/fegetround.c (fegetround): Use libm_hidden_def.
+	* sysdeps/i386/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/powerpc/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/powerpc/nofpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/powerpc/powerpc32/e500/nofpu/fegetround.c (fegetround):
+	Likewise.
+	* sysdeps/s390/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/sh/sh4/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/sparc/fpu/fegetround.c (fegetround): Likewise.
+	* sysdeps/x86_64/fpu/fegetround.c (fegetround): Likewise.
+
+2013-11-28  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #16077]
+	* nss/Versions (libnss_files): Add
+	_nss_files_gethostbyname3_r.
+	* nss/nss_files/files-hosts.c (_nss_files_gethostbyname3_r):
+	New function.
+	(HOST_DB_LOOKUP): Remove macro.
+	(_nss_files_gethostbyname_r): Implement function without the
+	HOST_DB_LOOKUP macro.
+	(_nss_files_gethostbyname2_r): Likewise.
+
+2013-11-28  Ondřej Bílka  <neleai@seznam.cz>
+
+	* malloc/malloc.c (__libc_calloc): Make memset a tail call.
+
 2013-11-26  Uros Bizjak  <ubizjak@gmail.com>
 
 	* soft-fp/op-4.h (_FP_FRAC_ASSEMBLE_4): Check rsize against

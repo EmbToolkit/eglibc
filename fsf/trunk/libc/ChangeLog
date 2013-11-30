@@ -1,3 +1,77 @@
+2013-11-29  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #6787]
+	* math/w_exp10.c (__exp10): Handle a zero result as underflow.
+	* math/w_exp10f.c (__exp10f): Likewise.
+	* math/w_exp10l.c (__exp10l): Likewise.
+	* math/libm-test.inc (exp10_test_data): Add more tests and expect
+	errno settings in existing tests.
+
+	[BZ #14032]
+	* sysdeps/i386/fpu/e_sqrt.S (__ieee754_sqrt): Do fsqrt with
+	precision control set to double precision.
+	* sysdeps/i386/fpu/w_sqrt.c: New file.
+	* math/auto-libm-test-in: Add more tests.
+	* math/auto-libm-test-out: Update.
+
+	* math/libm-test.inc (sqrt_tonearest_test_data): New variable.
+	(sqrt_test_tonearest): New function.
+	(sqrt_towardzero_test_data): New variable.
+	(sqrt_test_towardzero): New function.
+	(sqrt_downward_test_data): New variable.
+	(sqrt_test_downward): New function.
+	(sqrt_upward_test_data): New variable.
+	(sqrt_test_upward): New function.
+	(main): Call the new functions.
+
+	* math/gen-auto-libm-tests.c: New file.
+	* math/auto-libm-test-in: Likewise.
+	* math/auto-libm-test-out: New generated file.
+	* math/gen-libm-test.pl ($auto_input, %auto_tests): New global
+	variables.
+	(%beautify): Add generated representations of zero.
+	(top level): Set $auto_input and call parse_auto_input.
+	(beautify): Remove trailing "f" from hex float constants.
+	(parse_args): Handle XFAIL_TEST.
+	(convert_condition): New function.
+	(or_value): Likewise.
+	(or_cond_value): Likewise.
+	(generate_testfile): Handle AUTO_TESTS_* lines.
+	(parse_auto_input): New function.
+	* math/libm-test.inc (XFAIL_TEST): New macro.
+	(ERRNO_UNCHANGED): Update value.
+	(ERRNO_EDOM): Likewise.
+	(ERRNO_ERANGE): Likewise.
+	(IGNORE_RESULT): Likewise.
+	(TEST_COND_flt_32): New macro.
+	(TEST_COND_dbl_64): Likewise.
+	(TEST_COND_ldbl_96_intel): Likewise.
+	(TEST_COND_ldbl_96_m68k): Likewise.
+	(TEST_COND_ldbl_128): Likewise.
+	(TEST_COND_ldbl_128ibm): Likewise.
+	(TEST_COND_long32): Likewise.
+	(TEST_COND_long64): Likewise.
+	(TEST_COND_before_rounding): Likewise.
+	(TEST_COND_after_rounding): Likewise.
+	(enable_test): Handle XFAIL_TEST flag.
+	(sqrt_test_data): Use AUTO_TESTS_f_f for tests of finite inputs
+	with finite results.
+	* math/Makefile ($(objpfx)libm-test.stmp): Depend on
+	auto-libm-test-out.
+
+2013-11-29  Siddhesh Poyarekar  <siddhesh@redhat.com>
+	    Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	[BZ #16214]
+	* sysdeps/s390/dl-tls.h (__TLS_GET_ADDR): Invoke
+	__tls_get_addr_internal instead of __tls_get_offset in order to
+	avoid GOT pointer dependency.  Make rtld export
+	__tls_get_addr_internal@@GLIBC_PRIVATE while still hiding
+	__tls_get_addr since we are a __tls_get_offset platform.
+	* sysdeps/s390/s390-64/tls-macros.h (TLS_IE PIC): Don't rely on
+	GOT pointer being set up before.
+	* sysdeps/s390/s390-32/tls-macros.h (TLS_IE PIC): Likewise.
+
 2013-11-28  Joseph Myers  <joseph@codesourcery.com>
 
 	* manual/math.texi (Errors in Math Functions): Document accuracy

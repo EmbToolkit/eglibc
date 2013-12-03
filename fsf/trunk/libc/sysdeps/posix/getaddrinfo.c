@@ -71,13 +71,6 @@ extern int __idna_to_unicode_lzlz (const char *input, char **output,
 # include <libidn/idna.h>
 #endif
 
-#define GAIH_OKIFUNSPEC 0x0100
-#define GAIH_EAI        ~(GAIH_OKIFUNSPEC)
-
-#ifndef UNIX_PATH_MAX
-# define UNIX_PATH_MAX  108
-#endif
-
 struct gaih_service
   {
     const char *name;
@@ -127,14 +120,6 @@ static const struct gaih_typeproto gaih_inet_typeproto[] =
   { 0, 0, 0, false, "" }
 };
 
-struct gaih
-  {
-    int family;
-    int (*gaih)(const char *name, const struct gaih_service *service,
-		const struct addrinfo *req, struct addrinfo **pai,
-		unsigned int *naddrs);
-  };
-
 static const struct addrinfo default_hints =
   {
     .ai_flags = AI_DEFAULT,
@@ -169,7 +154,7 @@ gaih_inet_serv (const char *servicename, const struct gaih_typeproto *tp,
 	  if (r == ERANGE)
 	    tmpbuflen *= 2;
 	  else
-	    return GAIH_OKIFUNSPEC | -EAI_SERVICE;
+	    return -EAI_SERVICE;
 	}
     }
   while (r);
@@ -311,9 +296,9 @@ gaih_inet (const char *name, const struct gaih_service *service,
       if (! tp->name[0])
 	{
 	  if (req->ai_socktype)
-	    return GAIH_OKIFUNSPEC | -EAI_SOCKTYPE;
+	    return -EAI_SOCKTYPE;
 	  else
-	    return GAIH_OKIFUNSPEC | -EAI_SERVICE;
+	    return -EAI_SERVICE;
 	}
     }
 
@@ -321,7 +306,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
   if (service != NULL)
     {
       if ((tp->protoflag & GAI_PROTO_NOSERVICE) != 0)
-	return GAIH_OKIFUNSPEC | -EAI_SERVICE;
+	return -EAI_SERVICE;
 
       if (service->num < 0)
 	{
@@ -357,7 +342,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 
 		  if ((rc = gaih_inet_serv (service->name, tp, req, newp)))
 		    {
-		      if (rc & GAIH_OKIFUNSPEC)
+		      if (rc)
 			continue;
 		      return rc;
 		    }
@@ -366,7 +351,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 		  pst = &(newp->next);
 		}
 	      if (st == (struct gaih_servtuple *) &nullserv)
-		return GAIH_OKIFUNSPEC | -EAI_SERVICE;
+		return -EAI_SERVICE;
 	    }
 	}
       else
@@ -558,7 +543,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 							10);
 		      if (*end != '\0')
 			{
-			  result = GAIH_OKIFUNSPEC | -EAI_NONAME;
+			  result = -EAI_NONAME;
 			  goto free_and_return;
 			}
 		    }
@@ -679,7 +664,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 		  else
 		    /* We made requests but they turned out no data.
 		       The name is known, though.  */
-		    result = GAIH_OKIFUNSPEC | -EAI_NODATA;
+		    result = -EAI_NODATA;
 
 		  goto free_and_return;
 		}
@@ -785,7 +770,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 
 		  if (at->family == AF_UNSPEC)
 		    {
-		      result = GAIH_OKIFUNSPEC | -EAI_NONAME;
+		      result = -EAI_NONAME;
 		      goto free_and_return;
 		    }
 
@@ -1076,7 +1061,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 
 	  if (h_errno == NETDB_INTERNAL)
 	    {
-	      result = GAIH_OKIFUNSPEC | -EAI_SYSTEM;
+	      result = -EAI_SYSTEM;
 	      goto free_and_return;
 	    }
 
@@ -1088,7 +1073,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 	      else
 		/* We made requests but they turned out no data.  The name
 		   is known, though.  */
-		result = GAIH_OKIFUNSPEC | -EAI_NODATA;
+		result = -EAI_NODATA;
 
 	      goto free_and_return;
 	    }
@@ -1097,7 +1082,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
     process_list:
       if (at->family == AF_UNSPEC)
 	{
-	  result = GAIH_OKIFUNSPEC | -EAI_NONAME;
+	  result = -EAI_NONAME;
 	  goto free_and_return;
 	}
     }
@@ -2424,7 +2409,7 @@ getaddrinfo (const char *name, const char *service,
 	  freeaddrinfo (p);
 	  __free_in6ai (in6ai);
 
-	  return -(last_i & GAIH_EAI);
+	  return -last_i;
 	}
       while (*end)
 	{
@@ -2657,7 +2642,7 @@ getaddrinfo (const char *name, const char *service,
       return 0;
     }
 
-  return last_i ? -(last_i & GAIH_EAI) : EAI_NONAME;
+  return last_i ? -last_i : EAI_NONAME;
 }
 libc_hidden_def (getaddrinfo)
 

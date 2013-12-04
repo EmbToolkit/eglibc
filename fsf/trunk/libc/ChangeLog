@@ -1,3 +1,90 @@
+2013-12-04  Ondřej Bílka  <neleai@seznam.cz>
+
+	* debug/memcpy_chk.c (__memcpy_chk): Use call instead of custom
+	implementation.
+	* debug/memmove_chk.c (MEMMOVE_CHK): Likewise.
+	* debug/mempcpy_chk.c (__mempcpy_chk): Likewise.
+	* debug/memset_chk.c (__memset_chk): Likewise.
+	* debug/stpncpy_chk.c (__stpncpy_chk): Likewise.
+	* debug/strncpy_chk.c: Likewise.
+
+2013-12-03  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #15268]
+	[BZ #15425]
+	* sysdeps/ieee754/dbl-64/e_exp.c: Include <float.h>.
+	(__ieee754_exp): For possibly underflowing results, check size of
+	result and force underflow exception if required.
+	* math/auto-libm-test-in: Add more tests of exp.
+	* math/auto-libm-test-out: Regenerated.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #16283]
+	* math/w_exp2.c (__exp2): Handle a zero result as underflow.
+	* math/w_exp2f.c (__exp2f): Likewise.
+	* math/w_exp2l.c (__exp2l): Likewise.
+	* math/auto-libm-test-in: Do not allow missing errno on exp2
+	underflow.
+	* math/auto-libm-test-out: Regenerated.
+
+2013-12-03  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #16274]
+	* sysdeps/unix/sysv/linux/shm_open.c (shm_open): Correctly
+	handle filename validation.
+	* rt/tst-shm.c (do_test): Do not skip a test when shm_open fails.
+	(do_open): Delete.
+
+2013-12-03  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #6786]
+	* sysdeps/ieee754/dbl-64/s_erf.c: Include <errno.h> and <float.h>.
+	(__erfc): Set errno to ERANGE when returning 0 or tiny * tiny.
+	* sysdeps/ieee754/flt-32/s_erff.c: Include <errno.h> and
+	<float.h>.
+	(__erfcf): Set errno to ERANGE when returning 0 or tiny * tiny.
+	* sysdeps/ieee754/ldbl-128/s_erfl.c: Include <errno.h>.
+	(__erfcl): Set errno to ERANGE when returning 0 or tiny * tiny.
+	* sysdeps/ieee754/ldbl-128ibm/s_erfl.c: Include <errno.h>.
+	(__erfcl): Set errno to ERANGE when returning 0 or tiny * tiny.
+	* sysdeps/ieee754/ldbl-96/s_erfl.c: Include <errno.h>.
+	(__erfcl): Set errno to ERANGE when returning 0 or tiny * tiny.
+	* math/auto-libm-test-in: Don't allow missing errno from erfc.
+	Add more erfc tests.
+	* math/auto-libm-test-out: Regenerated.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* math/auto-libm-test-in: Add tests of erf, erfc, exp, exp10,
+	exp2, expm1, j0 and j1.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (erf_test_data): Use AUTO_TESTS_f_f.
+	(erfc_test_data): Likewise.
+	(exp_test_data): Likewise.
+	(exp_tonearest_test_data): Likewise.
+	(exp_towardzero_test_data): Likewise.
+	(exp_downward_test_data): Likewise.
+	(exp_upward_test_data): Likewise.
+	(exp10_test_data): Likewise.
+	(exp2_test_data): Likewise.
+	(expm1_test_data): Likewise.
+	(j0_test_data): Likewise.
+	(j1_test_data): Likewise.
+	* math/gen-auto-libm-tests.c: Mention "xfail-rounding" in comment.
+	(input_flag_type): Add flag_xfail_rounding.
+	(input_flags): Add xfail-rounding.
+	(adjust_real): Assert mpfr_number_p not mpfr_regular_p.
+	(output_for_one_input_case): Handle flag_xfail_rounding.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-12-03  Aurelien Jarno  <aurelien@aurel32.net>
+
+	[BZ #16289]
+	* locale/loadarchive.c (_nl_load_locale_from_archive): Avoid
+	division by 0.
+
 2013-12-03  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	[BZ #16195]

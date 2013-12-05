@@ -1,3 +1,259 @@
+2013-12-05  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* benchtests/README: Add note about output arguments.
+	* benchtests/bench-sincos.c: Remove file.
+	* benchtests/sincos-inputs: New file.
+	* scripts/bench.pl: Identify output arguments and define
+	static variables for them.
+
+	* debug/stpncpy_chk.c (__stpncpy_chk): Remove unused variables.
+
+	[BZ #15941]
+	* Makefile (INSTALL): Add install-plain.texi as the primary
+	dependency.
+	* manual/install-plain.texi: New file.
+	* manual/install.texi: Include node directive only for
+	non-plaintext output.
+
+2013-12-04  Joseph Myers  <joseph@codesourcery.com>
+
+	* stdlib/longlong.h: Update from GCC.
+
+	[BZ #6807]
+	[BZ #15901]
+	* math/w_j0.c (y0): Raise FE_DIVBYZERO on zero argument.
+	* math/w_j0f.c (y0f): Likewise.
+	* math/w_j0l.c (__y0l): Likewise.
+	* math/w_j1.c (y1): Likewise.
+	* math/w_j1f.c (y1f): Likewise.
+	* math/w_j1l.c (__y1l): Likewise
+	* math/w_jn.c (yn): Likewise.
+	* math/w_jnf.c (ynf): Likewise.
+	* sysdeps/ieee754/k_standard.c (__kernel_standard): Use ERANGE for
+	Bessel function pole errors in _POSIX_ mode.  Use NAN as return
+	value for Bessel function domain errors outside _SVID_ mode.
+	Adjust sign of return value for yn (negative integer, 0).
+	* sysdeps/ieee754/ldbl-128/e_jnl.c (__ieee754_ynl): Use division
+	by zero in return for negative x and set sign appropriately for
+	negative n.
+	* sysdeps/ieee754/ldbl-128ibm/e_jnl.c (__ieee754_ynl): Likewise.
+	* sysdeps/ieee754/ldbl-96/e_jnl.c (__ieee754_ynl): Likewise.
+	* math/libm-test.inc (y0_test_data): Add more tests and adjust
+	expectations in error cases.
+	(y1_test_data): Likewise.
+	(yn_test_data): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-11-12  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/Makefile (abi-variants): Rename
+	"64" to "64-v1".  Add "64-v2".
+	(abi-64-options): Rename to ...
+	(abi-64-v1-options): ... this.   Redefine _CALL_ELF.
+	(abi-64-condition): Rename to ...
+	(abi-64-v1-condition): ... this.  Add _CALL_ELF check.,
+	(abi-64-ld-soname): Rename to ...
+	(abi-64-v1-ld-soname): ... this.
+	(abi-64-v2-options): Define.
+	(abi-64-v2-condition): Likewise.
+	(abi-64-v2-ld-soname): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/ldconfig.h
+	(SYSDEP_KNOWN_INTERPRETER_NAMES): Add "/lib64/ld64.so.2".
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/Makefile: Delete file.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/configure.ac: New file.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/configure: Generate.
+
+2013-11-12  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+	    Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/bits/link.h (La_ppc64v2_regs, La_ppc64v2_retval):
+	New versions for use with the ELFv2 ABI.
+	(la_ppc64v2_gnu_pltenter, la_ppc64v2_gnu_pltexit): Add prototypes.
+	* sysdeps/powerpc/lsdodefs.h (struct La_ppc64v2_regs): Add forward
+	declaration.
+	(struct La_ppc64v2_retval): Likewise.
+	(ARCH_PLTENTER_MEMBERS): Add ppc64v2_gnu_pltenter.
+	(ARCH_PLTEXIT_MEMBERS): Add ppc64v2_gnu_pltexit.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (ARCH_LA_PLTENTER): Define
+	to ppc64v2_gnu_pltenter if _CALL_ELF == 2.
+	(ARCH_LA_PLTEXIT): Define to ppc64v2_gnu_pltexit if _CALL_ELF == 2.
+	* sysdeps/powerpc/powerpc64/dl-trampoline.S (_dl_runtime_resolve):
+	Do not save or restore CR.
+	(FRAME_SIZE, VR_RTN): Provide updated values for _CALL_ELF == 2.
+	(_dl_profile_resolve): Do no save or restore CR.  Support extended
+	return values for ELFv2 ABI.  Fix location of FPR return registers.
+	* sysdeps/powerpc/powerpc64/tst-audit.h (pltenter, pltexit): Provide
+	updated values for _CALL_ELF == 2.
+	(La_regs, La_retval, int_retval): Likewise.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/sysdep.h (FRAME_MIN_SIZE): Define.
+	(FRAME_MIN_SIZE_PARM): Likewise.
+	(FRAME_BACKCHAIN): Likewise.
+	(FRAME_CR_SAVE): Likewise.
+	(FRAME_LR_SAVE): Likewise.
+	(FRAME_TOC_SAVE): Likewise.
+	(FRAME_PARM_SAVE): Likewise.
+	(FRAME_PARM1_SAVE, FRAME_PARM2_SAVE, FRAME_PARM3_SAVE,
+	FRAME_PARM4_SAVE, FRAME_PARM5_SAVE, FRAME_PARM6_SAVE,
+	FRAME_PARM7_SAVE, FRAME_PARM8_SAVE, FRAME_PARM9_SAVE): Likewise.
+	(call_mcount_parm_offset): New macro.
+	(SAVE_ARG, REST_ARG, CFI_SAVE_ARG): Use it.
+	(PROF): Use symbolic stack frame offsets.
+	(TAIL_CALL_SYSCALL_ERROR): Likewise.
+	* sysdeps/powerpc/powerpc64/dl-trampoline.S (FRAME_SIZE, INT_PARMS):
+	Redefine in terms of FRAME_MIN_SIZE.
+	(_dl_runtime_resolve): Use symbolic stack frame offsets.
+	(_dl_profile_resolve): Likewise.  Update comment.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S (__GI__setjmp): Use
+	symbols stack frame offsets.
+	(__sigsetjmp): Likewise.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S (__longjmp): Likewise.
+	* sysdeps/powerpc/powerpc64/ppc-mcount.S (_mcount): Likewise.
+	* sysdeps/powerpc/powerpc64/crti.S (_init, _fini): Likewise.
+	* sysdeps/powerpc/powerpc64/crtn.S (_init, _fini): Likewise.
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/ucontext_i.sym
+	(FRAME_BACKCHAIN): Remove.
+	(FRAME_CR_SAVE): Likewise.
+	(FRAME_LR_SAVE): Likewise.
+	(FRAME_COMPILER_DW): Likewise.
+	(FRAME_LINKER_DW): Likewise.
+	(FRAME_TOC_SAVE): Likewise.
+	(FRAME_PARM_SAVE): Likewise.
+	(FRAME_PARM1_SAVE, FRAME_PARM2_SAVE, FRAME_PARM3_SAVE,
+	FRAME_PARM4_SAVE, FRAME_PARM5_SAVE, FRAME_PARM6_SAVE,
+	FRAME_PARM7_SAVE, FRAME_PARM8_SAVE, FRAME_PARM9_SAVE): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/____longjmp_chk.S
+	(CHECK_SP): Use symbolic stack frame offsets.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/brk.S (__brk): Use "red
+	zone" instead of caller's parameter save area for temp storage.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/clone.S (__clone):
+	Likewise.  Also, use symbolic stack frame offsets.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/socket.S (FRAMESIZE,
+	stackblock): Redefine for _CALL_ELF == 2 to save parameters into
+	our own stack frame instead of the caller's.
+	(__socket): Use symbolic stack frame offsets.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+	    Alan Modra  <amodra@gmail.com>
+
+	* elf/elf.h (DT_PPC64_OPT, PPC64_OPT_TLS, PPC64_OPT_MULTI_TOC):
+	Define.
+	(STO_PPC64_LOCAL_BIT, STO_PPC64_LOCAL_MASK,
+	PPC64_LOCAL_ENTRY_OFFSET): Define.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (ppc64_local_entry_offset):
+	New function.
+	(elf_machine_fixup_plt): Call it.
+	(elf_machine_plt_conflict): Likewise.  Add map, sym_map, and
+	reloc arguments.
+	(elf_machine_rela): Update call to elf_machine_plt_conflict.
+	* sysdeps/powerpc/powerpc64/dl-trampoline.S (_dl_runtime_resolve,
+	_dl_profile_resolve) [_CALL_ELF == 2]: Restore caller's TOC into
+	r2 before calling target.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+	    Alan Modra  <amodra@gmail.com>
+
+	* sysdeps/powerpc/powerpc64/sysdep.h [_CALL_ELF == 2]
+	(PPC64_LOAD_FUNCPTR, DOT_LABEL, BODY_LABEL, ENTRY_2, END_2): New
+	versions of macros to support ELFv2 ABI.
+	(LOCALENTRY): New macro.
+	(ENTRY, EALIGN): Use it.
+	* sysdeps/powerpc/powerpc64/crti.S (_init, _fini): Use LOCALENTRY.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S (__GI__setjmp): Do not
+	fall through into ENTRY entry point.
+	* libc/sysdeps/powerpc/powerpc64/dl-machine.h (Elf64_FuncDesc):
+	Only define if _CALL_ELF != 2.
+
+	(elf_machine_matches_host): Verify ABI version matches.
+	(RTLD_START): Use LOCALENTRY.
+	(elf_machine_type_class): Use SHN_UNDEF PLT handling for ELFv2 ABI.
+	(PLT_INITIAL_ENTRY_WORDS): New version for _CALL_ELF != 2.
+	(PLT_ENTRY_WORDS): New macro.
+	(GLINK_INITIAL_ENTRY_WORDS, GLINK_ENTRY_WORDS): Likewise.
+	(elf_machine_runtime_setup): Support ELFv2 ABI.
+	(elf_machine_fixup_plt): Likewise.
+	(elf_machine_plt_conflict): Likewise.
+	(resolve_ifunc): Likewise.
+	* sysdeps/powerpc/powerpc64/dl-irel.h (elf_irela): Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/bits/libc-vdso.h (VDSO_IFUNC_RET):
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/ldsodefs.h
+	(DL_ADDR_SYM_MATCH): Only define if _CALL_ELF != 2.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/makecontext.S
+	(makecontext): Support ELFv2 ABI.
+	* elf/elf.h (EF_PPC64_ABI): Define.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/sysdep.h [ASSEMBLER] (PPC64_LOAD_FUNCPTR):
+	New assembler macro.
+	[ASSEMBLER] (ENTRY_1): Do not switch to .text section here ...
+	[ASSEMBLER] (ENTRY): ... but instead here ...
+	[ASSEMBLER] (EALIGN): ... and here.
+	[!ASSEMBLER] (PPC64_LOAD_FUNCPTR): New macro.
+	[!ASSEMBLER] (ENTRY_1): New macro; set up .opd entry.
+	[!ASSEMBLER] (ENTRY_2): Use it.
+	* sysdeps/powerpc/powerpc64/dl-machine.h (RTLD_START): Update for
+	ENTRY_2 changes.  Use PPC64_LOAD_FUNCPTR.
+	* sysdeps/powerpc/powerpc64/dl-trampoline.S (_dl_runtime_resolve,
+	_dl_profile_resolve): Use PPC64_LOAD_FUNCPTR.
+	* sysdeps/powerpc/powerpc64/crti.S (_init, _fini): Use ENTRY_2.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/clone.S (clone):
+	Use PPC64_LOAD_FUNCPTR.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/powerpc/tls.h (tcbhead_t): Add __private_ss field.
+
+2013-12-04  Alan Modra  <amodra@gmail.com>
+
+	* elf/elf.h (R_PPC64_TLSGD, R_PPC64_TLSLD, R_PPC64_TOCSAVE): Define.
+	(R_PPC64_ADDR16_HIGH, R_PPC64_ADDR16_HIGHA): Likewise.
+	(R_PPC64_TPREL16_HIGH, R_PPC64_TPREL16_HIGHA): Likewise.
+	(R_PPC64_DTPREL16_HIGH, R_PPC64_DTPREL16_HIGHA): Likewise.
+
+	* sysdeps/powerpc/powerpc64/dl-machine.h (elf_machine_rela): Add
+	overflow checking for R_PPC64_ADDR16_HI, R_PPC64_ADDR16_HA,
+	R_PPC64_TPREL16_HI, and R_PPC64_TPREL16_HA.
+	Support new R_PPC64_ADDR16_HIGH, R_PPC64_ADDR16_HIGHA,
+	R_PPC64_TPREL16_HIGH, and R_PPC64_TPREL16_HIGHA relocations.
+	Fix overflow checking for R_PPC64_ADDR30 and R_PPC64_ADDR32.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/makecontext.S
+	(__makecontext): Fix incorrect CFI when backtracing out of
+	context created via makecontext.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/secontext.S
+	(__setcontext): Fix incorrect CFI during switch to new context.
+	(__novec_setcontext): Likewise.
+
+2013-12-04  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #4772]
+	* time/strptime_l.c (__strptime_internal): Allow modifiers
+	in strptime.
+	* time/tst-strptime.c (day_tests): Add testcase.
+
+
+2013-12-04  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* scripts/bench.pl: Skip over blank lines.
+
+2013-12-04  Paul Eggert  <eggert@cs.ucla.edu>
+
+	[BZ #926]
+	* manual/time.texi (Calendar Time): Clarify what timezone functions
+	use.
+
+2013-12-04  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
 2013-12-04  Ondřej Bílka  <neleai@seznam.cz>
 
 	* debug/memcpy_chk.c (__memcpy_chk): Use call instead of custom

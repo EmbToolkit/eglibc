@@ -1,3 +1,100 @@
+2013-12-06  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* scripts/bench.pl: Append volatile keyword to type.
+
+2013-12-05  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	* sysdeps/sh/sotruss-lib.c: New file.
+	* sysdeps/unix/sysv/linux/sh/nptl/c++-types.data: New file.
+
+2013-12-05  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-12-05  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #6810]
+	* math/w_tgamma.c: Include <errno.h>.
+	(__tgamma): Use __glibc_unlikely.  Set errno on underflow to 0.
+	* math/w_tgammaf.c: Include <errno.h>.
+	(__tgammaf): Use __glibc_unlikely.  Set errno on underflow to 0.
+	* math/w_tgammal.c: Include <errno.h>.
+	(__tgammal): Use __glibc_unlikely.  Set errno on underflow to 0.
+	* math/auto-libm-test-in: Do not allow missing errno on tgamma
+	underflow.  Add more tgamma tests.
+	* math/auto-libm-test-out: Regenerated.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* math/auto-libm-test-in: Add tests of log, log10, log1p, log2,
+	sin, sinh, tan, tanh, tgamma, y0 and y1.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (TEST_COND_x86_64): New macro.
+	(TEST_COND_x86): Likewise.
+	(M_E2l): Remove macro.
+	(M_E3l): Likewise.
+	(M_2_SQRT_PIl): Likewise.
+	(M_SQRT_PIl): Likewise.
+	(M_1_DIV_El): Likewise.
+	(log_test_data): Use AUTO_TESTS_f_f.
+	(log10_test_data): Likewise.
+	(log1p_test_data): Likewise.
+	(log2_test_data): Likewise.
+	(sin_test_data): Likewise.
+	(sin_tonearest_test_data): Likewise.
+	(sin_towardzero_test_data): Likewise.
+	(sin_downward_test_data): Likewise.
+	(sin_upward_test_data): Likewise.
+	(sinh_test_data): Likewise.
+	(sinh_tonearest_test_data): Likewise.
+	(sinh_towardzero_test_data): Likewise.
+	(sinh_downward_test_data): Likewise.
+	(sinh_upward_test_data): Likewise.
+	(tan_test_data): Likewise.
+	(tan_tonearest_test_data): Likewise.
+	(tan_towardzero_test_data): Likewise.
+	(tan_downward_test_data): Likewise.
+	(tan_upward_test_data): Likewise.
+	(tanh_test_data): Likewise.
+	(tgamma_test_data): Likewise.
+	(y0_test_data): Likewise.
+	(y1_test_data): Likewise.
+	* math/gen-auto-libm-tests.c (special_fill_pi_4): New function.
+	(special_real_inputs): Add pi/4.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-12-05  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc32/__longjmp-common.S: Add "longjmp" and
+	"longjmp_target" static probes.
+	(__longjmp): Rename to __longjmp_symbol.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp-common.S: Likewise.
+	* sysdeps/powerpc/powerpc32/__longjmp.S: Define __longjmp_symbol based
+	on which longjmp to generate.
+	* sysdeps/powerpc/powerpc32/fpu/__longjmp.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp-common.S: Add "setjmp" static
+	probe.
+	(__sigsetjmp): Rename to __sigsetjmp_symbol.
+	(__sigjmp_save): Rename to __sigjmp_save_symbol.
+	* sysdeps/powerpc/powerpc32/setjmp-common.S: Likewise.
+	* sysdeps/powerpc/powerpc32/fpu/setjmp.S: Define __sigsetjmp_symbol
+	and __sigjmp_save_symbol based on which sigsetjmp to generated.
+	* sysdeps/powerpc/powerpc32/setjmp.S: Likewise
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/____longjmp_chk.S: Define
+	__longjmp_symbol based on which __longjmp to generate.
+	* sysdeps/powerpc/powerpc64/setjmp-common.S: Add "setjmp" static
+	probe.
+	(setjmp): Rename to setjmp_symbol.
+	(__sigsetjmp): Rename to __sigsetjmp_symbol.
+	(_setjmp): Rename to _setjmp_symbol.
+	(__sigsetjmp): Rename to __sigsetjmp_symbol.
+	* sysdeps/powerpc/powerpc64/setjmp.S: Define setjmp_symbol,
+	_setjmp_symbol, __sigsetjmp_symbol, and __sigjmp_save_symbol based on
+	which setjmp to generate.
+	* sysdeps/powerpc/powerpc64/__longjmp-common.S: Add "longjmp" and
+	"longjmp_target" static probes.
+
 2013-12-05  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* benchtests/README: Add note about output arguments.

@@ -37,9 +37,11 @@ weak_alias (__isnan, isnan)
 
 /* It turns out that the 'double' version will also always work for
    single-precision.  */
+#ifndef __isnan
 strong_alias (__isnan, __isnanf)
 hidden_def (__isnanf)
 weak_alias (__isnanf, isnanf)
+#endif
 
 #ifdef NO_LONG_DOUBLE
 strong_alias (__isnan, __isnanl)

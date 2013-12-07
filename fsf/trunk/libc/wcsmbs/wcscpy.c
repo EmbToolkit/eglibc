@@ -20,9 +20,13 @@
 #include <wchar.h>
 
 
+#ifndef WCSCPY
+# define WCSCPY wcscpy
+#endif
+
 /* Copy SRC to DEST.  */
 wchar_t *
-wcscpy (dest, src)
+WCSCPY (dest, src)
      wchar_t *dest;
      const wchar_t *src;
 {

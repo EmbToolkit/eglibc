@@ -24,8 +24,12 @@
 #undef mempcpy
 #undef __mempcpy
 
+#ifndef MEMPCPY
+# define MEMPCPY __mempcpy
+#endif
+
 void *
-__mempcpy (void *dest, const void *src, size_t len)
+MEMPCPY (void *dest, const void *src, size_t len)
 {
   return memcpy (dest, src, len) + len;
 }

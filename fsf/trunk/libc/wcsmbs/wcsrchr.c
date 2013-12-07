@@ -18,10 +18,13 @@
 
 #include <wchar.h>
 
+#ifndef WCSRCHR
+# define WCSRCHR wcsrchr
+#endif
 
 /* Find the last occurrence of WC in WCS.  */
 wchar_t *
-wcsrchr (wcs, wc)
+WCSRCHR (wcs, wc)
      const wchar_t *wcs;
      const wchar_t wc;
 {

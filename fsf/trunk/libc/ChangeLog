@@ -1,3 +1,54 @@
+2013-12-11  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (t22): Consolidate const
+	definition...
+	(slow1, slow2, sloww1, sloww2, bsloww1, bsloww2, cslow2,
+	csloww1, csloww2): ... from here.
+
+	* sysdeps/ieee754/dbl-64/usncs.h: Define constants as double
+	instead of structures.
+	* sysdeps/ieee754/dbl-64/s_sin.c (POLYNOMIAL2): Adjust.
+	(POLYNOMIAL): Likewise.
+	(TAYLOR_SLOW): Likewise.
+	(__sin): Likewise.
+	(__cos): Likewise.
+	(slow1): Likewise.
+	(slow2): Likewise.
+	(sloww): Likewise.
+	(sloww1); Likewise.
+	(sloww2): Likewise.
+	(bsloww1): Likewise.
+	(bsloww2): Likewise.
+	(cslow2): Likewise.
+	(csloww): Likewise.
+	(csloww1): Likewise.
+	(csloww2): Likewise.
+
+2013-12-10  Ondřej Bílka  <neleai@seznam.cz>
+
+	* malloc/malloc.c (MALLOC_COPY, MALLOC_ZERO): Delete.
+	(__malloc_assert, __libc_realloc, __libc_calloc,
+	_int_realloc): Expand MALLOC_COPY and MALLOC_ZERO to
+	memcpy and memset.
+	* malloc/hooks.c (realloc_check): Likewise.
+
+2013-12-10  Ondřej Bílka  <neleai@seznam.cz>
+
+	* malloc/Makefile (CPPFLAGS-malloc.c): Remove -DPER_THREAD flag.
+	* malloc/arena.c: Remove PER_THREAD conditional.
+	[!PER_THREAD]: Remove code.
+	(ptmalloc_unlock_all2): Likewise.
+	(ptmalloc_init): Likewise.
+	(_int_new_arena): Likewise.
+	(arena_get2): Likewise.
+	* malloc/hooks.c (__malloc_get_state): Likewise.
+	(__malloc_set_state): Likewise.
+	* malloc/malloc.c: Likewise.
+	(struct malloc_state): Likewise.
+	(struct malloc_par): Likewise.
+	(__libc_realloc): Likewise.
+	(__libc_mallopt): Likewise.
+
 2013-12-09  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
 
 	* Versions.def (libm): Add GLIBC_2.3 and GLIBC_2.19.

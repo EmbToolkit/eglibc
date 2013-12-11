@@ -330,7 +330,7 @@ realloc_check(void* oldmem, size_t bytes, const void *caller)
 	if (top_check() >= 0)
 	  newmem = _int_malloc(&main_arena, bytes+1);
 	if (newmem) {
-	  MALLOC_COPY(newmem, oldmem, oldsize - 2*SIZE_SZ);
+	  memcpy(newmem, oldmem, oldsize - 2*SIZE_SZ);
 	  munmap_chunk(oldp);
 	}
       }
@@ -476,11 +476,9 @@ __malloc_get_state(void)
   ms->max_mmapped_mem = mp_.max_mmapped_mem;
   ms->using_malloc_checking = using_malloc_checking;
   ms->max_fast = get_max_fast();
-#ifdef PER_THREAD
   ms->arena_test = mp_.arena_test;
   ms->arena_max = mp_.arena_max;
   ms->narenas = narenas;
-#endif
   (void)mutex_unlock(&main_arena.mutex);
   return (void*)ms;
 }
@@ -577,11 +575,9 @@ __malloc_set_state(void* msptr)
     }
   }
   if (ms->version >= 4) {
-#ifdef PER_THREAD
     mp_.arena_test = ms->arena_test;
     mp_.arena_max = ms->arena_max;
     narenas = ms->narenas;
-#endif
   }
   check_malloc_state(&main_arena);
 

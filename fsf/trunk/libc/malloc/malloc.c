@@ -1072,19 +1072,6 @@ static void*   malloc_atfork(size_t sz, const void *caller);
 static void      free_atfork(void* mem, const void *caller);
 #endif
 
-
-/* ------------- Optional versions of memcopy ---------------- */
-
-
-/*
-  Note: memcpy is ONLY invoked with non-overlapping regions,
-  so the (usually slower) memmove is not needed.
-*/
-
-#define MALLOC_COPY(dest, src, nbytes)  memcpy(dest, src, nbytes)
-#define MALLOC_ZERO(dest, nbytes)       memset(dest, 0,   nbytes)
-
-
 /* ------------------ MMAP support ------------------  */
 
 
@@ -1707,10 +1694,8 @@ struct malloc_state {
   /* Linked list */
   struct malloc_state *next;
 
-#ifdef PER_THREAD
   /* Linked list for free arenas.  */
   struct malloc_state *next_free;
-#endif
 
   /* Memory allocated from the system in this arena.  */
   INTERNAL_SIZE_T system_mem;
@@ -1722,10 +1707,8 @@ struct malloc_par {
   unsigned long    trim_threshold;
   INTERNAL_SIZE_T  top_pad;
   INTERNAL_SIZE_T  mmap_threshold;
-#ifdef PER_THREAD
   INTERNAL_SIZE_T  arena_test;
   INTERNAL_SIZE_T  arena_max;
-#endif
 
   /* Memory map support */
   int              n_mmaps;
@@ -1767,18 +1750,14 @@ static struct malloc_par mp_ =
     .n_mmaps_max    = DEFAULT_MMAP_MAX,
     .mmap_threshold = DEFAULT_MMAP_THRESHOLD,
     .trim_threshold = DEFAULT_TRIM_THRESHOLD,
-#ifdef PER_THREAD
 # define NARENAS_FROM_NCORES(n) ((n) * (sizeof(long) == 4 ? 2 : 8))
     .arena_test     = NARENAS_FROM_NCORES (1)
-#endif
   };
 
 
-#ifdef PER_THREAD
 /*  Non public mallopt parameters.  */
 #define M_ARENA_TEST -7
 #define M_ARENA_MAX  -8
-#endif
 
 
 /* Maximum size of memory handled in fastbins.  */
@@ -2964,7 +2943,7 @@ __libc_realloc(void* oldmem, size_t bytes)
     /* Must alloc, copy, free. */
     newmem = __libc_malloc(bytes);
     if (newmem == 0) return 0; /* propagate failure */
-    MALLOC_COPY(newmem, oldmem, oldsize - 2*SIZE_SZ);
+    memcpy(newmem, oldmem, oldsize - 2*SIZE_SZ);
     munmap_chunk(oldp);
     return newmem;
   }
@@ -2981,11 +2960,6 @@ __libc_realloc(void* oldmem, size_t bytes)
   (void)mutex_lock(&ar_ptr->mutex);
 #endif
 
-#if !defined PER_THREAD
-  LIBC_PROBE (memory_arena_reuse_realloc, 1, ar_ptr);
-  /* As in malloc(), remember this arena for the next allocation. */
-  tsd_setspecific(arena_key, (void *)ar_ptr);
-#endif
 
   newp = _int_realloc(ar_ptr, oldp, oldsize, nb);
 
@@ -3000,7 +2974,7 @@ __libc_realloc(void* oldmem, size_t bytes)
       newp = __libc_malloc(bytes);
       if (newp != NULL)
 	{
-	  MALLOC_COPY (newp, oldmem, oldsize - SIZE_SZ);
+	  memcpy (newp, oldmem, oldsize - SIZE_SZ);
 	  _int_free(ar_ptr, oldp, 0);
 	}
     }
@@ -3188,7 +3162,7 @@ __libc_calloc(size_t n, size_t elem_size)
   if (chunk_is_mmapped (p))
     {
       if (__builtin_expect (perturb_byte, 0))
-	return MALLOC_ZERO (mem, sz);
+	return memset (mem, 0, sz);
       return mem;
     }
 
@@ -3210,7 +3184,7 @@ __libc_calloc(size_t n, size_t elem_size)
   assert(nclears >= 3);
 
   if (nclears > 9)
-    return MALLOC_ZERO(d, clearsize);
+    return memset(d, 0, clearsize);
 
   else {
     *(d+0) = 0;
@@ -4214,7 +4188,7 @@ _int_realloc(mstate av, mchunkptr oldp, INTERNAL_SIZE_T oldsize,
 	assert(ncopies >= 3);
 
 	if (ncopies > 9)
-	  MALLOC_COPY(d, s, copysize);
+	  memcpy(d, s, copysize);
 
 	else {
 	  *(d+0) = *(s+0);
@@ -4688,7 +4662,6 @@ int __libc_mallopt(int param_number, int value)
     perturb_byte = value;
     break;
 
-#ifdef PER_THREAD
   case M_ARENA_TEST:
     if (value > 0)
       {
@@ -4704,7 +4677,6 @@ int __libc_mallopt(int param_number, int value)
 	mp_.arena_max = value;
       }
     break;
-#endif
   }
   (void)mutex_unlock(&av->mutex);
   return res;

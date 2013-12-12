@@ -1,3 +1,8 @@
+2013-12-09  Carlos O'Donell  <carlos@redhat.com>
+
+	* sysdeps/unix/sysv/linux/tst-setgetname.c: New file.
+	* sysdeps/unix/sysv/linux/Makefile (tests): Add tst-setgetname.
+
 2013-12-09  Andreas Schwab  <schwab@suse.de>
 
 	[BZ #15843]
@@ -19,6 +24,7 @@
 	(DOCARGS_6, UNDOCARGS_6): Likewise.
 
 2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
 	* sysdeps/i386/tls.h: Use __glibc_reserved instead __unused.
 	* sysdeps/x86_64/tls.h: Likewise.
 

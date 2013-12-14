@@ -1,3 +1,510 @@
+2013-12-14  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	* sysdeps/sh/sh4/fpu/bits/fenv.h: Move to ...
+	* sysdeps/sh/bits/fenv.h: ... here.
+	* sysdeps/sh/sh4/fpu/bits: Remove directory.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* NEWS: Mention ppc64 STT_GNU_IFUNC support.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add hypot and
+	hypotf multiarch implementations.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypot-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypot-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypot.c: New file:
+	multiarch hypot for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypotf-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypotf-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/e_hypotf.c : New file:
+	multiarch hypotf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add modf and
+	modff multiarch implementations.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modf-power5+.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modf-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modf.c: New file:
+	multiarch modf for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modff-power5+.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modff-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_modff.c : New file:
+	multiarch modff for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add logb, logbf,
+	and logl multiarch implementations.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logb-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logb-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logb.c: New file:
+	multiarch logb for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbf-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbf-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbf.c: New file:
+	multiarch logb for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbl-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbl-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_logbl.c: New file:
+	multiarch logb for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add isinf and
+	isinff multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isinf-power7.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isinf-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isinf.c: New file:
+	multiarch isinf for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isinff-ppc64.c: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isinff.c: New file:
+	multiarch isinff for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add finite and
+	finitef multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_finite-power7.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_finite-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_finite.c: New file:
+	multiarch finite for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_finitef-ppc64.c: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_finitef.c: New file:
+	multiarch finitef for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add llrint and
+	lrint multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llrint-power6x.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llrint-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llrint.c: New file:
+	multiarch llrint for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_lrint.c: New file:
+	multiarch lrint for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add copysign/
+	copysignf multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_copysign-power6.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_copysign-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_copysign.c: New file:
+	multiarch copysign for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_copysignf.c: New file:
+	multiarch copysignf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add trunc/truncf
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_trunc-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_trunc-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_truncf-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_truncf-ppc64.S: New
+	file.
+	multiarch llround for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_trunc.c: New file:
+	multiarch trunc for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_truncf.c: New file:
+	multiarch truncf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add round/roundf
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_round-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_round-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_roundf-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_roundf-ppc64.S: New
+	file.
+	multiarch llround for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_round.c: New file:
+	multiarch round for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_roundf.c: New file:
+	multiarch roundf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add floor/floorf
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floor-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floor-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floorf-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floorf-ppc64.S: New
+	file.
+	multiarch llround for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floor.c: New file:
+	multiarch floor for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_floorf.c: New file:
+	multiarch floorf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add ceil/ceilf
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceil-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceil-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceilf-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceilf-ppc64.S: New
+	file.
+	multiarch llround for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceil.c: New file:
+	multiarch ceil for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_ceilf.c: New file:
+	multiarch ceilf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add llround
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llround-power5+.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llround-power6x.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llround-ppc64.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_llround.c: New file:
+	multiarch llround for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_lround.c: New file:
+	multiarch lround for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/Makefile: Add isnan
+	multiarch implementation.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan-power5.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan-power6.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan-power6x.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnan.c: New file:
+	multiarch isnan for PPC64.
+	* sysdeps/powerpc/powerpc64/fpu/multiarch/s_isnanf.c: New file:
+	multiarch isnanf for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/power5+/fpu/multiarch/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power5/fpu/multiarch/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power6/fpu/multiarch/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power6x/fpu/multiarch/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power7/fpu/multiarch/Implies: New file
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/fpu/Implies: Remove.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/w_sqrt.c: Remove file
+	* sysdeps/powerpc/fpu/w_sqrtf.c: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/w_sqrt.c: Likewise.
+	* sysdeps/powerpc/powerpc64/power4/fpu/w_sqrtf.c: Likewise.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add stpcpy
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/stpcpy-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/stpcpy-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/stpcpy.c : New file:
+	multiarch stpcpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strcpy
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strcpy-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strcpy-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strcpy.c : New file:
+	multiarch strcpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* string/wordcopy.c (_wordcopy_fwd_aligned): Add define to
+	redefine function name.
+	(_wordcopy_fwd_dest_aligned): Likewise.
+	(_wordcopy_bwd_aligned): Likewise.
+	(_wordcopy_bwd_dest_aligned): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add wordcopy
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/wordcopy-power6.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wordcopy-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wordcopy-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wordcopy.c : New file:
+	multiarch wcscpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add wcscpy
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/wcscpy-power6.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcscpy-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcscpy-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcscpy.c : New file:
+	multiarch wcscpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add wcsrchr
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/wcsrchr-power6.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcsrchr-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcsrchr-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcsrchr.c : New file:
+	multiarch wcsrchr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add wcschr
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/wcschr-power6.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcschr-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcschr-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/wcschr.c : New file:
+	multiarch wcschr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strchrnul
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strchrnul-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strchrnul-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strchrnul.c: New file:
+	multiarch strchrnul for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strchr multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/rtld-strchr.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strchr-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strchr-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strchr.c: New file: multiarch
+	strchr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strncmp multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strncmp-power4.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strncmp-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strncmp-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strncmp.c: New file: multiarch
+	strncmp for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strncasecmp
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strncase-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strncase.c: New file: multiarch
+	strncasecmp for PPC64.
+	* sysdeps/powerpc/powerpc64/multiarch/strncase_l-power7.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strncase_l.c: New file:
+	multiarch strncasecmp_l for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strcasecmp
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c:
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strcasecmp-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strcasecmp.c: New file:
+	multiarch strcasecmp for PPC64.
+	* sysdeps/powerpc/powerpc64/multiarch/strcasecmp_l-power7.S: New
+	file.
+	* sysdeps/powerpc/powerpc64/multiarch/strcasecmp_l.c: new file:
+	multiarch strcasecmp_l for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strnlen multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strnlen-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strnlen-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strnlen.c: New file: multiarch
+	strnlen for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add strlen multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/strlen-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strlen-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/strlen.c: New file: multiarch
+	strlen for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add rawmemch multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/rawmemchr-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/rawmemchr-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/rawmemchr.c: New file: multiarch
+	rawmemrchr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add memrchr multiarch
+	implementation.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/memrchr-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memrchr-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memrchr.c: New file: multiarch
+	memrchr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add memchr multiarch
+	implementation.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/memchr-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memchr-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memchr.c: New file: multiarch
+	memchr for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add mempcpy multiarch
+	implementation.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/mempcpy-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/mempcpy-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/mempcpy.c: New file: multiarch
+	mempcpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/memset.S (NO_BZERO_IMPL): Add macro to
+	avoid cretion of __bzero symbol.
+	* sysdeps/powerpc/powerpc64/power4/memset.S (NO_BZERO_IMPL):
+	Likewise.
+	* sysdeps/powerpc/powerpc64/power6/memset.S (NO_BZERO_IMPL):
+	Likewise.
+	* sysdeps/powerpc/powerpc64/power7/memset.S (NO_BZERO_IMPL):
+	Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add memset/bzero
+	multiarch implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/bzero-power4.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/bzero-power6.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/bzero-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/bzero.c: New file: multiarch
+	bzero for PPC32.
+	* sysdeps/powerpc/powerpc64/multiarch/memset-power4.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memset-power6.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memset-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memset-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memset.c: New file: multiarch
+	memset for PPC64.
+	* sysdeps/powerpc/powerpc64/multiarch/rtld-memset.c: New file.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* string/memcmp.c (memcmp): Using macro to redefine symbol name.
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: Add memcpy multiarch
+	implementations.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c
+	(__libc_ifunc_impl_list): Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/memcmp-power4.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcmp-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcmp-ppc64.c: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcmp.c: New file: multiarch
+	memcmp for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/Makefile: New file to support
+	multiarch for POWER/PPC64.
+	* sysdeps/powerpc/powerpc64/multiarch/ifunc-impl-list.c: Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/init-arch.h: Likewise.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-a2.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-cell.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-power4.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-power6.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-power7.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy-ppc64.S: New file.
+	* sysdeps/powerpc/powerpc64/multiarch/memcpy.c: New file: multiarch
+	memcpy for PPC64.
+
+2013-12-13  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/power4/fpu/Implies: New file.
+	* sysdeps/powerpc/powerpc64/power4/fpu/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power4/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power5+/fpu/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power5+/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power5/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power5/fpu/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power5/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power6/fpu/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power6/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power7/fpu/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power7/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power8/fpu/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power8/fpu/multiarch/Implies: New File.
+	* sysdeps/powerpc/powerpc64/power8/multiarch/Implies: New File.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power4/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power5+/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power5/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power6/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power6x/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power7/Implies: Remove.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/power8/Implies: Remove.
+
 2013-12-12  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
 
 	* sysdeps/unix/Makefile ($(objpfx)stub-syscalls.c): Use $$ver.

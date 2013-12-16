@@ -1,3 +1,15 @@
+2013-12-16  Allan McRae  <allan@archlinux.org>
+
+	* sysdeps/x86_64/multiarch/ifunc-impl-list.c: Update file name.
+
+	[BZ #14120]
+	* configure.ac: Added --enable-maintainer-mode. Check for
+	autoconf when enabled.
+	* configure: Regenerated.
+
+	* nscd/nscd.service: New file.
+	* nscd/nscd.tmpfiles: New file.
+
 2013-12-14  Ondřej Bílka  <neleai@seznam.cz>
 
 	[BZ #12100]

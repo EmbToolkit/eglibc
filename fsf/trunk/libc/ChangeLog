@@ -1,4 +1,83 @@
+2013-12-16  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	[BZ #13304]
+	* sysdeps/sh/s_fma.c: New file.
+	* sysdeps/sh/s_fmaf.c: New file.
+	* sysdeps/sh/soft-fp/sfp-machine.h: New file.  Based on arm
+	version.
+	* sysdeps/sh/Implies: Add sh/soft-fp.
+
+2013-12-16  Roland McGrath  <roland@hack.frob.com>
+
+	* elf/dl-error.c (struct catch): Add new member `errcode'.  Add a
+	level of indirection to members `objname', `errstring', `malloced'.
+	(_dl_signal_error): Store through pointers in *LCATCH rather modifying
+	*LCATCH itself.  Set *LCATCH->errcode to ERRCODE rather than passing
+	it as the __longjmp argument (just pass 1 instead).
+	(_dl_catch_error): Initialize C with argument pointers and address of
+	volatile local ERRCODE rather than copying values out of C at return.
+
+2013-12-16  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/auto-libm-test-in: Add tests of atan2, hypot and pow.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (atan2_test_data): Use AUTO_TESTS_ff_f.
+	(hypot_test_data): Likewise.
+	(pow_test_data): Likewise.
+	(pow_tonearest_test_data): Likewise.
+	* math/gen-auto-libm-tests.c (func_calc_method): Add value
+	mpfr_ff_f.
+	(func_calc_desc): Add mpfr_ff_f union field.
+	(FUNC_mpfr_ff_f): New macro.
+	(test_functions): Add atan2, hypot and pow.
+	(special_fill_min): New function.
+	(special_fill_minus_min): Likewise.
+	(special_fill_min_subnorm): Likewise.
+	(special_fill_minus_min_subnorm): Likewise.
+	(special_real_inputs): Add min, -min, min_subnorm and
+	-min_subnorm.
+	(calc_generic_results): Handle mpfr_ff_f.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-12-16  Will Newton  <will.newton@linaro.org>
+
+	* manual/memory.texi (Malloc Examples): Mention aligned_alloc.
+	(Aligned Memory Blocks): Add documentation for aligned_alloc
+	and suggest it as an alternative to posix_memalign.
+	(Hooks for Malloc): Document __memalign_hook is also called
+	for aligned_alloc.  (Summary of Malloc): Add summary for
+	aligned alloc.  Document __memalign_hook is also called
+	for aligned_alloc.
+
+2013-12-16  Will Newton  <will.newton@linaro.org>
+
+	* manual/memory.texi (Malloc Examples): Clarify default
+	alignment documentation.  Suggest posix_memalign rather
+	than memalign or valloc.
+	(Aligned Memory Blocks): Remove suggestion to use memalign
+	or valloc.  Remove obsolete comment about BSD.
+	Document memalign errno values and mark the function obsolete.
+	Document posix_memalign returned error codes.  Mark valloc
+	as obsolete.  (Hooks for Malloc): __memalign_hook is also
+	called for posix_memalign and valloc.
+	(Summary of Malloc): Add posix_memalign to function summary.
+	__memalign_hook is also called for posix_memalign and valloc.
+
+2013-12-16  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (TAYLOR_SINCOS): Rename to
+	TAYLOR_SIN.
+	(__sin): Adjust.
+	(__cos): Likewise.
+	(sloww): Use mynumber union.  Expand ternary operator into
+	if-else statements.
+	(cslow): use mynumber union.
+
 2013-12-16  Allan McRae  <allan@archlinux.org>
+
+	* configure.ac: Set AUTOCONF when maintainer-mode is not used.
+	* configure: Regenerated.
 
 	* sysdeps/x86_64/multiarch/ifunc-impl-list.c: Update file name.
 

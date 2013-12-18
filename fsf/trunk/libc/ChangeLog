@@ -1,3 +1,113 @@
+2013-12-18  Andreas Schwab  <schwab@suse.de>
+
+	* sysdeps/i386/i686/multiarch/strstr.c: Remove.
+	* sysdeps/i386/i686/multiarch/strstr-c.c: Remove.
+	* sysdeps/i386/i686/multiarch/strcasestr.c: Remove.
+	* sysdeps/i386/i686/multiarch/strcasestr-nonascii.c: Remove.
+	* sysdeps/i386/i686/multiarch/Makefile: Update.
+	* sysdeps/i386/i686/multiarch/ifunc-impl-list.c: Update.
+
+2013-12-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/bsd/bsd4.4/bits/errno.h: Remove file.
+	* sysdeps/unix/bsd/bsd4.4/bits/ioctls.h: Likewise.
+
+2013-12-17  Paul Eggert  <eggert@cs.ucla.edu>
+
+	Support TZ transition times < 00:00:00.
+	This is needed for version-3 tz-format files; it supports time
+	stamps past 2037 for America/Godthab (the only entry in the tz
+	database for which this change is relevant).
+	* manual/time.texi (TZ Variable): Document transition times
+	from -167:59:59 through -00:00:01.
+	* time/tzset.c (tz_rule): Time of day is now signed.
+	(__tzset_parse_tz): Parse negative time of day.
+
+	Document TZ transition times >= 25:00:00.
+	* manual/time.texi (TZ Variable): Document transition times from
+	25:00:00 through 167:59:59.  These are already supported, and this
+	support will help with version-3 tz-format files.
+
+	* manual/time.texi (TZ Variable): Modernize North America example
+	to reflect current (i.e., 2007-and-later) daylight saving rules.
+
+	* manual/time.texi (TZ Variable): POSIX.1 hour can be 24.
+
+2013-12-17  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/bsd/bits/posix_opt.h: Remove file.
+	* sysdeps/unix/bsd/bits/stat.h: Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/bits/environments.h: Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/bits/typesizes.h: Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/sys/sysmacros.h: Likewise.
+	* sysdeps/unix/bsd/bsdstat.h: Likewise.
+	* sysdeps/unix/bsd/clock.c: Likewise.
+	* sysdeps/unix/bsd/i386/vfork.S: Likewise.
+	* sysdeps/unix/bsd/i386/wait3.S: Likewise.
+	* sysdeps/unix/bsd/init-posix.c: Likewise.
+	* sysdeps/unix/bsd/poll.c: Likewise.
+	* sysdeps/unix/bsd/ptsname.c: Likewise.
+	* sysdeps/unix/bsd/seekdir.c: Likewise.
+	* sysdeps/unix/bsd/setegid.c: Likewise.
+	* sysdeps/unix/bsd/seteuid.c: Likewise.
+	* sysdeps/unix/bsd/setgid.c: Likewise.
+	* sysdeps/unix/bsd/setrgid.c: Likewise.
+	* sysdeps/unix/bsd/setruid.c: Likewise.
+	* sysdeps/unix/bsd/setsid.c: Likewise.
+	* sysdeps/unix/bsd/setuid.c: Likewise.
+	* sysdeps/unix/bsd/sigaction.c: Likewise.
+	* sysdeps/unix/bsd/sigprocmask.c: Likewise.
+	* sysdeps/unix/bsd/sigsuspend.c: Likewise.
+	* sysdeps/unix/bsd/sys/reboot.h: Likewise.
+	* sysdeps/unix/bsd/telldir.c: Likewise.
+	* sysdeps/unix/bsd/times.c: Likewise.
+	* sysdeps/unix/bsd/usleep.c: Likewise.
+
+	* misc/Makefile (install-lib): Remove libbsd-compat.a.
+	($(objpfx)libbsd-compat.a): Remove rule.
+
+	* include/features.h (__FAVOR_BSD): Do not define.
+	* manual/creature.texi (_BSD_SOURCE): Do not document as enabling
+	features conflicting with POSIX.
+	(_GNU_SOURCE): Do not mention interaction with _BSD_SOURCE.
+	(_BSD_SOURCE): Remove description of not being a subset of other
+	feature test macros.
+	* manual/job.texi (getpgrp): Do not document BSD version.
+	(getpgid): Do not document by reference to BSD getpgrp.
+	* posix/unistd.h [__FAVOR_BSD]: Remove conditional code.
+	* setjmp/setjmp.h [__FAVOR_BSD]: Likewise.
+	* signal/signal.h [__FAVOR_BSD]: Likewise.
+	* sysdeps/gnu/netinet/tcp.h (struct tcphdr): Use anonymous unions
+	instead of making contents conditional on [__FAVOR_BSD].
+	* sysdeps/gnu/netinet/udp.h (struct udphdr): Likewise.
+
+2013-12-17  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-12-17  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #16314]
+	* sysdeps/ieee754/dbl-64/e_hypot.c (__ieee754_hypot): Adjust up
+	values below 2**-450, not 2**-500.
+	* math/auto-libm-test-in: Don't allow spurious underflow from
+	hypot.
+	* math/auto-libm-test-out: Regenerated.
+
+	[BZ #16316]
+	[BZ #16330]
+	* sysdeps/ieee754/dbl-64/e_hypot.c (__ieee754_hypot): Update
+	values of ha and hb and sort them after adjusting subnormal
+	arguments.
+	* sysdeps/ieee754/ldbl-128/e_hypotl.c (__ieee754_hypotl):
+	Likewise.
+	* sysdeps/ieee754/ldbl-96/e_hypotl.c (__ieee754_hypotl): Update
+	values of ea and eb and sort them after adjusting subnormal
+	arguments.
+	* math/auto-libm-test-in: Do not expect some hypot tests of
+	subnormals to fail.  Add more hypot tests.
+	* math/auto-libm-test-out: Regenerated.
+
 2013-12-16  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
 
 	[BZ #13304]

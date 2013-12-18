@@ -22,7 +22,7 @@ Version 2.19
   15988, 15997, 16032, 16034, 16036, 16037, 16038, 16041, 16055, 16071,
   16072, 16074, 16077, 16078, 16103, 16112, 16143, 16144, 16146, 16150,
   16151, 16153, 16167, 16172, 16195, 16214, 16245, 16271, 16274, 16283,
-  16289.
+  16289, 16314, 16316, 16330.
 
 * The public headers no longer use __unused nor __block.  This change is to
   support compiling programs that are derived from BSD sources and use
@@ -100,6 +100,10 @@ Version 2.19
 * The soft-float powerpc port now supports e500 processors.
 
 * Support for STT_GNU_IFUNC symbols added for ppc32/power4+ and ppc64.
+
+* The _BSD_SOURCE feature test macro no longer enables BSD interfaces that
+  conflict with POSIX.  The libbsd-compat library (which was a dummy library
+  that did nothing) has also been removed.
 
 Version 2.18
 
@@ -165,6 +169,10 @@ Version 2.18
 
 * On Linux, the clock function now uses the clock_gettime system call
   for improved precision, rather than old times system call.
+
+* Added support for version-3 tz format files.  This is needed when using
+  the tz database release 2013e or later, and affects a few unusual cases --
+  currently only TZ='America/Godthab' for time stamps after 2037.
 
 * Added new API functions pthread_getattr_default_np and
   pthread_setattr_default_np to get and set the default pthread

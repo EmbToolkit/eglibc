@@ -316,9 +316,9 @@ hypot 0x0.fffffep-126 0x0.fp-127
 hypot 0x0.fffffep-126 0x0.fp-130
 hypot 0x0.fffffffffffffp-1022 0x0.fp-1023
 hypot 0x0.fffffffffffffp-1022 0x0.fp-1026
-hypot 0x0.ffffffp-16382 0x0.fp-16383
-hypot 0x0.ffffffp-16382 0x0.fp-16386
-hypot 0 min_subnorm
+hypot 0x0.ffffffp-16382 0x0.fp-16383 no-test-inline
+hypot 0x0.ffffffp-16382 0x0.fp-16386 no-test-inline
+hypot 0 min_subnorm no-test-inline
 
 j0 -1.0
 j0 0.0
@@ -351,6 +351,60 @@ j1 0x1.ff00000000002p+840
 j1 0x1p1023
 j1 0x1p16382
 j1 0x1p16383
+
+# jn (0, x) == j0 (x).
+jn 0 -1.0
+jn 0 0.0
+jn 0 0.125
+jn 0 0.75
+jn 0 1.0
+jn 0 1.5
+jn 0 2.0
+jn 0 8.0
+jn 0 10.0
+jn 0 4.0
+jn 0 -4.0
+
+# jn (1, x) == j1 (x).
+jn 1 -1.0
+jn 1 0.0
+jn 1 0.125
+jn 1 0.75
+jn 1 1.0
+jn 1 1.5
+jn 1 2.0
+jn 1 8.0
+jn 1 10.0
+
+jn 3 -1.0
+jn 3 0.0
+jn 3 0.125
+jn 3 0.75
+jn 3 1.0
+jn 3 2.0
+jn 3 10.0
+
+jn 10 -1.0
+jn 10 0.0
+jn 10 0.125
+jn 10 0.75
+jn 10 1.0
+jn 10 2.0
+jn 10 10.0
+
+jn 2 2.4048255576957729
+jn 3 2.4048255576957729
+jn 4 2.4048255576957729
+jn 5 2.4048255576957729
+jn 6 2.4048255576957729
+jn 7 2.4048255576957729
+jn 8 2.4048255576957729
+jn 9 2.4048255576957729
+
+jn 2 0x1.ffff62p+99
+jn 2 0x1p127
+jn 2 0x1p1023
+jn 2 0x1p16383
 
 lgamma max
 lgamma 1
@@ -414,6 +468,8 @@ log 1/e
 log 2
 log 10
 log 0.75
+log min
+log min_subnorm
 
 log10 1
 log10 0.1
@@ -422,12 +478,19 @@ log10 100.0
 log10 10000.0
 log10 e
 log10 0.75
+log10 min
+log10 min_subnorm
 
 log1p 0
 log1p -0
 log1p e-1
 log1p -0.25
 log1p -0.875
+# Bug 16339: underflow exception may be missing.
+log1p min missing-underflow
+log1p min_subnorm missing-underflow
+log1p -min missing-underflow
+log1p -min_subnorm missing-underflow
 
 log2 1
 log2 e
@@ -435,6 +498,8 @@ log2 2.0
 log2 16.0
 log2 256.0
 log2 0.75
+log2 min
+log2 min_subnorm
 
 pow 0 0
 pow 0 -0
@@ -1395,3 +1460,47 @@ y1 0x1p-80
 y1 0x1p-90
 y1 0x1p-100
 y1 0x1p-110
+
+# yn (0, x) == y0 (x).
+yn 0 0.125
+yn 0 0.75
+yn 0 1.0
+yn 0 1.5
+yn 0 2.0
+yn 0 8.0
+yn 0 10.0
+
+# yn (1, x) == y1 (x).
+yn 1 0.125
+yn 1 0.75
+yn 1 1.0
+yn 1 1.5
+yn 1 2.0
+yn 1 8.0
+yn 1 10.0
+
+# yn (-1, x) == -y1 (x).
+yn -1 1.0
+
+# yn (3, x).
+yn 3 0.125
+yn 3 0.75
+yn 3 1.0
+yn 3 2.0
+yn 3 10.0
+
+# yn (10, x).
+yn 10 0.125
+yn 10 0.75
+yn 10 1.0
+yn 10 2.0
+yn 10 10.0
+
+yn -10 1.0
+
+yn 10 min
+
+yn 2 0x1.ffff62p+99
+yn 2 0x1p127
+yn 2 0x1p1023
+yn 2 0x1p16383

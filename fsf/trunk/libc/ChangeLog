@@ -1,3 +1,127 @@
+2013-12-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/auto-libm-test-in: Add tests of cabs and carg.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (cabs_test_data): Use AUTO_TESTS_c_f.
+	(carg_test_data): Likewise.
+	* math/gen-auto-libm-tests.c (func_calc_method): Add value
+	mpc_c_f.
+	(func_calc_desc): Add mpc_c_f union field.
+	(test_functions): Add cabs and carg.
+	(calc_generic_results): Handle mpc_c_f.
+
+	* sysdeps/powerpc/powerpc32/libgcc-compat.S
+	[_SOFT_FLOAT || __NO_FPRS__] (__fixdfdi_v_glibc20): Do not define
+	as a macro and a compat symbol.
+	[_SOFT_FLOAT || __NO_FPRS__] (__fixsfdi_v_glibc20): Likewise.
+	[_SOFT_FLOAT || __NO_FPRS__] (__fixunsdfdi_v_glibc20): Likewise.
+	[_SOFT_FLOAT || __NO_FPRS__] (__fixunssfdi_v_glibc20): Likewise.
+	[_SOFT_FLOAT || __NO_FPRS__] (__floatdidf_v_glibc20): Likewise.
+	[_SOFT_FLOAT || __NO_FPRS__] (__floaddisf_v_glibc20): Likewise.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__fixdfdi): Do
+	not use .hidden.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__fixsfdi):
+	Likewise.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__fixunsdfdi):
+	Likewise.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__fixunssfdi):
+	Likewise.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__floaddidf):
+	Likewise.
+	[HAVE_DOT_HIDDEN && (_SOFT_FLOAT || __NO_FPRS__)] (__floaddisf):
+	Likewise.
+	* sysdeps/powerpc/nofpu/Versions (libc): Remove __fixdfdi,
+	__fixsfdi, __fixunsdfdi, __fixunssfdi, __floatdidf and __floatdisf
+	from GLIBC_2.3.2.
+
+2013-12-19  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2013-12-19  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	* elf/dl-misc.c (ptr_to_signal_safe_allocator_header): New function.
+	(__signal_safe_memalign, __signal_safe_free): Use it.
+	(__signal_safe_realloc): Likewise.
+
+2013-12-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* manual/texinfo.tex: Update to version 2013-11-26.10 with
+	trailing whitespace removed.
+	* scripts/config.guess: Update to version 2013-11-29.
+	* scripts/config.sub: Update to version 2013-10-01.
+
+	* math/auto-libm-test-in: Add tests of sincos.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (sincos_test_data): Use AUTO_TESTS_fFF_11.
+	* math/gen-auto-libm-tests.c (func_calc_method): Add value
+	mpfr_f_11.
+	(func_calc_desc): Add mpfr_f_11 union field.
+	(test_functions): Add sincos.
+	(calc_generic_results): Handle mpfr_f_11.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-12-19  Andreas Schwab  <schwab@suse.de>
+
+	* sysdeps/powerpc/powerpc64/power7/memchr.S: Fix argument of
+	CALL_MCOUNT.
+	* sysdeps/powerpc/powerpc64/power7/memrchr.S: Likewise.
+	* sysdeps/powerpc/powerpc64/power7/strcasecmp.S
+	[USE_IN_EXTENDED_LOCALE_MODEL]: Likewise.
+
+2013-12-19  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/gen-libm-test.pl (%beautify): Remove M_* constants.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	[BZ #16293]
+	* sysdeps/i386/fpu/e_expl.S (IEEE754_EXPL) [USE_AS_EXPM1L]: Set
+	round-to-nearest mode when using frndint.
+	* sysdeps/i386/fpu/s_expm1.S (__expm1): Likewise.
+	* sysdeps/i386/fpu/s_expm1f.S (__expm1f): Likewise.
+	* sysdeps/x86_64/fpu/e_expl.S (IEEE754_EXPL) [USE_AS_EXPM1L]:
+	Likewise.
+	* math/auto-libm-test-in: Add more tests of expm1.  Do not expect
+	sinh test to fail.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (TEST_COND_x86_64): Remove macro.
+	(TEST_COND_x86): Likewise.
+	(expm1_tonearest_test_data): New array.
+	(expm1_test_tonearest): New function.
+	(expm1_towardzero_test_data): New array.
+	(expm1_test_towardzero): New function.
+	(expm1_downward_test_data): New array.
+	(expm1_test_downward): New function.
+	(expm1_upward_test_data): New array.
+	(expm1_test_upward): New function.
+	(main): Run the new test functions.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* include/features.h: Update comment documenting feature test
+	macros.  Mention _DEFAULT_SOURCE in comment.
+	[_GNU_SOURCE] (_DEFAULT_SOURCE): Undefine and redefine.
+	[_DEFAULT_SOURCE]: Undefine and redefine _DEFAULT_SOURCE,
+	_BSD_SOURCE and _SVID_SOURCE.
+	[!__STRICT_ANSI__ && !_ISOC99_SOURCE && !_POSIX_SOURCE &&
+	!_POSIX_C_SOURCE && !_XOPEN_SOURCE && !_BSD_SOURCE &&
+	!_SVID_SOURCE]: Likewise.
+	[_DEFAULT_SOURCE && !_POSIX_SOURCE && !_POSIX_C_SOURCE]
+	(__USE_POSIX_IMPLICITLY): Define.
+	[_DEFAULT_SOURCE && !_POSIX_SOURCE && !_POSIX_C_SOURCE]
+	(_POSIX_SOURCE): Undefine and redefine.
+	[_DEFAULT_SOURCE && !_POSIX_SOURCE && !_POSIX_C_SOURCE]
+	(_POSIX_C_SOURCE): Likewise.
+	* manual/creature.texi (_DEFAULT_SOURCE): Document.
+	(Feature Test Macros): Update documentation of default features.
+
+2013-12-19  Rajalakshmi Srinivasaraghavan  <raji@linux.vnet.ibm.com>
+
+	* benchtests/Makefile: Add bench-strtok.
+	* benchtests/bench-strtok.c: New file: strtok benchtest.
+
 2013-12-19  Allan McRae  <allan@archlinux.org>
 
 	* manual/install.texi: Suppress menu for plain text output.

@@ -22,7 +22,7 @@ Version 2.19
   15966, 15985, 15988, 15997, 16032, 16034, 16036, 16037, 16038, 16041,
   16055, 16071, 16072, 16074, 16077, 16078, 16103, 16112, 16143, 16144,
   16146, 16150, 16151, 16153, 16167, 16172, 16195, 16214, 16245, 16271,
-  16274, 16283, 16289, 16314, 16316, 16330, 16338.
+  16274, 16283, 16289, 16293, 16314, 16316, 16330, 16338.
 
 * The public headers no longer use __unused nor __block.  This change is to
   support compiling programs that are derived from BSD sources and use
@@ -100,6 +100,11 @@ Version 2.19
 * The soft-float powerpc port now supports e500 processors.
 
 * Support for STT_GNU_IFUNC symbols added for ppc32/power4+ and ppc64.
+
+* A new feature test macro _DEFAULT_SOURCE is available to enable the same
+  set of header declarations that are enabled by default, even when other
+  feature test macros or compiler options such as -std=c99 would otherwise
+  disable some of those declarations.
 
 * The _BSD_SOURCE feature test macro no longer enables BSD interfaces that
   conflict with POSIX.  The libbsd-compat library (which was a dummy library

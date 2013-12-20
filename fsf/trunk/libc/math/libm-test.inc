@@ -267,18 +267,6 @@ struct ulp_data
 #define TEST_COND_before_rounding	(!TININESS_AFTER_ROUNDING)
 #define TEST_COND_after_rounding	TININESS_AFTER_ROUNDING
 
-#ifdef __x86_64__
-# define TEST_COND_x86_64	1
-#else
-# define TEST_COND_x86_64	0
-#endif
-
-#ifdef __i386__
-# define TEST_COND_x86		1
-#else
-# define TEST_COND_x86		0
-#endif
-
 /* Various constants (we must supply them precalculated for accuracy).  */
 #define M_PI_6l			.52359877559829887307710723054658383L
 #define M_PI_34l		2.356194490192344928846982537459627163L	/* 3*pi/4 */
@@ -1929,25 +1917,7 @@ static const struct test_c_f_data cabs_test_data[] =
 
     TEST_c_f (cabs, qnan_value, qnan_value, qnan_value),
 
-    /* cabs (x,y) == cabs (y,x).  */
-    TEST_c_f (cabs, 0.75L, 12.390625L, 12.4133028598606664302388810868156657L),
-    /* cabs (x,y) == cabs (-x,y).  */
-    TEST_c_f (cabs, -12.390625L, 0.75L, 12.4133028598606664302388810868156657L),
-    /* cabs (x,y) == cabs (-y,x).  */
-    TEST_c_f (cabs, -0.75L, 12.390625L, 12.4133028598606664302388810868156657L),
-    /* cabs (x,y) == cabs (-x,-y).  */
-    TEST_c_f (cabs, -12.390625L, -0.75L, 12.4133028598606664302388810868156657L),
-    /* cabs (x,y) == cabs (-y,-x).  */
-    TEST_c_f (cabs, -0.75L, -12.390625L, 12.4133028598606664302388810868156657L),
-    /* cabs (x,0) == fabs (x).  */
-    TEST_c_f (cabs, -0.75L, 0, 0.75L),
-    TEST_c_f (cabs, 0.75L, 0, 0.75L),
-    TEST_c_f (cabs, -1.0L, 0, 1.0L),
-    TEST_c_f (cabs, 1.0L, 0, 1.0L),
-    TEST_c_f (cabs, -5.7e7L, 0, 5.7e7L),
-    TEST_c_f (cabs, 5.7e7L, 0, 5.7e7L),
-
-    TEST_c_f (cabs, 0.75L, 1.25L, 1.45773797371132511771853821938639577L),
+    AUTO_TESTS_c_f (cabs, tonearest),
   };
 
 static void
@@ -3338,35 +3308,6 @@ static const struct test_c_f_data carg_test_data[] =
   {
     /* carg (x + iy) is specified as atan2 (y, x) */
 
-    /* carg (x + i 0) == 0 for x > 0.  */
-    TEST_c_f (carg, 2.0, 0, 0),
-    /* carg (x - i 0) == -0 for x > 0.  */
-    TEST_c_f (carg, 2.0, minus_zero, minus_zero),
-
-    TEST_c_f (carg, 0, 0, 0),
-    TEST_c_f (carg, 0, minus_zero, minus_zero),
-
-    /* carg (x + i 0) == +pi for x < 0.  */
-    TEST_c_f (carg, -2.0, 0, M_PIl),
-
-    /* carg (x - i 0) == -pi for x < 0.  */
-    TEST_c_f (carg, -2.0, minus_zero, -M_PIl),
-
-    TEST_c_f (carg, minus_zero, 0, M_PIl),
-    TEST_c_f (carg, minus_zero, minus_zero, -M_PIl),
-
-    /* carg (+0 + i y) == pi/2 for y > 0.  */
-    TEST_c_f (carg, 0, 2.0, M_PI_2l),
-
-    /* carg (-0 + i y) == pi/2 for y > 0.  */
-    TEST_c_f (carg, minus_zero, 2.0, M_PI_2l),
-
-    /* carg (+0 + i y) == -pi/2 for y < 0.  */
-    TEST_c_f (carg, 0, -2.0, -M_PI_2l),
-
-    /* carg (-0 + i y) == -pi/2 for y < 0.  */
-    TEST_c_f (carg, minus_zero, -2.0, -M_PI_2l),
-
     /* carg (inf + i y) == +0 for finite y > 0.  */
     TEST_c_f (carg, plus_infty, 2.0, 0),
 
@@ -3394,6 +3335,8 @@ static const struct test_c_f_data carg_test_data[] =
     TEST_c_f (carg, minus_infty, minus_infty, -M_PI_34l),
 
     TEST_c_f (carg, qnan_value, qnan_value, qnan_value),
+
+    AUTO_TESTS_c_f (carg, tonearest),
   };
 
 static void
@@ -7841,6 +7784,62 @@ expm1_test (void)
 {
   START (expm1);
   RUN_TEST_LOOP_f_f (expm1, expm1_test_data, );
+  END;
+}
+
+
+static const struct test_f_f_data expm1_tonearest_test_data[] =
+  {
+    AUTO_TESTS_f_f (expm1, tonearest),
+  };
+
+static void
+expm1_test_tonearest (void)
+{
+  START (expm1_tonearest);
+  RUN_TEST_LOOP_f_f (expm1, expm1_tonearest_test_data, FE_TONEAREST);
+  END;
+}
+
+
+static const struct test_f_f_data expm1_towardzero_test_data[] =
+  {
+    AUTO_TESTS_f_f (expm1, towardzero),
+  };
+
+static void
+expm1_test_towardzero (void)
+{
+  START (expm1_towardzero);
+  RUN_TEST_LOOP_f_f (expm1, expm1_towardzero_test_data, FE_TOWARDZERO);
+  END;
+}
+
+
+static const struct test_f_f_data expm1_downward_test_data[] =
+  {
+    AUTO_TESTS_f_f (expm1, downward),
+  };
+
+static void
+expm1_test_downward (void)
+{
+  START (expm1_downward);
+  RUN_TEST_LOOP_f_f (expm1, expm1_downward_test_data, FE_DOWNWARD);
+  END;
+}
+
+
+static const struct test_f_f_data expm1_upward_test_data[] =
+  {
+    AUTO_TESTS_f_f (expm1, upward),
+  };
+
+static void
+expm1_test_upward (void)
+{
+  START (expm1_upward);
+  RUN_TEST_LOOP_f_f (expm1, expm1_upward_test_data, FE_UPWARD);
   END;
 }
 
@@ -12459,64 +12458,11 @@ sin_test_upward (void)
 
 static const struct test_fFF_11_data sincos_test_data[] =
   {
-    TEST_fFF_11 (sincos, 0, 0, 1),
-
-    TEST_fFF_11 (sincos, minus_zero, minus_zero, 1),
     TEST_fFF_11 (sincos, plus_infty, qnan_value, qnan_value, INVALID_EXCEPTION),
     TEST_fFF_11 (sincos, minus_infty, qnan_value, qnan_value, INVALID_EXCEPTION),
     TEST_fFF_11 (sincos, qnan_value, qnan_value, qnan_value, NO_INEXACT_EXCEPTION),
 
-    /* The value of M_PI_2l is never exactly PI/2, and therefore the
-       answer is never exactly zero. The answer is equal to the error
-       in rounding PI/2 for the type used.  Thus the answer is unique
-       to each type.  */
-#ifdef TEST_FLOAT
-    /* 32-bit float.  */
-    TEST_fFF_11 (sincos, M_PI_2l, 1, -0x1.777a5cp-25L),
-#endif
-#if defined TEST_DOUBLE || (defined TEST_LDOUBLE && LDBL_MANT_DIG == 53)
-    /* 64-bit double or 64-bit long double.  */
-    TEST_fFF_11 (sincos, M_PI_2l, 1, 0x1.1a62633145c07p-54L),
-#endif
-#if defined TEST_LDOUBLE && LDBL_MANT_DIG == 64
-    /* 96-bit long double.  */
-    TEST_fFF_11 (sincos, M_PI_2l, 1, -0xe.ce675d1fc8f8cbbp-69L),
-#endif
-#if defined TEST_LDOUBLE && LDBL_MANT_DIG == 106
-    /* 128-bit IBM long double.  */
-    TEST_fFF_11 (sincos, M_PI_2l, 1, 0x1.c1cd129024e088a67cc74020bcp-107L),
-#endif
-#if defined TEST_LDOUBLE && LDBL_MANT_DIG == 113
-    /* 128-bit long double.  */
-    TEST_fFF_11 (sincos, M_PI_2l, 1, 0x1.cd129024e088a67cc74020bbea64p-115L),
-#endif
-
-    TEST_fFF_11 (sincos, M_PI_6l, 0.5, 0.86602540378443864676372317075293616L),
-    TEST_fFF_11 (sincos, M_PI_6l*2.0, 0.86602540378443864676372317075293616L, 0.5),
-    TEST_fFF_11 (sincos, 0.75L, 0.681638760023334166733241952779893935L, 0.731688868873820886311838753000084544L),
-
-    TEST_fFF_11 (sincos, 0x1p65, -0.047183876212354673805106149805700013943218L, 0.99888622066058013610642172179340364209972L),
-    TEST_fFF_11 (sincos, -0x1p65, 0.047183876212354673805106149805700013943218L, 0.99888622066058013610642172179340364209972L),
-
-#ifdef TEST_DOUBLE
-    TEST_fFF_11 (sincos, 0.80190127184058835, 0.71867942238767868, 0.69534156199418473),
-#endif
-
-#ifndef TEST_FLOAT
-    TEST_fFF_11 (sincos, 1e22, -0.8522008497671888017727058937530293682618L, 0.5232147853951389454975944733847094921409L),
-    TEST_fFF_11 (sincos, 0x1p1023, 0.5631277798508840134529434079444683477104L, -0.826369834614147994500785680811743734805L),
-#endif
-
-#if defined TEST_LDOUBLE && LDBL_MAX_EXP >= 16384
-    TEST_fFF_11 (sincos, 0x1p16383L, 0.3893629985894208126948115852610595405563L, 0.9210843909921906206874509522505756251609L),
-#endif
-
-    TEST_fFF_11 (sincos, 0x1p+120, 3.77820109360752022655548470056922991960587e-01L, -9.25879022854837867303861764107414946730833e-01L),
-    TEST_fFF_11 (sincos, 0x1p+127, 6.23385512955870240370428801097126489001833e-01L, 7.81914638714960072263910298466369236613162e-01L),
-    TEST_fFF_11 (sincos, 0x1.fffff8p+127, 4.85786063130487339701113680434728152037092e-02L, 9.98819362551949040703862043664101081064641e-01L),
-    TEST_fFF_11 (sincos, 0x1.fffffep+127, -5.21876523333658540551505357019806722935726e-01L, 8.53021039830304158051791467692161107353094e-01L),
-    TEST_fFF_11 (sincos, 0x1p+50, 4.96396515208940840876821859865411368093356e-01L, 8.68095904660550604334592502063501320395739e-01L),
-    TEST_fFF_11 (sincos, 0x1p+28, -9.86198211836975655703110310527108292055548e-01L, -1.65568979490578758865468278195361551113358e-01L),
+    AUTO_TESTS_fFF_11 (sincos, tonearest),
   };
 
 static void
@@ -13337,6 +13283,10 @@ main (int argc, char **argv)
   exp10_test ();
   exp2_test ();
   expm1_test ();
+  expm1_test_tonearest ();
+  expm1_test_towardzero ();
+  expm1_test_downward ();
+  expm1_test_upward ();
   frexp_test ();
   ldexp_test ();
   log_test ();

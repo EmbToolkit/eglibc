@@ -400,6 +400,12 @@ typedef enum
     /* MPFR function with integer and floating-point arguments and one
        result.  */
     mpfr_if_f,
+    /* MPFR function with a single argument and two floating-point
+       results.  */
+    mpfr_f_11,
+    /* MPC function with a single complex argument and one real
+       result.  */
+    mpc_c_f,
   } func_calc_method;
 
 /* Description of how to calculate a function.  */
@@ -414,6 +420,8 @@ typedef struct
     int (*mpfr_ff_f) (mpfr_t, const mpfr_t, const mpfr_t, mpfr_rnd_t);
     int (*mpfr_f_f1) (mpfr_t, int *, const mpfr_t, mpfr_rnd_t);
     int (*mpfr_if_f) (mpfr_t, long, const mpfr_t, mpfr_rnd_t);
+    int (*mpfr_f_11) (mpfr_t, mpfr_t, const mpfr_t, mpfr_rnd_t);
+    int (*mpc_c_f) (mpfr_t, const mpc_t, mpfr_rnd_t);
   } func;
 } func_calc_desc;
 
@@ -467,6 +475,9 @@ typedef struct
 #define FUNC_mpfr_if_f(NAME, MPFR_FUNC, EXACT)				\
   FUNC (NAME, ARGS2 (type_int, type_fp), RET1 (type_fp), EXACT, false,	\
 	CALC (mpfr_if_f, MPFR_FUNC))
+#define FUNC_mpc_c_f(NAME, MPFR_FUNC, EXACT)				\
+  FUNC (NAME, ARGS2 (type_fp, type_fp), RET1 (type_fp), EXACT, true,	\
+	CALC (mpc_c_f, MPFR_FUNC))
 
 /* List of functions handled by this program.  */
 static test_function test_functions[] =
@@ -478,6 +489,8 @@ static test_function test_functions[] =
     FUNC_mpfr_f_f ("atan", mpfr_atan, false),
     FUNC_mpfr_ff_f ("atan2", mpfr_atan2, false),
     FUNC_mpfr_f_f ("atanh", mpfr_atanh, false),
+    FUNC_mpc_c_f ("cabs", mpc_abs, false),
+    FUNC_mpc_c_f ("carg", mpc_arg, false),
     FUNC_mpfr_f_f ("cbrt", mpfr_cbrt, false),
     FUNC_mpfr_f_f ("cos", mpfr_cos, false),
     FUNC_mpfr_f_f ("cosh", mpfr_cosh, false),
@@ -499,6 +512,8 @@ static test_function test_functions[] =
     FUNC_mpfr_f_f ("log2", mpfr_log2, false),
     FUNC_mpfr_ff_f ("pow", mpfr_pow, false),
     FUNC_mpfr_f_f ("sin", mpfr_sin, false),
+    FUNC ("sincos", ARGS1 (type_fp), RET2 (type_fp, type_fp), false, false,
+	  CALC (mpfr_f_11, mpfr_sin_cos)),
     FUNC_mpfr_f_f ("sinh", mpfr_sinh, false),
     FUNC_mpfr_f_f ("sqrt", mpfr_sqrt, true),
     FUNC_mpfr_f_f ("tan", mpfr_tan, false),
@@ -1357,6 +1372,34 @@ calc_generic_results (generic_value *outputs, generic_value *inputs,
       inexact = calc->func.mpfr_if_f (outputs[0].value.f, l,
 				      inputs[1].value.f, MPFR_RNDZ);
       adjust_real (outputs[0].value.f, inexact);
+      break;
+
+    case mpfr_f_11:
+      assert (inputs[0].type == gtype_fp);
+      outputs[0].type = gtype_fp;
+      mpfr_init (outputs[0].value.f);
+      outputs[1].type = gtype_fp;
+      mpfr_init (outputs[1].value.f);
+      int comb_ternary = calc->func.mpfr_f_11 (outputs[0].value.f,
+					       outputs[1].value.f,
+					       inputs[0].value.f,
+					       MPFR_RNDZ);
+      adjust_real (outputs[0].value.f, (comb_ternary & 0x3) != 0);
+      adjust_real (outputs[1].value.f, (comb_ternary & 0xc) != 0);
+      break;
+
+    case mpc_c_f:
+      assert (inputs[0].type == gtype_fp);
+      assert (inputs[1].type == gtype_fp);
+      outputs[0].type = gtype_fp;
+      mpfr_init (outputs[0].value.f);
+      mpc_t ci;
+      mpc_init2 (ci, internal_precision);
+      assert_exact (mpc_set_fr_fr (ci, inputs[0].value.f, inputs[1].value.f,
+				   MPC_RNDNN));
+      inexact = calc->func.mpc_c_f (outputs[0].value.f, ci, MPFR_RNDZ);
+      adjust_real (outputs[0].value.f, inexact);
+      mpc_clear (ci);
       break;
 
     default:

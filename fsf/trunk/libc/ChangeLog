@@ -1,3 +1,95 @@
+2013-12-20  Joseph Myers  <joseph@codesourcery.com>
+
+	* math/auto-libm-test-in: Add more tests of acos, acosh, asin,
+	asinh, atan, atan2, atanh, cbrt, cos and cosh.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (acosh_test_data): Add more tests.
+	(atanh_test_data): Likewise.
+	(ceil_test_data): Likewise.
+	(copysign_test_data): Likewise.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* timezone/checktab.awk: Update from tzcode 2013i.
+	* timezone/private.h: Likewise.
+	* timezone/scheck.c: Likewise.
+	* timezone/tzfile.h: Likewise.
+	* timezone/tzselect.ksh: Likewise.
+	* timezone/zdump.c: Likewise.
+	* timezone/zic.c: Likewise.
+
+	* math/auto-libm-test-in: Add tests of cpow.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (cpow_test_data): Use AUTO_TESTS_cc_c.
+	* * math/gen-auto-libm-tests.c (func_calc_method): Add value
+	mpc_cc_c.
+	(func_calc_desc): Add mpc_cc_c union field.
+	(test_functions): Add cpow.
+	(special_fill_2pi): New function.
+	(special_real_inputs): Add 2pi.
+	(calc_generic_results): Handle mpc_cc_c.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+	* math/auto-libm-test-in: Add tests of ccos, ccosh, cexp, clog,
+	csqrt, ctan and ctanh.
+	* math/auto-libm-test-out: Regenerated.
+	* math/libm-test.inc (TEST_COND_x86_64): New macro.
+	(TEST_COND_x86): Likewise.
+	(ccos_test_data): Use AUTO_TESTS_c_c.
+	(ccosh_test_data): Likewise.
+	(cexp_test_data): Likewise.
+	(clog_test_data): Likewise.
+	(csqrt_test_data): Likewise.
+	(ctan_test_data): Likewise.
+	(ctan_tonearest_test_data): Likewise.
+	(ctan_towardzero_test_data): Likewise.
+	(ctan_downward_test_data): Likewise.
+	(ctan_upward_test_data): Likewise.
+	(ctanh_test_data): Likewise.
+	(ctanh_tonearest_test_data): Likewise.
+	(ctanh_towardzero_test_data): Likewise.
+	(ctanh_downward_test_data): Likewise.
+	(ctanh_upward_test_data): Likewise.
+	* math/gen-auto-libm-tests.c (func_calc_method): Add value
+	mpc_c_c.
+	(func_calc_desc): Add mpc_c_c union field.
+	(FUNC_mpc_c_c): New macro.
+	(test_functions): Add cacos, cacosh, casin, casinh, catan, catanh,
+	ccos, ccosh, cexp, clog, clog10, csin, csinh, csqrt, ctan and
+	ctanh.
+	(special_fill_min_subnorm_p120): New function.
+	(special_real_inputs): Add min_subnorm_p120.
+	(calc_generic_results): Handle mpc_c_c.
+	* sysdeps/i386/fpu/libm-test-ulps: Update.
+	* sysdeps/x86_64/fpu/libm-test-ulps: Likewise.
+
+2013-12-20  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (do_cos, do_cos_slow, do_sin,
+	do_sin_slow): New functions.
+	(__sin, __cos, slow1, slow2, sloww1, sloww2, bsloww1, bsloww2,
+	cslow2, csloww1, csloww2): Use the new functions.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (sloww1): Add new argument M.
+	Use M to change sign of result instead of X.  Assume X is
+	positive.
+	(csloww1): Likewise.
+	(__sin): Adjust.
+	(__cos): Adjust.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (reduce_and_compute): Remove
+	arguments A and DA.
+	(__sin): Adjust.
+	(__cos): Likewise.
+
+	* sysdeps/ieee754/dbl-64/s_sin.c (__sin): Use DA directly.
+	(__cos): Likewise.
+	(sloww1): Don't adjust sign of DX.
+	(csloww1): Likewise.
+	(sloww2): Use X directly and don't adjust sign of DX.
+	(csloww2): Likewise.
+
 2013-12-19  Joseph Myers  <joseph@codesourcery.com>
 
 	* math/auto-libm-test-in: Add tests of cabs and carg.

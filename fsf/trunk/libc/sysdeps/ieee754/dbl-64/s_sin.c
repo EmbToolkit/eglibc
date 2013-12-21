@@ -134,7 +134,7 @@ static double slow (double x);
 static double slow1 (double x);
 static double slow2 (double x);
 static double sloww (double x, double dx, double orig);
-static double sloww1 (double x, double dx, double orig);
+static double sloww1 (double x, double dx, double orig, int m);
 static double sloww2 (double x, double dx, double orig, int n);
 static double bsloww (double x, double dx, double orig, int n);
 static double bsloww1 (double x, double dx, double orig, int n);
@@ -142,17 +142,113 @@ static double bsloww2 (double x, double dx, double orig, int n);
 int __branred (double x, double *a, double *aa);
 static double cslow2 (double x);
 static double csloww (double x, double dx, double orig);
-static double csloww1 (double x, double dx, double orig);
+static double csloww1 (double x, double dx, double orig, int m);
 static double csloww2 (double x, double dx, double orig, int n);
+
+/* Given a number partitioned into U and X such that U is an index into the
+   sin/cos table, this macro computes the cosine of the number by combining
+   the sin and cos of X (as computed by a variation of the Taylor series) with
+   the values looked up from the sin/cos table to get the result in RES and a
+   correction value in COR.  */
+static double
+do_cos (mynumber u, double x, double *corp)
+{
+  double xx, s, sn, ssn, c, cs, ccs, res, cor;
+  xx = x * x;
+  s = x + x * xx * (sn3 + xx * sn5);
+  c = xx * (cs2 + xx * (cs4 + xx * cs6));
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
+  cor = (ccs - s * ssn - cs * c) - sn * s;
+  res = cs + cor;
+  cor = (cs - res) + cor;
+  *corp = cor;
+  return res;
+}
+
+/* A more precise variant of DO_COS where the number is partitioned into U, X
+   and DX.  EPS is the adjustment to the correction COR.  */
+static double
+do_cos_slow (mynumber u, double x, double dx, double eps, double *corp)
+{
+  double xx, y, x1, x2, e1, e2, res, cor;
+  double s, sn, ssn, c, cs, ccs;
+  xx = x * x;
+  s = x * xx * (sn3 + xx * sn5);
+  c = x * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
+  x1 = (x + t22) - t22;
+  x2 = (x - x1) + dx;
+  e1 = (sn + t22) - t22;
+  e2 = (sn - e1) + ssn;
+  cor = (ccs - cs * c - e1 * x2 - e2 * x) - sn * s;
+  y = cs - e1 * x1;
+  cor = cor + ((cs - y) - e1 * x1);
+  res = y + cor;
+  cor = (y - res) + cor;
+  if (cor > 0)
+    cor = 1.0005 * cor + eps;
+  else
+    cor = 1.0005 * cor - eps;
+  *corp = cor;
+  return res;
+}
+
+/* Given a number partitioned into U and X and DX such that U is an index into
+   the sin/cos table, this macro computes the sine of the number by combining
+   the sin and cos of X (as computed by a variation of the Taylor series) with
+   the values looked up from the sin/cos table to get the result in RES and a
+   correction value in COR.  */
+static double
+do_sin (mynumber u, double x, double dx, double *corp)
+{
+  double xx, s, sn, ssn, c, cs, ccs, cor, res;
+  xx = x * x;
+  s = x + (dx + x * xx * (sn3 + xx * sn5));
+  c = x * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
+  cor = (ssn + s * ccs - sn * c) + cs * s;
+  res = sn + cor;
+  cor = (sn - res) + cor;
+  *corp = cor;
+  return res;
+}
+
+/* A more precise variant of res = do_sin where the number is partitioned into U, X
+   and DX.  EPS is the adjustment to the correction COR.  */
+static double
+do_sin_slow (mynumber u, double x, double dx, double eps, double *corp)
+{
+  double xx, y, x1, x2, c1, c2, res, cor;
+  double s, sn, ssn, c, cs, ccs;
+  xx = x * x;
+  s = x * xx * (sn3 + xx * sn5);
+  c = xx * (cs2 + xx * (cs4 + xx * cs6));
+  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
+  x1 = (x + t22) - t22;
+  x2 = (x - x1) + dx;
+  c1 = (cs + t22) - t22;
+  c2 = (cs - c1) + ccs;
+  cor = (ssn + s * ccs + cs * s + c2 * x + c1 * x2 - sn * x * dx) - sn * c;
+  y = sn + c1 * x1;
+  cor = cor + ((sn - y) + c1 * x1);
+  res = y + cor;
+  cor = (y - res) + cor;
+  if (cor > 0)
+    cor = 1.0005 * cor + eps;
+  else
+    cor = 1.0005 * cor - eps;
+  *corp = cor;
+  return res;
+}
 
 /* Reduce range of X and compute sin of a + da.  K is the amount by which to
    rotate the quadrants.  This allows us to use the same routine to compute cos
    by simply rotating the quadrants by 1.  */
 static inline double
 __always_inline
-reduce_and_compute (double x, double a, double da, unsigned int k)
+reduce_and_compute (double x, unsigned int k)
 {
-  double retval = 0;
+  double retval = 0, a, da;
   unsigned int n = __branred (x, &a, &da);
   k = (n + k) % 4;
   switch (k)
@@ -244,13 +340,7 @@ __sin (double x)
 	  u.x = big - y;
 	  y = (-hp1) - (y + (u.x - big));
 	}
-      xx = y * y;
-      s = y + y * xx * (sn3 + xx * sn5);
-      c = xx * (cs2 + xx * (cs4 + xx * cs6));
-      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-      cor = (ccs - s * ssn - cs * c) - sn * s;
-      res = cs + cor;
-      cor = (cs - res) + cor;
+      res = do_cos (u, y, &cor);
       retval = (res == res + 1.020 * cor) ? ((m > 0) ? res : -res) : slow2 (x);
     }				/*   else  if (k < 0x400368fd)    */
 
@@ -287,29 +377,19 @@ __sin (double x)
 	  else
 	    {
 	      if (a > 0)
-		{
-		  m = 1;
-		  t = a;
-		  db = da;
-		}
+		m = 1;
 	      else
 		{
 		  m = 0;
-		  t = -a;
-		  db = -da;
+		  a = -a;
+		  da = -da;
 		}
-	      u.x = big + t;
-	      y = t - (u.x - big);
-	      xx = y * y;
-	      s = y + (db + y * xx * (sn3 + xx * sn5));
-	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	      cor = (ssn + s * ccs - sn * c) + cs * s;
-	      res = sn + cor;
-	      cor = (sn - res) + cor;
+	      u.x = big + a;
+	      y = a - (u.x - big);
+	      res = do_sin (u, y, da, &cor);
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
-			: sloww1 (a, da, x));
+			: sloww1 (a, da, x, m));
 	    }
 	  break;
 
@@ -322,13 +402,7 @@ __sin (double x)
 	    }
 	  u.x = big + a;
 	  y = a - (u.x - big) + da;
-	  xx = y * y;
-	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	  s = y + y * xx * (sn3 + xx * sn5);
-	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-	  cor = (ccs - s * ssn - cs * c) - sn * s;
-	  res = cs + cor;
-	  cor = (cs - res) + cor;
+	  res = do_cos (u, y, &cor);
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n & 2) ? -res : res)
 		    : sloww2 (a, da, x, n));
@@ -376,24 +450,17 @@ __sin (double x)
 	      if (a > 0)
 		{
 		  m = 1;
-		  t = a;
 		  db = da;
 		}
 	      else
 		{
 		  m = 0;
-		  t = -a;
+		  a = -a;
 		  db = -da;
 		}
-	      u.x = big + t;
-	      y = t - (u.x - big);
-	      xx = y * y;
-	      s = y + (db + y * xx * (sn3 + xx * sn5));
-	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	      cor = (ssn + s * ccs - sn * c) + cs * s;
-	      res = sn + cor;
-	      cor = (sn - res) + cor;
+	      u.x = big + a;
+	      y = a - (u.x - big);
+	      res = do_sin (u, y, db, &cor);
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: bsloww1 (a, da, x, n));
@@ -409,13 +476,7 @@ __sin (double x)
 	    }
 	  u.x = big + a;
 	  y = a - (u.x - big) + da;
-	  xx = y * y;
-	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	  s = y + y * xx * (sn3 + xx * sn5);
-	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-	  cor = (ccs - s * ssn - cs * c) - sn * s;
-	  res = cs + cor;
-	  cor = (cs - res) + cor;
+	  res = do_cos (u, y, &cor);
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n & 2) ? -res : res)
 		    : bsloww2 (a, da, x, n));
@@ -425,7 +486,7 @@ __sin (double x)
 
 /* -----------------281474976710656 <|x| <2^1024----------------------------*/
   else if (k < 0x7ff00000)
-    retval = reduce_and_compute (x, a, da, 0);
+    retval = reduce_and_compute (x, 0);
 
 /*--------------------- |x| > 2^1024 ----------------------------------*/
   else
@@ -448,7 +509,7 @@ double
 SECTION
 __cos (double x)
 {
-  double y, xx, res, t, cor, s, c, sn, ssn, cs, ccs, xn, a, da, db, eps, xn1,
+  double y, xx, res, t, cor, xn, a, da, db, eps, xn1,
     xn2;
   mynumber u, v;
   int4 k, m, n;
@@ -470,13 +531,7 @@ __cos (double x)
       y = ABS (x);
       u.x = big + y;
       y = y - (u.x - big);
-      xx = y * y;
-      s = y + y * xx * (sn3 + xx * sn5);
-      c = xx * (cs2 + xx * (cs4 + xx * cs6));
-      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-      cor = (ccs - s * ssn - cs * c) - sn * s;
-      res = cs + cor;
-      cor = (cs - res) + cor;
+      res = do_cos (u, y, &cor);
       retval = (res == res + 1.020 * cor) ? res : cslow2 (x);
     }				/*   else  if (k < 0x3feb6000)    */
 
@@ -497,27 +552,19 @@ __cos (double x)
 	  if (a > 0)
 	    {
 	      m = 1;
-	      t = a;
-	      db = da;
 	    }
 	  else
 	    {
 	      m = 0;
-	      t = -a;
-	      db = -da;
+	      a = -a;
+	      da = -da;
 	    }
-	  u.x = big + t;
-	  y = t - (u.x - big);
-	  xx = y * y;
-	  s = y + (db + y * xx * (sn3 + xx * sn5));
-	  c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	  cor = (ssn + s * ccs - sn * c) + cs * s;
-	  res = sn + cor;
-	  cor = (sn - res) + cor;
+	  u.x = big + a;
+	  y = a - (u.x - big);
+	  res = do_sin (u, y, da, &cor);
 	  cor = (cor > 0) ? 1.035 * cor + 1.0e-31 : 1.035 * cor - 1.0e-31;
 	  retval = ((res == res + cor) ? ((m) ? res : -res)
-		    : csloww1 (a, da, x));
+		    : csloww1 (a, da, x, m));
 	}
 
     }				/*   else  if (k < 0x400368fd)    */
@@ -556,27 +603,19 @@ __cos (double x)
 	      if (a > 0)
 		{
 		  m = 1;
-		  t = a;
-		  db = da;
 		}
 	      else
 		{
 		  m = 0;
-		  t = -a;
-		  db = -da;
+		  a = -a;
+		  da = -da;
 		}
-	      u.x = big + t;
-	      y = t - (u.x - big);
-	      xx = y * y;
-	      s = y + (db + y * xx * (sn3 + xx * sn5));
-	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	      cor = (ssn + s * ccs - sn * c) + cs * s;
-	      res = sn + cor;
-	      cor = (sn - res) + cor;
+	      u.x = big + a;
+	      y = a - (u.x - big);
+	      res = do_sin (u, y, da, &cor);
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
-			: csloww1 (a, da, x));
+			: csloww1 (a, da, x, m));
 	    }
 	  break;
 
@@ -589,13 +628,7 @@ __cos (double x)
 	    }
 	  u.x = big + a;
 	  y = a - (u.x - big) + da;
-	  xx = y * y;
-	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	  s = y + y * xx * (sn3 + xx * sn5);
-	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-	  cor = (ccs - s * ssn - cs * c) - sn * s;
-	  res = cs + cor;
-	  cor = (cs - res) + cor;
+	  res = do_cos (u, y, &cor);
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n) ? -res : res)
 		    : csloww2 (a, da, x, n));
@@ -641,24 +674,17 @@ __cos (double x)
 	      if (a > 0)
 		{
 		  m = 1;
-		  t = a;
 		  db = da;
 		}
 	      else
 		{
 		  m = 0;
-		  t = -a;
+		  a = -a;
 		  db = -da;
 		}
-	      u.x = big + t;
-	      y = t - (u.x - big);
-	      xx = y * y;
-	      s = y + (db + y * xx * (sn3 + xx * sn5));
-	      c = y * db + xx * (cs2 + xx * (cs4 + xx * cs6));
-	      SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	      cor = (ssn + s * ccs - sn * c) + cs * s;
-	      res = sn + cor;
-	      cor = (sn - res) + cor;
+	      u.x = big + a;
+	      y = a - (u.x - big);
+	      res = do_sin (u, y, db, &cor);
 	      cor = (cor > 0) ? 1.035 * cor + eps : 1.035 * cor - eps;
 	      retval = ((res == res + cor) ? ((m) ? res : -res)
 			: bsloww1 (a, da, x, n));
@@ -674,13 +700,7 @@ __cos (double x)
 	    }
 	  u.x = big + a;
 	  y = a - (u.x - big) + da;
-	  xx = y * y;
-	  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-	  s = y + y * xx * (sn3 + xx * sn5);
-	  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-	  cor = (ccs - s * ssn - cs * c) - sn * s;
-	  res = cs + cor;
-	  cor = (cs - res) + cor;
+	  res = do_cos (u, y, &cor);
 	  cor = (cor > 0) ? 1.025 * cor + eps : 1.025 * cor - eps;
 	  retval = ((res == res + cor) ? ((n) ? -res : res)
 		    : bsloww2 (a, da, x, n));
@@ -690,7 +710,7 @@ __cos (double x)
 
   /* 281474976710656 <|x| <2^1024 */
   else if (k < 0x7ff00000)
-    retval = reduce_and_compute (x, a, da, 1);
+    retval = reduce_and_compute (x, 1);
 
   else
     {
@@ -735,24 +755,12 @@ SECTION
 slow1 (double x)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
+  double w[2], y, cor, res;
   y = ABS (x);
   u.x = big + y;
   y = y - (u.x - big);
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = y - y1;
-  c1 = (cs + t22) - t22;
-  c2 = (cs - c1) + ccs;
-  cor = (ssn + s * ccs + cs * s + c2 * y + c1 * y2) - sn * c;
-  y = sn + c1 * y1;
-  cor = cor + ((sn - y) + c1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-  if (res == res + 1.0005 * cor)
+  res = do_sin_slow (u, y, 0, 0, &cor);
+  if (res == res + cor)
     return (x > 0) ? res : -res;
   else
     {
@@ -773,7 +781,7 @@ SECTION
 slow2 (double x)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res, del;
+  double w[2], y, y1, y2, cor, res, del;
 
   y = ABS (x);
   y = hp0 - y;
@@ -789,20 +797,8 @@ slow2 (double x)
       y = -(y + (u.x - big));
       del = -hp1;
     }
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = y * del + xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + del;
-  e1 = (sn + t22) - t22;
-  e2 = (sn - e1) + ssn;
-  cor = (ccs - cs * c - e1 * y2 - e2 * y) - sn * s;
-  y = cs - e1 * y1;
-  cor = cor + ((cs - y) - e1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-  if (res == res + 1.0005 * cor)
+  res = do_cos_slow (u, y, del, 0, &cor);
+  if (res == res + cor)
     return (x > 0) ? res : -res;
   else
     {
@@ -891,39 +887,20 @@ sloww (double x, double dx, double orig)
 
 static double
 SECTION
-sloww1 (double x, double dx, double orig)
+sloww1 (double x, double dx, double orig, int m)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
+  double w[2], y, cor, res;
 
-  y = ABS (x);
-  u.x = big + y;
-  y = y - (u.x - big);
-  dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  c1 = (cs + t22) - t22;
-  c2 = (cs - c1) + ccs;
-  cor = (ssn + s * ccs + cs * s + c2 * y + c1 * y2 - sn * y * dx) - sn * c;
-  y = sn + c1 * y1;
-  cor = cor + ((sn - y) + c1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-
-  if (cor > 0)
-    cor = 1.0005 * cor + 3.1e-30 * ABS (orig);
-  else
-    cor = 1.0005 * cor - 3.1e-30 * ABS (orig);
+  u.x = big + x;
+  y = x - (u.x - big);
+  res = do_sin_slow (u, y, dx, 3.1e-30 * ABS (orig), &cor);
 
   if (res == res + cor)
-    return (x > 0) ? res : -res;
+    return (m > 0) ? res : -res;
   else
     {
-      __dubsin (ABS (x), dx, w);
+      __dubsin (x, dx, w);
 
       if (w[1] > 0)
 	cor = 1.000000005 * w[1] + 1.1e-30 * ABS (orig);
@@ -931,7 +908,7 @@ sloww1 (double x, double dx, double orig)
 	cor = 1.000000005 * w[1] - 1.1e-30 * ABS (orig);
 
       if (w[0] == w[0] + cor)
-	return (x > 0) ? w[0] : -w[0];
+	return (m > 0) ? w[0] : -w[0];
       else
 	return __mpsin (orig, 0, true);
     }
@@ -949,37 +926,17 @@ SECTION
 sloww2 (double x, double dx, double orig, int n)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
+  double w[2], y, cor, res;
 
-  y = ABS (x);
-  u.x = big + y;
-  y = y - (u.x - big);
-  dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  e1 = (sn + t22) - t22;
-  e2 = (sn - e1) + ssn;
-  cor = (ccs - cs * c - e1 * y2 - e2 * y) - sn * s;
-  y = cs - e1 * y1;
-  cor = cor + ((cs - y) - e1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-
-  if (cor > 0)
-    cor = 1.0005 * cor + 3.1e-30 * ABS (orig);
-  else
-    cor = 1.0005 * cor - 3.1e-30 * ABS (orig);
+  u.x = big + x;
+  y = x - (u.x - big);
+  res = do_cos_slow (u, y, dx, 3.1e-30 * ABS (orig), &cor);
 
   if (res == res + cor)
     return (n & 2) ? -res : res;
   else
     {
-      __docos (ABS (x), dx, w);
+      __docos (x, dx, w);
 
       if (w[1] > 0)
 	cor = 1.000000005 * w[1] + 1.1e-30 * ABS (orig);
@@ -1037,26 +994,13 @@ SECTION
 bsloww1 (double x, double dx, double orig, int n)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
+  double w[2], y, cor, res;
 
   y = ABS (x);
   u.x = big + y;
   y = y - (u.x - big);
   dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  c1 = (cs + t22) - t22;
-  c2 = (cs - c1) + ccs;
-  cor = (ssn + s * ccs + cs * s + c2 * y + c1 * y2 - sn * y * dx) - sn * c;
-  y = sn + c1 * y1;
-  cor = cor + ((sn - y) + c1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-  cor = (cor > 0) ? 1.0005 * cor + 1.1e-24 : 1.0005 * cor - 1.1e-24;
+  res = do_sin_slow (u, y, dx, 1.1e-24, &cor);
   if (res == res + cor)
     return (x > 0) ? res : -res;
   else
@@ -1087,27 +1031,13 @@ SECTION
 bsloww2 (double x, double dx, double orig, int n)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
+  double w[2], y, cor, res;
 
   y = ABS (x);
   u.x = big + y;
   y = y - (u.x - big);
   dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  e1 = (sn + t22) - t22;
-  e2 = (sn - e1) + ssn;
-  cor = (ccs - cs * c - e1 * y2 - e2 * y) - sn * s;
-  y = cs - e1 * y1;
-  cor = cor + ((cs - y) - e1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-  cor = (cor > 0) ? 1.0005 * cor + 1.1e-24 : 1.0005 * cor - 1.1e-24;
+  res = do_cos_slow (u, y, dx, 1.1e-24, &cor);
   if (res == res + cor)
     return (n & 2) ? -res : res;
   else
@@ -1136,25 +1066,13 @@ SECTION
 cslow2 (double x)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
+  double w[2], y, cor, res;
 
   y = ABS (x);
   u.x = big + y;
   y = y - (u.x - big);
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = y - y1;
-  e1 = (sn + t22) - t22;
-  e2 = (sn - e1) + ssn;
-  cor = (ccs - cs * c - e1 * y2 - e2 * y) - sn * s;
-  y = cs - e1 * y1;
-  cor = cor + ((cs - y) - e1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-  if (res == res + 1.0005 * cor)
+  res = do_cos_slow (u, y, 0, 0, &cor);
+  if (res == res + cor)
     return res;
   else
     {
@@ -1246,45 +1164,26 @@ csloww (double x, double dx, double orig)
 
 static double
 SECTION
-csloww1 (double x, double dx, double orig)
+csloww1 (double x, double dx, double orig, int m)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, c1, c2, xx, cor, res;
+  double w[2], y, cor, res;
 
-  y = ABS (x);
-  u.x = big + y;
-  y = y - (u.x - big);
-  dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  c1 = (cs + t22) - t22;
-  c2 = (cs - c1) + ccs;
-  cor = (ssn + s * ccs + cs * s + c2 * y + c1 * y2 - sn * y * dx) - sn * c;
-  y = sn + c1 * y1;
-  cor = cor + ((sn - y) + c1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-
-  if (cor > 0)
-    cor = 1.0005 * cor + 3.1e-30 * ABS (orig);
-  else
-    cor = 1.0005 * cor - 3.1e-30 * ABS (orig);
+  u.x = big + x;
+  y = x - (u.x - big);
+  res = do_sin_slow (u, y, dx, 3.1e-30 * ABS (orig), &cor);
 
   if (res == res + cor)
-    return (x > 0) ? res : -res;
+    return (m > 0) ? res : -res;
   else
     {
-      __dubsin (ABS (x), dx, w);
+      __dubsin (x, dx, w);
       if (w[1] > 0)
 	cor = 1.000000005 * w[1] + 1.1e-30 * ABS (orig);
       else
 	cor = 1.000000005 * w[1] - 1.1e-30 * ABS (orig);
       if (w[0] == w[0] + cor)
-	return (x > 0) ? w[0] : -w[0];
+	return (m > 0) ? w[0] : -w[0];
       else
 	return __mpcos (orig, 0, true);
     }
@@ -1303,37 +1202,17 @@ SECTION
 csloww2 (double x, double dx, double orig, int n)
 {
   mynumber u;
-  double sn, ssn, cs, ccs, s, c, w[2], y, y1, y2, e1, e2, xx, cor, res;
+  double w[2], y, cor, res;
 
-  y = ABS (x);
-  u.x = big + y;
-  y = y - (u.x - big);
-  dx = (x > 0) ? dx : -dx;
-  xx = y * y;
-  s = y * xx * (sn3 + xx * sn5);
-  c = y * dx + xx * (cs2 + xx * (cs4 + xx * cs6));
-  SINCOS_TABLE_LOOKUP (u, sn, ssn, cs, ccs);
-
-  y1 = (y + t22) - t22;
-  y2 = (y - y1) + dx;
-  e1 = (sn + t22) - t22;
-  e2 = (sn - e1) + ssn;
-  cor = (ccs - cs * c - e1 * y2 - e2 * y) - sn * s;
-  y = cs - e1 * y1;
-  cor = cor + ((cs - y) - e1 * y1);
-  res = y + cor;
-  cor = (y - res) + cor;
-
-  if (cor > 0)
-    cor = 1.0005 * cor + 3.1e-30 * ABS (orig);
-  else
-    cor = 1.0005 * cor - 3.1e-30 * ABS (orig);
+  u.x = big + x;
+  y = x - (u.x - big);
+  res = do_cos_slow (u, y, dx, 3.1e-30 * ABS (orig), &cor);
 
   if (res == res + cor)
     return (n) ? -res : res;
   else
     {
-      __docos (ABS (x), dx, w);
+      __docos (x, dx, w);
       if (w[1] > 0)
 	cor = 1.000000005 * w[1] + 1.1e-30 * ABS (orig);
       else

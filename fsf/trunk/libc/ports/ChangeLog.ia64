@@ -1,3 +1,31 @@
+2013-12-30  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/Makefile (gen-as-const-headers): Add
+	sigaltstack-offsets.sym.
+	* sysdeps/unix/sysv/linux/ia64/____longjmp_chk.S: Include new
+	sigaltstack-offsets.h header.
+	(STACK_SPACE): Define.
+	(CHECK_RSP): Rewrite to support sigaltstack.
+	* sysdeps/unix/sysv/linux/ia64/__longjmp.S: Move CHECK_RSP to top.
+	* sysdeps/unix/sysv/linux/ia64/sigaltstack-offsets.sym: New file.
+
+2013-12-30  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #16379]
+	* sysdeps/unix/sysv/linux/ia64/__longjmp.S: Comment out loading of
+	fpsr.  Update offsets accordingly.
+	* sysdeps/unix/sysv/linux/ia64/nptl/__ia64_longjmp.S: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/setjmp.S: Comment out saving of
+	fpsr.  Update offsets accordingly.
+
+2013-12-30  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/ia64/setjmp.S (setjmp): Call __sigsetjmp
+	via HIDDEN_JUMPTARGET.
+	(_setjmp): Likewise.
+	(__sigsetjmp): Delete strong_alias.  Call libc_hidden_def and
+	rtld_hidden_def.
+
 2013-12-29  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/unix/sysv/linux/ia64/syscall.S: Add a comment.
@@ -296,9 +324,9 @@
 
 2012-09-24  Mike Frysinger  <vapier@gentoo.org>
 
-	* ports/sysdeps/ia64/fpu/fegetround.c (fegetround): Move contents
+	* sysdeps/ia64/fpu/fegetround.c (fegetround): Move contents
 	of function to ...
-	* ports/sysdeps/ia64/fpu/get-rounding-mode.h: ... here.
+	* sysdeps/ia64/fpu/get-rounding-mode.h: ... here.
 
 2012-09-24  Mike Frysinger  <vapier@gentoo.org>
 

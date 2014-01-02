@@ -1,5 +1,5 @@
 GNU C Library NEWS -- history of user-visible changes.
-Copyright (C) 1992-2013 Free Software Foundation, Inc.
+Copyright (C) 1992-2014 Free Software Foundation, Inc.
 See the end for copying conditions.
 
 Please send GNU C library bug reports via <http://sourceware.org/bugzilla/>
@@ -23,7 +23,7 @@ Version 2.19
   16038, 16041, 16055, 16071, 16072, 16074, 16077, 16078, 16103, 16112,
   16143, 16144, 16146, 16150, 16151, 16153, 16167, 16172, 16195, 16214,
   16245, 16271, 16274, 16283, 16289, 16293, 16314, 16316, 16330, 16337,
-  16338, 16356, 16369, 16372, 16375, 16379.
+  16338, 16356, 16365, 16366, 16369, 16372, 16375, 16379.
 
 * Slovenian translations for glibc messages have been contributed by the
   Translation Project's Slovenian team of translators.
@@ -2379,7 +2379,7 @@ Version 1.04
 ----------------------------------------------------------------------
 Copyright information:
 
-Copyright (C) 1992-2013 Free Software Foundation, Inc.
+Copyright (C) 1992-2014 Free Software Foundation, Inc.
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the

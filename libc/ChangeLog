@@ -1,3 +1,19 @@
+2013-11-11  David S. Miller  <davem@davemloft.net>
+
+	[BZ #16150]
+	* sysdeps/sparc/sparc64/multiarch/add_n.S: Resolve to the correct generic
+	symbol in the non-vis3 case in static builds.
+	* sysdeps/sparc/sparc64/multiarch/addmul_1.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/mul_1.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/sub_n.S: Likewise.
+	* sysdeps/sparc/sparc64/multiarch/submul_1.S: Likewise.
+
+2013-11-06  David S. Miller  <davem@davemloft.net>
+
+	[BZ #15985]
+	* sysdeps/sparc/sparc32/fpu/s_fdim.S (__fdim): Do not use fnegd
+	on pre-v9 cpus, use a fnegs+fmovs sequence instead.
+
 2013-09-06  David S. Miller  <davem@davemloft.net>
 
 	* po/zh_TW.po: Update Chinese (traditional) translation from

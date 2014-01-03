@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2013 Free Software Foundation, Inc.
+# Copyright (C) 1991-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -60,9 +60,6 @@ tests-$(OPTION_EGLIBC_ENVZ) += bug-envz1
 tests-$(OPTION_EGLIBC_LOCALE_CODE) \
 		+= tst-strxfrm bug-strcoll1
 
-tests-ifunc := $(strop-tests:%=test-%-ifunc)
-tests += $(tests-ifunc)
-
 xtests = tst-strcoll-overflow
 
 include ../Rules
@@ -75,8 +72,6 @@ tst-strxfrm2-ENV = LOCPATH=$(common-objpfx)localedata
 bug-strcoll1-ENV = LOCPATH=$(common-objpfx)localedata
 test-strcasecmp-ENV = LOCPATH=$(common-objpfx)localedata
 test-strncasecmp-ENV = LOCPATH=$(common-objpfx)localedata
-test-strcasecmp-ifunc-ENV = LOCPATH=$(common-objpfx)localedata
-test-strncasecmp-ifunc-ENV = LOCPATH=$(common-objpfx)localedata
 CFLAGS-inl-tester.c = -fno-builtin
 CFLAGS-noinl-tester.c = -fno-builtin
 CFLAGS-tst-strlen.c = -fno-builtin

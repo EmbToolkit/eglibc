@@ -43,6 +43,9 @@ case "$machine" in
     libc_cv_gcc_unwind_find_fde=yes
     arch_minimum_kernel=2.6.16
     ;;
+  x86_64/x32)
+    arch_minimum_kernel=3.4.0
+    ;;
   powerpc/powerpc32*)
     libc_cv_gcc_unwind_find_fde=yes
     arch_minimum_kernel=2.6.16
@@ -101,6 +104,12 @@ else
   AC_MSG_ERROR([*** The available kernel headers are older than the requested
 *** compatible kernel version])
 fi
+
+# Until we start requiring 2.6.37+ headers, we need to check for the
+# availability of linux/fanotify.h for testing purposes.
+AC_CHECK_HEADER(linux/fanotify.h,
+  [DEFINES="$DEFINES -DHAVE_LINUX_FANOTIFY_H=1"], ,
+  [/* No default includes.  */])
 
 # The result of the above test for the use of the FDE code is invalid if
 # the user overrides the decision about the minimum ABI.

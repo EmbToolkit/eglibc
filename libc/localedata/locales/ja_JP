@@ -31,7 +31,7 @@ category  "ja_JP:2000";LC_PAPER
 category  "ja_JP:2000";LC_NAME
 category  "ja_JP:2000";LC_ADDRESS
 category  "ja_JP:2000";LC_TELEPHONE
-
+category  "ja_JP:2000";LC_MEASUREMENT
 END LC_IDENTIFICATION
 
 LC_CTYPE
@@ -15044,6 +15044,8 @@ country_ab3 "<U004A><U0050><U004E>"
 country_num 392
 % J
 country_car    "<U004A>"
+% 日本語
+lang_name    "<U65E5><U672C><U8A9E>"
 % ja
 lang_ab      "<U006A><U0061>"
 % jpn
@@ -15064,8 +15066,6 @@ END LC_TELEPHONE
 
 
 LC_MEASUREMENT
-% This is the ISO_IEC TR14652 Locale definition for the
-%
+% metric
 measurement 1
-
 END LC_MEASUREMENT

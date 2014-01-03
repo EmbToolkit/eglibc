@@ -1,3 +1,69 @@
+2014-01-01  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/libm-test-ulps: Regenerated.
+
+2014-01-01  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/abort-instr.h: New file.
+
+2014-01-01  Venkataramanan Kumar  <venkataramanan.kumar@linaro.org>
+
+	* sysdeps/aarch64/__longjmp.S (__longjmp): Demangle sp and lr when
+	restoring register values.
+	* sysdeps/aarch64/setjmp.S (__sigsetjmp): Mangle sp and lr
+	before storing register values.
+	* sysdeps/arm/jmpbuf-unwind.h (_jmpbuf_sp): Remove.
+	* sysdeps/aarch64/jmpbuf-offsets.h (_jmpbuf_sp): Add.
+	(JB_FRAME_ADDRESS): call  _jmpbuf_sp.
+	* sysdeps/aarch64/sysdep.h (LDST_PCREL) : New macros.
+	(LDST_GLOBAL): Likewise.
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.h (PTR_MANGLE): New macro.
+	(PTR_DEMANGLE): Likewise.
+	(PTR_MANGLE2): Likewise.
+	(PTR_DEMANGLE2): Likewise.
+
+2013-12-18  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	[BZ #15128]
+	* sysdeps/aarch64/dl-trampoline.S (_dl_runtime_resolve): Save and
+	restore q0-q7.
+
+2013-12-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/unix/sysv/linux/aarch64/nptl/lowlevellock.h
+	(FUTEX_WAIT_REQUEUE_PI): Define.
+	(FUTEX_CMP_REQUEUE_PI): Likewise.
+	(lll_futex_wait_requeue_pi): Likewise.
+	(lll_futex_timed_wait_requeue_pi): Likewise.
+	(lll_futex_cmp_requeue_pi): Likewise.
+
+2013-12-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/libm-test-ulps: Regenerated.
+
+2013-12-17  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/libm-test-ulps: Remove sqrt.
+
+2013-12-11  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/libm-test-ulps: Regenerate.
+
+2013-11-28  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/aarch64/fpu/fegetround.c (fegetround): Use
+	libm_hidden_def.
+
+2013-11-26  Will Newton  <will.newton@linaro.org>
+
+	* sysdeps/aarch64/dl-irel.h: Include ldsodefs.h.
+	(ELF_MACHINE_IRELA): Define.  (elf_ifunc_invoke): Pass
+	hwcap to ifunc resolver function.  (elf_irela): New function.
+	* sysdeps/aarch64/dl-machine.h: Include dl-irel.h.
+	(elf_machine_rela) Handle STT_GNU_IFUNC symbols and
+	R_AARCH64_IRELATIVE relocations.  (elf_machine_lazy_rel):
+	Handle R_AARCH64_IRELATIVE relocations.
+
 2013-10-30  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/unix/sysv/linux/aarch64/configure.in: Moved to ...

@@ -89,7 +89,7 @@ __ieee754_hypot (double x, double y)
       SET_HIGH_WORD (a, ha);
       SET_HIGH_WORD (b, hb);
     }
-  if (__builtin_expect (hb < 0x20b00000, 0))            /* b < 2**-500 */
+  if (__builtin_expect (hb < 0x23d00000, 0))            /* b < 2**-450 */
     {
       if (hb <= 0x000fffff)             /* subnormal b or 0 */
 	{
@@ -102,6 +102,17 @@ __ieee754_hypot (double x, double y)
 	  b *= t1;
 	  a *= t1;
 	  k -= 1022;
+	  GET_HIGH_WORD (ha, a);
+	  GET_HIGH_WORD (hb, b);
+	  if (hb > ha)
+	    {
+	      t1 = a;
+	      a = b;
+	      b = t1;
+	      j = ha;
+	      ha = hb;
+	      hb = j;
+	    }
 	}
       else                      /* scale a and b by 2^600 */
 	{

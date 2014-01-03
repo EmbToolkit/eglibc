@@ -1,5 +1,5 @@
 /* Get floating-point exceptions (soft-float edition).
-   Copyright (C) 2002-2013 Free Software Foundation, Inc.
+   Copyright (C) 2002-2014 Free Software Foundation, Inc.
    Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
    This file is part of the GNU C Library.
 
@@ -23,5 +23,5 @@
 int
 fegetexcept (void)
 {
-  return (__sim_disabled_exceptions ^ FE_ALL_EXCEPT) & FE_ALL_EXCEPT;
+  return (__sim_disabled_exceptions_thread ^ FE_ALL_EXCEPT) & FE_ALL_EXCEPT;
 }

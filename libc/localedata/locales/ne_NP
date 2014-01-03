@@ -27,7 +27,7 @@ category  "ne_NP:2003";LC_PAPER
 category  "ne_NP:2003";LC_NAME
 category  "ne_NP:2003";LC_ADDRESS
 category  "ne_NP:2003";LC_TELEPHONE
-
+category  "ne_NP:2003";LC_MEASUREMENT
 END LC_IDENTIFICATION
 
 LC_CTYPE
@@ -197,6 +197,8 @@ country_ab3 "<U004E><U0050><U004C>"
 country_num 524
 % NEP
 country_car    "<U004E><U0045><U0050>"
+% नेपाली
+lang_name    "<U0928><U0947><U092A><U093E><U0932><U0940>"
 % ne
 lang_ab      "<U006E><U0065>"
 % nep
@@ -217,8 +219,6 @@ END LC_TELEPHONE
 
 
 LC_MEASUREMENT
-% This is the ISO_IEC TR14652 Locale definition for the
-%
+% metric
 measurement 1
-
 END LC_MEASUREMENT

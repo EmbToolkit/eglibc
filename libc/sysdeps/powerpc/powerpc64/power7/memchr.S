@@ -1,5 +1,5 @@
 /* Optimized memchr implementation for PowerPC64/POWER7 using cmpb insn.
-   Copyright (C) 2010-2013 Free Software Foundation, Inc.
+   Copyright (C) 2010-2014 Free Software Foundation, Inc.
    Contributed by Luis Machado <luisgpm@br.ibm.com>.
    This file is part of the GNU C Library.
 
@@ -22,7 +22,7 @@
 /* int [r3] memchr (char *s [r3], int byte [r4], int size [r5])  */
 	.machine  power7
 ENTRY (__memchr)
-	CALL_MCOUNT 2
+	CALL_MCOUNT 3
 	dcbt	0,r3
 	clrrdi  r8,r3,3
 	insrdi	r4,r4,8,48

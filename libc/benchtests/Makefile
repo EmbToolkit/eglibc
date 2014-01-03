@@ -1,4 +1,4 @@
-# Copyright (C) 2013 Free Software Foundation, Inc.
+# Copyright (C) 2013-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -20,19 +20,20 @@
 # Add benchmark functions in alphabetical order.
 
 subdir := benchtests
-bench := acos acosh asin asinh atan atanh cos cosh exp log modf pow rint sin \
-	 sincos sinh tan tanh
+bench := acos acosh asin asinh atan atanh cos cosh exp exp2 log log2 modf pow \
+	 rint sin sincos sinh sqrt tan tanh
 
 # String function benchmarks.
 string-bench := bcopy bzero memccpy memchr memcmp memcpy memmem memmove \
 		mempcpy memset rawmemchr stpcpy stpncpy strcasecmp strcasestr \
 		strcat strchr strchrnul strcmp strcpy strcspn strlen \
 		strncasecmp strncat strncmp strncpy strnlen strpbrk strrchr \
-		strspn strstr strcpy_chk stpcpy_chk memrchr
-string-bench-ifunc := $(addsuffix -ifunc, $(string-bench))
-string-bench-all := $(string-bench) $(string-bench-ifunc)
+		strspn strstr strcpy_chk stpcpy_chk memrchr strsep strtok
+string-bench-all := $(string-bench)
 
-benchset := $(string-bench-all)
+stdlib-bench := strtod
+
+benchset := $(string-bench-all) $(stdlib-bench)
 
 LDLIBS-bench-acos = -lm
 LDLIBS-bench-acosh = -lm
@@ -43,11 +44,14 @@ LDLIBS-bench-atanh = -lm
 LDLIBS-bench-cos = -lm
 LDLIBS-bench-cosh = -lm
 LDLIBS-bench-exp = -lm
+LDLIBS-bench-exp2 = -lm
 LDLIBS-bench-log = -lm
+LDLIBS-bench-log2 = -lm
 LDLIBS-bench-pow = -lm
 LDLIBS-bench-rint = -lm
 LDLIBS-bench-sin = -lm
 LDLIBS-bench-sinh = -lm
+LDLIBS-bench-sqrt = -lm
 LDLIBS-bench-tan = -lm
 LDLIBS-bench-tanh = -lm
 LDLIBS-bench-sincos = -lm

@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2013 Free Software Foundation, Inc.
+# Copyright (C) 1991-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -397,8 +397,8 @@ dist: dist-prepare
 	fi
 endif
 
-INSTALL: manual/install.texi manual/macros.texi \
-	 $(common-objpfx)manual/pkgvers.texi
+INSTALL: manual/install-plain.texi manual/macros.texi \
+	 $(common-objpfx)manual/pkgvers.texi manual/install.texi
 	makeinfo --no-validate --plaintext --no-number-sections \
 		 -I$(common-objpfx)manual $< -o $@-tmp
 	$(AWK) 'NF == 0 { ++n; next } \

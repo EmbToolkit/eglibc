@@ -1,5 +1,5 @@
 #! /usr/bin/perl -w
-# Copyright (C) 2013 Free Software Foundation, Inc.
+# Copyright (C) 2013-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -83,8 +83,8 @@ LINE:while (<INPUTS>) {
     }
   }
 
-  # Skip over comments.
-  if (/^#/) {
+  # Skip over comments and blank lines.
+  if (/^#/ || /^$/) {
     next LINE;
   }
   push (@curvals, $_);
@@ -93,6 +93,13 @@ LINE:while (<INPUTS>) {
 
 my $bench_func = "#define CALL_BENCH_FUNC(v, i) $func (";
 
+# Output variables.  These include the return value as well as any pointers
+# that may get passed into the function, denoted by the <> around the type.
+my $outvars = "";
+
+if ($ret ne "void") {
+  $outvars = "static $ret volatile ret;\n";
+}
 
 # Print the definitions and macros.
 foreach $incl (@include_headers) {
@@ -124,8 +131,18 @@ if (@args > 0) {
       $bench_func = "$bench_func,";
     }
 
-    $arg_struct = "$arg_struct volatile $arg arg$num;";
-    $bench_func = "$bench_func variants[v].in[i].arg$num";
+    $_ = $arg;
+    if (/<(.*)\*>/) {
+      # Output variables.  These have to be pointers, so dereference once by
+      # dropping one *.
+      $outvars = $outvars . "static $1 out$num;\n";
+      $bench_func = "$bench_func &out$num";
+    }
+    else {
+      $arg_struct = "$arg_struct $arg volatile arg$num;";
+      $bench_func = "$bench_func variants[v].in[i].arg$num";
+    }
+
     $num = $num + 1;
   }
 
@@ -172,12 +189,12 @@ else {
   print "#define VARIANT(v) FUNCNAME \"()\"\n"
 }
 
-
+# Print the output variable definitions.
+print "$outvars\n";
 
 # In some cases not storing a return value seems to result in the function call
 # being optimized out.
 if ($ret ne "void") {
-  print "static volatile $ret ret;\n";
   $getret = "ret = ";
 }
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 1995-2013 Free Software Foundation, Inc.
+/* Copyright (C) 1995-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@gnu.org>, 1995.
 
@@ -305,6 +305,9 @@ numeric_read (struct linereader *ldfile, struct localedef_t *result,
 	      if (now->tok != tok_eol)
 		goto err_label;
 
+	      /* A single -1 means no grouping.  */
+	      if (act == 1 && grouping[0] == '\177')
+		act--;
 	      grouping[act++] = '\0';
 
 	      numeric->grouping = xrealloc (grouping, act);

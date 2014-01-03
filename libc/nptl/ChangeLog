@@ -1,3 +1,47 @@
+2011-12-12  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/tls.h (struct tcbhead_t): Add DSO and TAR fields.
+	* nptl/sysdeps/powerpc/tcb-offsets.sym: Likewise.
+
+2013-12-09  Carlos O'Donell  <carlos@redhat.com>
+
+	* sysdeps/unix/sysv/linux/tst-setgetname.c: New file.
+	* sysdeps/unix/sysv/linux/Makefile (tests): Add tst-setgetname.
+
+2013-12-09  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15843]
+	* sysdeps/unix/sysv/linux/i386/i486/pthread_cond_timedwait.S
+	(__pthread_cond_timedwait): Remove wrong cfi_adjust_cfa_offset
+	before __condvar_tw_cleanup2 label.
+
+2013-12-04  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/sysdep-cancel.h
+	(CANCEL_FRAMESIZE, CANCEL_PARM_SAVE): New macros to save parameters
+	into our own stack frame instead of the caller's.
+	(PSEUDO): Use them.  Use symbolic stack frame offsets.
+	(DOCARGS_1, UNDOCARGS_1): Use CANCEL_PARM_SAVE.
+	(DOCARGS_2, UNDOCARGS_2): Likewise.
+	(DOCARGS_3, UNDOCARGS_3): Likewise.
+	(DOCARGS_4, UNDOCARGS_4): Likewise.
+	(DOCARGS_5, UNDOCARGS_5): Likewise.
+	(DOCARGS_6, UNDOCARGS_6): Likewise.
+
+2013-11-26  Ondřej Bílka  <neleai@seznam.cz>
+
+	* sysdeps/i386/tls.h: Use __glibc_reserved instead __unused.
+	* sysdeps/x86_64/tls.h: Likewise.
+
+2013-11-25  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	[BZ #11214]
+	* Makefile (tst-getpid2-ENV): New variable.
+
+2013-11-20  Paul Pluzhnikov  <ppluzhnikov@google.com>
+
+	* Makefile (tst-cleanup2, tst-cleanupx2): Add -fno-builtin
+
 2013-10-30  Mike Frysinger  <vapier@gentoo.org>
 
 	* sysdeps/pthread/configure.in: Moved to ...

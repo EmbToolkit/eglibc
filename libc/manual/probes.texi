@@ -23,9 +23,7 @@ arguments.
 @section Memory Allocation Probes
 
 These probes are designed to signal relatively unusual situations within
-the virtual memory subsystem of @theglibc{}.  The location and the
-availability of some probes depend on whether per-thread arenas are
-enabled (the default) or disabled at the time @theglibc{} is compiled.
+the virtual memory subsystem of @theglibc{}.
 
 @deftp Probe memory_sbrk_more (void *@var{$arg1}, size_t @var{$arg2})
 This probe is triggered after the main arena is extended by calling
@@ -71,8 +69,6 @@ heap is released.  Argument @var{$arg1} is a pointer to the heap, and
 @deftp Probe memory_malloc_retry (size_t @var{$arg1})
 @deftpx Probe memory_realloc_retry (size_t @var{$arg1}, void *@var{$arg2})
 @deftpx Probe memory_memalign_retry (size_t @var{$arg1}, size_t @var{$arg2})
-@deftpx Probe memory_valloc_retry (size_t @var{$arg1})
-@deftpx Probe memory_pvalloc_retry (size_t @var{$arg1})
 @deftpx Probe memory_calloc_retry (size_t @var{$arg1})
 These probes are triggered when the corresponding functions fail to
 obtain the requested amount of memory from the arena in use, before they
@@ -83,7 +79,8 @@ computed from both function arguments.  In the @code{realloc} case,
 @var{$arg2} is the pointer to the memory area being resized.  In the
 @code{memalign} case, @var{$arg2} is the alignment to be used for the
 request, which may be stricter than the value passed to the
-@code{memalign} function.
+@code{memalign} function.  A @code{memalign} probe is also used by functions
+@code{posix_memalign, valloc} and @code{pvalloc}.
 
 Note that the argument order does @emph{not} match that of the
 corresponding two-argument functions, so that in all of these probes the
@@ -117,7 +114,7 @@ arena to reuse, and (temporarily) reserved it for exclusive use.
 Argument @var{$arg1} is a pointer to the newly-selected arena, and
 @var{$arg2} is a pointer to the arena previously used by that thread.
 
-When per-thread arenas are enabled, this occurs within
+This occurs within
 @code{reused_arena}, right after the mutex mentioned in probe
 @code{memory_arena_reuse_wait} is acquired; argument @var{$arg1} will
 point to the same arena.  In this configuration, this will usually only
@@ -125,10 +122,6 @@ occur once per thread.  The exception is when a thread first selected
 the main arena, but a subsequent allocation from it fails: then, and
 only then, may we switch to another arena to retry that allocations, and
 for further allocations within that thread.
-
-When per-thread arenas are disabled, this occurs within
-@code{arena_get2}, whenever the mutex for the previously-selected arena
-cannot be immediately acquired.
 @end deftp
 
 @deftp Probe memory_arena_reuse_wait (void *@var{$arg1}, void *@var{$arg2}, void *@var{$arg3})
@@ -138,37 +131,19 @@ the mutex the thread is going to wait on, @var{$arg2} is a pointer to a
 newly-chosen arena to be reused, and @var{$arg3} is a pointer to the
 arena previously used by that thread.
 
-When per-thread arenas are enabled, this occurs within
+This occurs within
 @code{reused_arena}, when a thread first tries to allocate memory or
 needs a retry after a failure to allocate from the main arena, there
 isn't any free arena, the maximum number of arenas has been reached, and
 an existing arena was chosen for reuse, but its mutex could not be
 immediately acquired.  The mutex in @var{$arg1} is the mutex of the
 selected arena.
-
-When per-thread arenas are disabled, this occurs within
-@code{arena_get2}, when a thread first tries to allocate memory or the
-mutex of the arena it previously used could not be immediately acquired,
-and none of the existing arenas could be immediately reserved for
-exclusive use.  The mutex in @var{$arg1} is that of the list of arenas,
-and since the arena won't have been selected yet, @var{$arg2} will be
-@code{NULL}.
 @end deftp
 
 @deftp Probe memory_arena_reuse_free_list (void *@var{$arg1})
 This probe is triggered when @code{malloc} has chosen an arena that is
 in the free list for use by a thread, within the @code{get_free_list}
-function.  This probe is only available when @code{malloc} is configured
-to use per-thread arenas.  The argument @var{$arg1} holds a pointer to
-the selected arena.
-@end deftp
-
-@deftp Probe memory_arena_reuse_realloc (void *@var{$arg1})
-This probe is triggered within @code{realloc}, as the arena of the
-current thread is changed to match that in which the given address was
-allocated.  This probe is @emph{not} available when @code{malloc} is
-configured to use per-thread arenas.  The argument @var{$arg1} holds a
-pointer to the newly-selected arena.
+function.  The argument @var{$arg1} holds a pointer to the selected arena.
 @end deftp
 
 @deftp Probe memory_mallopt (int @var{$arg1}, int @var{$arg2})
@@ -238,8 +213,7 @@ This probe is triggered shortly after the @code{memory_mallopt} probe,
 when the parameter to be changed is @code{M_ARENA_TEST}, and the
 requested value is in an acceptable range.  Argument @var{$arg1} is the
 requested value, and @var{$arg2} is the previous value of this
-@code{malloc} parameter.  This probe is only available when per-thread
-arenas are enabled.
+@code{malloc} parameter.
 @end deftp
 
 @deftp Probe memory_mallopt_arena_max (int @var{$arg1}, int @var{$arg2})
@@ -247,8 +221,7 @@ This probe is triggered shortly after the @code{memory_mallopt} probe,
 when the parameter to be changed is @code{M_ARENA_MAX}, and the
 requested value is in an acceptable range.  Argument @var{$arg1} is the
 requested value, and @var{$arg2} is the previous value of this
-@code{malloc} parameter.  This probe is only available when per-thread
-arenas are enabled.
+@code{malloc} parameter.
 @end deftp
 
 @deftp Probe memory_mallopt_free_dyn_thresholds (int @var{$arg1}, int @var{$arg2})
@@ -352,4 +325,46 @@ This probe is hit when the @code{tan} function is called with an input that
 results in multiple precision computation with precision 32.  Argument
 @var{$arg1} is the input to the function and @var{$arg2} is the computed
 result.
+@end deftp
+
+@deftp Probe slowasin (double @var{$arg1}, double @var{$arg2})
+This probe is hit when the @code{asin} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function and @var{$arg2} is the computed
+result.
+@end deftp
+
+@deftp Probe slowacos (double @var{$arg1}, double @var{$arg2})
+This probe is hit when the @code{acos} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function and @var{$arg2} is the computed
+result.
+@end deftp
+
+@deftp Probe slowsin (double @var{$arg1}, double @var{$arg2})
+This probe is hit when the @code{sin} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function and @var{$arg2} is the computed
+result.
+@end deftp
+
+@deftp Probe slowcos (double @var{$arg1}, double @var{$arg2})
+This probe is hit when the @code{cos} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function and @var{$arg2} is the computed
+result.
+@end deftp
+
+@deftp Probe slowsin_dx (double @var{$arg1}, double @var{$arg2}, double @var{$arg3})
+This probe is hit when the @code{sin} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function, @var{$arg2} is the error bound of
+@var{$arg1} and @var{$arg3} is the computed result.
+@end deftp
+
+@deftp Probe slowcos_dx (double @var{$arg1}, double @var{$arg2}, double @var{$arg3})
+This probe is hit when the @code{cos} function is called with an input that
+results in multiple precision computation with precision 32.  Argument
+@var{$arg1} is the input to the function, @var{$arg2} is the error bound of
+@var{$arg1} and @var{$arg3} is the computed result.
 @end deftp

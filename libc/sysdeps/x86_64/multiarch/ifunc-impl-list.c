@@ -1,5 +1,5 @@
 /* Enumerate available IFUNC implementations of a function.  x86-64 version.
-   Copyright (C) 2012-2013 Free Software Foundation, Inc.
+   Copyright (C) 2012-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -98,8 +98,6 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 
   /* Support sysdeps/x86_64/multiarch/strcasestr.c.  */
   IFUNC_IMPL (i, name, strcasestr,
-	      IFUNC_IMPL_ADD (array, i, strcasestr, HAS_SSE4_2,
-			      __strcasestr_sse42)
 	      IFUNC_IMPL_ADD (array, i, strcasestr, 1, __strcasestr_sse2))
 
   /* Support sysdeps/x86_64/multiarch/strcat.S.  */
@@ -182,9 +180,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 	      IFUNC_IMPL_ADD (array, i, strspn, HAS_SSE4_2, __strspn_sse42)
 	      IFUNC_IMPL_ADD (array, i, strspn, 1, __strspn_sse2))
 
-  /* Support sysdeps/x86_64/multiarch/strstr-c.c.  */
+  /* Support sysdeps/x86_64/multiarch/strstr.c.  */
   IFUNC_IMPL (i, name, strstr,
-	      IFUNC_IMPL_ADD (array, i, strstr, HAS_SSE4_2, __strstr_sse42)
+	      IFUNC_IMPL_ADD (array, i, strstr, 1, __strstr_sse2_unaligned)
 	      IFUNC_IMPL_ADD (array, i, strstr, 1, __strstr_sse2))
 
   /* Support sysdeps/x86_64/multiarch/wcscpy.S.  */

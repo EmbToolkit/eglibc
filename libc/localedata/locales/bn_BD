@@ -144,8 +144,8 @@ yesstr      "<U09B9><U09CD><U09AF><U09BE><U0981>"
 nostr       "<U09A8><U09BE>"
 END LC_MESSAGES
 
-% Metric Measurement system (ISO 1000)
 LC_MEASUREMENT
+% metric
 measurement 1
 END LC_MEASUREMENT
 
@@ -187,7 +187,8 @@ lang_term    "<U0062><U0065><U006E>"
 % ben
 lang_lib       "<U0062><U0065><U006E>"
 %lang_ab3_term   "ben"
-lang_name       "<U09ac><U09be><U0982><U09b2><U09be>"
+% বাংলা
+lang_name    "<U09AC><U09BE><U0982><U09B2><U09BE>"
 % todo
 %country_post   ""
 country_num     050

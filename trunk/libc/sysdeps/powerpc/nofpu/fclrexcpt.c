@@ -1,5 +1,5 @@
 /* Clear floating-point exceptions (soft-float edition).
-   Copyright (C) 2002-2013 Free Software Foundation, Inc.
+   Copyright (C) 2002-2014 Free Software Foundation, Inc.
    Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
    This file is part of the GNU C Library.
 
@@ -23,7 +23,8 @@
 int
 __feclearexcept (int x)
 {
-  __sim_exceptions &= ~x;
+  __sim_exceptions_thread &= ~x;
+  SIM_SET_GLOBAL (__sim_exceptions_global, __sim_exceptions_thread);
   return 0;
 }
 

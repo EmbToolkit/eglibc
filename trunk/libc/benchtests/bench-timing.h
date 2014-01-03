@@ -1,5 +1,5 @@
 /* Define timing macros.
-   Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright (C) 2013-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -41,6 +41,8 @@ typedef hp_timing_t timing_t;
 	  (min) / (d_iters), 1e6 * (d_total_i) / (d_total_s));
 
 #else
+
+#include <time.h>
 typedef uint64_t timing_t;
 
 /* Measure the resolution of the clock so we can scale the number of

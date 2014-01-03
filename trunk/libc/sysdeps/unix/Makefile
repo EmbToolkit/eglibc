@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2013 Free Software Foundation, Inc.
+# Copyright (C) 1991-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -52,13 +52,13 @@ $(objpfx)stub-syscalls.c: $(common-objpfx)sysd-syscalls \
 	   case $$call in \
 	   *@@*) \
 	     ver=$${call##*@}; call=$${call%%@*}; \
-	     ver=`echo "$ver" | sed 's/\./_/g'`; \
+	     ver=`echo "$$ver" | sed 's/\./_/g'`; \
 	     echo "strong_alias (_no_syscall, __$${call}_$${ver})"; \
 	     echo "versioned_symbol (libc, __$${call}_$${ver}, $$call, $$ver);"\
 	     ;; \
 	   *@*) \
 	     ver=$${call##*@}; call=$${call%%@*}; \
-	     ver=`echo "$ver" | sed 's/\./_/g'`; \
+	     ver=`echo "$$ver" | sed 's/\./_/g'`; \
 	     echo "strong_alias (_no_syscall, __$${call}_$${ver})"; \
 	     echo "compat_symbol (libc, __$${call}_$${ver}, $$call, $$ver);" \
 	     ;; \

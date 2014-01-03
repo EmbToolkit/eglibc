@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2013 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -292,6 +292,10 @@ gen-as-const-headers = pthread-errnos.sym
 
 LDFLAGS-pthread.so = -Wl,--enable-new-dtags,-z,nodelete,-z,initfirst
 
+# GCC-4.9 compiles 'sprintf(NULL, ...)' into UD2 on x86_64 without -fno-builtin
+CFLAGS-tst-cleanup2.c = -fno-builtin
+CFLAGS-tst-cleanupx2.c = -fno-builtin
+
 include ../Makeconfig
 
 ifeq ($(have-forced-unwind),yes)
@@ -456,6 +460,11 @@ CFLAGS-tst-initializers1-gnu99.c = $(CFLAGS-tst-initializers1-<)
 tst-cancel7-ARGS = --command "exec $(host-test-program-cmd)"
 tst-cancelx7-ARGS = $(tst-cancel7-ARGS)
 tst-umask1-ARGS = $(objpfx)tst-umask1.temp
+
+# In this test, we create a CLONE_VM "thread" that shares TLS storage
+# with the original thread. Both threads then race in ld.so with lazy PLT
+# resolution. Avoid this race by disabling lazy binding. BZ #11214.
+tst-getpid2-ENV = LD_BIND_NOW=1
 
 $(objpfx)tst-atfork2: $(libdl) $(shared-thread-library)
 LDFLAGS-tst-atfork2 = -rdynamic

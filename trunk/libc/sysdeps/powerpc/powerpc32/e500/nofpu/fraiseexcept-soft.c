@@ -1,5 +1,5 @@
 /* Raise given exceptions.  e500 version for use from soft-fp.
-   Copyright (C) 2004-2013 Free Software Foundation, Inc.
+   Copyright (C) 2004-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Aldy Hernandez <aldyh@redhat.com>, 2004.
 
@@ -19,9 +19,6 @@
 
 #include <fenv_libc.h>
 #include <libc-symbols.h>
-
-int __feraiseexcept_soft (int);
-libc_hidden_proto (__feraiseexcept_soft)
 
 #define __FERAISEEXCEPT_INTERNAL __feraiseexcept_soft
 #include "spe-raise.c"

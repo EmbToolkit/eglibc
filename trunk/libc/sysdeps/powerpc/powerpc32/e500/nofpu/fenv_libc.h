@@ -1,5 +1,5 @@
 /* Internal libc stuff for floating point environment routines.  e500 version.
-   Copyright (C) 2004-2013 Free Software Foundation, Inc.
+   Copyright (C) 2004-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,8 +21,14 @@
 
 #include <fenv.h>
 
+/* ldbl-128ibm code uses __fegetround.  */
+#define __fegetround()	fegetround ()
+
 int __feraiseexcept_spe (int);
 libm_hidden_proto (__feraiseexcept_spe)
+
+int __feraiseexcept_soft (int);
+libc_hidden_proto (__feraiseexcept_soft)
 
 int __fexcepts_to_spe (int);
 libm_hidden_proto (__fexcepts_to_spe)

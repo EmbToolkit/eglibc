@@ -1,5 +1,5 @@
 /* Enable floating-point exceptions.
-   Copyright (C) 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 2000-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Geoffrey Keating <geoffk@geoffk.org>, 2000.
 
@@ -45,7 +45,7 @@ feenableexcept (int excepts)
 
   new = __fegetexcept ();
   if (new != 0 && result == 0)
-    (void)__fe_nomask_env ();
+    (void) __fe_nomask_env_priv ();
 
   if ((new & excepts) != excepts)
     result = -1;

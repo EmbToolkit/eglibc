@@ -1,7 +1,7 @@
 /*
  * IBM Accurate Mathematical Library
  * written by International Business Machines Corp.
- * Copyright (C) 2001-2013 Free Software Foundation, Inc.
+ * Copyright (C) 2001-2014 Free Software Foundation, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,6 +39,7 @@
 #include "uexp.tbl"
 #include <math_private.h>
 #include <fenv.h>
+#include <float.h>
 
 #ifndef SECTION
 # define SECTION
@@ -169,7 +170,7 @@ __ieee754_exp (double x)
 	  else
 	    {
 	      retval = __slowexp (x);
-	      goto ret;
+	      goto check_uflow_ret;
 	    }			/*if error is over bound */
 	}
       ex = -(1022 + ex);
@@ -185,13 +186,23 @@ __ieee754_exp (double x)
 	{
 	  binexp.i[HIGH_HALF] = 0x00100000;
 	  retval = (res - 1.0) * binexp.x;
-	  goto ret;
+	  goto check_uflow_ret;
 	}
       else
 	{
 	  retval = __slowexp (x);
-	  goto ret;
+	  goto check_uflow_ret;
 	}			/*   if error is over bound    */
+    check_uflow_ret:
+      if (retval < DBL_MIN)
+	{
+#if FLT_EVAL_METHOD != 0
+	  volatile
+#endif
+	  double force_underflow = tiny * tiny;
+	  math_force_eval (force_underflow);
+	}
+      goto ret;
     }
   else
     {

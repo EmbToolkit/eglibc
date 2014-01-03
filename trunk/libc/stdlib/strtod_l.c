@@ -1,5 +1,5 @@
 /* Convert string representing a number to float value, using given locale.
-   Copyright (C) 1997-2013 Free Software Foundation, Inc.
+   Copyright (C) 1997-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -229,7 +229,7 @@ round_and_return (mp_limb_t *retval, intmax_t exponent, int negative,
 
 	  round_limb = retval[RETURN_LIMB_SIZE - 1];
 	  round_bit = (MANT_DIG - 1) % BITS_PER_MP_LIMB;
-	  for (i = 0; i < RETURN_LIMB_SIZE; ++i)
+	  for (i = 0; i < RETURN_LIMB_SIZE - 1; ++i)
 	    more_bits |= retval[i] != 0;
 	  MPN_ZERO (retval, RETURN_LIMB_SIZE);
 	}

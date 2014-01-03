@@ -1,5 +1,5 @@
 /* Set rounding mode (soft-float edition).
-   Copyright (C) 2002-2013 Free Software Foundation, Inc.
+   Copyright (C) 2002-2014 Free Software Foundation, Inc.
    Contributed by Aldy Hernandez <aldyh@redhat.com>, 2002.
    This file is part of the GNU C Library.
 
@@ -26,7 +26,8 @@ fesetround (int round)
   if ((unsigned int) round > FE_DOWNWARD)
     return 1;
 
-  __sim_round_mode = round;
+  __sim_round_mode_thread = round;
+  SIM_SET_GLOBAL (__sim_round_mode_global, __sim_round_mode_thread);
 
   return 0;
 }

@@ -1,5 +1,4 @@
-/* Optimized strnlen version for POWER7.
-   Copyright (C) 2013-2014 Free Software Foundation, Inc.
+/* Copyright (C) 2013 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,26 +15,29 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
+/* Dynamic module with TLS to be accessed by a signal handler to check safety
+   of that mode. */
 
-#undef ENTRY
-#define ENTRY(name)						\
-  .section ".text";						\
-  ENTRY_2(__strnlen_power7)					\
-  .align ALIGNARG(2);						\
-  BODY_LABEL(__strnlen_power7):					\
-  cfi_startproc;						\
-  LOCALENTRY(__strnlen_power7)
+#include <semaphore.h>
+#include <signal.h>
+#include <unistd.h>
 
-#undef END
-#define END(name)						\
-  cfi_endproc;							\
-  TRACEBACK(__strnlen_power7)					\
-  END_2(__strnlen_power7)
+/* This is an unlikely value to see in incorrectly initialized TLS
+   block -- make sure we're initialized properly. */
+static __thread intptr_t tls_data = 0xdeadbeef;
 
-#undef libc_hidden_builtin_def
-#define libc_hidden_builtin_def(name)
-#undef weak_alias
-#define weak_alias(name, alias)
+void
+action (int signo, siginfo_t *info, void *ignored)
+{
+  sem_t *sem = info->si_value.sival_ptr;
+  if (tls_data != 0xdeadbeef)
+    {
+      write (STDOUT_FILENO, "wrong TLS value\n", 17);
+      _exit (1);
+    }
 
-#include <sysdeps/powerpc/powerpc64/power7/strnlen.S>
+  /* arbitrary choice, just write something unique-ish. */
+  tls_data = (intptr_t) info;
+
+  sem_post (sem);
+}

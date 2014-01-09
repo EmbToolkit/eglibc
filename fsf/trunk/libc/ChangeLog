@@ -1,3 +1,37 @@
+2014-01-08  Brooks Moses  <bmoses@google.com>
+
+	* elf/dl-load.c: Fix comment typo.
+
+2014-01-08  Carlos O'Donell  <carlos@redhat.com>
+
+	* po/header.pot: Rename to...
+	* po/pot.header: ... this.
+	* po/Makefile: Use pot.header.
+
+2014-01-08  Yuriy Kaminskiy  <yumkam@gmail.com>
+	    Maxim Kuvyrkov  <maxim@kugelworks.com>
+
+	[BZ #16394]
+	* sysdeps/i386/i686/memmove.S (memmove): Compare distance between
+	SRC and DEST against LEN.
+
+2014-01-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	[BZ #16414]
+	* sysdeps/powerpc/powerpc64/fpu/s_truncl.S: Remove wrong
+	implementation.
+	* sysdeps/ieee754/ldbl-128ibm/s_truncl.c: Remove bogus comment.
+
+2014-01-08  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2014-01-08  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #16408]
+	* sysdeps/ieee754/ldbl-128ibm/s_expm1l.c (__expm1l): Use __expl
+	for large positive arguments.
+
 2014-01-07  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/powerpc/nofpu/libm-test-ulps: Regenerated.

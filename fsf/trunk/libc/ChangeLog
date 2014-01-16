@@ -1,3 +1,34 @@
+2014-01-16 Joseph Myers  <joseph@codesourcery.com>
+
+	* math/test-fpucw-ieee.c: Use <> in #include of test-fpucw.c.
+	* math/test-fpucw-static.c: Likewise.
+
+2013-01-16  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	[BZ #16453]
+	* nscd/netgroupcache.c (addgetnetgrentX): Don't use alloca.
+
+2014-01-15  Adhemerval Zanella  <azanella@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/sotruss-lib.c: New file: sotruss-lib.so
+	implementation for powerpc.
+
+2014-01-15  Ondřej Bílka  <neleai@seznam.cz>
+
+	[BZ #14782]
+	* sysdeps/posix/system.c (__libc_system): Do not enable
+	asynchronous cancellation.
+
+2014-01-15  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	[BZ #16427]
+	* sysdeps/ieee754/ldbl-128/w_expl.c (__expl): Invoke the non-IEEE
+	handling only for numbers special also in the IEEE case.
+
+2014-01-15  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* sysdeps/s390/fpu/libm-test-ulps: Regenerate.
+
 2014-01-11  Allan McRae  <allan@archlinux.org>
 
 	* po/bg.po: Update Bulgarian translation from translation project.

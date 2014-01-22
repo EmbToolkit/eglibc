@@ -1,3 +1,48 @@
+2014-01-20  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/unix/sysv/linux/aarch64/Makefile (abi-lp64_be-options): Fix
+	type in define.
+
+2014-01-20  Tom Tromey  <tromey@redhat.com>
+
+	[BZ #16169]
+	* sysdeps/unix/sysv/linux/aarch64/clone.S (__clone): Add CFI
+	directives;  Zero x29.
+
+2014-01-20  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/configure.ac: New file.
+	* sysdeps/aarch64/configure: New file.
+	* sysdeps/aarch64/shlib-versions: Define ld-linux-aarch64_be.so.1
+	* sysdeps/unix/sysv/linux/aarch64/Makefile (abi-variants)
+	(abi-lp64-options, abi-lp64-condition, abi-lp64-ld-soname)
+	(abi-lp64_be-options, abi-lp64_be-condition)
+	(abi-lp64_be-ld-soname) Define.
+	* sysdeps/unix/sysv/linux/aarch64/ldconfig.h
+	(SYSDEP_KNOWN_INTERPRETER_NAMES): Add ld-linux-aarch64_be.so.1
+
+2014-01-07  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	[BZ #16387]
+	* sysdeps/aarch64/fpu/fpu_control.h (_FPU_FPCR_RM_MASK): Define.
+	* sysdeps/aarch64/soft-fp/sfp-machine.h (FP_ROUNDMODE): Adjust
+	rounding mode mask.
+
+2014-01-07  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/libm-test-ulps: Drop sqrt ULPs.
+
+2014-01-07  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+
+	* sysdeps/aarch64/dl-trampoline.S (_dl_runtime_resolve): Correct
+	cfi_adjust_cfa_offset offset.
+
+2014-01-06  Mike Frysinger  <vapier@gentoo.org>
+
+	* sysdeps/unix/sysv/linux/aarch64/sys/ptrace.h (ptrace_peeksiginfo_args):
+	Rename to ...
+	(__ptrace_peeksiginfo_args): ... this.
+
 2014-01-01  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
 
 	* sysdeps/aarch64/libm-test-ulps: Regenerated.

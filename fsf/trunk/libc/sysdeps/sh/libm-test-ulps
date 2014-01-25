@@ -4084,6 +4084,26 @@ Test "expm1_tonearest (0xcp-4)":
 double: 1
 idouble: 1
 
+# fma
+Test "fma (-0x1.fffffffffffffp-711, 0x1.fffffffffffffp-275, 0x1.fffffe00007ffp-983)":
+double: 1
+idouble: 1
+Test "fma (0x1.0000002p+0, 0x1.ffffffcp-1, -0x1p-300)":
+double: 1
+idouble: 1
+Test "fma (0x1.153d650bb9f06p-907, 0x1.2d01230d48407p-125, -0x0.b278d5acfc3cp-1022)":
+double: 1
+idouble: 1
+Test "fma (0x1.4000004p-967, 0x1p-106, 0x0.000001p-1022)":
+double: 1
+idouble: 1
+Test "fma (0x1.7ff8p+13, 0x1.000002p+0, 0x1.ffffp-24)":
+float: 1
+ifloat: 1
+Test "fma (0x1.7fffff8p-968, 0x1p-106, 0x0.000001p-1022)":
+double: 1
+idouble: 1
+
 # gamma
 Test "gamma (-0x1p-20)":
 double: 1
@@ -5356,6 +5376,12 @@ idouble: 1
 ifloat: 1
 
 Function: "expm1_tonearest":
+double: 1
+float: 1
+idouble: 1
+ifloat: 1
+
+Function: "fma":
 double: 1
 float: 1
 idouble: 1

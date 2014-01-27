@@ -1,3 +1,16 @@
+2014-01-27  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* nscd/netgroupcache.c (addgetnetgrentX): Compute offset from
+	the old buffer before realloc.
+
+2014-01-27  Allan McRae  <allan@archlinux.org>
+
+	* po/fr.po: Update French translation from translation project.
+
+2014-01-26  Kaz Kojima  <kkojima@rr.iij4u.or.jp>
+
+	* sysdeps/sh/libm-test-ulps: Regenerate.
+
 2014-01-24  David S. Miller  <davem@davemloft.net>
 
 	* sysdeps/sparc/fpu/libm-test-ulps: Regenerate.

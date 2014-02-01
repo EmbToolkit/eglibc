@@ -1,3 +1,146 @@
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/terminal.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/filesys.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/errno.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/intro.texi: Document safety identifiers and
+	conditionals.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/string.texi (wcstok): Fix prototype.
+	(wcstok, strtok, strtok_r): Adjust reentrancy remarks.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/time.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/string.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/threads.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/stdio.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/syslog.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/sysinfo.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/startup.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/socket.texi: Document MTASC-safety properties.
+
+2014-02-01  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/signal.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/setjmp.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/search.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/resource.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/process.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/platform.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/pipe.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/pattern.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/message.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	[BZ #12751]
+	* manual/memory.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/math.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/locale.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/llio.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/libdl.texi: New.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/lang.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/job.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/getopt.texi: Document MTASC-safety properties.
+
+2014-01-31  Alexandre Oliva <aoliva@redhat.com>
+
+	* manual/ctype.texi: Document MTASC-safety properties.
+
+2014-01-31  Maciej W. Rozycki  <macro@codesourcery.com>
+
+	[BZ #16046]
+	* csu/libc-tls.c (static_map): Remove variable.
+	(__libc_setup_tls): Use main executable's link map for TLS data.
+	* elf/dl-close.c (_dl_close_worker) [!SHARED]: Remove special
+	casing for LM_ID_BASE and GL(dl_nns).
+	* elf/dl-iteratephdr.c [!SHARED] (dl_iterate_phdr): Remove
+	function.  Alias dl_iterate_phdr to __dl_iterate_phdr.
+	* elf/dl-load.c (_dl_map_object) [!SHARED]: Remove special
+	casing for GL(dl_ns)[LM_ID_BASE]._ns_loaded.
+	* elf/dl-support.c (_dl_main_map): Also initialize l_flags_1
+	member.
+	(_dl_non_dynamic_init): Also initialize _dl_main_map's l_phdr and
+	l_phnum members.
+
 2014-01-30  Alexandre Oliva <aoliva@redhat.com>
 
 	* manual/debug.texi: Document MTASC-safety properties.

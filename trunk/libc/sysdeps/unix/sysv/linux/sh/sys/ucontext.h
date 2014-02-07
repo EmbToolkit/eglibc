@@ -23,14 +23,20 @@
 #include <features.h>
 #include <signal.h>
 
+/* We need the signal context definitions even if they are not used
+   included in <signal.h>.  */
+#include <bits/sigcontext.h>
+
+
 typedef int greg_t;
 
 /* Number of general registers.  */
-#define NFPREG	16
+#define NGPREG	16
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NFPREG];
+typedef greg_t gregset_t[NGPREG];
 
+#ifdef __USE_GNU
 /* Number of each register is the `gregset_t' array.  */
 enum
 {
@@ -67,32 +73,57 @@ enum
   R15 = 15,
 #define R15	R15
 };
+#endif
 
+#if (defined(__SH4__) || defined(__SH4A__))
 typedef int freg_t;
 
 /* Number of FPU registers.  */
-#define NFREG	16
+#define NFPREG	16
 
 /* Structure to describe FPU registers.  */
-typedef freg_t fpregset_t[NFREG];
+typedef freg_t fpregset_t[NFPREG];
 
 /* Context to describe whole processor state.  */
 typedef struct
   {
+    unsigned int oldmask;
     gregset_t gregs;
+    unsigned int pc;
+    unsigned int pr;
+    unsigned int sr;
+    unsigned int gbr;
+    unsigned int mach;
+    unsigned int macl;
     fpregset_t fpregs;
     fpregset_t xfpregs;
+    unsigned int fpscr;
+    unsigned int fpul;
+    unsigned int ownedfp;
   } mcontext_t;
+#else
+/* Context to describe whole processor state.  */
+typedef struct
+  {
+    unsigned int oldmask;
+    gregset_t gregs;
+    unsigned int pc;
+    unsigned int pr;
+    unsigned int sr;
+    unsigned int gbr;
+    unsigned int mach;
+    unsigned int macl;
+  } mcontext_t;
+#endif /* __SH_FPU_ANY__ */
 
 /* Userlevel context.  */
 typedef struct ucontext
   {
     unsigned long int uc_flags;
     struct ucontext *uc_link;
-    __sigset_t uc_sigmask;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    long int uc_filler[5];
+    __sigset_t uc_sigmask;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */

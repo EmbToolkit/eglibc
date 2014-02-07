@@ -1,3 +1,8 @@
+2014-02-06  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #16529]
+	* inet/netinet/in.h: Remove comma after IPPROTO_MH.
+
 2014-02-06  Siddhesh Poyarekar  <siddhesh@redhat.com>
 
 	* manual/contrib.texi: Update entry for Carlos O'Donell,
@@ -1126,6 +1131,7 @@
 
 2013-12-17  Paul Eggert  <eggert@cs.ucla.edu>
 
+	[BZ #15968]
 	Support TZ transition times < 00:00:00.
 	This is needed for version-3 tz-format files; it supports time
 	stamps past 2037 for America/Godthab (the only entry in the tz
@@ -3877,6 +3883,7 @@
 
 2013-11-04  Joseph Myers  <joseph@codesourcery.com>
 
+	[BZ #6981]
 	* include/stdc-predef.h [__GCC_IEC_559] (__STDC_IEC_559__): Define
 	depending on [__GCC_IEC_559 > 0].
 	[__GCC_IEC_559_COMPLEX] (__STDC_IEC_559_COMPLEX__): Define

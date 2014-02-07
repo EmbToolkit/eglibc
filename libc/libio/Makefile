@@ -78,7 +78,7 @@ tests-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO)		\
 	bug-wfflush bug-wmemstream1 tst-fopenloc2	\
 	tst_getwc					\
 	tst_putwc tst_wprintf tst_wprintf2 tst_wscanf	\
-	tst-fgetwc bug-wsetpos tst-fseek
+	tst-fgetwc bug-wsetpos tst-fseek tst-ftell-partial-wide
 tests-$(OPTION_POSIX_C_LANG_WIDE_CHAR)			\
      += tst_swprintf tst_swscanf			\
 	tst-sscanf					\

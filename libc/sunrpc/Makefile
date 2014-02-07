@@ -1,4 +1,4 @@
-# Copyright (C) 1994-2004, 2005, 2006, 2011 Free Software Foundation, Inc.
+# Copyright (C) 1994-2004, 2005, 2006, 2011, 2012 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -62,6 +62,10 @@ generated-dirs := rpcsvc
 
 include ../Makeconfig
 
+ifeq ($(link-obsolete-rpc),yes)
+headers += $(headers-in-tirpc) $(headers-not-in-tirpc)
+endif
+
 ifeq ($(versioning),yes)
 need-export-routines-$(OPTION_EGLIBC_SUNRPC) += \
 			auth_des auth_unix clnt_gen clnt_perr clnt_tcp \
@@ -85,8 +89,10 @@ routines-$(OPTION_EGLIBC_SUNRPC) \
 # xdecrypt is also used by nss/nss_files/files-key.c.
 routines-y += des_crypt des_impl des_soft $(need-export-routines)
 
+ifneq ($(link-obsolete-rpc),yes)
 # We only add the RPC for compatibility to libc.so.
 shared-only-routines = $(routines)
+endif
 endif
 
 # We do not build rpcinfo anymore.  It is not needed for a bootstrap

@@ -958,6 +958,12 @@ libdl =
 endif
 endif
 
+ifeq ($(build-shared),yes)
+libm = $(common-objpfx)math/libm.so$(libm.so-version)
+else
+libm = $(common-objpfx)math/libm.a
+endif
+
 # Generate a header file that #defines preprocessor symbols indicating
 # which option groups are enabled.  Note that the option-groups.config file
 # may not exist at all.

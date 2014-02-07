@@ -1,3 +1,44 @@
+2012-09-28  Andreas Schwab  <schwab@linux-m68k.org>
+
+	[BZ #6530]
+	* stdio-common/vfprintf.c (process_string_arg): Revert
+	2000-07-22 change.
+
+2011-09-28  Jonathan Nieder  <jrnieder@gmail.com>
+
+	* stdio-common/Makefile (tst-sprintf-ENV): Set environment
+	for testcase.
+	* stdio-common/tst-sprintf.c: Include <locale.h>
+	(main): Test sprintf's handling of incomplete multibyte
+	characters.
+
+2012-06-22  Andreas Schwab  <schwab@redhat.com>
+
+	[BZ #13579]
+	* include/link.h (struct link_map): Add l_free_initfini.
+	* elf/dl-deps.c (_dl_map_object_deps): Set it when assigning
+	l_initfini.
+	* elf/dl-close.c (_dl_close_worker): Don't free l_initfini.
+	* elf/rtld.c (dl_main): Clear it on all objects loaded on startup.
+	* elf/dl-libc.c (free_mem): Free l_initfini if l_free_initfini is
+	set.
+
+2012-02-24  Ulrich Drepper  <drepper@gmail.com>
+
+	* stdlib/fmtmsg.c (fmtmsg): Lock around use of severity list.
+	Reported by Peng Haitao <penght@cn.fujitsu.com>.
+
+2012-01-27  Ulrich Drepper  <drepper@gmail.com>
+
+	[BZ #13618]
+	* elf/dl-open.c (dl_open_worker): Sort objects by dependency before
+	relocation.
+	* Makeconfig (libm): Define.
+	* elf/Makefile: Add rules to build and run tst-relsort1.
+	* elf/tst-relsort1.c: New file.
+	* elf/tst-relsort1mod1.c: New file.
+	* elf/tst-relsort1mod2.c: New file.
+
 2014-01-04  Maxim Kuvyrkov  <maxim@kugelworks.com>
 	    Ondřej Bílka  <neleai@seznam.cz>
 

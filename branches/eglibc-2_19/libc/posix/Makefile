@@ -96,7 +96,7 @@ tests		:= tstgetopt testfnm runtests \
 		   tst-fnmatch2 tst-cpucount tst-cpuset \
 		   bug-getopt1 bug-getopt2 bug-getopt3 bug-getopt4 \
 		   bug-getopt5 tst-getopt_long1 bug-regex34 bug-regex35 \
-		   tst-pathconf tst-getaddrinfo4
+		   tst-pathconf tst-getaddrinfo4 bug-regex36
 tests-$(OPTION_EGLIBC_LOCALE_CODE)					    \
 		+= tst-fnmatch tst-regexloc bug-regex1 bug-regex5 \
 		   bug-regex23 bug-regex25 bug-regex32 bug-regex33
@@ -135,7 +135,7 @@ generated := $(addprefix wordexp-test-result, 1 2 3 4 5 6 7 8 9 10) \
 	     tst-pcre-mem tst-pcre.mtrace tst-boost-mem tst-boost.mtrace \
 	     bug-ga2.mtrace bug-ga2-mem bug-glob2.mtrace bug-glob2-mem \
 	     tst-vfork3-mem tst-vfork3.mtrace getconf.speclist \
-	     tst-fnmatch-mem tst-fnmatch.mtrace
+	     tst-fnmatch-mem tst-fnmatch.mtrace bug-regex36.mtrace
 
 include ../Rules
 
@@ -296,6 +296,12 @@ bug-regex31-ENV = MALLOC_TRACE=$(objpfx)bug-regex31.mtrace
 
 $(objpfx)bug-regex31-mem: $(objpfx)bug-regex31.out
 	$(common-objpfx)malloc/mtrace $(objpfx)bug-regex31.mtrace > $@
+
+bug-regex36-ENV = MALLOC_TRACE=$(objpfx)bug-regex36.mtrace
+
+$(objpfx)bug-regex36-mem.out: $(objpfx)bug-regex36.out
+	$(common-objpfx)malloc/mtrace $(objpfx)bug-regex36.mtrace > $@; \
+	$(evaluate-test)
 
 tst-vfork3-ENV = MALLOC_TRACE=$(objpfx)tst-vfork3.mtrace
 

@@ -1,5 +1,5 @@
 case "$machine" in
-mips64*)	base_machine=mips64
+mips64*|mipsisa64*)	base_machine=mips64
 		case "$CC $CFLAGS $CPPFLAGS " in
 		*" -mabi=n32 "*) mips_cc_abi=n32 ;;
 		*" -mabi=64 "*|*" -mabi=n64 "*) mips_cc_abi=64 ;;

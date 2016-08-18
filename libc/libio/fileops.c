@@ -420,7 +420,7 @@ _IO_new_file_fopen (fp, filename, mode, is32not64)
 	  result->_mode = 1;
 #else
           /* Treat this as if we couldn't find the given character set.  */
-          (void) INTUSE(_IO_file_close_it) (fp);
+          (void) _IO_file_close_it(fp);
           __set_errno (EINVAL);
           return NULL;
 #endif

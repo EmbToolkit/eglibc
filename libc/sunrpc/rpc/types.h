@@ -69,6 +69,7 @@ typedef unsigned long rpcport_t;
 #include <sys/types.h>
 #endif
 
+#if !defined(__FreeBSD__)
 #ifndef __u_char_defined
 typedef __u_char u_char;
 typedef __u_short u_short;
@@ -84,6 +85,7 @@ typedef __daddr_t daddr_t;
 typedef __caddr_t caddr_t;
 # define __daddr_t_defined
 #endif
+#endif /*!_FreeBSD__*/
 
 #include <sys/time.h>
 #include <sys/param.h>
